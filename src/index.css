@@ -4,6 +4,12 @@ html, body {
   background-color: #FFFDF8;
 }
 
+.limitWidth {
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @font-face {
   font-family: 'Brother 1816';
   src: url('./fonts/brother\ regular.otf');
