@@ -1,0 +1,85 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    margin-top: 40px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header img {
+    width: 200px;
+}
+
+.links a {
+    text-decoration: none;
+    color: black;
+    margin-left: 25px;
+}
+
+.links a:hover, .activeLink {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift 0.5s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%232D5DED' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E");
+    background-position: 0 100%;
+    background-size: auto 6px;
+    background-repeat: repeat-x;
+    text-decoration: none;
+}
+
+.hamburger {
+    display: none;
+}
+
+.bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    background-color: #101010;
+}
+
+@media screen and (max-width: 768px) {
+    .hamburger {
+        display: block;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .barGone {
+        composes: bar;
+        opacity: 0;
+    }
+
+    .barLeft {
+        composes: bar;
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .barRight {
+        composes: bar;
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .links {
+        display: flex;
+        position: fixed;
+        left: -100%;
+        flex-direction: column;
+        background-color: rgba(255, 255, 255, 0.95);
+        top: 0rem;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        height: 100%;
+        z-index: 1;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding-left: 0px;
+    }
+
+    .linksActive {
+        composes: links;
+        left: 0px;
+    }
+}

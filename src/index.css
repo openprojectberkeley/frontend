@@ -1,13 +1,30 @@
-body {
+html, body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Brother Medium';
+  background-color: #FFFDF8;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: 'Brother 1816';
+  src: url('./fonts/brother\ regular.otf');
+}
+
+@font-face {
+  font-family: 'Brother Medium';
+  src: url('./fonts/brother\ medium.otf');
+}
+
+@font-face {
+  font-family: 'Brother Medium Italic';
+  src: url('./fonts/brother\ medium\ italic.otf');
+}
+
+@font-face {
+  font-family: 'Brother Light Italic';
+  src: url('./fonts/brother\ light\ italic.otf');
+}
+
+@font-face {
+  font-family: 'Brother Bold';
+  src: url('./fonts/brother\ bold.otf');
 }
