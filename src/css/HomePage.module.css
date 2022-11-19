@@ -20,9 +20,13 @@
     text-decoration: none;
 }
 
-.coverRight img {
-    width: 500px;
+.coverRight {
+    max-width: 500px;
     animation: shake 2s infinite;
+}
+
+.coverRight img {
+    width: 100%;
 }
 
 @keyframes shake{
@@ -46,4 +50,11 @@
     font-family: 'Brother Bold';
     font-size: 20px;
     cursor: pointer;
+}
+
+@media screen and (max-width: 870px) {
+    .cover {
+        flex-direction: column;
+        gap: 50px;
+    }
 }
