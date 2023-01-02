@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import styles from '../css/Apply.module.css';
-import faqPlus from "../images/faqPlus.png"
+import faqPlus from "../images/faqPlus.png";
+import orangeCurve from "../images/orangecurve.png";
 
 const faqList = [
   [
@@ -125,6 +126,11 @@ export default function Apply() {
   return (
     <div>
       <h1>Apply</h1>
+      <img 
+        src={orangeCurve} 
+        className={styles.orangeCurve}
+        alt="orangeCurve"  
+      ></img>
       {renderAllFaqs()}
     </div>
   );

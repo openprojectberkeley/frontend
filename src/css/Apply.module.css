@@ -44,11 +44,14 @@
 .faqTitle {
     color: #FF9C03;
     font-size: 70px;
+    margin-top: 0%;
 }
 
 .allFaqs {
-    flex-direction: row;
-    justify-content: space-between;
     padding: 10px var(--margin-from-screen);
-    gap: 20px;
+}
+
+.orangeCurve {
+    max-height: 400px;
+    width: 100%;
 }
