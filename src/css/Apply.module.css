@@ -1,7 +1,7 @@
 .faqBox {
     background: #FFE9C7;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    padding: 1.5%;
+    padding: 3%;
 }
 
 .faqBox:hover {
@@ -20,7 +20,14 @@
 
 .faqQuestion {
     font-weight: bold;
-    font-size: larger;
+    font-size: x-large;
+}
+
+@media screen and (max-width: 870px) {
+    .faqQuestion {
+        font-weight: bold;
+        font-size: large;
+    }
 }
 
 .faqAnswer {
@@ -33,8 +40,8 @@
     bottom: 0;
     right: 0;
     margin: auto;
-    transform: (0.5,0.5);
-    -webkit-transform: scale(0.5, 0.5);
+    width: 20px;
+    height: 20px;
 }
 
 .faqAnswerContainer {
