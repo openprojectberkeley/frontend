@@ -1,0 +1,97 @@
+.applyWrapper {
+}
+
+.applyHeader {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.headerBlock {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.blueCurve {
+  padding: 2% 0%;
+  width: 100%;
+}
+
+
+.applyHeader h1 {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 70px;
+}
+
+.applyHeader p {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  width: 70%;
+}
+
+.timeline {
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 2%;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.timelineImg {
+	width: 1000px;
+	margin: auto;
+}
+
+.timeline a {
+	margin: auto;
+}
+
+.timeline h1 {
+  color: #2D5DED;
+}
+
+
+@media screen and (max-width: 1275px) {
+	.timelineImg {
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+  .applyHeader p {
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .applyButton {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .headerBlock {
+    flex-direction: column;
+    align-items: center;
+  }
+  .applyHeader h1 {
+    text-align: center;
+  }
+  .headerBlock p {
+    width: 100%;
+    text-align: center;
+  }
+  .applyButton {
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .timelineImg {
+    width: 75%;
+  }
+}
+
+
