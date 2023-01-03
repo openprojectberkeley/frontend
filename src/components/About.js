@@ -13,7 +13,7 @@ export default function About() {
       <div>
         <img src={orangeCurve} className={styles.orangeCurve}></img>
       <div className={`${styles.aboutBottomHalf} limitWidth`}>
-        <h1> Meet the Team </h1>
+        <h1>Meet the Team</h1>
       <div className={styles.imagesContainer}>
         <div className={styles.topHalf}>
         <div className={styles.person}>

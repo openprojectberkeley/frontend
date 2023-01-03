@@ -46,6 +46,14 @@
         gap: 50px;
     }
 
+    .aboutBottomHalf h1 {
+        font-family: 'Brother Bold';
+        color: #FF9C03;
+        margin-left: var(--margin-from-screen);
+        margin-right: var(--margin-from-screen);
+    }
+
+
     .bottomHalf {
         flex-direction: column-reverse;
         justify-content: center;
