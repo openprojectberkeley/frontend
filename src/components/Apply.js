@@ -6,7 +6,6 @@ import orangeCurve from "../images/orangecurve.png";
 import homeStyles from "../css/HomePage.module.css";
 import applyCurveBlue from '../images/applyCurveBlue.png';
 import timeline from "../images/timeline.png";
-import { NavLink } from 'react-router-dom';
 
 const faqList = [
   [
@@ -131,18 +130,22 @@ export default function Apply() {
   return (
     <div>
       <div className={styles.applyWrapper}>
-        <div className={`${styles.applyHeader} limitWidth`}>
-          <h1>Join us!</h1>
-          <div className={styles.headerBlock}>
-          <p>Application deadline for Spring 2023 is <b>Wednesday, February 1st at 11:59 pm</b>. Click the button to get started!</p>
-            <NavLink to="/apply"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></NavLink>
+        <div className={styles.applyHeader}>
+          <div className="limitWidth">
+            <h1>Join us!</h1>
+            <div className={styles.headerBlock}>
+              <p>Application deadline for Spring 2023 is <b>Wednesday, February 1st at 11:59 pm</b>. Click the button to get started!</p>
+              <a href="#" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+            </div>
           </div>
         </div>
         <img src={applyCurveBlue} className={styles.blueCurve} />
-        <div className={`${styles.timeline} limitWidth`}>
-          <h1>Recruitment Timeline</h1>
-          <img src={timeline} className={styles.timelineImg} />
-          <NavLink to="/apply"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></NavLink>
+        <div className={styles.timeline}>
+          <div className={`${styles.timelineWidth} "limitWidth"`}>
+            <h1>Recruitment Timeline</h1>
+            <img src={timeline} className={styles.timelineImg} />
+            <a href="#" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+          </div>
         </div>
       </div>
 

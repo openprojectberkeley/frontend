@@ -1,8 +1,7 @@
 /* TIMELINE */
 
 .applyHeader {
-  padding-left: 30px;
-  padding-right: 30px;
+  margin: 50px var(--margin-from-screen);
 }
 
 .headerBlock {
@@ -16,11 +15,10 @@
   width: 100%;
 }
 
-
 .applyHeader h1 {
-  font-style: normal;
-  font-weight: 700;
-  font-size: 70px;
+  font-size: 40px;
+  margin: 0;
+  font-family: 'Brother Bold';
 }
 
 .applyHeader p {
@@ -31,16 +29,24 @@
 }
 
 .timeline {
-	display: flex;
-	flex-direction: column;
 	padding-bottom: 2%;
-  padding-left: 30px;
-  padding-right: 30px;
+  margin-left: var(--margin-from-screen);
+  margin-right: var(--margin-from-screen);
 }
 
 .timelineImg {
 	width: 1000px;
 	margin: auto;
+}
+
+.timelineWidth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timelineWidth h1 {
+  padding-bottom: 20px;
 }
 
 .timeline a {
@@ -50,7 +56,6 @@
 .timeline h1 {
   color: #2D5DED;
 }
-
 
 @media screen and (max-width: 1275px) {
 	.timelineImg {
@@ -142,13 +147,13 @@
 }
 
 .faqAnswerContainer {
-    width: 90%;
+    width: 100%;
 }
 
 .faqTitle {
     color: #FF9C03;
-    font-size: 70px;
-    margin-top: 0%;
+    font-size: 40px;
+    margin-top: 0;
 }
 
 .allFaqs {
@@ -158,4 +163,9 @@
 .orangeCurve {
     max-height: 400px;
     width: 100%;
+}
+
+.faqQuestion {
+  margin: 0;
+  font-family: 'Brother Bold';
 }
