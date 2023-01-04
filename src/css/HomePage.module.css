@@ -112,6 +112,10 @@
     max-width: 350px;
 }
 
+.blueText {
+    color:#2D5DED;
+}
+
 .aboutCommunity {
     display: flex;
     flex-direction: row;
@@ -137,6 +141,18 @@
     max-width: 400px;
 }
 
+.aboutCommunity img:hover {
+    animation: shakeRight 2s infinite;
+}
+
+.aboutProjects img:hover {
+    animation: shakeLeft 2s infinite;
+}
+
+.orangeText {
+    color:#FA751E;
+}
+
 .joinUs {
     display: flex;
     padding: 10px var(--margin-from-screen);
@@ -144,6 +160,7 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 200px;
+    margin-top: -10px;
 }
 
 
@@ -167,13 +184,19 @@
 
 .joinUsRight {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-top: 70px;
 }
 
 .getInvolvedButton {
     min-width: 200px;
     font-size: 25px;
+}
+
+.orangeCurve {
+    overflow: hidden;
 }
 
 @media screen and (max-width: 870px) {
@@ -206,7 +229,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 50px;
+        gap: 20px;
     }
 
     .joinUsText {
@@ -214,5 +237,27 @@
         justify-content: center;
         align-items: center;
         margin: 0px 40px;
+        text-align: center;
+    }
+}
+
+@keyframes shakeRight{
+    0% {
+      transform: rotate(0deg);
+    }
+    20% {
+      transform: rotate(10deg);
+    }
+}
+
+@keyframes shakeLeft {
+    0% {
+      transform: rotate(0deg);
+    }
+    20% {
+      transform: rotate(-10deg);
+    }
+    100% {
+      transform: rotate(0deg);
     }
 }
