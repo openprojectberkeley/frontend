@@ -12,10 +12,8 @@
 
 .coverLeft h1 {
     font-family: 'Brother Bold';
-    width: fit-content;
-    text-decoration: underline;
-    text-decoration-color: #FF9C03;
-    text-decoration-thickness: 4px;
+    margin: -20px 0;
+    font-size: 50px;
 }
 
 .coverRight {
@@ -88,78 +86,56 @@
     color: white;
 }
 
-.aboutProjects {
-    display: flex;
-    flex-direction: row;
-    padding: 50px var(--margin-from-screen);
-    justify-content: center;
-    gap: 200px;
-    margin: 0px 100px;
-}
-
-.aboutProjects h1 {
-    font-family: 'Brother Bold';
-    color: #2D5DED;
-}
-
-.aboutProjects h3 {
-    max-width: 400px;
-}
-
-.aboutProjects img {
-    width: 100%;
-    height: 100%;
-    max-width: 350px;
-}
-
 .blueText {
     color:#2D5DED;
 }
 
-.aboutCommunity {
+.about {
     display: flex;
     flex-direction: row;
     padding: 50px var(--margin-from-screen);
-    justify-content: center;
-    gap: 200px;
-    margin: 0px 100px;
-    
+    justify-content: space-between;
+    gap: 50px;
+    align-items: center;    
+}
+
+.about h1 {
+    font-family: 'Brother Bold';
 }
 
 .aboutCommunity h1 {
-    font-family: 'Brother Bold';
-    color:#FA751E;
+    color:#FF9C03;
 }
 
-.aboutCommunity h3 {
-    max-width: 400px;
+.aboutProjects h1 {
+    color:#2D5DED;
 }
 
-.aboutCommunity img {
+.about h3 {
+    max-width: 500px;
+}
+
+.about img {
     width: 100%;
     height: 100%;
     max-width: 400px;
 }
 
-.aboutCommunity img:hover {
+.about img:hover {
     animation: shakeRight 2s infinite;
 }
 
-.aboutProjects img:hover {
-    animation: shakeLeft 2s infinite;
-}
-
 .orangeText {
-    color:#FA751E;
+    color:#FF9C03;
 }
 
 .joinUs {
     display: flex;
-    padding: 10px var(--margin-from-screen);
+    margin: 10px var(--margin-from-screen);
     gap: 50px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 200px;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 100px;
     margin-top: -10px;
 }
 
@@ -178,16 +154,12 @@
 .joinUsText h3 {
     display: flex;
     font-size: 20px;
-    max-width: 800px;
+    max-width: 600px;
     margin-top: -20px;
 }
 
 .joinUsRight {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
-    padding-top: 70px;
+    margin-bottom: 20px;
 }
 
 .getInvolvedButton {
@@ -196,7 +168,7 @@
 }
 
 .orangeCurve {
-    overflow: hidden;
+    width: 100%;
 }
 
 @media screen and (max-width: 870px) {
@@ -225,6 +197,10 @@
         gap: 50px;
     }
 
+    .about h3 {
+        max-width: 900px;
+    }
+
     .joinUs {
         flex-direction: column;
         justify-content: center;
@@ -236,7 +212,6 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        margin: 0px 40px;
         text-align: center;
     }
 }
