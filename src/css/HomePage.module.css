@@ -88,26 +88,13 @@
     color: white;
 }
 
-@media screen and (max-width: 870px) {
-    .cover {
-        flex-direction: column;
-        gap: 50px;
-    }
-
-    .blue {
-        flex-direction: column-reverse;
-        justify-content: center;
-        align-items: center;
-    }
-}
-
 .aboutProjects {
     display: flex;
     flex-direction: row;
     padding: 50px var(--margin-from-screen);
-    justify-content: space-between;
-    margin: 0px 150px;
+    justify-content: center;
     gap: 200px;
+    margin: 0px 100px;
 }
 
 .aboutProjects h1 {
@@ -128,21 +115,20 @@
 .aboutCommunity {
     display: flex;
     flex-direction: row;
-    padding: 10px var(--margin-from-screen);
+    padding: 50px var(--margin-from-screen);
+    justify-content: center;
     gap: 200px;
-    margin: 0px 150px;
+    margin: 0px 100px;
     
-}
-
-.description2 {
-    display: flex;
-    flex-direction: column;
-
 }
 
 .aboutCommunity h1 {
     font-family: 'Brother Bold';
     color:#FA751E;
+}
+
+.aboutCommunity h3 {
+    max-width: 400px;
 }
 
 .aboutCommunity img {
@@ -152,5 +138,81 @@
 }
 
 .joinUs {
+    display: flex;
     padding: 10px var(--margin-from-screen);
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 200px;
+}
+
+
+.joinUsText {
+    display: flex;
+    flex-direction: column;
+}
+
+.joinUsText h1 {
+    display: flex;
+    font-family: 'Brother Bold';
+    font-size: 60px;
+}
+
+.joinUsText h3 {
+    display: flex;
+    font-size: 20px;
+    max-width: 800px;
+    margin-top: -20px;
+}
+
+.joinUsRight {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.getInvolvedButton {
+    min-width: 200px;
+    font-size: 25px;
+}
+
+@media screen and (max-width: 870px) {
+    .cover {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .blue {
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .aboutCommunity {
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .aboutProjects {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .joinUs {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .joinUsText {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0px 40px;
+    }
 }

@@ -52,13 +52,20 @@ export default function HomePage() {
         </h3>
         </div>
       </div>
-      <img src={toporangecurve} />
-      <img src={bottomorangecurve} />
+      <div className={styles.orangeCurve}>
+      <img src={toporangecurve} className={styles.topOrange} />
+      <img src={bottomorangecurve} className={styles.bottomOrange} />
+      </div>
+    
       <div className={styles.joinUs}>
+        <div className={styles.joinUsText}>
         <h1>Join us!</h1>
         <h3>Application deadline is Wednesday, February 1st at 11:59 pm. Learn more using the button on the right!
         </h3>
-        <NavLink to="/apply"><button className={styles.getInvolvedButton}>Get Involved</button></NavLink>
+        </div>
+        <div className={styles.joinUsRight}>
+          <NavLink to="/apply"><button className={styles.getInvolvedButton}>Get Involved</button></NavLink>
+        </div>
       </div>
     </div>
   );
