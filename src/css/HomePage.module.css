@@ -88,6 +88,117 @@
     color: white;
 }
 
+.aboutProjects {
+    display: flex;
+    flex-direction: row;
+    padding: 50px var(--margin-from-screen);
+    justify-content: center;
+    gap: 200px;
+    margin: 0px 100px;
+}
+
+.aboutProjects h1 {
+    font-family: 'Brother Bold';
+    color: #2D5DED;
+}
+
+.aboutProjects h3 {
+    max-width: 400px;
+}
+
+.aboutProjects img {
+    width: 100%;
+    height: 100%;
+    max-width: 350px;
+}
+
+.blueText {
+    color:#2D5DED;
+}
+
+.aboutCommunity {
+    display: flex;
+    flex-direction: row;
+    padding: 50px var(--margin-from-screen);
+    justify-content: center;
+    gap: 200px;
+    margin: 0px 100px;
+    
+}
+
+.aboutCommunity h1 {
+    font-family: 'Brother Bold';
+    color:#FA751E;
+}
+
+.aboutCommunity h3 {
+    max-width: 400px;
+}
+
+.aboutCommunity img {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+}
+
+.aboutCommunity img:hover {
+    animation: shakeRight 2s infinite;
+}
+
+.aboutProjects img:hover {
+    animation: shakeLeft 2s infinite;
+}
+
+.orangeText {
+    color:#FA751E;
+}
+
+.joinUs {
+    display: flex;
+    padding: 10px var(--margin-from-screen);
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 200px;
+    margin-top: -10px;
+}
+
+
+.joinUsText {
+    display: flex;
+    flex-direction: column;
+}
+
+.joinUsText h1 {
+    display: flex;
+    font-family: 'Brother Bold';
+    font-size: 60px;
+}
+
+.joinUsText h3 {
+    display: flex;
+    font-size: 20px;
+    max-width: 800px;
+    margin-top: -20px;
+}
+
+.joinUsRight {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-top: 70px;
+}
+
+.getInvolvedButton {
+    min-width: 200px;
+    font-size: 25px;
+}
+
+.orangeCurve {
+    overflow: hidden;
+}
+
 @media screen and (max-width: 870px) {
     .cover {
         flex-direction: column;
@@ -98,5 +209,55 @@
         flex-direction: column-reverse;
         justify-content: center;
         align-items: center;
+    }
+
+    .aboutCommunity {
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .aboutProjects {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .joinUs {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .joinUsText {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0px 40px;
+        text-align: center;
+    }
+}
+
+@keyframes shakeRight{
+    0% {
+      transform: rotate(0deg);
+    }
+    20% {
+      transform: rotate(10deg);
+    }
+}
+
+@keyframes shakeLeft {
+    0% {
+      transform: rotate(0deg);
+    }
+    20% {
+      transform: rotate(-10deg);
+    }
+    100% {
+      transform: rotate(0deg);
     }
 }
