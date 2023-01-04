@@ -66,3 +66,41 @@
         grid-template-rows: 1fr 1fr 1fr 1fr;
     }
 }
+
+#groupPictureExecs {
+    margin-top: 58px;
+    width: 100%;
+    height: auto;
+    display: flex;
+}
+
+.blueCurve {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#blueCurve {
+    margin-top: -200px;
+}
+
+.aboutUs {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.aboutUs h1, .ourValues h1 {
+    font-family: 'Brother Bold';
+    color: #2D5DED;
+}
+
+.aboutUs h2 {
+    font-family: 'Brother Medium';
+    display: inline;
+}
+
+.aboutUs h3 {
+    margin-left: 10px;
+    font-family: 'Brother 1816';
+    display: inline;
+}

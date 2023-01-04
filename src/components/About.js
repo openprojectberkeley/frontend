@@ -1,5 +1,6 @@
 import styles from '../css/About.module.css';
 import orangeCurve from "../images/orangecurve.png";
+import aboutBlueCurve from "../images/aboutPictures/aboutBlueCurve.png"
 import colin from '../images/aboutPictures/colin.jpg';
 import nhu from '../images/aboutPictures/nhu.jpg';
 import uyen from '../images/aboutPictures/uyen.jpg';
@@ -8,10 +9,27 @@ import nick from '../images/aboutPictures/nick.jpg';
 import joel from '../images/aboutPictures/joel.jpg';
 import pwicon from '../images/pwicon.png';
 import linkedinicon from '../images/linkedinicon.png';
+import groupPictureExecs from '../images/aboutPictures/groupPictureExecs.png'
+import inclusiveCommunity from '../images/aboutPictures/inclusiveCommunity.png'
+import chooseYourOwnPath from '../images/aboutPictures/chooseYourOwnPath.png'
+import buildAndLearnTogether from '../images/aboutPictures/buildAndLearnTogether.png'
+import challengeYourLimits from '../images/aboutPictures/challengeYourLimits.png'
 
 export default function About() {
     return (
       <div>
+        <img src={groupPictureExecs} id={styles.groupPictureExecs}/>
+        <img src={aboutBlueCurve} class={styles.blueCurve} id={styles.blueCurve}/>
+        <div className={`${styles.aboutTopHalf} limitWidth`}>
+          <div className={styles.aboutUs}>
+            <h1>About Us</h1>
+            <h2>Mission statement:</h2>
+            <h3>We strive to build an open community for creators passionate about working on tech projects most meaningful to them.</h3>
+          </div>
+          <div className={styles.ourValues}>
+            <h1>Our Values</h1>
+          </div>
+        </div>
         <img src={orangeCurve} className={styles.orangeCurve} />
         <div className={`${styles.aboutBottomHalf} limitWidth`} id="team">
           <div className={styles.aboutPics}>
