@@ -24,7 +24,7 @@ export default function About() {
               <h1>About Us</h1>
               <h3><span className={styles.bold}>Mission statement:</span> We strive to build an open community for creators passionate about working on tech projects most meaningful to them.</h3>
             </div>
-            <div className={styles.ourValues}>
+            <div className={styles.ourValues} id="values">
               <h1>Our Values</h1>
               <div className={styles.values}>
                 <div className={styles.value}>
