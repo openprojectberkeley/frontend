@@ -14,4 +14,4 @@ You may also see any lint errors in the console.
 
 ### `npm run deploy`
 
-Runs react-snap (build react site statically) then deploys build to gh-pages branch, updates the official openprojectberkeley.com site. 
+Runs react-snap (build react site statically) then deploys build to gh-pages branch, updates the official openprojectberkeley.com site.
