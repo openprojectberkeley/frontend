@@ -119,7 +119,7 @@ export default function Apply() {
     }
 
     return (
-        <div className={`${styles.allFaqs} limitWidth`}>
+        <div className={`${styles.allFaqs} limitWidth`} id="faqs">
           <h1 className={styles.faqTitle}>FAQs</h1>
           {allFaqs}
           <br></br>
@@ -141,7 +141,7 @@ export default function Apply() {
         </div>
         <img src={applyCurveBlue} className={styles.blueCurve} />
         <div className={styles.timeline}>
-          <div className={`${styles.timelineWidth} "limitWidth"`}>
+          <div className={`${styles.timelineWidth} "limitWidth"`} id="timeline">
             <h1>Recruitment Timeline</h1>
             <img src={timeline} className={styles.timelineImg} />
             <a href="#" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>

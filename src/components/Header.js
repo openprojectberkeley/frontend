@@ -25,7 +25,7 @@ export default function Header() {
   }
 
   return (
-    <header className={styles.header}>
+    <header className={styles.header} id="header">
       <NavLink to="/"><img src={logo} alt="logo" /></NavLink>
       <div className={active ? `${styles.linksActive}` : `${styles.links}`} onClick={deActivate}>
         <NavLink to="/about" className={activeLink}>about</NavLink>

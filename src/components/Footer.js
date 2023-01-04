@@ -3,6 +3,7 @@ import footerLogo from '../images/footerLogo.png';
 import { NavLink } from 'react-router-dom';
 import instagram from '../images/instagram.png';
 import github from '../images/github.png';
+import { NavHashLink } from 'react-router-hash-link';
 
 export default function Footer() {
     return (
@@ -30,8 +31,8 @@ export default function Footer() {
               <p className={styles.title}>General</p>
               <div className={styles.links}>
                 <NavLink to="/about">About</NavLink>
-                <NavLink to="/about#team">Team</NavLink>
-                <NavLink to="/about#values">Values</NavLink>
+                <NavHashLink smooth to="/about#team">Team</NavHashLink>
+                <NavHashLink smooth to="/about#values">Values</NavHashLink>
                 <NavLink to="/contact">Contact</NavLink>
               </div>
             </div>
@@ -39,8 +40,8 @@ export default function Footer() {
               <p className={styles.title}>Students</p>
               <div className={styles.links}>
                 <NavLink to="/apply">Apply</NavLink>
-                <NavLink to="/apply#timeline">Timeline</NavLink>
-                <NavLink to="/apply#faqs">FAQs</NavLink>
+                <NavHashLink smooth to="/apply#timeline">Timeline</NavHashLink>
+                <NavHashLink smooth to="/apply#faqs">FAQs</NavHashLink>
               </div>
             </div>
           </div>

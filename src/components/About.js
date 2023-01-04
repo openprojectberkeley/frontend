@@ -8,13 +8,12 @@ import nick from '../images/aboutPictures/nick.jpg';
 import joel from '../images/aboutPictures/joel.jpg';
 import pwicon from '../images/pwicon.png';
 import linkedinicon from '../images/linkedinicon.png';
-import { Link } from 'react-router-dom';
 
 export default function About() {
     return (
       <div>
         <img src={orangeCurve} className={styles.orangeCurve} />
-        <div className={`${styles.aboutBottomHalf} limitWidth`}>
+        <div className={`${styles.aboutBottomHalf} limitWidth`} id="team">
           <div className={styles.aboutPics}>
             <h1>Meet the Team</h1>
             <div className={styles.people}>
