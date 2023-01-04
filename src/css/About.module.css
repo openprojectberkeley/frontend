@@ -2,6 +2,14 @@
     width: 100%;
 }
 
+.bold {
+    font-family: 'Brother Bold';
+}
+
+.marginFromScreen {
+    margin: 0 var(--margin-from-screen);
+}
+
 .aboutPics {
     margin: 0 var(--margin-from-screen);
 }
@@ -64,5 +72,67 @@
     .people {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr 1fr 1fr;
+    }
+}
+
+.aboutTeam {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.blueCurve {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#blueCurve {
+    margin-top: -200px;
+}
+
+.aboutUs {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.aboutUs h1, .ourValues h1 {
+    font-family: 'Brother Bold';
+    color: #2D5DED;
+}
+
+.values {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 50px;
+    width: 100%;
+    justify-items: center;
+    margin-bottom: 100px;
+}
+
+.value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 500px;
+    text-align: center;
+}
+
+.value h2 {
+    font-family: 'Brother Bold';
+}
+
+.value img {
+    height: 200px;
+}
+
+.ourValues h1 {
+    padding-bottom: 30px;
+}
+
+@media screen and (max-width: 600px) {
+    .values {
+        grid-template-columns: 1fr;
+        grid-gap: 30px;
+        margin-bottom: 30px;
     }
 }
