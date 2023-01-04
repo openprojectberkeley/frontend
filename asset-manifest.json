@@ -1,24 +1,34 @@
 {
   "files": {
-    "main.css": "/static/css/main.038386d2.css",
-    "main.js": "/static/js/main.fa8911b3.js",
+    "main.css": "/static/css/main.b18c6d94.css",
+    "main.js": "/static/js/main.88a28a7d.js",
     "static/js/787.cf1e5eec.chunk.js": "/static/js/787.cf1e5eec.chunk.js",
+    "static/media/uyen.jpg": "/static/media/uyen.4877e54e953051d55b3c.jpg",
+    "static/media/joel.jpg": "/static/media/joel.0f241e9cc49715ef4158.jpg",
+    "static/media/nhu.jpg": "/static/media/nhu.a1297ffda55001d31f03.jpg",
+    "static/media/nick.jpg": "/static/media/nick.50c46797e5d5f98eda0d.jpg",
+    "static/media/colin.jpg": "/static/media/colin.d7749094bbd343f63bca.jpg",
+    "static/media/ethan.jpg": "/static/media/ethan.e4e0f220a72a6b5749a2.jpg",
+    "static/media/timeline.png": "/static/media/timeline.05c420735c4682c663d9.png",
     "static/media/brother light italic.otf": "/static/media/brother light italic.2fabce859293745d6283.otf",
     "static/media/brother medium italic.otf": "/static/media/brother medium italic.809d6d704bc3fecff734.otf",
     "static/media/brother regular.otf": "/static/media/brother regular.3e86dd57991eb6a369dc.otf",
     "static/media/brother medium.otf": "/static/media/brother medium.17ca51ab9eebbc8b0a53.otf",
     "static/media/brother bold.otf": "/static/media/brother bold.1476797a42ab908961c1.otf",
     "static/media/homepage-shapes.png": "/static/media/homepage-shapes.0f6eb417c9e4e7d5a092.png",
+    "static/media/pwicon.png": "/static/media/pwicon.ce0de5ba78e00944813d.png",
     "static/media/wordbubble.png": "/static/media/wordbubble.cff3613cbb1e93718829.png",
     "static/media/footerLogo.png": "/static/media/footerLogo.17a00df98db3eef9c1f4.png",
     "static/media/logo.png": "/static/media/logo.7b33965b79624a6a534f.png",
+    "static/media/linkedinicon.png": "/static/media/linkedinicon.032cf8a63be2f0f4d425.png",
+    "static/media/orangecurve.png": "/static/media/orangecurve.f233b21e80d436524db0.png",
     "index.html": "/index.html",
-    "main.038386d2.css.map": "/static/css/main.038386d2.css.map",
-    "main.fa8911b3.js.map": "/static/js/main.fa8911b3.js.map",
+    "main.b18c6d94.css.map": "/static/css/main.b18c6d94.css.map",
+    "main.88a28a7d.js.map": "/static/js/main.88a28a7d.js.map",
     "787.cf1e5eec.chunk.js.map": "/static/js/787.cf1e5eec.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.038386d2.css",
-    "static/js/main.fa8911b3.js"
+    "static/css/main.b18c6d94.css",
+    "static/js/main.88a28a7d.js"
   ]
 }
