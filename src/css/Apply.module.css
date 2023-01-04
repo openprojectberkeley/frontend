@@ -1,0 +1,171 @@
+/* TIMELINE */
+
+.applyHeader {
+  margin: 50px var(--margin-from-screen);
+}
+
+.headerBlock {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.blueCurve {
+  padding: 2% 0%;
+  width: 100%;
+}
+
+.applyHeader h1 {
+  font-size: 40px;
+  margin: 0;
+  font-family: 'Brother Bold';
+}
+
+.applyHeader p {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  width: 70%;
+}
+
+.timeline {
+	padding-bottom: 2%;
+  margin-left: var(--margin-from-screen);
+  margin-right: var(--margin-from-screen);
+}
+
+.timelineImg {
+	width: 1000px;
+	margin: auto;
+}
+
+.timelineWidth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timelineWidth h1 {
+  padding-bottom: 20px;
+}
+
+.timeline a {
+	margin: auto;
+}
+
+.timeline h1 {
+  color: #2D5DED;
+}
+
+@media screen and (max-width: 1275px) {
+	.timelineImg {
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+  .applyHeader p {
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .applyButton {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .headerBlock {
+    flex-direction: column;
+    align-items: center;
+  }
+  .applyHeader h1 {
+    text-align: center;
+  }
+  .headerBlock p {
+    width: 100%;
+    text-align: center;
+  }
+  .applyButton {
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .timelineImg {
+    width: 75%;
+  }
+}
+
+/* FAQ */
+
+.faqBox {
+    background: #FFE9C7;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    padding: 3%;
+}
+
+.faqBox:hover {
+    filter: brightness(95%);
+}
+
+.faqHeader {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 90fr 10fr;
+}
+
+.faqImageContainer {
+    position: relative;
+}
+
+.faqQuestion {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+@media screen and (max-width: 870px) {
+    .faqQuestion {
+        font-weight: bold;
+        font-size: large;
+    }
+}
+
+.faqAnswer {
+    white-space: pre-wrap;
+}
+
+.faqPlus {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    width: 20px;
+    height: 20px;
+}
+
+.faqAnswerContainer {
+    width: 100%;
+}
+
+.faqTitle {
+    color: #FF9C03;
+    font-size: 40px;
+    margin-top: 0;
+}
+
+.allFaqs {
+    padding: 10px var(--margin-from-screen);
+}
+
+.orangeCurve {
+    max-height: 400px;
+    width: 100%;
+}
+
+.faqQuestion {
+  margin: 0;
+  font-family: 'Brother Bold';
+}
