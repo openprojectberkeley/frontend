@@ -4,6 +4,10 @@ import { NavLink } from 'react-router-dom';
 import topBlueCurve from '../images/topbluecurve.png';
 import bottomBlueCurve from '../images/bottombluecurve.png';
 import wordbubble from '../images/wordbubble.png';
+import computer from '../images/computer.png';
+import threeIcons from '../images/threeIcons.png';
+import toporangecurve from '../images/toporangecurve.png';
+import bottomorangecurve from '../images/bottomorangecurve.png';
 
 export default function HomePage() {
   return (
@@ -30,6 +34,31 @@ export default function HomePage() {
           </div>
         </div>
         <img src={bottomBlueCurve} className={styles.bottomBlueCurve} />
+      </div>
+      <div className={styles.aboutProjects}>
+        <div className={styles.description1}>
+        <h1>Projects</h1>
+        <h3>The field of projects we work on range from web/mobile development to data science. Projects are student led projects which are directed towards members that want to work on projects they find most intriguing - these can range from social good to general interesting projects. Additionally, we plan to expand to client projects which will be for members that want to work on real-world projects for organizations and will vary based on company needs.
+        </h3>
+        </div>
+        <img src={computer} />
+      </div>
+      <div className={styles.aboutCommunity}>
+        <img src={threeIcons} />
+        <div className={styles.description2}>
+        <h1>Community</h1>
+        <h3>Project teams will be with a small group of students (5-7) to encourage a tight knit community where team members can really get to know each other. 
+        Socials beyond general team meetings will vary by team such as after-meeting dinners or late night boba runs. In addition, there will be multiple club wide socials throughout the semester so you have the chance to meet everyone in the club!
+        </h3>
+        </div>
+      </div>
+      <img src={toporangecurve} />
+      <img src={bottomorangecurve} />
+      <div className={styles.joinUs}>
+        <h1>Join us!</h1>
+        <h3>Application deadline is Wednesday, February 1st at 11:59 pm. Learn more using the button on the right!
+        </h3>
+        <NavLink to="/apply"><button className={styles.getInvolvedButton}>Get Involved</button></NavLink>
       </div>
     </div>
   );
