@@ -26,7 +26,9 @@ export default function HomePage() {
         <img src={topBlueCurve} className={styles.topBlueCurve} />
         <div className={styles.bluebackground}>
           <div className={`${styles.blue} limitWidth`}>
-            <img src={wordbubble} />
+            <div>
+              <img src={wordbubble} />
+            </div>
             <div className={styles.bluetext}>
               <h1>What is Open Project?</h1>
               <h3>We are a group of students striving to redefine tech club culture at Berkeley. Open Project is dedicated to creating a medium for passionate students to meet and work on projects that make a positive difference in the world - without the unnecessary selective application process.</h3>
@@ -41,10 +43,14 @@ export default function HomePage() {
             <h1>Projects</h1>
             <h3>The field of projects we work on range from web/mobile development to data science. Projects are <span className={styles.blueText}>student led projects</span> which are directed towards members that want to work on projects they find most intriguing - these can range from social good to general interesting projects. Additionally, we plan to expand to <span className={styles.blueText}>client projects</span> which will be for members that want to work on real-world projects for organizations and will vary based on company needs.</h3>
           </div>
-          <img src={computer} />
+          <div>
+            <img src={computer} />
+          </div>
         </div>
         <div className={`${styles.about} ${styles.aboutCommunity}`}>
-          <img src={threeIcons} />
+          <div>
+            <img src={threeIcons} />
+          </div>
           <div>
             <h1>Community</h1>
             <h3>Project teams will be with a <span className={styles.orangeText}>small group of students (5-7)</span> to encourage a tight knit community where team members can really get to know each other. Socials beyond general team meetings will vary by team such as after-meeting dinners or late night boba runs. In addition, there will be multiple club wide socials throughout the semester so you have the chance to meet everyone in the club!</h3>
