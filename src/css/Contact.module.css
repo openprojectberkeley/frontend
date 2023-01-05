@@ -1,0 +1,94 @@
+.addMargin {
+    margin: 50px var(--margin-from-screen);
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.blueText {
+    color:#2D5DED;
+}
+
+.orangeText {
+    color:#FF9C03;
+}
+
+.cover {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    gap: 20px;
+    align-items: center;
+}
+
+.coverLeft h1 {
+    font-family: 'Brother Bold';
+    margin: -20px 0;
+    font-size: 40px;
+}
+
+.coverRight img {
+    max-width: 250px;
+}
+
+.fullform {
+    background-color: #F9C12C;
+    padding: 40px;
+    width: 70%;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form input, .form textarea {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Brother Medium';
+    font-size: 18px;
+}
+
+.form textarea {
+    height: 200px;
+}
+
+.form input::placeholder, .form textarea::placeholder {
+    font-family: 'Brother Medium Italic';
+}
+
+.submit {
+    background-color: #2D5DED;
+    border: none;
+    font-family: 'Brother Bold';
+    font-size: 18px;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+    .addMargin {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .cover {
+        width: 100%;
+    }
+
+    .coverRight {
+        display: none;
+    }
+
+    .fullform {
+        width: 100%;
+        padding: 30px;
+    }
+}
