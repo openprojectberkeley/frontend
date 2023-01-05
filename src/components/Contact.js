@@ -31,8 +31,6 @@ export default function Contact() {
               <img src={homepageShapes} alt="Homepage Shapes" />
             </div>
           </div>
-
-
           <form ref={form} onSubmit={sendEmail} className={styles.fullform}>
               <div className={styles.form}>
                 <input type="text" placeholder="Name" name="from_name" required/>
