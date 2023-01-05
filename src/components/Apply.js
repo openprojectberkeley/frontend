@@ -148,7 +148,6 @@ export default function Apply() {
           </div>
         </div>
       </div>
-
       <img 
         src={orangeCurve} 
         className={styles.orangeCurve}
