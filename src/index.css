@@ -1,7 +1,8 @@
 html, body {
   margin: 0;
-  font-family: 'Brother 1816';
+  font-family: 'Brother Medium';
   background-color: #FFFDF8;
+  letter-spacing: 0;
 }
 
 .limitWidth {
