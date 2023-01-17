@@ -9,19 +9,29 @@ import timeline from "../images/timeline.png";
 
 const faqList = [
   [
+    `What sets this club apart from other tech clubs?`,
+  
+    `This club is unique in that it serves as a true medium for passionate creators to work on projects that are most meaningful to them. Members have the ability to suggest ideas for projects and then rank and choose the projects they want to work on each semester, rather than working on predefined projects. 
+    
+Unlike other clubs that may rely on rigorous selection processes, we believe that every student with a technical background should have the opportunity to learn, grow and contribute. Our approach allows for a highly personalized and fulfilling experience for all members.`
+  ],
+
+  [
   `Who can join?`,
 
-  `If you are passionate and want to work on a team to create meaningful projects this club is for you! This club is looking to redefine the culture of tech clubs at UC Berkeley. People of all backgrounds, from beginner to advanced developers, are welcome to join. Generally, we do expect members to have taken or are currently enrolled in CS 61A (or equivalent) or have previous coding experience. `
+  `If you are passionate about creating meaningful projects and working in a team environment, then this club is perfect for you! We are dedicated to redefining the culture of tech clubs at UC Berkeley, and welcome individuals of all backgrounds, from beginners to advanced developers.
+
+While we welcome individuals of all backgrounds, to be able to fully participate and contribute, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. This technical background will allow members to engage fully in the projects of the club.`
   ],
 
   [
   `What kind of projects does Open Project work on?`,
 
-  `We work on projects in many different technical fields from web/mobile development to data science that are either student led or client projects.
+  `Our club offers a diverse range of projects in various technical fields, from web/mobile development to data science. We have a mix of student-led and client projects that allows members to have a highly personalized and fulfilling experience. 
+
+Student-led projects are an integral part of our club, giving members the autonomy to propose ideas and work on projects that align with their personal values and interests, whether it's for social good or simply for the sake of exploring new and exciting ideas.
   
-Student-led projects are ideas from club members that can range from social good to just interesting projects. In Fall 2023, we plan on introducing client projects which will be for people that want to work on real-world projects for organizations and will vary based on company needs.
-  
-Each project team will have 5-7 members including 1 or 2 project leads. There will be multiple officer check ins and project deadlines throughout the semester.`
+Client projects, set to debut in Fall 2023, will provide members with the opportunity to work on real-world projects for organizations and gain valuable experience in solving real-world problems. Each project team will have 5-7 members including 1 or 2 project leads, with multiple officer check-ins and project deadlines throughout the semester to ensure the successful completion of each project.`
   ],
 
   [
@@ -34,31 +44,31 @@ Each project team will have 5-7 members including 1 or 2 project leads. There wi
   [
   `How are teams decided?`,
 
-  `We take into account previous experiences, project interests, and written prompts when creating teams. A matching algorithm is used to group members and attempts to make sure everyone is on the teams they want to work in.`
+  `Creating teams is a vital aspect of our club and we take great care in ensuring that members are placed in teams that align with their interests and capabilities. We consider a variety of factors including previous experiences, project interests and written prompts when forming teams. A matching algorithm is used to group members, which takes into account the preferences of each member and attempts to place them in teams where they will thrive and be able to make a meaningful contribution.`
   ],
 
   [
   `What is the time commitment?`,
 
-  `You should expect to spend 4-8 hours a week in this club working on a project, collaborating with your team members, and attending team/club socials, but commitment will vary for each project team.`
+  `As a member of this club, you can expect to invest 4-8 hours per week in working on your project, collaborating with your team members, and attending team and club socials. However, it's important to note that the level of commitment may vary depending on the project team and the stage of the project. We understand that members have different schedules and priorities, so we aim to be flexible and accommodate members' needs while still ensuring that projects are completed successfully.`
   ],
 
   [
   `Can I be a project lead?`,
 
-  `On the project interest form, people interested in leading a project will have a separate section to fill out. People with previous leadership and technical experience are encouraged to apply. However, if you have limited leadership/technical experience, we still encourage you to apply! We are mainly looking for people that are passionate about the project they want to lead. `
+  `On the project interest form, we have a dedicated section for individuals interested in leading a project. We welcome applicants with previous leadership and technical experience, as this experience can be beneficial for leading a successful project. However, we also want to emphasize that a lack of leadership and technical experience should not discourage you from applying. We are primarily seeking individuals who are passionate about the project they want to lead and are willing to learn and grow as a leader.`
   ],
 
   [
   `I have no previous coding experience. What should I do?`,
 
-  `We expect members to have taken or are currently enrolled in CS 61A (or equivalent) or have previous coding experience. If you haven't, we recommend either enrolling in CS 61A/CS 88 or following tutorials and building a personal project to get comfortable with coding. `
+  `To be able to fully engage and contribute to the projects of the club, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. If you don't have these qualifications, we recommend either enrolling in CS 61A/CS 88 or following tutorials and building a personal project to gain familiarity and proficiency with coding. This will help ensure that members can fully participate and benefit from the club.`
   ],
 
   [
   `Are there any club dues?`,
 
-  `There is a $15 fee due at the beginning of every semester to help keep the club running. It helps us fund club socials, necessary supplies, and more!`
+  `To help support the club's activities and ensure its sustainability, there is a $15 fee due at the start of each semester. This fee is used to cover expenses such as club socials, necessary supplies, and other costs associated with running the club. This small investment is essential to the club's success and allows us to provide a wide range of opportunities for members to learn, grow, and create meaningful projects.`
   ]
 ];
 

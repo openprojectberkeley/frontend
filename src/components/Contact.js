@@ -25,7 +25,7 @@ export default function Contact() {
             <div className={styles.coverLeft}>
               <h1 className={styles.blueText}>Experience</h1>
               <h1 className={styles.orangeText}>For All.</h1>
-              <h2>If you have any questions or concern, fill out the form below or just want to say hi that's cool too! We'll get back to you as soon as we can!</h2>
+              <h2>If you have any questions, concerns or simply want to say hello, please don't hesitate to reach out to us through the form provided!</h2>
             </div>
             <div className={styles.coverRight}>
               <img src={homepageShapes} alt="Homepage Shapes" />
