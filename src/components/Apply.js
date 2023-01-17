@@ -145,7 +145,7 @@ export default function Apply() {
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
               <p>Application deadline for Spring 2023 is <b>Wednesday, February 1st at 11:59 pm</b>. Click the button to get started!</p>
-              <a href="#" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+              <a href="https://forms.gle/SZQhNzfmCLEPz9tx9" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function Apply() {
           <div className={`${styles.timelineWidth} "limitWidth"`} id="timeline">
             <h1>Recruitment Timeline</h1>
             <img src={timeline} className={styles.timelineImg} />
-            <a href="#" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+            <a href="https://forms.gle/SZQhNzfmCLEPz9tx9" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
           </div>
         </div>
       </div>
