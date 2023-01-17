@@ -31,7 +31,7 @@ While we welcome individuals of all backgrounds, to be able to fully participate
 
 Student-led projects are an integral part of our club, giving members the autonomy to propose ideas and work on projects that align with their personal values and interests, whether it's for social good or simply for the sake of exploring new and exciting ideas.
   
-Client projects, set to debut in Fall 2023, will provide members with the opportunity to work on real-world projects for organizations and gain valuable experience in solving real-world problems. Each project team will have 5-7 members including 1 or 2 project leads, with multiple officer check-ins and project deadlines throughout the semester to ensure the successful completion of each project.`
+Client projects, set to debut in Fall 2023, will provide members with the opportunity to work on impactful projects for organizations and gain valuable experience. Each project team will have 5-7 members including 1 or 2 project leads, with multiple officer check-ins and project deadlines throughout the semester to ensure the successful completion of each project.`
   ],
 
   [
@@ -56,7 +56,9 @@ Client projects, set to debut in Fall 2023, will provide members with the opport
   [
   `Can I be a project lead?`,
 
-  `On the project interest form, we have a dedicated section for individuals interested in leading a project. We welcome applicants with previous leadership and technical experience, as this experience can be beneficial for leading a successful project. However, we also want to emphasize that a lack of leadership and technical experience should not discourage you from applying. We are primarily seeking individuals who are passionate about the project they want to lead and are willing to learn and grow as a leader.`
+  `On the project interest form, we have a dedicated section for individuals interested in leading a project. We welcome applicants with previous leadership and technical experience, as this experience can be beneficial for leading a successful project. However, even if you don't have that experience, don't let that discourage you from applying. Our main focus is to find individuals who are passionate about the project they want to lead and willing to learn and grow as a leader. 
+
+Being a project lead doesn't require a significant amount of work, mainly ensuring that everything is running smoothly and communicating with the officer team on a regular basis. Our club's success relies heavily on the engagement of its members, and we encourage everyone to step up and take on leadership roles.`
   ],
 
   [
