@@ -17,21 +17,21 @@ Unlike other clubs that may rely on rigorous selection processes, we believe tha
   ],
 
   [
-  `Who can join?`,
+  `How are projects going to work?`,
 
-  `If you are passionate about creating meaningful projects and working in a team environment, then this club is perfect for you! We are dedicated to redefining the culture of tech clubs at UC Berkeley, and welcome individuals of all backgrounds, from beginners to advanced developers.
+  `When completing the application form, applicants are encouraged to contribute project ideas. These projects can range from anything in the CS field such as data science or web development. The only requirement to keep in mind when contributing ideas is to make sure that they are possible to complete in the span of one semester. 
 
-While we welcome individuals of all backgrounds, to be able to fully participate and contribute, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. This technical background will allow members to engage fully in the projects of the club.`
+After the application deadline, a second form (Project Interest Form) will be sent out that will have these project ideas listed. Applicants can choose any project that they are interested in working on or being the project lead for. Based on the results of this form, groups will be assigned for projects that received enough votes to form teams.
+  
+Throughout the semester, our officers will be available to meet with you and answer any questions you may have about the projects. In addition, roughly three check-in meetings with project leads and officers will be scheduled for project leads to share updates on the state of their projects, receive valuable feedback and guidance, and make any necessary adjustments to ensure the successful completion of the project.`  
   ],
 
   [
-  `What kind of projects does Open Project work on?`,
-
-  `Our club offers a diverse range of projects in various technical fields, from web/mobile development to data science. We have a mix of student-led and client projects that allows members to have a highly personalized and fulfilling experience. 
-
-Student-led projects are an integral part of our club, giving members the autonomy to propose ideas and work on projects that align with their personal values and interests, whether it's for social good or simply for the sake of exploring new and exciting ideas.
+  `Who can join?`,
   
-Client projects, set to debut in Fall 2023, will provide members with the opportunity to work on impactful projects for organizations and gain valuable experience. Each project team will have 5-7 members including 1 or 2 project leads, with multiple officer check-ins and project deadlines throughout the semester to ensure the successful completion of each project.`
+  `If you are passionate about creating meaningful projects and working in a team environment, then this club is perfect for you! We are dedicated to redefining the culture of tech clubs at UC Berkeley, and welcome individuals of all backgrounds, from beginners to advanced developers.
+  
+While we welcome individuals of all backgrounds, to be able to fully participate and contribute, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. This technical background will allow members to engage fully in the projects of the club.`
   ],
 
   [
@@ -58,7 +58,7 @@ Client projects, set to debut in Fall 2023, will provide members with the opport
 
   `On the project interest form, we have a dedicated section for individuals interested in leading a project. We welcome applicants with previous leadership and technical experience, as this experience can be beneficial for leading a successful project. However, even if you don't have that experience, don't let that discourage you from applying. Our main focus is to find individuals who are passionate about the project they want to lead and willing to learn and grow as a leader. 
 
-Being a project lead doesn't require a significant amount of work, mainly ensuring that everything is running smoothly and communicating with the officer team on a regular basis. Our club's success relies heavily on the engagement of its members, and we encourage everyone to step up and take on leadership roles.`
+Being a project lead entails guiding the project to completion on a timely basis, delegating tasks among team members, and communicating with the officer team on a regular basis. Our club's success relies heavily on the engagement of its members, and we encourage everyone to step up and take on leadership roles.`
   ],
 
   [
