@@ -39,3 +39,16 @@ html, body {
   font-family: 'Brother Bold';
   src: url('./fonts/brother\ bold.otf');
 }
+
+pre {
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: auto;
+  padding: 16px;
+}
+
+code {
+  font-family: Consolas, monospace;
+}

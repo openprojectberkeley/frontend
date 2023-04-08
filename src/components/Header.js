@@ -31,6 +31,7 @@ export default function Header() {
         <NavLink to="/about" className={activeLink}>about</NavLink>
         <NavLink to="/apply" className={activeLink}>apply</NavLink>
         <NavLink to="/contact" className={activeLink}>contact</NavLink>
+        <NavLink to="/resources" className={activeLink}>resources</NavLink>
       </div>
       <div className={styles.hamburger}>
         <div className={styles.hamburger} onClick={hamburgerMode}>
