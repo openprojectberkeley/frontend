@@ -20,9 +20,18 @@ const htmlcssjavascript = (
         <p>Learn Responsive Web Design:</p>
         <p>1. <a href="https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-natural-responsiveness" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-natural-responsiveness</a></p>
         <p>2. <a href="https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-media-queries" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-media-queries</a></p>
+        <h2>JavaScript:</h2>
+        <p>We assume that you already possess a fundamental understanding of coding, we will not be covering the syntax of JavaScript. You can learn this as you engage in your projects, and if you feel the need for some guidance, we encourage you to search for relevant tutorials. However, a crucial aspect of JavaScript development is grasping the concept of asynchronous code. To aid in this, we suggest following the tutorials below to gain a better understanding.</p>
+        <p>1. <a href="https://www.theodinproject.com/lessons/node-path-javascript-asynchronous-code" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-javascript-asynchronous-code</a></p>
+        <p>2. <a href="https://www.theodinproject.com/lessons/node-path-javascript-working-with-apis" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-javascript-working-with-apis</a></p>
+        <p>3. <a href="https://www.theodinproject.com/lessons/node-path-javascript-async-and-await" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-javascript-async-and-await</a></p>
+        <h2>Debugging:</h2>
+        <p>Debugging is essential in web development. Follow this tutorial to learn how to use the Chrome Developer Tools</p>
+        <p><a href="https://www.theodinproject.com/lessons/foundations-javascript-developer-tools" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/foundations-javascript-developer-tools</a></p>
         <h2>Great Resources to Use While Coding</h2>
-        <p>1. <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" rel="noreferrer">https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a></p>
-        <p>2. <a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank" rel="noreferrer">https://css-tricks.com/snippets/css/complete-guide-grid/</a></p>
+        <p>1. <a href="https://google.com/" target="_blank" rel="noreferrer">https://google.com/</a></p>
+        <p>2. <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" rel="noreferrer">https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a></p>
+        <p>3. <a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank" rel="noreferrer">https://css-tricks.com/snippets/css/complete-guide-grid/</a></p>
     </div>
 )
 
