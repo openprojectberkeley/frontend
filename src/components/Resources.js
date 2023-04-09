@@ -1,6 +1,7 @@
 import starthere from './resources-content/starthere';
 import git from './resources-content/git';
 import github from './resources-content/github';
+import githubLeads from './resources-content/githubLeads';
 import htmlcssjavascript from './resources-content/htmlcssjavascript';
 import frontend from './resources-content/frontend';
 import backend from './resources-content/backend';
@@ -18,6 +19,7 @@ export default function Resources() {
         "Start Here": starthere,
         "Git": git,
         "GitHub": github,
+        "GitHub (Leads)": githubLeads,
         "HTML, CSS, JavaScript": htmlcssjavascript,
         "Frontend (React)": frontend,
         "Backend (Node)": backend,
@@ -31,7 +33,7 @@ export default function Resources() {
         <div className={styles.container}>
         <div className={styles.sidebar}>
             <ResourcesButton button="Start Here" content={[]} state={setResource} />
-            <ResourcesButton button="Git/GitHub" content={["Git", "GitHub"]} state={setResource} />
+            <ResourcesButton button="Git/GitHub" content={["Git", "GitHub", "GitHub (Leads)"]} state={setResource} />
             <ResourcesButton button="Web Dev" content={["HTML, CSS, JavaScript", "Frontend (React)", "Backend (Node)", "Full Stack (Django)"]} state={setResource} />
             <ResourcesButton button="Data Science" content={["Data Science", "AWS Computing"]} state={setResource} />
             <ResourcesButton button="Design" content={[]} state={setResource} />
