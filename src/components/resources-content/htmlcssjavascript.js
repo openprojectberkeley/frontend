@@ -11,15 +11,15 @@ const htmlcssjavascript = (
         <a href="https://www.youtube.com/watch?v=gXLjWRteuWI" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=gXLjWRteuWI</a>
         <h2>CSS FlexBox vs. Grid</h2>
         <p>Flexbox and grid are both powerful layout mechanisms in CSS, but they have different strengths. Flexbox is ideal for laying out items in a single row or column, while grid is best suited for laying out items in a two-dimensional grid. They will be used fairly often when building your website.</p>
-        <p>Learn FlexBox: <a href="https://www.theodinproject.com/lessons/foundations-introduction-to-flexbox">https://www.theodinproject.com/lessons/foundations-introduction-to-flexbox</a></p>
+        <p>Learn FlexBox: <a href="https://www.theodinproject.com/lessons/foundations-introduction-to-flexbox" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/foundations-introduction-to-flexbox</a></p>
         <p>Learn Grid:</p>
-        <p>1. <a href="https://www.theodinproject.com/lessons/node-path-intermediate-html-and-css-introduction-to-grid">https://www.theodinproject.com/lessons/node-path-intermediate-html-and-css-introduction-to-grid</a></p>
-        <p>2. <a href="https://www.theodinproject.com/lessons/node-path-intermediate-html-and-css-creating-a-grid">https://www.theodinproject.com/lessons/node-path-intermediate-html-and-css-creating-a-grid</a></p>
+        <p>1. <a href="https://www.theodinproject.com/lessons/node-path-intermediate-html-and-css-introduction-to-grid" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-intermediate-html-and-css-introduction-to-grid</a></p>
+        <p>2. <a href="https://www.theodinproject.com/lessons/node-path-intermediate-html-and-css-creating-a-grid" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-intermediate-html-and-css-creating-a-grid</a></p>
         <h2>Responsive Web Design</h2>
         <p>Responsive web design in CSS is an approach that allows websites to adapt to different screen sizes and devices. It's important because it ensures that websites look great and function properly on any device, which is crucial for providing a positive user experience and improving engagement and conversion rates.</p>
         <p>Learn Responsive Web Design:</p>
-        <p>1. <a href="https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-natural-responsiveness">https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-natural-responsiveness</a></p>
-        <p>2. <a href="https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-media-queries">https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-media-queries</a></p>
+        <p>1. <a href="https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-natural-responsiveness" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-natural-responsiveness</a></p>
+        <p>2. <a href="https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-media-queries" target="_blank" rel="noreferrer">https://www.theodinproject.com/lessons/node-path-advanced-html-and-css-media-queries</a></p>
         <h2>Great Resources to Use While Coding</h2>
         <p>1. <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" rel="noreferrer">https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a></p>
         <p>2. <a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank" rel="noreferrer">https://css-tricks.com/snippets/css/complete-guide-grid/</a></p>
