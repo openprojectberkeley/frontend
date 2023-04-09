@@ -1,18 +1,18 @@
 import styles from '../css/About.module.css';
 import orangeCurve from "../images/orangecurve.png";
-import colin from '../images/aboutPictures/colin.jpg';
-import nhu from '../images/aboutPictures/nhu.jpg';
-import uyen from '../images/aboutPictures/uyen.jpg';
-import ethan from '../images/aboutPictures/ethan.jpg';
-import nick from '../images/aboutPictures/nick.jpg';
-import joel from '../images/aboutPictures/joel.jpg';
+import colin from '../images/about/colin.jpg';
+import nhu from '../images/about/nhu.jpg';
+import uyen from '../images/about/uyen.jpg';
+import ethan from '../images/about/ethan.jpg';
+import nick from '../images/about/nick.jpg';
+import joel from '../images/about/joel.jpg';
 import pwicon from '../images/pwicon.png';
 import linkedinicon from '../images/linkedinicon.png';
-import aboutTeam from '../images/aboutPictures/aboutTeam.png'
-import inclusiveCommunity from '../images/aboutPictures/inclusiveCommunity.png'
-import chooseYourOwnPath from '../images/aboutPictures/chooseYourOwnPath.png'
-import buildAndLearnTogether from '../images/aboutPictures/buildAndLearnTogether.png'
-import challengeYourLimits from '../images/aboutPictures/challengeYourLimits.png'
+import aboutTeam from '../images/about/aboutTeam.png'
+import inclusiveCommunity from '../images/about/inclusiveCommunity.png'
+import chooseYourOwnPath from '../images/about/chooseYourOwnPath.png'
+import buildAndLearnTogether from '../images/about/buildAndLearnTogether.png'
+import challengeYourLimits from '../images/about/challengeYourLimits.png'
 
 export default function About() {
     return (

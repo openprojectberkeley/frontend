@@ -1,7 +1,3 @@
-import styles from '../css/Resources.module.css';
-import ResourcesButton from './ResourcesButton';
-import { useState } from 'react';
-
 import starthere from './resources-content/starthere';
 import git from './resources-content/git';
 import github from './resources-content/github';
@@ -12,6 +8,9 @@ import fullstack from './resources-content/fullstack';
 import datascience from './resources-content/datascience';
 import awscomputing from './resources-content/awscomputing';
 import design from './resources-content/design';
+import styles from '../css/Resources.module.css';
+import ResourcesButton from './ResourcesButton';
+import { useState } from 'react';
 
 export default function Resources() {
     const [resource, setResource] = useState("Start Here");
