@@ -1,4 +1,21 @@
 import styles from '../../css/Resources.module.css'
+import react1 from '../../images/react/react1.png'
+import react2 from '../../images/react/react2.png'
+import react3 from '../../images/react/react3.png'
+import react4 from '../../images/react/react4.png'
+import react5 from '../../images/react/react5.png'
+import react6 from '../../images/react/react6.png'
+import react7 from '../../images/react/react7.png'
+import react8 from '../../images/react/react8.png'
+import react9 from '../../images/react/react9.png'
+import react10 from '../../images/react/react10.png'
+import react11 from '../../images/react/react11.png'
+import react12 from '../../images/react/react12.png'
+import react13 from '../../images/react/react13.png'
+import react14 from '../../images/react/react14.png'
+import react15 from '../../images/react/react15.png'
+import react16 from '../../images/react/react16.png'
+
 
 const frontend = (
     <div>
@@ -46,6 +63,7 @@ const frontend = (
         <p>If you see an error, or if you don’t see a version (e.g. ‘v18.12.1’) as an output, that means you have not installed Node.js. If the latter, 
             you can directly install Node from the <a href="https://nodejs.org/en/download">Node.js website.</a>
         </p>
+        <img src={react1} alt=""/>
         <p>
         Luckily, npm package manager is automatically installed with Node.js. To double check whether or not you have npm, you can type the following command into your terminal:
         </p>
@@ -59,10 +77,13 @@ const frontend = (
         <pre><code>npx create-react.app .</code></pre>
         <p>The “.” indicates that you want a React application to be initialized in the current directory that you are in. 
         </p>
+        <img src={react2}/>
         <p>The terminal should then initialize React and start installing the necessary packages. It probably would look something like the picture above. Once everything is installed and ready, you should see the following screen: 
         </p>
+        <img src={react3}/>
         <p>Now, let’s open up tutorial-app, the directory we created earlier, in VS code. You should see that it’s been populated with various files and folders with some code in them already, like below:
         </p>
+        <img src={react4}/>
         <p>What you are looking at is the file <span className={styles.bold}>App.js</span>, the most fundamental snippet of code in your web application. In this file, you would essentially define your website’s structure, components and behavior.
         </p>
         <p>Let’s see what our website looks like right now! In order to do that, you would run the following command in your terminal:
@@ -71,6 +92,8 @@ const frontend = (
         <p>
         You should see the following output in your terminal, and your website should be opened up in your web browser for you. Before you make any changes to your code, it should look like this:
         </p>
+        <img src={react5}/>
+        <img src={react6}/>
         <p>
         The cool thing is you don’t have to reload the webpage whenever you make any changes to your code! Once you have run <code>npm start</code>, the website automatically updates your changes every time you save your code, without you having to reload the web page. This allows for a much smoother and quicker development process.
         </p>
@@ -86,9 +109,11 @@ const frontend = (
         <p>
         To make a new component, just make a new .js file and write all of the code for that component in that file. Here is an example:
         </p>
+        <img src={react7}/>
         <p>
         You could also import components into other snippets of code, like below! This allows you to use your developed components within other components.
         </p>
+        <img src={react8}/>
         <h2>
             JSX
         </h2>
@@ -122,9 +147,11 @@ const frontend = (
         <p>
         Then, you would want to import the image component on the top of your code like below. “bear” is an arbitrary name used to refer to the “bear.jpeg” file; you can change it as you desire.
         </p>
+        <img src={react9}/>
         <p>
         The snippet of code should then render to look like the following in your web browser:
         </p>
+        <img src={react10}/>
         <h2>CSS</h2>
         <p>
         CSS is what makes one’s website beautiful and well-formatted. CSS (Cascading Style Sheet) allows for developers to control aesthetic aspects of your websites such as fonts, colors, spacing, layout, and even animation. Syntactically, it’s quite simple! Let’s go through an example:
@@ -132,18 +159,24 @@ const frontend = (
         <p>
         First and foremost, you want to link your CSS stylesheet. You typically would want a different CSS file for each corresponding component. For instance, <span className={styles.bold}>Homepage.js</span> would have a corresponding <span className={styles.bold}>Homepage.module.css</span> file. You can link your stylesheet to the corresponding .js file by importing it at the top, like so:
         </p>
+        <img src={react11}/>
         <p>
         Let’s say you want to change the h1 element, which says “Hello!”, to be in red font. To do so, you want to associate a className within the <code>&lt;h1&gt;</code> element, such as so:
         </p>
+        <img src={react12}/>
+        <img src={react13}/>
         <p>
         In your CSS file, you would want to make the following changes. Note that for colors, you can either put in keywords such as “red” and “white” or input a color’s hex code.
         </p>
+        <img src={react14}/>
         <p>
         Let’s say you also want to format the text so that it is in the center of the webpage. A common way to do so is by using Flexbox, which we will go over in details later. To activate Flexbox, simply put <code>display: flex</code> like below and use the following Flex properties! Don’t forget the semicolon after each line!
         </p>
+        <img src={react15}/>
         <p>
         Now the web page looks like this:
         </p>
+        <img src={react16}/>
         <p>
         Alternatively, here is a simple <a href="https://www.youtube.com/watch?v=ZawAwPYrxGA">tutorial</a> on how to style with CSS.
         </p>
