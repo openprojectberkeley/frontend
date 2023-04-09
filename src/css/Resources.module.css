@@ -45,3 +45,8 @@
         padding: 10px;
     }
 }
+
+.bold {
+    font-style: italic;
+    color: blue;
+}
