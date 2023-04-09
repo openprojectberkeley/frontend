@@ -7,7 +7,7 @@ import frontend from './resources-content/frontend';
 import backend from './resources-content/backend';
 import fullstack from './resources-content/fullstack';
 import datascience from './resources-content/datascience';
-import awscomputing from './resources-content/awscomputing';
+import computing from './resources-content/computing';
 import design from './resources-content/design';
 import styles from '../css/Resources.module.css';
 import ResourcesButton from './ResourcesButton';
@@ -25,7 +25,7 @@ export default function Resources() {
         "Backend (Node)": backend,
         "Full Stack (Django)": fullstack,
         "Data Science": datascience,
-        "AWS Computing": awscomputing,
+        "Computing": computing,
         "Design": design
     }
  
@@ -35,7 +35,7 @@ export default function Resources() {
             <ResourcesButton button="Start Here" content={[]} state={setResource} />
             <ResourcesButton button="Git/GitHub" content={["Git", "GitHub", "GitHub (Leads)"]} state={setResource} />
             <ResourcesButton button="Web Dev" content={["HTML, CSS, JavaScript", "Frontend (React)", "Backend (Node)", "Full Stack (Django)"]} state={setResource} />
-            <ResourcesButton button="Data Science" content={["Data Science", "AWS Computing"]} state={setResource} />
+            <ResourcesButton button="Data Science" content={["Data Science", "Computing"]} state={setResource} />
             <ResourcesButton button="Design" content={[]} state={setResource} />
         </div>
         <div className={styles.mainContent}>

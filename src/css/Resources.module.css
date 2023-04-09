@@ -6,7 +6,6 @@
 .sidebar {
     width: 25%;
     padding: 20px;
-    position: sticky;
     top: 0;
     text-align: center;
     padding-top: 150px;
@@ -14,8 +13,12 @@
 
 .mainContent {
     width: 75%;
-    padding: 20px;
+    margin: 20px;
     max-width: 1000px;
+    max-height: 1100px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .mainContent img {
@@ -30,9 +33,15 @@
 
     .sidebar {
         width: 100%;
+        padding: 40px 0 0 0;
     }
 
     .mainContent {
+        box-sizing: border-box;
         width: 100%;
+        max-height: fit-content;
+        overflow: visible;
+        margin: 0;
+        padding: 10px;
     }
 }

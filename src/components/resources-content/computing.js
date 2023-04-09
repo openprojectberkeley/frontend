@@ -1,6 +1,6 @@
-const awscomputing = (
+const computing = (
     <div>
-        <h1>AWS Computing</h1>
+        <h1>Computing</h1>
         <p>Recommended: Use Google Colab</p>
         <ul>
             <li>GPU Access</li>
@@ -9,7 +9,7 @@ const awscomputing = (
             <li><a href="https://colab.research.google.com/" target="_blank" rel="noreferrer">https://colab.research.google.com/</a></li>
         </ul>
         <p>Or use <a href="https://deepnote.com/" target="_blank" rel="noreferrer">DeepNote</a> for live collaborative coding - it's free for students!</p>
-        <p>But if you want more performance and are bottlenecked by Colab's daily GPU usage limit:</p>
+        <p>But if you want more performance and are bottlenecked by Colab's daily GPU usage limit, use AWS Computing (costs reimbursable by Open Project):</p>
         <p>To run your PyTorch code on AWS, you can follow these general steps:</p>
         <ol>
             <li>Create an AWS account:</li>
@@ -51,4 +51,4 @@ const awscomputing = (
     </div>
 )
 
-export default awscomputing;
+export default computing;
