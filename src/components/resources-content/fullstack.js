@@ -13,7 +13,7 @@ const fullstack = (
             <li>Do you despise Javascript with a passion and would rather write in Python?</li>
             <li>Do you not want to use NodeJS?</li>
         </ul>
-        <p>This tutorial will cover how to set up and enter a Django environment ON WINDOWS and create and interact with a Django database.</p>
+        <p>This tutorial will cover how to set up and enter a Django environment and create and interact with a Django database.</p>
         <p>If you would like to learn more about Django such as how to send Html to users, url redirects, and more, I recommend the following tutorial starting at ~25 min:</p>
         <a href="https://www.youtube.com/watch?v=rHux0gMZ3Eg" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=rHux0gMZ3Eg</a>
         <p>If you have completed your project and are ready for deployment, I recommend the following video:</p>
@@ -37,7 +37,7 @@ const fullstack = (
         <p>Windows: <pre><code>py -m pipenv shell</code></pre></p>
         <p>Mac: <pre><code>python pipenv shell</code></pre></p>
         <p>Create a project with the following command (This will create a folder that contains settings and dependencies. Don't forget the . at the end of the command so it doesn't create too many folders):</p>
-        <pre><code>django-admin startproject &lt;name of project&gt;</code></pre>
+        <pre><code>django-admin startproject &lt;name of project&gt; .</code></pre>
         <p>Create an app with the following command (This will be what actually deals with sending html to users, running logic, and handling databases)</p>
         <pre><code>py manage.py startapp &lt;name of app&gt;</code></pre>
         <p>Run server (click on link, should redirect to following page)</p>
