@@ -53,7 +53,7 @@ const backend = (
         <p>I added a simple print statement in my start file and ran the server. As you can see in the terminal, the print statement was executed.</p>
         <img src={backend6} alt=""/>
         <p>To stop the server, use the following shortcut in the terminal:</p>
-        <pre><code>Ctrl + C</code></pre>
+        <pre><code>Ctrl+C</code></pre>
         <h2>Setup Express</h2>
         <p>To set up a simple Express server, add the following code to your start file.</p>
         <img src={backend7} alt=""/>
@@ -77,9 +77,7 @@ const backend = (
         <pre><code>npm install concurrently</code></pre>
         <img src={backend14} alt=""/>
         <p>In your project's package.json file (NOT inside your React project folder), edit the start script to the following:</p>
-        <pre><code>“server”: “node &lt;start file for Express server&gt;”</code></pre>
-        <pre><code>“client”: “npm start —prefix &lt;name of React project&gt;”</code></pre>
-        <pre><code>“start”: "concurrently \"npm run server\" \"npm run client\" "</code></pre>
+        <pre><code>"server": "node &lt;start file for Express server&gt;"<br></br>"client": "npm start —prefix &lt;name of React project&gt;"<br></br>"start": "concurrently \"npm run server\" \"npm run client\" "</code></pre>
         <p>NOTE: there are 2 dashes before the word prefix</p>
         <img src={backend15} alt=""/>
         <p>Running the npm start command should output the following:</p>
