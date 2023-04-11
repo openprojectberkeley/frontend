@@ -21,21 +21,22 @@ const fullstack = (
         <h2>Prerequisites</h2>
         <p>Terminal proficiency</p>
         <h2>Setup</h2>
-        <p>Install Python:</p>
-        <p>Windows: <pre><code>py --version</code></pre> (should return version number)</p>
-        <p>Install Django:</p>
+        <h3>For Mac users, every command that uses "py" or "py -m" should be replaced by "python3"</h3>
+        <p>Install Python: <a href="https://www.python.org/downloads/" target="_blank" rel="noreferrer">https://www.python.org/downloads/</a></p>
+        <p>If you installed it correctly, you should get a version number if you do the following command in the terminal</p>
+        <p>Windows (Powershell): <pre><code>py --version</code></pre></p>
+        <p>Mac: <pre><code>python3 --version</code></pre></p>
+        <p>To install Django, use the following command and check if it was installed correctly</p>
         <p>Windows:</p>
-        <pre><code>py -m pip install django</code></pre>
-        <p><pre><code>py -m django --version</code></pre> (should return version number)</p>
+        <pre><code>py -m pip install django<br></br>py -m django --version</code></pre>
+        <p>Mac:</p>
+        <pre><code>pip install django<br></br>python3 django --version</code></pre>
         <p>Create folder for Django Environment</p>
         <p>Change directory inside that folder</p>
         <p>Create Virtual Environment inside the folder</p>
-        <p>Windows:</p>
-        <pre><code>py -m pipenv install django</code></pre>
-        <h2>START HERE IF YOU ALREADY INSTALLED DJANGO ENVIRONMENT</h2>
+        <h2>Creating Projects and Entering the Django Environment</h2>
         <p>Enter the virtual environment with the following command (to run special Django commands). You will run this every time you close the project and want to start working on it again.</p>
-        <p>Windows: <pre><code>py -m pipenv shell</code></pre></p>
-        <p>Mac: <pre><code>python pipenv shell</code></pre></p>
+        <pre><code>py -m pipenv shell</code></pre>
         <p>Create a project with the following command (This will create a folder that contains settings and dependencies. Don't forget the . at the end of the command so it doesn't create too many folders):</p>
         <pre><code>django-admin startproject &lt;name of project&gt; .</code></pre>
         <p>Create an app with the following command (This will be what actually deals with sending html to users, running logic, and handling databases)</p>
@@ -48,9 +49,7 @@ const fullstack = (
         <img src={django2} alt="" />
         <p>Be sure to include the manager variable (name doesn't matter) in order to gain access to all rows in your database and a __str__ method to see the values inside the rows instead of “Object [Object]”</p>
         <p>To create the database, run the following commands</p>
-        <p>Windows:</p>
-        <pre><code>py manage.py makemigrations</code></pre>
-        <pre><code>py manage.py migrate</code></pre>
+        <pre><code>py manage.py makemigrations<br></br>py manage.py migrate</code></pre>
         <p>You will notice a file called db.sqlite3 (next to manage.py, Pipfile, and Pipfile.lock). This file contains your new table (Users in my case) and other ones created by Django.</p>
         <p>To view your table with a nice visual you can use the following site and upload the db.sqlite3 file: https://sqliteviewer.app/ . Under tables on the left, you should see your new table called &lt;name of app&gt;_&lt;name of table&gt; (myapp_users  in my case)</p>
         <img src={django3} alt="" />

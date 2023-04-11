@@ -31,16 +31,16 @@ export default function Resources() {
  
     return (
         <div className={styles.container}>
-        <div className={styles.sidebar}>
-            <ResourcesButton button="Start Here" content={[]} state={setResource} />
-            <ResourcesButton button="Git/GitHub" content={["Git", "GitHub", "GitHub (Leads)"]} state={setResource} />
-            <ResourcesButton button="Web Dev" content={["HTML, CSS, JavaScript", "Frontend (React)", "Backend (Node)", "Full Stack (Django)"]} state={setResource} />
-            <ResourcesButton button="Data Science" content={["Data Science", "Computing"]} state={setResource} />
-            <ResourcesButton button="Design" content={[]} state={setResource} />
-        </div>
-        <div className={styles.mainContent}>
-            {resources[resource]}
-        </div>
+            <div className={styles.sidebar}>
+                <ResourcesButton button="Start Here" content={[]} state={setResource} />
+                <ResourcesButton button="Git/GitHub" content={["Git", "GitHub", "GitHub (Leads)"]} state={setResource} />
+                <ResourcesButton button="Web Dev" content={["HTML, CSS, JavaScript", "Frontend (React)", "Backend (Node)", "Full Stack (Django)"]} state={setResource} />
+                <ResourcesButton button="Data Science" content={["Data Science", "Computing"]} state={setResource} />
+                <ResourcesButton button="Design" content={[]} state={setResource} />
+            </div>
+            <div className={styles.mainContent}>
+                {resources[resource]}
+            </div>
         </div>
     );
 }
