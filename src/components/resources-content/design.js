@@ -30,8 +30,9 @@ const design = (
         <p>Making memorable designs is intentional with the fonts and colors you choose.</p>
         <p>Here is an interesting Fun Fact:</p>
         <ul>
-            <li>The color red: Ever notice how almost all fast food places have the color red? (think mcd, panda express, in-n-out, literally everything) this is being when your brain sees red, it produces a sense of hunger!</li>
-            <li>The color blue: All the big tech companies, their main color is blue! Blue is seen as dependable and reliable (think meta, Twitter, LinkedIn, Zoom) All your favorite products are very intentional with the colors they choose.</li>
+            <li>Ever notice how almost all fast food places (Macdonalds, panda express, in-n-out) have the color red? When your brain sees red, it produces a sense of hunger!</li>
+            <li>What about all the big tech companies (Meta, Twitter, LinkedIn, Zoom) using blue as their main color? Blue is seen as dependable and reliable.</li>
+            <li>All your favorite products are very intentional with the colors they choose.</li>
         </ul>
         <p>IMPORTANT: The most important when it comes to design is if YOU think it looks good! Be confident in your choices!</p>
         <h3>Where do I find fonts? (for free)</h3>
