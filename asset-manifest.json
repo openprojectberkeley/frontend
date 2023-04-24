@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.e4efa97d.css",
-    "main.js": "/static/js/main.3a83bf6c.js",
+    "main.js": "/static/js/main.1e3804ca.js",
     "static/js/787.cf1e5eec.chunk.js": "/static/js/787.cf1e5eec.chunk.js",
     "static/media/aboutTeam.png": "/static/media/aboutTeam.b68e249a81db1fec0a12.png",
     "static/media/uyen.jpg": "/static/media/uyen.4877e54e953051d55b3c.jpg",
@@ -29,7 +29,6 @@
     "static/media/react14.png": "/static/media/react14.fd48dacfd0556bc6de6d.png",
     "static/media/image4.png": "/static/media/image4.d35ab9554caa927f8dc1.png",
     "static/media/react3.png": "/static/media/react3.b039cbc14c35be4a8b45.png",
-    "static/media/git13.png": "/static/media/git13.f145674570344bd905cd.png",
     "static/media/image13.png": "/static/media/image13.2cc8b830070fce22fda4.png",
     "static/media/hubL (18).png": "/static/media/hubL (18).e7033d0f68103dd159b5.png",
     "static/media/react9.png": "/static/media/react9.31e02643589e7e42885e.png",
@@ -41,6 +40,7 @@
     "static/media/image17.png": "/static/media/image17.4b11733019638743614e.png",
     "static/media/git28.png": "/static/media/git28.cad40fd8f2b926a8ab16.png",
     "static/media/brother bold.otf": "/static/media/brother bold.1476797a42ab908961c1.otf",
+    "static/media/git13.png": "/static/media/git13.6ec02c3b21d3d4ae94a4.png",
     "static/media/backend12.png": "/static/media/backend12.07cc74296e001d933d5d.png",
     "static/media/backend16.png": "/static/media/backend16.8730453bb08310596890.png",
     "static/media/hubL (1).png": "/static/media/hubL (1).81daa83d46b17918424b.png",
@@ -99,10 +99,10 @@
     "static/media/image21.png": "/static/media/image21.2f4ec9a9723d394f4d6f.png",
     "static/media/pwicon.png": "/static/media/pwicon.ce0de5ba78e00944813d.png",
     "static/media/wordbubble.png": "/static/media/wordbubble.cff3613cbb1e93718829.png",
-    "static/media/git10.png": "/static/media/git10.9c5dfd703d6e3901e055.png",
     "static/media/backend5.png": "/static/media/backend5.5e02923c5cda29587894.png",
     "static/media/git8.png": "/static/media/git8.75a793b05fa65b278176.png",
     "static/media/git21.png": "/static/media/git21.104eb3ff6ebf66ac25eb.png",
+    "static/media/git10.png": "/static/media/git10.cd5bc9b0118834920895.png",
     "static/media/git25.png": "/static/media/git25.e8ea4f971efdb828644c.png",
     "static/media/git18.png": "/static/media/git18.a7785ac3fcde3668a047.png",
     "static/media/git2.png": "/static/media/git2.6121ae1c008954fcb3f9.png",
@@ -124,11 +124,11 @@
     "static/media/backend10.png": "/static/media/backend10.9e819f72c97d24fffbcf.png",
     "index.html": "/index.html",
     "main.e4efa97d.css.map": "/static/css/main.e4efa97d.css.map",
-    "main.3a83bf6c.js.map": "/static/js/main.3a83bf6c.js.map",
+    "main.1e3804ca.js.map": "/static/js/main.1e3804ca.js.map",
     "787.cf1e5eec.chunk.js.map": "/static/js/787.cf1e5eec.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e4efa97d.css",
-    "static/js/main.3a83bf6c.js"
+    "static/js/main.1e3804ca.js"
   ]
 }
