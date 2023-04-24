@@ -43,9 +43,9 @@ const github = (
         <p>After you are there, use the git clone command to copy the code from the Github repository.</p>
         <pre><code>git clone &lt;URL&gt;</code></pre>
         <img src={hubL5}></img>
-        <p>Run the following commands in the terminal to enter the folder and open it inside of VScode</p>
-        <pre><code>cd &lt;name of project&gt;<br></br>code .</code></pre>
-        <p>(you may also open it by going to File &gt; Open Folder &gt; Select Project Folder in the VScode menu at the top)</p>
+        <p>Run the following command in the terminal to enter the folder</p>
+        <pre><code>cd &lt;name of project&gt;</code></pre>
+        <p>To open the folder, go to File &gt; Open Folder &gt; Select Project Folder in the VScode menu at the top</p>
         <img src={hubL9}></img>
         <p>This will open a new VScode window, and there will be files listed on the left. (for me it’s only one file called README.md)</p>
         <img src={hubL14}></img>

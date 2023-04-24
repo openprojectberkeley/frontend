@@ -42,6 +42,7 @@ const git = (
         </ul>
         <p>To make sure you have git installed, run the following command in your terminal. It should return a version number if that's true.</p>
         <pre><code>git --version</code></pre>
+        <p>Note that if you had your terminal open prior to installing Git, you will have to close and reopen it to see if Git installed correctly.</p>
         <h2>Basic Git Functions</h2>
         <p>First, create a folder “test”. Mine will be located in the Downloads folder, but you can put it wherever. We will use it for testing purposes.</p>
         <p>Open your terminal and change your current directory to be inside the “test” folder.</p>
@@ -61,6 +62,10 @@ const git = (
         <img src={git6} alt="" />
         <p>Running git status will now tell us that the file is now ready to be committed.</p>
         <img src={git7} alt="" />
+        <p> If this is your first time using Git on your computer, run the following commands to setup your username and email.
+            The email must match the one you will use for your Github account. 
+        </p>
+        <pre><code>git config --global user.email "&lt;your email address&gt;" <br></br>git config --global user.name "&lt;username&gt;"</code></pre>
         <p>To commit what you have added, run the following command</p>
         <pre><code>git commit -m “&lt;your message here&gt;”</code></pre>
         <img src={git8} alt="" />
@@ -76,7 +81,7 @@ const git = (
         <p>To do so, use the git reset command. The long string of letters and numbers represents your commit hash, which you can find next to your commit when you run the git log command.</p>
         <pre><code>git reset --hard &lt;commit hash&gt;</code></pre>
         <img src={git13} alt="" />
-        <p>Now, the contents of abc.txt do not contain garbage anymore.</p>
+        <p>Now, the contents of abc.txt do not contain garbage anymore. Note that you have to close and reopen the txt file to see the changes.</p>
         <img src={git14} alt="" />
         <h2>Branches</h2>
         <p>Now, we are going to cover what branches are and how to use them.</p>
