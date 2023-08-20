@@ -29,17 +29,17 @@ export default function About() {
         image: joel,
       },
       {
+        name: "Uyen Phan",
+        link: "https://uyentphan.com/",
+        title: "VP of Marketing/Co-Founder",
+        image: uyen,
+      },
+      {
         name: "Nhu Vu",
         link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
         title: "VP of Internals/Co-Founder",
         image: nhu,
       },
-      {
-        name: "Uyen Phan",
-        link: "https://uyentphan.com/",
-        title: "VP of Marketing/Co-Founder",
-        image: uyen,
-      }
     ]
 
     const alumni = [
