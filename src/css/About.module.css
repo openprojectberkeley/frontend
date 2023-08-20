@@ -25,8 +25,7 @@
 
 .people {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 50px;
     margin-top: 20px;
     margin-bottom: 40px;
@@ -49,6 +48,7 @@
     flex-direction: row;
     align-items: center;
     gap: 10px;
+    padding-top: 10px;
 }
 
 .name img {
@@ -60,10 +60,17 @@
     height: 20px;
 }
 
+.name h3 {
+    margin: 0;
+}
+
+.title {
+    margin: 0;
+}
+
 @media screen and (max-width: 768px) {
     .people {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
         grid-gap: 30px;
     }
 }
@@ -71,7 +78,6 @@
 @media screen and (max-width: 425px) {
     .people {
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr 1fr 1fr;
     }
 }
 

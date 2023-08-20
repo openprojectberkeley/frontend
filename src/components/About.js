@@ -15,6 +15,48 @@ import buildAndLearnTogether from '../images/about/buildAndLearnTogether.png'
 import challengeYourLimits from '../images/about/challengeYourLimits.png'
 
 export default function About() {
+    const theTeam = [
+      {
+        name: "Ethan Ikegami",
+        link: "https://ethanikegami.com/",
+        title: "President/Co-Founder",
+        image: ethan,
+      },
+      {
+        name: "Joel Jaison",
+        link: "https://www.linkedin.com/in/joel-jaison/",
+        title: "VP of Tech/Co-Founder",
+        image: joel,
+      },
+      {
+        name: "Nhu Vu",
+        link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
+        title: "VP of Internals/Co-Founder",
+        image: nhu,
+      },
+      {
+        name: "Uyen Phan",
+        link: "https://uyentphan.com/",
+        title: "VP of Marketing/Co-Founder",
+        image: uyen,
+      }
+    ]
+
+    const alumni = [
+      {
+        name: "Nick Litvinov",
+        link: "https://www.linkedin.com/in/nick-litvinov-ab04981b5/",
+        title: "Co-Founder",
+        image: nick,
+      },
+      {
+        name: "Colin FitzGerald",
+        link: "https://www.linkedin.com/in/colinfitzgerald328/",
+        title: "Co-Founder",
+        image: colin,
+      },
+    ]
+
     return (
       <div>
         <img src={aboutTeam} className={styles.aboutTeam} alt="Open Project Berkeley Team"/>
@@ -56,48 +98,29 @@ export default function About() {
           <div className={styles.aboutPics}>
             <h1>Meet the Team</h1>
             <div className={styles.people}>
-              <div className={styles.person}>
-                <img className={styles.gridImage} src={ethan} alt="Ethan Ikegami"/>
-                <div className={styles.name}>
-                  <h3>Ethan Ikegami</h3>
-                  <a href="https://ethanikegami.com/" target="_blank" rel="noopener noreferrer"><img src={pwicon} className={styles.icon} alt=""/></a>
+              {theTeam.map(person => (
+                <div className={styles.person}>
+                  <img className={styles.gridImage} src={person.image} alt={person.name}/>
+                  <div className={styles.name}>
+                    <h3>{person.name}</h3>
+                    <a href={person.link} target="_blank" rel="noopener noreferrer"><img src={person.link.includes("linkedin") ? linkedinicon : pwicon} className={styles.icon} alt=""/></a>
+                  </div>
+                  <p className={styles.title}>{person.title}</p>
                 </div>
-              </div>
-              <div className={styles.person}>
-                <img className={styles.gridImage} src={nick} alt="Nick Litvinov"/>
-                <div className={styles.name}>
-                  <h3>Nick Litvinov</h3>
-                  <a href="https://www.linkedin.com/in/nick-litvinov-ab04981b5/" target="_blank" rel="noopener noreferrer"><img src={linkedinicon} className={styles.icon} alt=""/></a>
+              ))}
+            </div>
+            <h1>Alumni</h1>
+            <div className={styles.people}>
+              {alumni.map(person => (
+                <div className={styles.person}>
+                  <img className={styles.gridImage} src={person.image} alt={person.name}/>
+                  <div className={styles.name}>
+                    <h3>{person.name}</h3>
+                    <a href={person.link} target="_blank" rel="noopener noreferrer"><img src={person.link.includes("linkedin") ? linkedinicon : pwicon} className={styles.icon} alt=""/></a>
+                  </div>
+                  <p className={styles.title}>{person.title}</p>
                 </div>
-              </div>
-              <div className={styles.person}>
-                <img className={styles.gridImage} src={joel} alt="Joel Jaison"/>
-                <div className={styles.name}>
-                  <h3>Joel Jaison</h3>
-                  <a href="https://www.linkedin.com/in/joel-jaison/" target="_blank" rel="noopener noreferrer"><img src={linkedinicon} className={styles.icon} alt=""/></a>
-                </div>
-              </div>
-              <div className={styles.person}>
-                <img className={styles.gridImage} src={colin} alt="Colin FitzGerald"/>
-                <div className={styles.name}>
-                  <h3>Colin FitzGerald</h3>
-                  <a href="https://www.linkedin.com/in/colinfitzgerald328/" target="_blank" rel="noopener noreferrer"><img src={linkedinicon} className={styles.icon} alt=""/></a>
-                </div>
-              </div>
-              <div className={styles.person}>
-                <img className={styles.gridImage} src={nhu} alt="Nhu Vu"/>
-                <div className={styles.name}>
-                  <h3>Nhu Vu</h3>
-                  <a href="https://www.linkedin.com/in/nhu-vu-0b9b89215/" target="_blank" rel="noopener noreferrer"><img src={linkedinicon} className={styles.icon} alt=""/></a>
-                </div>
-              </div>
-              <div className={styles.person}>
-                <img className={styles.gridImage} src={uyen} alt="Uyen Phan"/>
-                <div className={styles.name}>
-                  <h3>Uyen Phan</h3>
-                  <a href="https://uyentphan.com/" target="_blank" rel="noopener noreferrer"><img src={pwicon} className={styles.icon} alt=""/></a>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

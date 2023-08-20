@@ -41,7 +41,7 @@ export default function HomePage() {
         <div className={`${styles.about} ${styles.aboutProjects}`}>
           <div>
             <h1>Projects</h1>
-            <h3>Our club offers a dynamic array of projects, ranging from web/mobile development to data science. The projects undertaken each semester are <span className={styles.blueText}>student-led</span>, with members empowered to propose ideas, evaluate options, and select the projects they want to work on, rather than being constrained by predefined projects. This allows for a highly personalized and fulfilling experience for all members.<br/><br/>Additionally, we plan to expand our offerings to include <span className={styles.blueText}>client</span> projects, giving members the opportunity to work on impactful projects for organizations and gain valuable experience. By providing a combination of student-led and client projects, we aim to offer a truly enriching and rewarding experience for all members.</h3>
+            <h3>Our club offers a dynamic array of projects, ranging from web/mobile development to data science. The projects undertaken each semester are <span className={styles.blueText}>student-led</span>, with members empowered to propose ideas, evaluate options, and select the projects they want to work on, rather than being constrained by predefined projects. This allows for a highly personalized and fulfilling experience for all members.<br/><br/>Additionally, we offer <span className={styles.blueText}>client</span> projects, giving members the opportunity to work on impactful projects for organizations and gain valuable experience. By providing a combination of student-led and client projects, we aim to offer a truly enriching and rewarding experience for all members.</h3>
           </div>
           <div>
             <img src={computer} />
@@ -62,7 +62,7 @@ export default function HomePage() {
         <div className={styles.joinUs}>
           <div className={styles.joinUsText}>
             <h1>Join us!</h1>
-            <h3>Application deadline is Wednesday, February 1st at 11:59 pm. Click the button to learn more!</h3>
+            <h3>Application deadline is Sunday, September 3rd at 11:59 pm. Click the button to learn more!</h3>
           </div>
           <div className={styles.joinUsRight}>
             <NavLink to="/apply"><button className={styles.getInvolvedButton}>Get Involved</button></NavLink>

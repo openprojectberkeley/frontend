@@ -11,19 +11,9 @@ const faqList = [
   [
     `What sets this club apart from other tech clubs?`,
   
-    `This club is unique in that it serves as a true medium for passionate creators to work on projects that are most meaningful to them. Members have the ability to suggest ideas for projects and then rank and choose the projects they want to work on each semester, rather than working on predefined projects. 
+    `This club is unique in that it serves as a true medium for passionate creators to work on projects that are most meaningful to them. Members have the ability to suggest ideas for projects and then rank and choose the projects they want to work on each semester. 
     
 Unlike other clubs that may rely on rigorous selection processes, we believe that every student with a technical background should have the opportunity to learn, grow and contribute. Our approach allows for a highly personalized and fulfilling experience for all members.`
-  ],
-
-  [
-  `How are projects going to work?`,
-
-  `When completing the application form, applicants are encouraged to contribute project ideas. These projects can range from anything in the CS field such as data science or web development. The only requirement to keep in mind when contributing ideas is to make sure that they are possible to complete in the span of one semester. 
-
-After the application deadline, a second form (Project Interest Form) will be sent out that will have these project ideas listed. Applicants can choose any project that they are interested in working on or being the project lead for. Based on the results of this form, groups will be assigned for projects that received enough votes to form teams.
-  
-Throughout the semester, our officers will be available to meet with you and answer any questions you may have about the projects. In addition, roughly three check-in meetings with project leads and officers will be scheduled for project leads to share updates on the state of their projects, receive valuable feedback and guidance, and make any necessary adjustments to ensure the successful completion of the project.`  
   ],
 
   [
@@ -31,7 +21,9 @@ Throughout the semester, our officers will be available to meet with you and ans
   
   `If you are passionate about creating meaningful projects and working in a team environment, then this club is perfect for you! We are dedicated to redefining the culture of tech clubs at UC Berkeley, and welcome individuals of all backgrounds, from beginners to advanced developers.
   
-While we welcome individuals of all backgrounds, to be able to fully participate and contribute, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. This technical background will allow members to engage fully in the projects of the club.`
+While we welcome individuals of all backgrounds, to be able to fully participate and contribute, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. This technical background will allow members to engage fully in the projects of the club.
+
+All prospective members must attend 1 infosession and 1 meet & greet!`
   ],
 
   [
@@ -51,14 +43,6 @@ While we welcome individuals of all backgrounds, to be able to fully participate
   `What is the time commitment?`,
 
   `As a member of this club, you can expect to invest 4-8 hours per week in working on your project, collaborating with your team members, and attending team and club socials. However, it's important to note that the level of commitment may vary depending on the project team and the stage of the project. We understand that members have different schedules and priorities, so we aim to be flexible and accommodate members' needs while still ensuring that projects are completed successfully.`
-  ],
-
-  [
-  `Can I be a project lead?`,
-
-  `On the project interest form, we have a dedicated section for individuals interested in leading a project. We welcome applicants with previous leadership and technical experience, as this experience can be beneficial for leading a successful project. However, even if you don't have that experience, don't let that discourage you from applying. Our main focus is to find individuals who are passionate about the project they want to lead and willing to learn and grow as a leader. 
-
-Being a project lead entails guiding the project to completion on a timely basis, delegating tasks among team members, and communicating with the officer team on a regular basis. Our club's success relies heavily on the engagement of its members, and we encourage everyone to step up and take on leadership roles.`
   ],
 
   [
@@ -146,8 +130,8 @@ export default function Apply() {
           <div className="limitWidth">
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
-              <p>Application deadline for Spring 2023 is <b>Wednesday, February 1st at 11:59 pm</b>. Click the button to get started!</p>
-              <a href="https://forms.gle/SZQhNzfmCLEPz9tx9" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+              <p>Application deadline for Fall 2023 is <b>Sunday, September 3rd at 11:59 pm</b>. Click the button to get started!</p>
+              <a href="https://forms.gle/eQ4JHmh6H8HoDyiy7" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
         </div>
@@ -156,7 +140,7 @@ export default function Apply() {
           <div className={`${styles.timelineWidth} "limitWidth"`} id="timeline">
             <h1>Recruitment Timeline</h1>
             <img src={timeline} className={styles.timelineImg} />
-            <a href="https://forms.gle/SZQhNzfmCLEPz9tx9" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+            <a href="https://forms.gle/eQ4JHmh6H8HoDyiy7" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
           </div>
         </div>
       </div>
