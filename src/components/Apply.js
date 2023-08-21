@@ -5,7 +5,6 @@ import orangeCurve from "../images/orangecurve.png";
 
 import homeStyles from "../css/HomePage.module.css";
 import applyCurveBlue from '../images/applyCurveBlue.png';
-import timeline from "../images/timeline.png";
 
 const faqList = [
   [
@@ -133,11 +132,79 @@ export default function Apply() {
           </div>
         </div>
         <img src={applyCurveBlue} className={styles.blueCurve} />
-        <div className={styles.timeline}>
-          <div className={`${styles.timelineWidth} "limitWidth"`} id="timeline">
-            <h1>Recruitment Timeline</h1>
-            <img src={timeline} className={styles.timelineImg} />
-            <a href="https://forms.gle/eQ4JHmh6H8HoDyiy7" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+        <div className="limitWidth">
+          <div className={styles.timeline}>
+            <div className={styles.timelineWidth} id="timeline">
+              <h1>Recruitment Timeline</h1>
+              <p className={styles.importantNote}>*It is mandatory to attend the infosession and team meet & greet to apply!</p>
+              <div className={styles.timelineContent}>
+                <div className={styles.outer}>
+                  <div className={styles.card}>
+                    <div className={styles.info}>
+                      <h1 className={styles.title}>01</h1>
+                      <div className={styles.content}>
+                        <h3 className={styles.date}>8/23-8/29</h3>
+                        {/* <h3 className={styles.subtitle}>Applications Due</h3> */}
+                        <p className={styles.information}>Tabling - come meet us on Sproul!</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.card}>
+                    <div className={styles.info}>
+                      <h1 className={styles.title}>02</h1>
+                      <div className={styles.stackContent}>
+                        <div className={styles.content}>
+                          <h3 className={styles.date}>8/25</h3>
+                          <h3 className={styles.subtitle}>Infosession</h3>
+                          <p className={styles.information}>Join us for our first infosession on <span className={styles.blue}>Friday, August 25th 8pm @ Location TBD</span>. We'll dive into what our club is all about and share our plans for the semester. To apply for the club, attending at least one of the two infosessions is a must!</p>
+                        </div>
+                        <div className={styles.content}>
+                          <h3 className={styles.date}>8/29</h3>
+                          <h3 className={styles.subtitle}>Infosession (alternate)</h3>
+                          <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Tuesday, August 29th 9pm @ Location TBD</span>. If you couldn't make it to the first info session, this serves as an alternative!</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.card}>
+                    <div className={styles.info}>
+                      <h1 className={styles.title}>03</h1>
+                      <div className={styles.content}>
+                        <h3 className={styles.date}>8/30</h3>
+                        <p className={styles.information}>Application opens!</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.card}>
+                    <div className={styles.info}>
+                      <h1 className={styles.title}>04</h1>
+                      <div className={styles.stackContent}>
+                        <div className={styles.content}>
+                          <h3 className={styles.date}>8/30</h3>
+                          <h3 className={styles.subtitle}>Team Meet & Greet</h3>
+                          <p className={styles.information}>Join us for our first team meet & greet on <span className={styles.blue}>Wednesday, August 30th 9pm @ Location TBD</span>. Discover this semester's projects and get your questions answered. Attending one of the two meet & greets is a must to apply for the club!</p>
+                        </div>
+                        <div className={styles.content}>
+                          <h3 className={styles.date}>8/31</h3>
+                          <h3 className={styles.subtitle}>Team Meet & Greet (alternate)</h3>
+                          <p className={styles.information}>Our second team meet & greet is on <span className={styles.blue}>Thursday, August 31st 9pm @ Location TBD</span>. If you couldn't make it to the first meet & greet, this serves as an alternative!</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.card}>
+                    <div className={styles.info}>
+                      <h1 className={styles.title}>05</h1>
+                      <div className={styles.content}>
+                        <h3 className={styles.date}>9/3</h3>
+                        <p className={styles.information}>Applications are due <span className={styles.blue}>Sunday, September 3rd at 11:59pm</span>!</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <a href="https://forms.gle/eQ4JHmh6H8HoDyiy7" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+            </div>
           </div>
         </div>
       </div>
