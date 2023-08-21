@@ -72,28 +72,25 @@ export default function Apply() {
     let faqElement = [];
 
     faqElement.push(
-      <div className={styles.faqHeader} key={`faq-header-${index}`}>
-          <div className={styles.faqQuestionContainer}>
-              <p className={styles.faqQuestion}>{faqList[index][0]}</p>
-          </div>
-          <div className={styles.faqImageContainer}>
-              <img 
-                  className={styles.faqPlus} 
-                  src={faqPlus} 
-                  alt="faqPlus" 
-              >
-              </img>
-          </div>
+      <div>
+        <div className={styles.faqHeader} key={`faq-header-${index}`}>
+            <div className={styles.faqQuestionContainer}>
+                <p className={styles.faqQuestion}>{faqList[index][0]}</p>
+            </div>
+            <div className={styles.faqImageContainer}>
+                <img 
+                    className={revealedAnswers[index] ? styles.faqPlusRotate : styles.faqPlus} 
+                    src={faqPlus} 
+                    alt="faqPlus" 
+                >
+                </img>
+            </div>
+        </div>
+        <div key={`faq-answer-${index}`} className={styles.faqAnswerContainer}>
+            <p className={revealedAnswers[index] ? styles.faqAnswer : styles.faqAnswerInvisible}>{faqList[index][1]}</p>
+        </div>
       </div>
     );
-
-    if (revealedAnswers[index]) {
-        faqElement.push(
-            <div key={`faq-answer-${index}`} className={styles.faqAnswerContainer}>
-                <p className={styles.faqAnswer}>{faqList[index][1]}</p>
-            </div>
-        );
-    }
 
     return (
         <div key={`faq-box-${index}`} className={styles.faqBox} 

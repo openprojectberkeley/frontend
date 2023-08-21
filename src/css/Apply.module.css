@@ -109,10 +109,12 @@
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     padding: 20px;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .faqBox:hover {
     filter: brightness(95%);
+    transition: 0.2s;
 }
 
 .faqHeader {
@@ -137,11 +139,19 @@
     }
 }
 
-.faqAnswer {
+.faqAnswer, .faqAnswerInvisible {
     white-space: pre-wrap;
+    overflow: hidden;
+    max-height: 500px;
+    transition: 0.3s;
 }
 
-.faqPlus {
+.faqAnswerInvisible {
+    margin: 0;
+    max-height: 0;
+}
+
+.faqPlus, .faqPlusRotate {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -149,6 +159,11 @@
     margin: auto;
     width: 20px;
     height: 20px;
+    transition: transform 0.3s;
+}
+
+.faqPlusRotate {
+    transform: rotate(-45deg);
 }
 
 .faqAnswerContainer {

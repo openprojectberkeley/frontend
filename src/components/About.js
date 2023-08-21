@@ -15,7 +15,7 @@ import buildAndLearnTogether from '../images/about/buildAndLearnTogether.png'
 import challengeYourLimits from '../images/about/challengeYourLimits.png'
 
 export default function About() {
-    const theTeam = [
+    const team = [
       {
         name: "Ethan Ikegami",
         link: "https://ethanikegami.com/",
@@ -98,7 +98,7 @@ export default function About() {
           <div className={styles.aboutPics}>
             <h1>Meet the Team</h1>
             <div className={styles.people}>
-              {theTeam.map(person => (
+              {team.map(person => (
                 <div className={styles.person}>
                   <img className={styles.gridImage} src={person.image} alt={person.name}/>
                   <div className={styles.name}>
