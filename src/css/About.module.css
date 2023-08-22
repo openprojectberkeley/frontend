@@ -68,6 +68,12 @@
     margin: 0;
 }
 
+@media screen and (max-width: 1024px) {
+    .people {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
 @media screen and (max-width: 768px) {
     .people {
         grid-template-columns: 1fr 1fr;

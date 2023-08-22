@@ -156,12 +156,12 @@ export default function Apply() {
                         <div className={styles.content}>
                           <h3 className={styles.date}>8/25</h3>
                           <h3 className={styles.subtitle}>Infosession</h3>
-                          <p className={styles.information}>Join us for our first infosession on <span className={styles.blue}>Friday, August 25th 8pm @ Location TBD</span>. We'll dive into what our club is all about and share our plans for the semester. To apply for the club, attending at least one of the two infosessions is a must!</p>
+                          <p className={styles.information}>Join us for our first infosession on <span className={styles.blue}>Friday, August 25th 8pm @ VLSB 2040</span>. We'll dive into what our club is all about and share our plans for the semester. To apply for the club, attending at least one of the two infosessions is a must!</p>
                         </div>
                         <div className={styles.content}>
                           <h3 className={styles.date}>8/29</h3>
                           <h3 className={styles.subtitle}>Infosession (alternate)</h3>
-                          <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Tuesday, August 29th 9pm @ Location TBD</span>. If you couldn't make it to the first info session, this serves as an alternative!</p>
+                          <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Tuesday, August 29th 9pm @ MOFF 101</span>. If you couldn't make it to the first info session, this serves as an alternative!</p>
                         </div>
                       </div>
                     </div>
@@ -182,12 +182,12 @@ export default function Apply() {
                         <div className={styles.content}>
                           <h3 className={styles.date}>8/30</h3>
                           <h3 className={styles.subtitle}>Team Meet & Greet</h3>
-                          <p className={styles.information}>Join us for our first team meet & greet on <span className={styles.blue}>Wednesday, August 30th 9pm @ Location TBD</span>. Discover this semester's projects and get your questions answered. Attending one of the two meet & greets is a must to apply for the club!</p>
+                          <p className={styles.information}>Join us for our first team meet & greet on <span className={styles.blue}>Wednesday, August 30th 9pm @ EVAN 60</span>. Discover this semester's projects and get your questions answered. Attending one of the two meet & greets is a must to apply for the club!</p>
                         </div>
                         <div className={styles.content}>
                           <h3 className={styles.date}>8/31</h3>
                           <h3 className={styles.subtitle}>Team Meet & Greet (alternate)</h3>
-                          <p className={styles.information}>Our second team meet & greet is on <span className={styles.blue}>Thursday, August 31st 9pm @ Location TBD</span>. If you couldn't make it to the first meet & greet, this serves as an alternative!</p>
+                          <p className={styles.information}>Our second team meet & greet is on <span className={styles.blue}>Thursday, August 31st 9pm @ EVAN 60</span>. If you couldn't make it to the first meet & greet, this serves as an alternative!</p>
                         </div>
                       </div>
                     </div>
