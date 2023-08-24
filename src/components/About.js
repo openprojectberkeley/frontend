@@ -1,18 +1,34 @@
 import styles from '../css/About.module.css';
 import orangeCurve from "../images/orangecurve.png";
-import colin from '../images/about/fall2023/colin.webp';
-import nhu from '../images/about/fall2023/nhu.jpg';
-import uyen from '../images/about/fall2023/uyen.jpg';
-import ethan from '../images/about/fall2023/ethan.jpg';
-import nick from '../images/about/fall2023/nick.webp';
-import joel from '../images/about/fall2023/joel.jpg';
 import pwicon from '../images/pwicon.png';
 import linkedinicon from '../images/linkedinicon.png';
-import aboutTeam from '../images/about/fall2023/aboutTeam.png'
 import inclusiveCommunity from '../images/about/inclusiveCommunity.png'
 import chooseYourOwnPath from '../images/about/chooseYourOwnPath.png'
 import buildAndLearnTogether from '../images/about/buildAndLearnTogether.png'
 import challengeYourLimits from '../images/about/challengeYourLimits.png'
+
+import aboutTeam from '../images/about/fall2023/aboutTeam.png'
+
+import colin from '../images/about/spring2023/colin.webp';
+import nick from '../images/about/spring2023/nick.webp';
+
+import ayush from '../images/about/fall2023/ayush.webp';
+import ethan from '../images/about/fall2023/ethan.webp';
+import uyen from '../images/about/fall2023/uyen.webp';
+import alan from '../images/about/fall2023/alan.webp';
+import nawoda from '../images/about/fall2023/nawoda.webp';
+import pranav from '../images/about/fall2023/pranav.webp';
+import rachel from '../images/about/fall2023/rachel.webp';
+import anish from '../images/about/fall2023/anish.webp';
+import joel from '../images/about/fall2023/joel.webp';
+import nhu from '../images/about/fall2023/nhu.webp';
+import harika from '../images/about/fall2023/harika.webp';
+import iris from '../images/about/fall2023/iris.webp';
+import kelly from '../images/about/fall2023/kelly.webp';
+import zee from '../images/about/fall2023/zee.webp';
+import christopher from '../images/about/fall2023/christopher.webp';
+import jessica from '../images/about/fall2023/jessica.webp';
+import rohan from '../images/about/fall2023/rohan.webp';
 
 export default function About() {
     const team = [
@@ -39,6 +55,84 @@ export default function About() {
         link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
         title: "VP of Internals/Co-Founder",
         image: nhu,
+      },
+      {
+        name: "Iris Tsui",
+        link: "https://www.linkedin.com/in/iris-tsui/",
+        title: "VP of Internals",
+        image: iris,
+      },
+      {
+        name: "Jessica Lee",
+        link: "https://www.linkedin.com/in/jessica-lee-5370b71b4",
+        title: "VP of Internals",
+        image: jessica,
+      },
+      {
+        name: "Anish Goel",
+        link: "",
+        title: "VP of Externals",
+        image: anish,
+      },
+      {
+        name: "Alan Bao",
+        link: "https://www.linkedin.com/in/alan-bao",
+        title: "VP of Externals",
+        image: alan,
+      },
+      {
+        name: "Nawoda Wijesooriya",
+        link: "https://www.linkedin.com/in/nawoda-wijesooriya-a7903b254",
+        title: "VP of Finance",
+        image: nawoda,
+      },
+      {
+        name: "Ayush Verma",
+        link: "https://www.linkedin.com/in/averma18",
+        title: "Project Lead",
+        image: ayush,
+      },
+      {
+        name: "Pranav Dogra",
+        link: "https://www.linkedin.com/in/pranav-dogra-19953a208",
+        title: "Project Lead",
+        image: pranav,
+      },
+      {
+        name: "Harika Muthalraj",
+        link: "https://www.linkedin.com/in/harika-raj-5b9182261",
+        title: "Project Lead",
+        image: harika,
+      },
+      {
+        name: "Kelly Coutinho",
+        link: "https://www.linkedin.com/in/kelly-coutinho-592048189",
+        title: "Project Lead",
+        image: kelly,
+      },
+      {
+        name: "Zee Babar",
+        link: "https://www.linkedin.com/in/moebabar",
+        title: "Project Lead",
+        image: zee,
+      },
+      {
+        name: "Christopher Bannon",
+        link: "https://cbannon.com/",
+        title: "Project Lead",
+        image: christopher,
+      },
+      {
+        name: "Rachel Hong",
+        link: "https://www.linkedin.com/in/rachelgiahong/",
+        title: "Project Lead",
+        image: rachel,
+      },
+      {
+        name: "Rohan Agarwal",
+        link: "https://www.linkedin.com/in/rohan-agarwal-2908321a1",
+        title: "Project Lead",
+        image: rohan,
       },
     ]
 
@@ -103,7 +197,7 @@ export default function About() {
                   <img className={styles.gridImage} src={person.image} alt={person.name}/>
                   <div className={styles.name}>
                     <h3>{person.name}</h3>
-                    <a href={person.link} target="_blank" rel="noopener noreferrer"><img src={person.link.includes("linkedin") ? linkedinicon : pwicon} className={styles.icon} alt=""/></a>
+                    {person.link && <a href={person.link} target="_blank" rel="noopener noreferrer"><img src={person.link.includes("linkedin") ? linkedinicon : pwicon} className={styles.icon} alt=""/></a>}
                   </div>
                   <p className={styles.title}>{person.title}</p>
                 </div>
