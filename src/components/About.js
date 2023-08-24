@@ -7,10 +7,7 @@ import chooseYourOwnPath from '../images/about/chooseYourOwnPath.png'
 import buildAndLearnTogether from '../images/about/buildAndLearnTogether.png'
 import challengeYourLimits from '../images/about/challengeYourLimits.png'
 
-import aboutTeam from '../images/about/fall2023/aboutTeam.png'
-
-import colin from '../images/about/spring2023/colin.webp';
-import nick from '../images/about/spring2023/nick.webp';
+import teamCover from '../images/about/fall2023/team.png'
 
 import ayush from '../images/about/fall2023/ayush.webp';
 import ethan from '../images/about/fall2023/ethan.webp';
@@ -29,6 +26,9 @@ import zee from '../images/about/fall2023/zee.webp';
 import christopher from '../images/about/fall2023/christopher.webp';
 import jessica from '../images/about/fall2023/jessica.webp';
 import rohan from '../images/about/fall2023/rohan.webp';
+
+import colin from '../images/about/spring2023/colin.webp';
+import nick from '../images/about/spring2023/nick.webp';
 
 export default function About() {
     const team = [
@@ -153,7 +153,7 @@ export default function About() {
 
     return (
       <div>
-        <img src={aboutTeam} className={styles.aboutTeam} alt="Open Project Berkeley Team"/>
+        <img src={teamCover} className={styles.aboutTeam} alt="Open Project Berkeley Team"/>
         <div className={`${styles.aboutTopHalf} limitWidth`}>
           <div className={styles.marginFromScreen}>
             <div className={styles.aboutUs}>
