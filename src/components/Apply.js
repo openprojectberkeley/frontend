@@ -8,7 +8,7 @@ import applyCurveBlue from '../images/applyCurveBlue.png';
 
 const faqList = [
   [
-    `What sets this club apart from other tech clubs?`,
+    "What sets this club apart from other tech clubs?",
   
     `This club is unique in that it serves as a true medium for passionate creators to work on projects that are most meaningful to them. Members have the ability to suggest ideas for projects and then rank and choose the projects they want to work on each semester. 
     
@@ -16,7 +16,7 @@ Unlike other clubs that may rely on rigorous selection processes, we believe tha
   ],
 
   [
-  `Who can join?`,
+  "Who can join?",
   
   `If you are passionate about creating meaningful projects and working in a team environment, then this club is perfect for you! We are dedicated to redefining the culture of tech clubs at UC Berkeley, and welcome individuals of all backgrounds, from beginners to advanced developers.
   
@@ -26,34 +26,34 @@ All prospective members must attend 1 infosession and 1 meet & greet!`
   ],
 
   [
-  `Is there a social aspect to this club?`,
+  "Is there a social aspect to this club?",
 
-  `Yes, getting close to your club members is one of our main focuses! You will be placed on a team to work on a project and are expected to meet frequently and collaborate with your team members. Socials beyond general project team meetings will vary by team, but there will be multiple club wide socials throughout the semester so you have the chance to meet everyone in the club!`
+  "Yes, getting close to your club members is one of our main focuses! You will be placed on a team to work on a project and are expected to meet frequently and collaborate with your team members. Socials beyond general project team meetings will vary by team, but there will be multiple club wide socials throughout the semester so you have the chance to meet everyone in the club!"
   ],
 
 
   [
-  `How are teams decided?`,
+  "How are teams decided?",
 
-  `Creating teams is a vital aspect of our club and we take great care in ensuring that members are placed in teams that align with their interests and capabilities. We consider a variety of factors including previous experiences, project interests and written prompts when forming teams. A matching algorithm is used to group members, which takes into account the preferences of each member and attempts to place them in teams where they will thrive and be able to make a meaningful contribution.`
+  "Creating teams is a vital aspect of our club and we take great care in ensuring that members are placed in teams that align with their interests and capabilities. We consider a variety of factors including previous experiences, project interests and written prompts when forming teams. A matching algorithm is used to group members, which takes into account the preferences of each member and attempts to place them in teams where they will thrive and be able to make a meaningful contribution."
   ],
 
   [
-  `What is the time commitment?`,
+  "What is the time commitment?",
 
-  `As a member of this club, you can expect to invest 4-8 hours per week in working on your project, collaborating with your team members, and attending team and club socials. However, it's important to note that the level of commitment may vary depending on the project team and the stage of the project. We understand that members have different schedules and priorities, so we aim to be flexible and accommodate members' needs while still ensuring that projects are completed successfully.`
+ " As a member of this club, you can expect to invest 4-8 hours per week in working on your project, collaborating with your team members, and attending team and club socials. However, it's important to note that the level of commitment may vary depending on the project team and the stage of the project. We understand that members have different schedules and priorities, so we aim to be flexible and accommodate members' needs while still ensuring that projects are completed successfully."
   ],
 
   [
-  `I have no previous coding experience. What should I do?`,
+ " I have no previous coding experience. What should I do?",
 
-  `To be able to fully engage and contribute to the projects of the club, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. If you don't have these qualifications, we recommend either enrolling in CS 61A/CS 88 or following tutorials and building a personal project to gain familiarity and proficiency with coding. This will help ensure that members can fully participate and benefit from the club.`
+ "To be able to fully engage and contribute to the projects of the club, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. If you don't have these qualifications, we recommend either enrolling in CS 61A/CS 88 or following tutorials and building a personal project to gain familiarity and proficiency with coding. This will help ensure that members can fully participate and benefit from the club."
   ],
 
   [
-  `Are there any club dues?`,
+  "Are there any club dues?",
 
-  `To help support the club's activities and ensure its sustainability, there is a $15 fee due at the start of each semester. This fee is used to cover expenses such as club socials, necessary supplies, and other costs associated with running the club. This small investment is essential to the club's success and allows us to provide a wide range of opportunities for members to learn, grow, and create meaningful projects.`
+  "To help support the club's activities and ensure its sustainability, there is a $15 fee due at the start of each semester. This fee is used to cover expenses such as club socials, necessary supplies, and other costs associated with running the club. This small investment is essential to the club's success and allows us to provide a wide range of opportunities for members to learn, grow, and create meaningful projects."
   ]
 ];
 
@@ -126,7 +126,7 @@ export default function Apply() {
           <div className="limitWidth">
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
-              <p>Application deadline for Fall 2023 is <b>Sunday, September 3rd at 11:59 pm</b>. Click the button to get started!</p>
+              <p>Application deadline for Spring 2024 is <b>Sunday, January 28th at 11:59 pm</b>. Click the button to get started!</p>
               <a href="https://forms.gle/s18KXscypWYR14CL9" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>01</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>8/23-8/29</h3>
+                        <h3 className={styles.date}>1/17-1/22</h3>
                         {/* <h3 className={styles.subtitle}>Applications Due</h3> */}
                         <p className={styles.information}>Tabling - come meet us on Sproul!</p>
                       </div>
@@ -154,14 +154,14 @@ export default function Apply() {
                       <h1 className={styles.title}>02</h1>
                       <div className={styles.stackContent}>
                         <div className={styles.content}>
-                          <h3 className={styles.date}>8/25</h3>
-                          <h3 className={styles.subtitle}>Infosession</h3>
-                          <p className={styles.information}>Join us for our first infosession on <span className={styles.blue}>Friday, August 25th 8pm @ VLSB 2040</span>. We'll dive into what our club is all about and share our plans for the semester. To apply for the club, attending at least one of the two infosessions is a must!</p>
+                          <h3 className={styles.date}>1/19</h3>
+                          <h3 className={styles.subtitle}>Infosession #1</h3>
+                          <p className={styles.information}>Join us for our first infosession on <span className={styles.blue}>Friday, January 19th 6pm @ VLSB 2040</span>. We'll dive into what our club is all about and share our plans for the semester. To apply for the club, attending at least one of the two infosessions is a must!</p>
                         </div>
                         <div className={styles.content}>
-                          <h3 className={styles.date}>8/29</h3>
-                          <h3 className={styles.subtitle}>Infosession (alternate)</h3>
-                          <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Tuesday, August 29th 9pm @ MOFF 101</span>. If you couldn't make it to the first info session, this serves as an alternative!</p>
+                          <h3 className={styles.date}>1/22</h3>
+                          <h3 className={styles.subtitle}>Infosession #2</h3>
+                          <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Monday, January 22nd 9pm @ DWIN 219</span>. If you couldn't make it to the first info session, this serves as an alternative!</p>
                         </div>
                       </div>
                     </div>
@@ -170,7 +170,7 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>03</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>8/30</h3>
+                        <h3 className={styles.date}>1/25</h3>
                         <p className={styles.information}>Application opens!</p>
                       </div>
                     </div>
@@ -180,14 +180,14 @@ export default function Apply() {
                       <h1 className={styles.title}>04</h1>
                       <div className={styles.stackContent}>
                         <div className={styles.content}>
-                          <h3 className={styles.date}>8/30</h3>
-                          <h3 className={styles.subtitle}>Team Meet & Greet</h3>
-                          <p className={styles.information}>Join us for our first team meet & greet on <span className={styles.blue}>Wednesday, August 30th 9pm @ EVAN 60</span>. Discover this semester's projects and get your questions answered. Attending one of the two meet & greets is a must to apply for the club!</p>
+                          <h3 className={styles.date}>1/24</h3>
+                          <h3 className={styles.subtitle}>Team Meet & Greet #1</h3>
+                          <p className={styles.information}>Join us for our first team meet & greet on <span className={styles.blue}>Wednesday, January 24th 9pm @ SOCS 60</span>. Discover this semester's projects and get your questions answered. Attending one of the two meet & greets is a must to apply for the club!</p>
                         </div>
                         <div className={styles.content}>
-                          <h3 className={styles.date}>8/31</h3>
-                          <h3 className={styles.subtitle}>Team Meet & Greet (alternate)</h3>
-                          <p className={styles.information}>Our second team meet & greet is on <span className={styles.blue}>Thursday, August 31st 9pm @ EVAN 60</span>. If you couldn't make it to the first meet & greet, this serves as an alternative!</p>
+                          <h3 className={styles.date}>1/25</h3>
+                          <h3 className={styles.subtitle}>Team Meet & Greet #2</h3>
+                          <p className={styles.information}>Our second team meet & greet is on <span className={styles.blue}>Thursday, January 25th 9pm @ SOCS 126</span>. If you couldn't make it to the first meet & greet, this serves as an alternative!</p>
                         </div>
                       </div>
                     </div>
@@ -196,8 +196,8 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>05</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>9/3</h3>
-                        <p className={styles.information}>Applications are due <span className={styles.blue}>Sunday, September 3rd at 11:59pm</span>!</p>
+                        <h3 className={styles.date}>1/28</h3>
+                        <p className={styles.information}>Applications are due <span className={styles.blue}>Sunday, January 28th at 11:59pm</span>!</p>
                       </div>
                     </div>
                   </div>

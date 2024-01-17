@@ -62,7 +62,7 @@ export default function HomePage() {
         <div className={styles.joinUs}>
           <div className={styles.joinUsText}>
             <h1>Join us!</h1>
-            <h3>Application deadline is Sunday, September 3rd at 11:59 pm. Click the button to learn more!</h3>
+            <h3>Application deadline is Sunday, January 28th at 11:59 pm. Click the button to learn more!</h3>
           </div>
           <div className={styles.joinUsRight}>
             <NavLink to="/apply"><button className={styles.getInvolvedButton}>Get Involved</button></NavLink>
