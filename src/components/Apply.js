@@ -156,7 +156,7 @@ export default function Apply() {
                         <div className={styles.content}>
                           <h3 className={styles.date}>1/19</h3>
                           <h3 className={styles.subtitle}>Infosession #1</h3>
-                          <p className={styles.information}>Join us for our first infosession on <span className={styles.blue}>Friday, January 19th 6pm @ VLSB 2040</span>. We'll dive into what our club is all about and share our plans for the semester. To apply for the club, attending at least one of the two infosessions is a must!</p>
+                          <p className={styles.information}>Join us for our first infosession on <span className={styles.blue}>Friday, January 19th 8pm @ Dwinelle 88</span>. We'll dive into what our club is all about and share our plans for the semester. To apply for the club, attending at least one of the two infosessions is a must!</p>
                         </div>
                         <div className={styles.content}>
                           <h3 className={styles.date}>1/22</h3>
