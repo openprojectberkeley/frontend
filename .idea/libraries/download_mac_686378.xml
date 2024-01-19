@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="download-mac-686378">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/node_modules/puppeteer/.local-chromium/download-mac-686378.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
