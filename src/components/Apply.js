@@ -203,7 +203,7 @@ export default function Apply() {
                   </div>
                 </div>
               </div>
-              <a href="https://forms.gle/s18KXscypWYR14CL9" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSfwJ5pSjP_JMkqLiAFAeVxMnumnx1iE72FI8g4EGrrv0sOupQ/viewform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
         </div>
