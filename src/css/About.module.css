@@ -39,7 +39,9 @@
 
 .gridImage {
     display: flex;
-    clip-path: circle();
+    /* clip-path: circle(); */
+    object-fit: cover; /* Maintain aspect ratio and fill the container */
+  border-radius: 50%;
     max-width: 100%;
 }
 
