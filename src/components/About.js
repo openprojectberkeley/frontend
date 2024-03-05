@@ -7,7 +7,7 @@ import chooseYourOwnPath from "../images/about/chooseYourOwnPath.png";
 import buildAndLearnTogether from "../images/about/buildAndLearnTogether.png";
 import challengeYourLimits from "../images/about/challengeYourLimits.png";
 
-import teamCover from "../images/about/fall2023/team.png";
+import teamCover from "../images/about/spring2024/team.png";
 
 import ayush from "../images/about/fall2023/ayush.webp";
 import ethan from "../images/about/fall2023/ethan.webp";
@@ -24,7 +24,7 @@ import zee from "../images/about/fall2023/zee.webp";
 import chris from "../images/about/spring2024/chris.webp";
 import jess from "../images/about/spring2024/jess.webp";
 import shobhan from "../images/about/spring2024/shobhan.webp";
-import rohan from "../images/about/spring2024/shobhan.webp";
+import rohan from "../images/about/spring2024/rohan.webp";
 import areeya from "../images/about/spring2024/areeya.webp";
 import damond from "../images/about/spring2024/damond.webp";
 import eric from "../images/about/spring2024/eric.webp";
@@ -42,20 +42,14 @@ export default function About() {
     {
       name: "Pranav Dogra",
       link: "https://www.linkedin.com/in/pranav-dogra-19953a208",
-      title: "Co President/Project Lead",
+      title: "Co-President/Project Lead",
       image: pranav,
     },
     {
       name: "Nawoda Wijesooriya",
       link: "https://www.linkedin.com/in/nawoda-wijesooriya-a7903b254",
-      title: "Co President/Project Lead",
+      title: "Co-President/Project Lead",
       image: nawoda,
-    },
-    {
-      name: "Ethan Ikegami",
-      link: "https://ethanikegami.com/",
-      title: "President/Co-Founder",
-      image: ethan,
     },
     {
       name: "Joel Jaison",
@@ -72,19 +66,25 @@ export default function About() {
     {
       name: "Nhu Vu",
       link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
-      title: "VP of Internals/Co-Founder",
+      title: "Senior Advisor/Co-Founder",
       image: nhu,
     },
     {
       name: "Iris Tsui",
       link: "https://www.linkedin.com/in/iris-tsui/",
-      title: "VP of Internals",
+      title: "VP of Finance",
       image: iris,
+    },
+    {
+      name: "Japinder Narula",
+      link: "https://www.linkedin.com/in/japinder-singh-narula-ab48a9192/",
+      title: "VP of Finance/Project Lead",
+      image: japinder,
     },
     {
       name: "Jessica Lee",
       link: "https://www.linkedin.com/in/jessica-lee-5370b71b4",
-      title: "VP of Internals",
+      title: "Senior Advisor",
       image: jess,
     },
     {
@@ -148,12 +148,6 @@ export default function About() {
       image: eric,
     },
     {
-      name: "Japinder Narula",
-      link: "https://www.linkedin.com/in/japinder-singh-narula-ab48a9192/",
-      title: "Project Lead",
-      image: japinder,
-    },
-    {
       name: "Kitty Ng",
       link: "https://www.linkedin.com/in/kitty-ng-443678246/",
       title: "Project Lead",
@@ -168,6 +162,12 @@ export default function About() {
   ];
 
   const alumni = [
+    {
+      name: "Ethan Ikegami",
+      link: "https://ethanikegami.com/",
+      title: "Co-Founder",
+      image: ethan,
+    },
     {
       name: "Nick Litvinov",
       link: "https://www.linkedin.com/in/nick-litvinov-ab04981b5/",
