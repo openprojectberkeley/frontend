@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.24d0caaf.css",
-    "main.js": "/static/js/main.50e7294c.js",
+    "main.js": "/static/js/main.73481d2f.js",
     "static/js/787.a52046e0.chunk.js": "/static/js/787.a52046e0.chunk.js",
     "static/media/team.png": "/static/media/team.e76fdc22017d310fd2f0.png",
     "static/media/eric.webp": "/static/media/eric.c37460e73d974486a9eb.webp",
@@ -23,11 +23,13 @@
     "static/media/react13.png": "/static/media/react13.290f8912a5105c17ce85.png",
     "static/media/react16.png": "/static/media/react16.659dc349c4efba59e7ae.png",
     "static/media/image22.png": "/static/media/image22.29de9a5610f7c72b09f3.png",
+    "static/media/rachelhu.webp": "/static/media/rachelhu.b273a78007c504125bb4.webp",
     "static/media/react4.png": "/static/media/react4.7633d85945747fbbbd89.png",
     "static/media/react1.png": "/static/media/react1.3802e2848663691bcc57.png",
     "static/media/hubL (2).png": "/static/media/hubL (2).d9f7f3fa10a504732997.png",
     "static/media/hubL (3).png": "/static/media/hubL (3).3ac1bdb628e6756f6a72.png",
     "static/media/hubL (4).png": "/static/media/hubL (4).c5ffafb7b75ebe251871.png",
+    "static/media/joanne.webp": "/static/media/joanne.943977b053a4954af338.webp",
     "static/media/hubL (7).png": "/static/media/hubL (7).5515bf7c594661bb4698.png",
     "static/media/hubL (12).png": "/static/media/hubL (12).93ca214a82f47a433420.png",
     "static/media/joel.webp": "/static/media/joel.c266d936df3ae2ba07f7.webp",
@@ -141,11 +143,11 @@
     "static/media/backend10.png": "/static/media/backend10.9e819f72c97d24fffbcf.png",
     "index.html": "/index.html",
     "main.24d0caaf.css.map": "/static/css/main.24d0caaf.css.map",
-    "main.50e7294c.js.map": "/static/js/main.50e7294c.js.map",
+    "main.73481d2f.js.map": "/static/js/main.73481d2f.js.map",
     "787.a52046e0.chunk.js.map": "/static/js/787.a52046e0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.24d0caaf.css",
-    "static/js/main.50e7294c.js"
+    "static/js/main.73481d2f.js"
   ]
 }
