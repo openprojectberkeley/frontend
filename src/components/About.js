@@ -9,8 +9,8 @@ import challengeYourLimits from "../images/about/challengeYourLimits.png";
 
 import teamCover from "../images/about/spring2024/team.png";
 
+// active members
 import ayush from "../images/about/fall2023/ayush.webp";
-import ethan from "../images/about/fall2023/ethan.webp";
 import uyen from "../images/about/fall2023/uyen.webp";
 import nawoda from "../images/about/spring2024/nawoda.webp";
 import pranav from "../images/about/spring2024/pranav.webp";
@@ -20,7 +20,6 @@ import joel from "../images/about/fall2023/joel.webp";
 import nhu from "../images/about/fall2023/nhu.webp";
 import harika from "../images/about/spring2024/harika.webp";
 import iris from "../images/about/fall2023/iris.webp";
-import zee from "../images/about/fall2023/zee.webp";
 import chris from "../images/about/spring2024/chris.webp";
 import jess from "../images/about/spring2024/jess.webp";
 import shobhan from "../images/about/spring2024/shobhan.webp";
@@ -31,11 +30,15 @@ import eric from "../images/about/spring2024/eric.webp";
 import japinder from "../images/about/spring2024/japinder.webp";
 import kitty from "../images/about/spring2024/kitty.webp";
 import morgan from "../images/about/spring2024/morgan.webp";
+import joanne from "../images/about/spring2024/joanne.webp";
+import rachelhu from "../images/about/spring2024/rachelhu.webp";
 
 
-
+// alumni
+import ethan from "../images/about/fall2023/ethan.webp";
 import colin from "../images/about/spring2023/colin.webp";
 import nick from "../images/about/spring2023/nick.webp";
+import zee from "../images/about/fall2023/zee.webp";
 
 export default function About() {
   const team = [
@@ -94,6 +97,24 @@ export default function About() {
       image: anish,
     },
     {
+      name: "Christopher Bannon",
+      link: "https://cbannon.com/",
+      title: "VP of Externals",
+      image: chris,
+    },
+    {
+      name: "Rachel Hu",
+      link: "https://www.linkedin.com/in/rchelhu/",
+      title: "VP of Internals",
+      image: rachelhu,
+    },
+    {
+      name: "Joanne Tran",
+      link: "https://www.linkedin.com/in/tranjoanne/",
+      title: "Project Lead",
+      image: joanne,
+    },
+    {
       name: "Ayush Verma",
       link: "https://www.linkedin.com/in/averma18",
       title: "Project Lead",
@@ -104,12 +125,6 @@ export default function About() {
       link: "https://www.linkedin.com/in/harika-raj-5b9182261",
       title: "Project Lead",
       image: harika,
-    },
-    {
-      name: "Christopher Bannon",
-      link: "https://cbannon.com/",
-      title: "Project Lead",
-      image: chris,
     },
     {
       name: "Rachel Hong",
