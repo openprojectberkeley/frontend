@@ -38,12 +38,11 @@
 }
 
 .gridImage {
-    display: flex;
-    /* clip-path: circle(); */
-    object-fit: cover; /* Maintain aspect ratio and fill the container */
-  border-radius: 50%;
-    max-width: 100%;
-}
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%; /* This will make the images circular. Remove if you want square images */
+  }
 
 .name {
     display: flex;
