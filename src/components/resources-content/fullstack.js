@@ -43,25 +43,25 @@ const fullstack = (
         <pre><code>py manage.py startapp &lt;name of app&gt;</code></pre>
         <p>Run server (click on link, should redirect to following page)</p>
         <pre><code>py manage.py runserver</code></pre>
-        <img src={django1} alt="something" />
+        <img src={django1} alt="" />
         <h2>Setting up the Database</h2>
         <p>Create a Database model in &lt;name of app&gt; / models.py such as the following:</p>
-        <img src={django2} alt="something" />
+        <img src={django2} alt="" />
         <p>Be sure to include the manager variable (name doesn't matter) in order to gain access to all rows in your database and a __str__ method to see the values inside the rows instead of “Object [Object]”</p>
         <p>To create the database, run the following commands</p>
         <pre><code>py manage.py makemigrations<br></br>py manage.py migrate</code></pre>
         <p>You will notice a file called db.sqlite3 (next to manage.py, Pipfile, and Pipfile.lock). This file contains your new table (Users in my case) and other ones created by Django.</p>
         <p>To view your table with a nice visual you can use the following site and upload the db.sqlite3 file: https://sqliteviewer.app/ . Under tables on the left, you should see your new table called &lt;name of app&gt;_&lt;name of table&gt; (myapp_users  in my case)</p>
-        <img src={django3} alt="something" />
+        <img src={django3} alt="" />
         <h2>Operating on the Table via Terminal</h2>
         <p>Run the following command to run Python interpreter inside the virtual shell you are already in</p>
         <p>Windows: <pre><code>py manage.py shell</code></pre></p>
         <p>Here is an example of me creating an entry, searching, and deleting from the table</p>
-        <img src={django4} alt="something" />
+        <img src={django4} alt="" />
         <h2>Operating on Table via Python Files</h2>
         <p>If you would like to operate on your database once you do the runserver command, following the instructions below.</p>
         <p>In your app folder, add the ready function and os import:</p>
-        <img src={django5} alt="something" />
+        <img src={django5} alt="" />
         <p>The ready function inside &lt;yourAppName&gt;Config class will run twice when calling the py manage.py runserver command.</p>
         <p>The run_once variable and logic is there to ensure that the code after it will run once, and this might be something to consider if you want to run some logic on the database when starting up the server (as opposed to the terminal).</p>
     </div>

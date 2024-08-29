@@ -63,7 +63,7 @@ const frontend = (
         <p>If you see an error, or if you don’t see a version (e.g. ‘v18.12.1’) as an output, that means you have not installed Node.js. If the latter, 
             you can directly install Node from the <a href="https://nodejs.org/en/download">Node.js website.</a>
         </p>
-        <img src={react1} alt="somethimg here"/>
+        <img src={react1} alt=""/>
         <p>
         Luckily, npm package manager is automatically installed with Node.js. To double check whether or not you have npm, you can type the following command into your terminal:
         </p>

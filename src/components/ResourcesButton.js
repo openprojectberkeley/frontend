@@ -6,7 +6,7 @@ function ResourcesButton({ button, content, state }) {
 
   const handleButtonClick = () => {
     setExpanded(!expanded);
-    if (content.length === 0) {
+    if (content.length == 0) {
       state(button);
     }
   };
@@ -14,7 +14,7 @@ function ResourcesButton({ button, content, state }) {
   return (
     <div className={styles.container}>
       <button className={styles.button} onClick={handleButtonClick}>
-        {content.length = 0 && <div className={`${styles['triangle-shape']} ${expanded ? styles.rotate : ''}`}></div>}
+        {content.length != 0 && <div className={`${styles['triangle-shape']} ${expanded ? styles.rotate : ''}`}></div>}
         <span className={styles.label}>{button}</span>
       </button>
       <div className={`${styles.content} ${expanded ? styles.expand : ''}`}>
