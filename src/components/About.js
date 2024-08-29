@@ -1,5 +1,8 @@
+import React from 'react';
 import styles from "../css/About.module.css";
 import orangeCurve from "../images/orangecurve.png";
+import aboutBlueCurveBottom from "../images/about/aboutBlueCurveBottom.png";
+import aboutBlueCurveTop from "../images/about/aboutBlueCurveTop.png";
 import pwicon from "../images/pwicon.png";
 import linkedinicon from "../images/linkedinicon.png";
 import inclusiveCommunity from "../images/about/inclusiveCommunity.png";
@@ -7,154 +10,146 @@ import chooseYourOwnPath from "../images/about/chooseYourOwnPath.png";
 import buildAndLearnTogether from "../images/about/buildAndLearnTogether.png";
 import challengeYourLimits from "../images/about/challengeYourLimits.png";
 
-import teamCover from "../images/about/spring2024/team.png";
+//team photo
+import teamCover from "../images/about/fall2024/website.JPG"; // Update this path
 
-// active members
-import ayush from "../images/about/fall2023/ayush.webp";
-import uyen from "../images/about/fall2023/uyen.webp";
-import nawoda from "../images/about/spring2024/nawoda.webp";
-import pranav from "../images/about/spring2024/pranav.webp";
-import rachel from "../images/about/spring2024/rachel.webp";
-import anish from "../images/about/spring2024/anish.webp";
-import joel from "../images/about/fall2023/joel.webp";
-import nhu from "../images/about/fall2023/nhu.webp";
-import harika from "../images/about/spring2024/harika.webp";
-import iris from "../images/about/fall2023/iris.webp";
-import chris from "../images/about/spring2024/chris.webp";
-import jess from "../images/about/spring2024/jess.webp";
-import shobhan from "../images/about/spring2024/shobhan.webp";
-import rohan from "../images/about/spring2024/rohan.webp";
-import areeya from "../images/about/spring2024/areeya.webp";
-import damond from "../images/about/spring2024/damond.webp";
-import eric from "../images/about/spring2024/eric.webp";
-import japinder from "../images/about/spring2024/japinder.webp";
-import kitty from "../images/about/spring2024/kitty.webp";
-import morgan from "../images/about/spring2024/morgan.webp";
-import joanne from "../images/about/spring2024/joanne.webp";
-import rachelhu from "../images/about/spring2024/rachelhu.webp";
+// Exec
+import pranav from "../images/about/fall2024/pranav.JPG";
+import nawoda from "../images/about/fall2024/Nawoda.JPG";
+import rachel from "../images/about/fall2024/rachel.JPG";
+import payamullah from "../images/about/fall2024/payam.JPG";
+import chaerin from "../images/about/fall2024/chaerin.JPG";
+import bilguun from "../images/about/fall2024/bilguun.JPG";
+import sia from "../images/about/fall2024/sia.JPG";
+import danh from "../images/about/fall2024/Danh.JPG";
+import shobhan from "../images/about/fall2024/shobhan.JPG";
+import morgan from "../images/about/fall2024/morgan.JPG";
 
+// Project Leads
+import gabriel from "../images/about/fall2024/gabriel.JPG";
+import kunal from "../images/about/fall2024/kunal.JPG";
+import thanh from "../images/about/fall2024/thanh.JPG";
+import eric from "../images/about/fall2024/eric.JPG";
+import damond from "../images/about/fall2024/Damon.JPG";
+import kerry from "../images/about/fall2024/Kerry.JPG";
+import chris from "../images/about/fall2024/chris.JPG";
+import brittney from "../images/about/fall2024/Brittney.JPG";
+import daniel from "../images/about/fall2024/daniel.JPG";
 
-// alumni
+// Alumni
 import ethan from "../images/about/fall2023/ethan.webp";
 import colin from "../images/about/spring2023/colin.webp";
 import nick from "../images/about/spring2023/nick.webp";
+import uyen from "../images/about/fall2023/uyen.webp";
+import joel from "../images/about/fall2023/joel.webp";
+import nhu from "../images/about/fall2023/nhu.webp";
+import jess from "../images/about/spring2024/jess.webp";
+import christopher from "../images/about/spring2024/chris.webp";
+import kitty from "../images/about/spring2024/kitty.webp";
+import rohan from "../images/about/spring2024/rohan.webp";
 import zee from "../images/about/fall2023/zee.webp";
 
 export default function About() {
-  const team = [
+  const board = [
     {
       name: "Pranav Dogra",
       link: "https://www.linkedin.com/in/pranav-dogra-19953a208",
-      title: "Co-President/Project Lead",
+      title: "Co-President",
       image: pranav,
     },
     {
       name: "Nawoda Wijesooriya",
-      link: "https://www.linkedin.com/in/nawoda-wijesooriya-a7903b254",
-      title: "Co-President/Project Lead",
+      link: "https://www.linkedin.com/in/nawodakw/",
+      title: "Co-President",
       image: nawoda,
-    },
-    {
-      name: "Joel Jaison",
-      link: "https://www.linkedin.com/in/joel-jaison/",
-      title: "VP of Tech/Co-Founder",
-      image: joel,
-    },
-    {
-      name: "Uyen Phan",
-      link: "https://uyentphan.com/",
-      title: "VP of Marketing/Co-Founder",
-      image: uyen,
-    },
-    {
-      name: "Nhu Vu",
-      link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
-      title: "Senior Advisor/Co-Founder",
-      image: nhu,
-    },
-    {
-      name: "Iris Tsui",
-      link: "https://www.linkedin.com/in/iris-tsui/",
-      title: "VP of Finance",
-      image: iris,
-    },
-    {
-      name: "Japinder Narula",
-      link: "https://www.linkedin.com/in/japinder-singh-narula-ab48a9192/",
-      title: "VP of Finance/Project Lead",
-      image: japinder,
-    },
-    {
-      name: "Jessica Lee",
-      link: "https://www.linkedin.com/in/jessica-lee-5370b71b4",
-      title: "Senior Advisor",
-      image: jess,
-    },
-    {
-      name: "Anish Goel",
-      link: "",
-      title: "VP of Externals",
-      image: anish,
-    },
-    {
-      name: "Christopher Bannon",
-      link: "https://cbannon.com/",
-      title: "VP of Externals",
-      image: chris,
-    },
-    {
-      name: "Rachel Hu",
-      link: "https://www.linkedin.com/in/rchelhu/",
-      title: "VP of Internals",
-      image: rachelhu,
-    },
-    {
-      name: "Joanne Tran",
-      link: "https://www.linkedin.com/in/tranjoanne/",
-      title: "Project Lead",
-      image: joanne,
-    },
-    {
-      name: "Ayush Verma",
-      link: "https://www.linkedin.com/in/averma18",
-      title: "Project Lead",
-      image: ayush,
-    },
-    {
-      name: "Harika Muthalraj",
-      link: "https://www.linkedin.com/in/harika-raj-5b9182261",
-      title: "Project Lead",
-      image: harika,
     },
     {
       name: "Rachel Hong",
       link: "https://www.linkedin.com/in/rachelgiahong/",
-      title: "Project Lead",
+      title: "VP of Marketing",
       image: rachel,
+    },
+    {
+      name: "Payamullah Erfan",
+      link: "https://www.linkedin.com/in/payam-erfan/",
+      title: "VP of Marketing/Project Lead",
+      image: payamullah,
+    },
+    {
+      name: "Chaerin Lim",
+      link: "https://www.linkedin.com/in/chaerinlim/",
+      title: "VP of Internals",
+      image: chaerin,
+    },
+    {
+      name: "Bilguun Bayarkhuu",
+      link: "https://www.linkedin.com/in/bilguunbayarkhuu/",
+      title: "VP of Internals",
+      image: bilguun,
+    },
+    {
+      name: "Sia Sama",
+      link: "https://www.linkedin.com/in/sia-sama-b50256235/",
+      title: "VP of Externals",
+      image: sia,
+    },
+    {
+      name: "Danh Tran",
+      link: "https://www.linkedin.com/in/danh-tran-55b646212/",
+      title: "VP of Finance",
+      image: danh,
     },
     {
       name: "Shobhan Mangla",
       link: "https://www.linkedin.com/in/shobhanmangla/",
-      title: "Project Lead",
+      title: "VP of Projects",
       image: shobhan,
     },
     {
-      name: "Rohan Agarwal",
-      link: "https://www.linkedin.com/in/rohan-agarwal-2908321a1",
+      name: "Morgan Dehdashti",
+      link: "https://www.linkedin.com/in/morgan-dehdashti-46b160272/",
+      title: "VP of Projects",
+      image: morgan,
+    },
+  ];
+
+  const projectLeads = [
+    {
+      name: "Gabriel Gomes",
+      link: "https://www.linkedin.com/in/gabriel-gomes-1a0a03203/",
       title: "Project Lead",
-      image: rohan,
+      image: gabriel,
     },
     {
-      name: "Areeya Tipyasothi",
-      link: "https://www.linkedin.com/in/areeya-tipyasothi/",
+      name: "Brittney Chan",
+      link: "https://www.linkedin.com/in/brittney-chan/",
       title: "Project Lead",
-      image: areeya,
+      image: brittney,
     },
     {
-      name: "Dadmond Fang",
+      name: "Kunal Agrawal",
+      link: "https://www.linkedin.com/in/kunal-agrawal-697824203/",
+      title: "Project Lead",
+      image: kunal,
+    },
+    {
+      name: "Thanh Tran",
+      link: "https://www.linkedin.com/in/thanhcongtran/",
+      title: "Project Lead",
+      image: thanh,
+    },
+    {
+      name: "Damond Fang",
       link: "https://www.linkedin.com/in/damond-fang-2b941520b/",
       title: "Project Lead",
       image: damond,
+    },
+   
+    {
+      name: "Kerry Pan",
+      link: "https://www.linkedin.com/in/kerrypan25/",
+      title: "Project Lead",
+      image: kerry,
     },
     {
       name: "Eric Liang",
@@ -163,16 +158,17 @@ export default function About() {
       image: eric,
     },
     {
-      name: "Kitty Ng",
-      link: "https://www.linkedin.com/in/kitty-ng-443678246/",
+      name: "Daniel Ochoa Garcia",
+      link: "https://www.linkedin.com/in/danielochoaga/",
       title: "Project Lead",
-      image: kitty,
+      image: daniel,
     },
+    
     {
-      name: "Morgan Dehdashti",
-      link: "https://www.linkedin.com/in/morgan-dehdashti-46b160272/",
+      name: "Chris Lopez",
+      link: "https://www.linkedin.com/in/chrislopez35/",
       title: "Project Lead",
-      image: morgan,
+      image: chris,
     },
   ];
 
@@ -196,12 +192,91 @@ export default function About() {
       image: colin,
     },
     {
+      name: "Uyen Phan",
+      link: "https://uyentphan.com/",
+      title: "Co-Founder",
+      image: uyen,
+    },
+    {
+      name: "Joel Jaison",
+      link: "https://www.linkedin.com/in/joel-jaison/",
+      title: "Co-Founder",
+      image: joel,
+    },
+    {
+      name: "Nhu Vu",
+      link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
+      title: "Co-Founder",
+      image: nhu,
+    },
+    {
+      name: "Jessica Lee",
+      link: "https://www.linkedin.com/in/jessica-lee-5370b71b4",
+      title: "",
+      image: jess,
+    },
+    {
+      name: "Christopher Bannon",
+      link: "https://cbannon.com/",
+      title: "",
+      image: christopher,
+    },
+    {
+      name: "Kitty Ng",
+      link: "https://www.linkedin.com/in/kitty-ng-443678246/",
+      title: "",
+      image: kitty,
+    },
+    {
+      name: "Rohan Agarwal",
+      link: "https://www.linkedin.com/in/rohan-agarwal-2908321a1",
+      title: "",
+      image: rohan,
+    },
+    {
       name: "Zee Babar",
       link: "https://www.linkedin.com/in/moebabar",
-      title: "Project Lead",
+      title: "",
       image: zee,
     },
   ];
+
+
+
+  const renderPeople = (people) => {
+    return people.map((person) => (
+      <div className={styles.person} key={person.name}>
+        <div className={styles.imageWrapper}>
+          <img
+            className={styles.gridImage}
+            src={person.image}
+            alt={person.name}
+          />
+        </div>
+        <div className={styles.name}>
+          <h3>{person.name}</h3>
+          {person.link && (
+            <a
+              href={person.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={
+                  person.link.includes("linkedin")
+                    ? linkedinicon
+                    : pwicon
+                }
+                className={styles.icon}
+                alt={`${person.name}'s profile link`}
+              />
+            </a>
+          )}
+        </div>
+        <p className={styles.title}>{person.title}</p>
+      </div>
+    ));
+  };
 
   return (
     <div>
@@ -220,7 +295,25 @@ export default function About() {
               on tech projects most meaningful to them.
             </h3>
           </div>
-          <div className={styles.ourValues} id="values">
+          <div className={styles.aboutPics}>
+            <h1>Fall 2024 Board</h1>
+            <h2>Executive Team</h2>
+            <div className={styles.people}>
+              {renderPeople(board)}
+            </div>
+            <h2>Project Leads</h2>
+            <div className={styles.people}>
+              {renderPeople(projectLeads)}
+            </div>
+            <h2>OP Alumni</h2>
+            <div className={styles.people}>
+              {renderPeople(alumni)}
+            </div>
+          </div>
+        </div>
+      </div>
+        <div className={styles.marginFromScreen}>
+          <div className={styles.ourValues}>
             <h1>Our Values</h1>
             <div className={styles.values}>
               <div className={styles.value}>
@@ -266,73 +359,6 @@ export default function About() {
           </div>
         </div>
       </div>
-      <img src={orangeCurve} className={styles.orangeCurve} alt="" />
-      <div className={`${styles.aboutBottomHalf} limitWidth`} id="team">
-        <div className={styles.aboutPics}>
-          <h1>Meet the Team</h1>
-          <div className={styles.people}>
-            {team.map((person) => (
-              <div className={styles.person}>
-                <img
-                  className={styles.gridImage}
-                  src={person.image}
-                  alt={person.name}
-                />
-                <div className={styles.name}>
-                  <h3>{person.name}</h3>
-                  {person.link && (
-                    <a
-                      href={person.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img
-                        src={
-                          person.link.includes("linkedin")
-                            ? linkedinicon
-                            : pwicon
-                        }
-                        className={styles.icon}
-                        alt=""
-                      />
-                    </a>
-                  )}
-                </div>
-                <p className={styles.title}>{person.title}</p>
-              </div>
-            ))}
-          </div>
-          <h1>Alumni</h1>
-          <div className={styles.people}>
-            {alumni.map((person) => (
-              <div className={styles.person}>
-                <img
-                  className={styles.gridImage}
-                  src={person.image}
-                  alt={person.name}
-                />
-                <div className={styles.name}>
-                  <h3>{person.name}</h3>
-                  <a
-                    href={person.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src={
-                        person.link.includes("linkedin") ? linkedinicon : pwicon
-                      }
-                      className={styles.icon}
-                      alt=""
-                    />
-                  </a>
-                </div>
-                <p className={styles.title}>{person.title}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+   
   );
 }

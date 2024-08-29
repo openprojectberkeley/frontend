@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import styles from '../css/Apply.module.css';
 import faqPlus from "../images/faqPlus.png";
 import orangeCurve from "../images/orangecurve.png";
-
 import homeStyles from "../css/HomePage.module.css";
 import applyCurveBlue from '../images/applyCurveBlue.png';
 
@@ -126,26 +125,26 @@ export default function Apply() {
           <div className="limitWidth">
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
-              <p>The application for Spring 2024 will open on <b>Thursday, January 25th</b> and are due <b>Sunday, January 28th at 11:59 pm</b>. Click the button to get started!</p>
-              <a href="https://docs.google.com/forms/d/e/1FAIpQLSfwJ5pSjP_JMkqLiAFAeVxMnumnx1iE72FI8g4EGrrv0sOupQ/viewform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+              <p>The application for Fall 2024 will open on <b>Wednesday, September 11th</b> and are due <b>Monday, September 16th at 11:59 pm</b>. Click the button to get started!</p>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLScq6GHf6vF4DdODvO6-vtPvgyzXSZ1ahQvL0wzuwqqbsIbGvA/closedform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
         </div>
-        <img src={applyCurveBlue} className={styles.blueCurve} />
+        <img src={applyCurveBlue} className={styles.blueCurve} alt="Blue curve decoration" />
         <div className="limitWidth">
           <div className={styles.timeline}>
             <div className={styles.timelineWidth} id="timeline">
               <h1>Recruitment Timeline</h1>
-              <p className={styles.importantNote}>*It is mandatory to attend the infosession and team meet & greet to apply!</p>
+              <p className={styles.importantNote}>*It is mandatory to attend the infosession, team meet & greet, and coffee chat a board member to apply!</p>
               <div className={styles.timelineContent}>
                 <div className={styles.outer}>
                   <div className={styles.card}>
                     <div className={styles.info}>
                       <h1 className={styles.title}>01</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>1/17-1/22</h3>
-                        {/* <h3 className={styles.subtitle}>Applications Due</h3> */}
-                        <p className={styles.information}>Tabling - come meet us on Sproul!</p>
+                        <h3 className={styles.date}>Sept 3</h3>
+                        <h3 className={styles.subtitle}>Data Bytes</h3>
+                        <p className={styles.information}>Join us for Data Bytes on <span className={styles.blue}>Sunday, September 3rd 8pm @ GPBB 100</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -154,14 +153,14 @@ export default function Apply() {
                       <h1 className={styles.title}>02</h1>
                       <div className={styles.stackContent}>
                         <div className={styles.content}>
-                          <h3 className={styles.date}>1/19</h3>
-                          <h3 className={styles.subtitle}>Infosession #1</h3>
-                          <p className={styles.information}>Join us for our first infosession on <span className={styles.blue}>Friday, January 19th 8pm @ Dwinelle 88</span>. We'll dive into what our club is all about and share our plans for the semester. To apply for the club, attending at least one of the two infosessions is a must!</p>
+                          <h3 className={styles.date}>Sept 6</h3>
+                          <h3 className={styles.subtitle}>Club Infosession 1</h3>
+                          <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Wednesday, September 6th 8pm @ Dwinelle 88</span>.</p>
                         </div>
                         <div className={styles.content}>
-                          <h3 className={styles.date}>1/22</h3>
-                          <h3 className={styles.subtitle}>Infosession #2</h3>
-                          <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Monday, January 22nd 9pm @ DWIN 219</span>. If you couldn't make it to the first info session, this serves as an alternative!</p>
+                          <h3 className={styles.date}>Sept 10</h3>
+                          <h3 className={styles.subtitle}>Club Infosession 2</h3>
+                          <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Sunday, September 10th 8pm @ Evans 10</span>.</p>
                         </div>
                       </div>
                     </div>
@@ -170,25 +169,19 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>03</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>1/25</h3>
-                        <p className={styles.information}>Application opens!</p>
+                        <h3 className={styles.date}>Sept 11</h3>
+                        <h3 className={styles.subtitle}>Meet & Greet 1 and Applications Open</h3>
+                        <p className={styles.information}>Applications open and our first Meet & Greet is on <span className={styles.blue}>Monday, September 11th 8pm @ Dwinelle 88</span>.</p>
                       </div>
                     </div>
                   </div>
                   <div className={styles.card}>
                     <div className={styles.info}>
                       <h1 className={styles.title}>04</h1>
-                      <div className={styles.stackContent}>
-                        <div className={styles.content}>
-                          <h3 className={styles.date}>1/24</h3>
-                          <h3 className={styles.subtitle}>Team Meet & Greet #1</h3>
-                          <p className={styles.information}>Join us for our first team meet & greet on <span className={styles.blue}>Wednesday, January 24th 9pm @ SOCS 60</span>. Discover this semester's projects and get your questions answered. Attending one of the two meet & greets is a must to apply for the club!</p>
-                        </div>
-                        <div className={styles.content}>
-                          <h3 className={styles.date}>1/25</h3>
-                          <h3 className={styles.subtitle}>Team Meet & Greet #2</h3>
-                          <p className={styles.information}>Our second team meet & greet is on <span className={styles.blue}>Thursday, January 25th 9pm @ SOCS 126</span>. If you couldn't make it to the first meet & greet, this serves as an alternative!</p>
-                        </div>
+                      <div className={styles.content}>
+                        <h3 className={styles.date}>Sept 12</h3>
+                        <h3 className={styles.subtitle}>Meet & Greet 2</h3>
+                        <p className={styles.information}>Our second Meet & Greet is on <span className={styles.blue}>Tuesday, September 12th 8pm @ Dwinelle 88</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -196,8 +189,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>05</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>1/28</h3>
-                        <p className={styles.information}>Applications are due <span className={styles.blue}>Sunday, January 28th at 11:59pm</span>!</p>
+                        <h3 className={styles.date}>Sept 16</h3>
+                        <h3 className={styles.subtitle}>Applications Due</h3>
+                        <p className={styles.information}>Applications are due <span className={styles.blue}>Saturday, September 16th at 11:59pm</span>!</p>
                       </div>
                     </div>
                   </div>
@@ -211,9 +205,10 @@ export default function Apply() {
       <img 
         src={orangeCurve} 
         className={styles.orangeCurve}
-        alt="orangeCurve"  
-      ></img>
+        alt="Orange curve decoration"  
+      />
       {renderAllFaqs()}
     </div>
   );
 }
+
