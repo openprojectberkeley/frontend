@@ -52,7 +52,7 @@ All prospective members must attend 1 infosession and 1 meet & greet!`
   [
   "Are there any club dues?",
 
-  "To help support the club's activities and ensure its sustainability, there is a $15 fee due at the start of each semester. This fee is used to cover expenses such as club socials, necessary supplies, and other costs associated with running the club. This small investment is essential to the club's success and allows us to provide a wide range of opportunities for members to learn, grow, and create meaningful projects."
+  "To help support the club's activities and ensure its sustainability, there is a $30 fee due at the start of each semester. This fee is used to cover expenses such as club socials, necessary supplies, and other costs associated with running the club. This small investment is essential to the club's success and allows us to provide a wide range of opportunities for members to learn, grow, and create meaningful projects."
   ]
 ];
 
