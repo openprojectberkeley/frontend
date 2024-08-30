@@ -5,6 +5,7 @@ import aboutBlueCurveBottom from "../images/about/aboutBlueCurveBottom.png";
 import aboutBlueCurveTop from "../images/about/aboutBlueCurveTop.png";
 import pwicon from "../images/pwicon.png";
 import linkedinicon from "../images/linkedinicon.png";
+import coffeechaticon from "../images/coffeechat.png";
 import inclusiveCommunity from "../images/about/inclusiveCommunity.png";
 import chooseYourOwnPath from "../images/about/chooseYourOwnPath.png";
 import buildAndLearnTogether from "../images/about/buildAndLearnTogether.png";
@@ -54,60 +55,70 @@ export default function About() {
     {
       name: "Pranav Dogra",
       link: "https://www.linkedin.com/in/pranav-dogra-19953a208",
+      coffee_chat:"https://calendly.com/pranav-dogra/open-project-coffee-chats",
       title: "Co-President",
       image: pranav,
     },
     {
-      name: "Nawoda Wijesooriya",
+      name: "Nawoda W",
       link: "https://www.linkedin.com/in/nawodakw/",
+      coffee_chat:"https://calendly.com/nawodakw/open-project-coffee-chats",
       title: "Co-President",
       image: nawoda,
     },
     {
       name: "Rachel Hong",
       link: "https://www.linkedin.com/in/rachelgiahong/",
+      coffee_chat:"https://calendly.com/rachelgiahong",
       title: "VP of Marketing",
       image: rachel,
     },
     {
       name: "Payamullah Erfan",
       link: "https://www.linkedin.com/in/payam-erfan/",
+      coffee_chat:"https://calendly.com/payamerfan-berkeley/30min",
       title: "VP of Marketing/Project Lead",
       image: payamullah,
     },
     {
       name: "Chaerin Lim",
       link: "https://www.linkedin.com/in/chaerinlim/",
+      coffee_chat:"https://calendly.com/chaerinlim",
       title: "VP of Internals",
       image: chaerin,
     },
     {
       name: "Bilguun Bayarkhuu",
       link: "https://www.linkedin.com/in/bilguunbayarkhuu/",
+      coffee_chat:"https://calendly.com/bilguunb-berkeley",
       title: "VP of Internals",
       image: bilguun,
     },
     {
       name: "Sia Sama",
       link: "https://www.linkedin.com/in/sia-sama-b50256235/",
+      coffee_chat:"https://calendly.com/siasama-berkeley/30min",
       title: "VP of Externals",
       image: sia,
     },
     {
       name: "Danh Tran",
       link: "https://www.linkedin.com/in/danh-tran-55b646212/",
+      coffee_chat:"https://calendly.com/danht-berkeley/op-coffee-chat",
       title: "VP of Finance",
       image: danh,
     },
     {
       name: "Shobhan Mangla",
       link: "https://www.linkedin.com/in/shobhanmangla/",
+      coffee_chat:"https://calendly.com/shobhan-mangla-berkeley/30min",
       title: "VP of Projects",
       image: shobhan,
     },
     {
       name: "Morgan Dehdashti",
       link: "https://www.linkedin.com/in/morgan-dehdashti-46b160272/",
+      coffee_chat:"https://calendly.com/mdehdashti-berkeley/open-project-coffee-chats",
       title: "VP of Projects",
       image: morgan,
     },
@@ -117,30 +128,35 @@ export default function About() {
     {
       name: "Gabriel Gomes",
       link: "https://www.linkedin.com/in/gabriel-gomes-1a0a03203/",
+      coffee_chat:"https://calendly.com/gabgom784/30min",
       title: "Project Lead",
       image: gabriel,
     },
     {
       name: "Brittney Chan",
       link: "https://www.linkedin.com/in/brittney-chan/",
+      coffee_chat:"https://calendly.com/brittneychan-berkeley/30min",
       title: "Project Lead",
       image: brittney,
     },
     {
       name: "Kunal Agrawal",
       link: "https://www.linkedin.com/in/kunal-agrawal-697824203/",
+      coffee_chat:"https://calendly.com/kunal-agrawal-berkeley",
       title: "Project Lead",
       image: kunal,
     },
     {
       name: "Thanh Tran",
       link: "https://www.linkedin.com/in/thanhcongtran/",
+      coffee_chat:"https://calendly.com/thanhctran-berkeley/opcc",
       title: "Project Lead",
       image: thanh,
     },
     {
       name: "Damond Fang",
       link: "https://www.linkedin.com/in/damond-fang-2b941520b/",
+      coffee_chat:"https://calendly.com/damond-berkeley/30min",
       title: "Project Lead",
       image: damond,
     },
@@ -148,18 +164,21 @@ export default function About() {
     {
       name: "Kerry Pan",
       link: "https://www.linkedin.com/in/kerrypan25/",
+      coffee_chat:"https://calendly.com/kerrypan25/coffee-chat",
       title: "Project Lead",
       image: kerry,
     },
     {
       name: "Eric Liang",
       link: "https://www.linkedin.com/in/ericjliang/",
+      coffee_chat:"https://calendly.com/eliang17-berkeley/open-project-coffee-chat",
       title: "Project Lead",
       image: eric,
     },
     {
-      name: "Daniel Ochoa Garcia",
+      name: "Daniel O Garcia",
       link: "https://www.linkedin.com/in/danielochoaga/",
+      coffee_chat:"https://calendly.com/daniel_ochoa-1",
       title: "Project Lead",
       image: daniel,
     },
@@ -167,6 +186,7 @@ export default function About() {
     {
       name: "Chris Lopez",
       link: "https://www.linkedin.com/in/chrislopez35/",
+      coffee_chat:"https://calendly.com/chris-osw-lopez-berkeley/30min",
       title: "Project Lead",
       image: chris,
     },
@@ -198,16 +218,16 @@ export default function About() {
       image: uyen,
     },
     {
-      name: "Joel Jaison",
-      link: "https://www.linkedin.com/in/joel-jaison/",
-      title: "Co-Founder",
-      image: joel,
-    },
-    {
       name: "Nhu Vu",
       link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
       title: "Co-Founder",
       image: nhu,
+    },
+    {
+      name: "Joel Jaison",
+      link: "https://www.linkedin.com/in/joel-jaison/",
+      title: "Co-Founder",
+      image: joel,
     },
     {
       name: "Jessica Lee",
@@ -265,6 +285,24 @@ export default function About() {
                 src={
                   person.link.includes("linkedin")
                     ? linkedinicon
+                    : pwicon
+                }
+                className={styles.icon}
+                alt={`${person.name}'s profile link`}
+              />
+            </a>
+
+          )}
+          {person.coffee_chat && (
+            <a
+              href={person.coffee_chat}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={
+                  person.coffee_chat.includes("calendly")
+                    ? coffeechaticon
                     : pwicon
                 }
                 className={styles.icon}
