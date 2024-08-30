@@ -218,16 +218,16 @@ export default function About() {
       image: uyen,
     },
     {
-      name: "Joel Jaison",
-      link: "https://www.linkedin.com/in/joel-jaison/",
-      title: "Co-Founder",
-      image: joel,
-    },
-    {
       name: "Nhu Vu",
       link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
       title: "Co-Founder",
       image: nhu,
+    },
+    {
+      name: "Joel Jaison",
+      link: "https://www.linkedin.com/in/joel-jaison/",
+      title: "Co-Founder",
+      image: joel,
     },
     {
       name: "Jessica Lee",

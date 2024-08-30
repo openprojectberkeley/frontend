@@ -144,30 +144,33 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 3</h3>
                         <h3 className={styles.subtitle}>Data Bytes</h3>
-                        <p className={styles.information}>Join us for Data Bytes on <span className={styles.blue}>Sunday, September 3rd 8pm @ GPBB 100</span>.</p>
+                        <p className={styles.information}>Join us for Data Bytes, the first ever joint Data Science club infosession on <span className={styles.blue}>Sunday, September 3rd 8pm @ GPBB 100</span>.</p>
                       </div>
                     </div>
                   </div>
                   <div className={styles.card}>
                     <div className={styles.info}>
                       <h1 className={styles.title}>02</h1>
-                      <div className={styles.stackContent}>
-                        <div className={styles.content}>
-                          <h3 className={styles.date}>Sept 6</h3>
-                          <h3 className={styles.subtitle}>Club Infosession 1</h3>
-                          <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Wednesday, September 6th 8pm @ Dwinelle 88</span>.</p>
-                        </div>
-                        <div className={styles.content}>
-                          <h3 className={styles.date}>Sept 10</h3>
-                          <h3 className={styles.subtitle}>Club Infosession 2</h3>
-                          <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Sunday, September 10th 8pm @ Evans 10</span>.</p>
-                        </div>
+                      <div className={styles.content}>
+                        <h3 className={styles.date}>Sept 6</h3>
+                        <h3 className={styles.subtitle}>Club Infosession 1</h3>
+                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Wednesday, September 6th 8pm @ Dwinelle 88</span>.</p>
                       </div>
                     </div>
                   </div>
                   <div className={styles.card}>
                     <div className={styles.info}>
                       <h1 className={styles.title}>03</h1>
+                      <div className={styles.content}>
+                        <h3 className={styles.date}>Sept 10</h3>
+                        <h3 className={styles.subtitle}>Club Infosession 2</h3>
+                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Sunday, September 10th 8pm @ Evans 10</span>.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.card}>
+                    <div className={styles.info}>
+                      <h1 className={styles.title}>04</h1>
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 11</h3>
                         <h3 className={styles.subtitle}>Meet & Greet 1 and Applications Open</h3>
@@ -177,7 +180,7 @@ export default function Apply() {
                   </div>
                   <div className={styles.card}>
                     <div className={styles.info}>
-                      <h1 className={styles.title}>04</h1>
+                      <h1 className={styles.title}>05</h1>
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 12</h3>
                         <h3 className={styles.subtitle}>Meet & Greet 2</h3>
@@ -187,7 +190,7 @@ export default function Apply() {
                   </div>
                   <div className={styles.card}>
                     <div className={styles.info}>
-                      <h1 className={styles.title}>05</h1>
+                      <h1 className={styles.title}>06</h1>
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 16</h3>
                         <h3 className={styles.subtitle}>Applications Due</h3>
@@ -211,4 +214,3 @@ export default function Apply() {
     </div>
   );
 }
-
