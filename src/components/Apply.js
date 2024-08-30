@@ -144,7 +144,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 3</h3>
                         <h3 className={styles.subtitle}>Data Bytes</h3>
-                        <p className={styles.information}>Join us for Data Bytes, the first ever joint Data Science club infosession on <span className={styles.blue}>Sunday, September 3rd 8pm @ GPBB 100</span>.</p>
+                        <p className={styles.information}>Join us for Data Bytes, the first ever joint Data Science club infosession on <span className={styles.blue}>Sunday, September 3rd 8pm @ GPBB 100</span>!</p>
                       </div>
                     </div>
                   </div>
