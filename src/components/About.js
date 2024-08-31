@@ -55,7 +55,7 @@ export default function About() {
     {
       name: "Pranav Dogra",
       link: "https://www.linkedin.com/in/pranav-dogra-19953a208",
-      coffee_chat:"https://calendly.com/pranav-dogra/open-project-coffee-chats",
+      coffee_chat:"https://calendly.com/pranav-dogra/coffee-chats",
       title: "Co-President",
       image: pranav,
     },
