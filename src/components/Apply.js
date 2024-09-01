@@ -164,7 +164,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 10</h3>
                         <h3 className={styles.subtitle}>Club Infosession 2</h3>
-                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Sunday, September 10th 8pm @ Evans 10</span>.</p>
+                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Tuesday, September 10th 8pm @ Evans 10</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -174,7 +174,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 11</h3>
                         <h3 className={styles.subtitle}>Meet & Greet 1 and Applications Open</h3>
-                        <p className={styles.information}>Applications open and our first Meet & Greet is on <span className={styles.blue}>Monday, September 11th 8pm @ Dwinelle 88</span>.</p>
+                        <p className={styles.information}>Applications open and our first Meet & Greet is on <span className={styles.blue}>Wednesday, September 11th 8pm @ Dwinelle 88</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -184,7 +184,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 12</h3>
                         <h3 className={styles.subtitle}>Meet & Greet 2</h3>
-                        <p className={styles.information}>Our second Meet & Greet is on <span className={styles.blue}>Tuesday, September 12th 8pm @ Dwinelle 88</span>.</p>
+                        <p className={styles.information}>Our second Meet & Greet is on <span className={styles.blue}>Thursday, September 12th 8pm @ Dwinelle 88</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -194,7 +194,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Sept 16</h3>
                         <h3 className={styles.subtitle}>Applications Due</h3>
-                        <p className={styles.information}>Applications are due <span className={styles.blue}>Saturday, September 16th at 11:59pm</span>!</p>
+                        <p className={styles.information}>Applications are due <span className={styles.blue}>Monday, September 16th at 11:59pm</span>!</p>
                       </div>
                     </div>
                   </div>
