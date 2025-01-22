@@ -21,7 +21,7 @@ import rachel from "../images/about/fall2024/rachel.JPG";
 import payamullah from "../images/about/fall2024/payam.JPG";
 import chaerin from "../images/about/fall2024/chaerin.JPG";
 import bilguun from "../images/about/fall2024/bilguun.JPG";
-import sia from "../images/about/fall2024/sia.JPG";
+import sia from "../images/about/spring2025/sia.jpg";
 import danh from "../images/about/fall2024/Danh.JPG";
 import shobhan from "../images/about/fall2024/shobhan.JPG";
 import morgan from "../images/about/fall2024/morgan.JPG";
@@ -53,9 +53,9 @@ import zee from "../images/about/fall2023/zee.webp";
 export default function About() {
   const board = [
     {
-      name: "Pranav Dogra",
-      link: "https://www.linkedin.com/in/pranav-dogra-19953a208",
-      coffee_chat:"https://calendly.com/pranav-dogra/coffee-chats",
+      name: "Sia Sama",
+      link: "www.linkedin.com/in/sia-sama-b502562358",
+      coffee_chat:"https://calendly.com/siasama-berkeley/30min",
       title: "Co-President",
       image: pranav,
     },
