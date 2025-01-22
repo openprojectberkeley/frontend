@@ -54,10 +54,10 @@ export default function About() {
   const board = [
     {
       name: "Sia Sama",
-      link: "www.linkedin.com/in/sia-sama-b502562358",
+      link: "https://www.linkedin.com/in/nawodakw/",
       coffee_chat:"https://calendly.com/siasama-berkeley/30min",
       title: "Co-President",
-      image: pranav,
+      image: sia,
     },
     {
       name: "Nawoda W",
