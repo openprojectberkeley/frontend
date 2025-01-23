@@ -9,25 +9,29 @@ const faqList = [
   [
     "What sets this club apart from other tech clubs?",
   
-    `This club is unique in that it serves as a true medium for passionate creators to work on projects that are most meaningful to them. Members have the ability to suggest ideas for projects and then rank and choose the projects they want to work on each semester. 
-    
-Unlike other clubs that may rely on rigorous selection processes, we believe that every student with a technical background should have the opportunity to learn, grow and contribute. Our approach allows for a highly personalized and fulfilling experience for all members.`
+    `Open Project is unique in that our community is built on the principle of ensuring the best club experience possible for everybody. 
+
+We do not believe in a rigorous application process as we believe that every student with an interest in tech and the motivation to succed in tech should have a space to improve their technical skills while finding a like-minded community they can be a part of.
+
+We also have a unique project matching process, where prospective members rank the projets they are interested in the most, to ensure that the work our members engage in are meaningful to them. This ensures a highly personalized and fulfilling process for all members. `
   ],
 
   [
   "Who can join?",
   
-  `If you are passionate about creating meaningful projects and working in a team environment, then this club is perfect for you! We are dedicated to redefining the culture of tech clubs at UC Berkeley, and welcome individuals of all backgrounds, from beginners to advanced developers.
-  
-While we welcome individuals of all backgrounds, to be able to fully participate and contribute, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. This technical background will allow members to engage fully in the projects of the club.
+  `We welcome everybody of all interests and ages! Whether you are a seasoned programmer or just trying to see if tech is a career for you, OP has a space dedicated to helping you grow. 
 
-All prospective members must attend 1 infosession and 1 meet & greet!`
+  Open Project offers several programs to it’s members based on skill level. For those just getting started in tech, we have our Professional Development program where members will learn the fundamentals of web development and data science. 
+  
+  For more seasoned programmers and data scientists, we have passion projects led by project managers in teams of 10-15 where they work semester long in projects of varying scope and interests.
+  
+  We also have several client projects, where we work with entities outside of UC Berkeley. These projects are led by our most talented and skilled project managers to ensure our highest quality of work. 
+  
+  As a reminder, all prospective applicants must attend 1 infosession, 1 meet and greet, and coffee chat one member to apply. Infosession 1 and 2 cover the same material but serve as alternative dates for those that can’t make one.`
   ],
 
   [
-  "Is there a social aspect to this club?",
-
-  "Yes, getting close to your club members is one of our main focuses! You will be placed on a team to work on a project and are expected to meet frequently and collaborate with your team members. Socials beyond general project team meetings will vary by team, but there will be multiple club wide socials throughout the semester so you have the chance to meet everyone in the club!"
+  "Is there a social aspect to this club?", "Yes! One of the main focuses outside of building technical experience in Open Project is fostering a strong tech community on campus. We have a big-little program, where new members can be paired with either upperclassmen or those who have spent more time in the club. They serve as friends and mentors! You will also be spending a lot of time in your project team, and chumming is a big part of our club, where you can spend time outside of work to bond with your teammates! We also host various socials and cross-club socials to help you build an extensive network."
   ],
 
 
@@ -46,7 +50,7 @@ All prospective members must attend 1 infosession and 1 meet & greet!`
   [
  " I have no previous coding experience. What should I do?",
 
- "To be able to fully engage and contribute to the projects of the club, we expect members to have completed or be currently enrolled in CS 61A (or equivalent) or have previous coding experience. If you don't have these qualifications, we recommend either enrolling in CS 61A/CS 88 or following tutorials and building a personal project to gain familiarity and proficiency with coding. This will help ensure that members can fully participate and benefit from the club."
+ "No worries! Our Professional Development progam has been meticuously engineered to help you build the fundamental skills necessary to succeed in the industry. From learning about web development to data science, you can build skills that will outlast college! "
   ],
 
   [
@@ -143,7 +147,7 @@ export default function Apply() {
                       <h1 className={styles.title}>01</h1>
                       <div className={styles.content}>
                         <h3 className={styles.date}>Jan 24</h3>
-                        <h3 className={styles.subtitle}>Data Bytes</h3>
+                        <h3 className={styles.subtitle}>Data Bytes & Applications Open</h3>
                         <p className={styles.information}>Join us for Data Bytes, the first ever joint Data Science club infosession on <span className={styles.blue}>Friday, Jan 24th 6pm @ East Pauley Ballroom</span>!</p>
                       </div>
                     </div>
@@ -153,7 +157,7 @@ export default function Apply() {
                       <h1 className={styles.title}>02</h1>
                       <div className={styles.content}>
                         <h3 className={styles.date}>Jan 30th</h3>
-                        <h3 className={styles.subtitle}>Club Infosession 1 & Applications Open</h3>
+                        <h3 className={styles.subtitle}>Club Infosession 1</h3>
                         <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Thursday, Jan 30th 8pm</span>.</p>
                       </div>
                     </div>
@@ -184,7 +188,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Feb 4th</h3>
                         <h3 className={styles.subtitle}>Meet & Greet 2 and Applications Due</h3>
-                        <p className={styles.information}>Our second Meet & Greet is on <span className={styles.blue}>Tuesday, Feb 4th 8pm</span>.</p>
+                        <p className={styles.information}>Our second Meet & Greet is on <span className={styles.blue}>Tuesday, Feb 4th 8pm</span> and applications are due <span className={styles.blue}>11:59 PM</span> that night.</p>
                       </div>
                     </div>
                   </div>
@@ -200,7 +204,7 @@ export default function Apply() {
                   </div>
                 </div>
               </div>
-              <a href="https://docs.google.com/forms/d/e/1FAIpQLSfwJ5pSjP_JMkqLiAFAeVxMnumnx1iE72FI8g4EGrrv0sOupQ/viewform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLScdGpLyQLUrJaIcTmHxM0PyZWdSAP7NXm6Dnov5fKHcRnwsbw/closedform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
         </div>

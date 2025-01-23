@@ -53,7 +53,7 @@ export default function HomePage() {
           </div>
           <div>
             <h1>Community</h1>
-            <h3>Project teams will be with a <span className={styles.orangeText}>small group of students (5-7)</span> to encourage a tight knit community where team members can really get to know each other. Socials beyond general team meetings will vary by team such as after-meeting dinners or late night boba runs. In addition, there will be multiple club wide socials throughout the semester so you have the chance to meet everyone in the club!</h3>
+            <h3>Project teams will be with a <span className={styles.orangeText}>group of students (10-15)</span> to encourage a tight knit community where team members can really get to know each other. Socials beyond general team meetings will vary by team such as after-meeting dinners or late night boba runs. In addition, there will be multiple club wide socials throughout the semester so you have the chance to meet everyone in the club!</h3>
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function HomePage() {
         <div className={styles.joinUs}>
           <div className={styles.joinUsText}>
             <h1>Join us!</h1>
-            <h3>Application deadline is Sunday, January 28th at 11:59 pm. Click the button to learn more!</h3>
+            <h3>Application deadline is Tuesday, Feb 4th at 11:59 pm. Click the button to learn more!</h3>
           </div>
           <div className={styles.joinUsRight}>
             <NavLink to="/apply"><button className={styles.getInvolvedButton}>Get Involved</button></NavLink>

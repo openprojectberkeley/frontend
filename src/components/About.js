@@ -418,12 +418,12 @@ export default function About() {
             </h3>
           </div>
           <div className={styles.aboutPics}>
-            <h1>Fall 2024 Board</h1>
+            <h1>Spring 2025 Board</h1>
             <h2>Executive Team</h2>
             <div className={styles.people}>
               {renderPeople(board)}
             </div>
-            <h2>Project Leads</h2>
+            <h2>Project Managers</h2>
             <div className={styles.people}>
               {renderPeople(projectLeads)}
             </div>
