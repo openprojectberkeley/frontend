@@ -153,7 +153,7 @@ export default function Apply() {
                       <h1 className={styles.title}>02</h1>
                       <div className={styles.content}>
                         <h3 className={styles.date}>Jan 30th</h3>
-                        <h3 className={styles.subtitle}>Club Infosession 1</h3>
+                        <h3 className={styles.subtitle}>Club Infosession 1 & Applications Open</h3>
                         <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Thursdau, Jan 30th 8pm</span>.</p>
                       </div>
                     </div>

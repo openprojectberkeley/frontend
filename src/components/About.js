@@ -47,6 +47,7 @@ import ava from "../images/about/spring2025/ava.jpg";
 import sibi from "../images/about/spring2025/sibi.jpeg";
 import neel from "../images/about/spring2025/neel.webp";
 import devah from "../images/about/spring2025/devah.jpeg";
+import arthur from "../images/about/spring2025/arthur.jpg";
 
 // Alumni
 import ethan from "../images/about/fall2023/ethan.webp";
@@ -74,7 +75,7 @@ export default function About() {
       name: "Bilguun Bayarkhuu",
       link: "https://www.linkedin.com/in/bilguunbayarkhuu/",
       coffee_chat:"https://calendly.com/bilguunb-berkeley/open-project-coffee-chat",
-      title: "VP of Internals",
+      title: "Co-President",
       image: bilguun,
     },
     {
@@ -129,14 +130,14 @@ export default function About() {
       name: "Jenny Liang",
       link: "www.linkedin.com/in/jenny-liang-08571631a/",
       coffee_chat:"https://calendly.com/jennyl5118-berkeley/op-coffee-chat",
-      title: "VP of Projects",
+      title: "VP of Professional Development",
       image: jenny,
     },
     {
       name: "Khush Gandhi",
       link: "https://www.linkedin.com/in/khush-gandhi-0a9353233/",
       coffee_chat:"https://calendly.com/khushgandhi8-berkeley/opcoffeechatss",
-      title: "VP of Projects",
+      title: "VP of Professional Development",
       image: khush,
     },
   ];
@@ -161,7 +162,7 @@ export default function About() {
       link: "https://www.linkedin.com/in/arthur-wigo-2235062aa/",
       coffee_chat:"https://calendly.com/arthur-wigo-berkeley/op-coffee-chaty",
       title: "Project Lead",
-      image: bilguun,
+      image: arthur,
     },
     {
       name: "Ava Joshi",
