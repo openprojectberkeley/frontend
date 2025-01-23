@@ -125,7 +125,7 @@ export default function Apply() {
           <div className="limitWidth">
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
-              <p>The application for Fall 2024 will open on <b>Wednesday, September 11th</b> and are due <b>Monday, September 16th at 11:59 pm</b>. Click the button to get started!</p>
+              <p>The application for Spring 2025 will open on <b>Friday, January 24th</b> and are due <b>Tuesday, February 4th at 11:59 pm</b>. Click the button to get started!</p>
               <a href="https://docs.google.com/forms/d/e/1FAIpQLScq6GHf6vF4DdODvO6-vtPvgyzXSZ1ahQvL0wzuwqqbsIbGvA/closedform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
@@ -142,9 +142,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>01</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>Sept 3</h3>
+                        <h3 className={styles.date}>Jan 24</h3>
                         <h3 className={styles.subtitle}>Data Bytes</h3>
-                        <p className={styles.information}>Join us for Data Bytes, the first ever joint Data Science club infosession on <span className={styles.blue}>Tuesday, September 3rd 8pm @ GPBB 100</span>!</p>
+                        <p className={styles.information}>Join us for Data Bytes, the first ever joint Data Science club infosession on <span className={styles.blue}>Friday, Jan 24th 6pm @ East Pauley Ballroom</span>!</p>
                       </div>
                     </div>
                   </div>
@@ -152,9 +152,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>02</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>Sept 6</h3>
+                        <h3 className={styles.date}>Jan 30th</h3>
                         <h3 className={styles.subtitle}>Club Infosession 1</h3>
-                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Friday, September 6th 8pm @ Dwinelle 88</span>.</p>
+                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Thursdau, Jan 30th 8pm</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -162,9 +162,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>03</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>Sept 10</h3>
+                        <h3 className={styles.date}>Jan 31st</h3>
                         <h3 className={styles.subtitle}>Club Infosession 2</h3>
-                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Tuesday, September 10th 8pm @ Evans 10</span>.</p>
+                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Friday, Jan 31st 8pm</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -172,9 +172,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>04</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>Sept 11</h3>
-                        <h3 className={styles.subtitle}>Meet & Greet 1 and Applications Open</h3>
-                        <p className={styles.information}>Applications open and our first Meet & Greet is on <span className={styles.blue}>Wednesday, September 11th 8pm @ Dwinelle 88</span>.</p>
+                        <h3 className={styles.date}>Feb 3rd</h3>
+                        <h3 className={styles.subtitle}>Meet & Greet 1</h3>
+                        <p className={styles.information}>Our first Meet & Greet is on <span className={styles.blue}>Monday, Feb 3rd 8pm</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -182,9 +182,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>05</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>Sept 12</h3>
-                        <h3 className={styles.subtitle}>Meet & Greet 2</h3>
-                        <p className={styles.information}>Our second Meet & Greet is on <span className={styles.blue}>Thursday, September 12th 8pm @ Dwinelle 88</span>.</p>
+                        <h3 className={styles.date}>Feb 4th</h3>
+                        <h3 className={styles.subtitle}>Meet & Greet 2 and Applications Due</h3>
+                        <p className={styles.information}>Our second Meet & Greet is on <span className={styles.blue}>Tuesday, Feb 4th 8pm</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -192,9 +192,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>06</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>Sept 16</h3>
-                        <h3 className={styles.subtitle}>Applications Due</h3>
-                        <p className={styles.information}>Applications are due <span className={styles.blue}>Monday, September 16th at 11:59pm</span>!</p>
+                        <h3 className={styles.date}>Feb 7th</h3>
+                        <h3 className={styles.subtitle}>Welcome Night</h3>
+                        <p className={styles.information}>Welcome night is on <span className={styles.blue}>Friday, Feb 7th</span>!</p>
                       </div>
                     </div>
                   </div>

@@ -38,8 +38,8 @@
 }
 
 .gridImage {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 300px;
     object-fit: cover;
     border-radius: 50%; /* This will make the images circular. Remove if you want square images */
   }
