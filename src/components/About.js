@@ -115,7 +115,7 @@ export default function About() {
     {
       name: "June Mohan",
       link: "https://www.linkedin.com/in/arjun-mohan-1410851a6/",
-      coffee_chat:"calendly.com/arjunpmohan05-berkeley",
+      coffee_chat:"https://calendly.com/arjunpmohan05-berkeley/30min?back=1&month=2025-01",
       title: "VP of Projects",
       image: june,
     },
@@ -128,7 +128,7 @@ export default function About() {
     },
     {
       name: "Jenny Liang",
-      link: "www.linkedin.com/in/jenny-liang-08571631a/",
+      link: "https://www.linkedin.com/in/jenny-liang-08571631a",
       coffee_chat:"https://calendly.com/jennyl5118-berkeley/op-coffee-chat",
       title: "VP of Professional Development",
       image: jenny,
@@ -136,7 +136,7 @@ export default function About() {
     {
       name: "Khush Gandhi",
       link: "https://www.linkedin.com/in/khush-gandhi-0a9353233/",
-      coffee_chat:"https://calendly.com/khushgandhi8-berkeley/opcoffeechatss",
+      coffee_chat:"https://calendly.com/khushgandhi8-berkeley/opcoffeechats",
       title: "VP of Professional Development",
       image: khush,
     },
