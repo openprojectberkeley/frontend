@@ -20,11 +20,13 @@ import nawoda from "../images/about/fall2024/Nawoda.JPG";
 import rachel from "../images/about/fall2024/rachel.JPG";
 import payamullah from "../images/about/fall2024/payam.JPG";
 import chaerin from "../images/about/fall2024/chaerin.JPG";
-import bilguun from "../images/about/fall2024/bilguun.JPG";
+import bilguun from "../images/about/spring2025/bilguun.jpg";
 import sia from "../images/about/spring2025/sia.jpg";
 import danh from "../images/about/fall2024/Danh.JPG";
 import shobhan from "../images/about/fall2024/shobhan.JPG";
 import morgan from "../images/about/fall2024/morgan.JPG";
+import jenny from "../images/about/spring2025/jenny.jpg";
+import thanh from "../images/about/spring2025/thanh.jpg";
 
 // Project Leads
 import gabriel from "../images/about/fall2024/gabriel.JPG";
@@ -60,28 +62,21 @@ export default function About() {
       image: sia,
     },
     {
-      name: "Nawoda W",
-      link: "https://www.linkedin.com/in/nawodakw/",
-      coffee_chat:"https://calendly.com/nawodakw/open-project-coffee-chats",
-      title: "Co-President",
-      image: nawoda,
+      name: "Bilguun Bayarkhuu",
+      link: "https://www.linkedin.com/in/bilguunbayarkhuu/",
+      coffee_chat:"https://calendly.com/bilguunb-berkeley",
+      title: "VP of Internals",
+      image: bilguun,
     },
     {
-      name: "Rachel Hong",
+      name: "Mia ",
       link: "https://www.linkedin.com/in/rachelgiahong/",
       coffee_chat:"https://calendly.com/rachelgiahong",
       title: "VP of Marketing",
       image: rachel,
     },
     {
-      name: "Payamullah Erfan",
-      link: "https://www.linkedin.com/in/payam-erfan/",
-      coffee_chat:"https://calendly.com/payamerfan-berkeley/30min",
-      title: "VP of Marketing/Project Lead",
-      image: payamullah,
-    },
-    {
-      name: "Chaerin Lim",
+      name: "Khushi",
       link: "https://www.linkedin.com/in/chaerinlim/",
       coffee_chat:"https://calendly.com/chaerinlim",
       title: "VP of Internals",
@@ -114,6 +109,20 @@ export default function About() {
       coffee_chat:"https://calendly.com/shobhan-mangla-berkeley/30min",
       title: "VP of Projects",
       image: shobhan,
+    },
+    {
+      name: "Thanh",
+      link: "https://www.linkedin.com/in/morgan-dehdashti-46b160272/",
+      coffee_chat:"https://calendly.com/mdehdashti-berkeley/open-project-coffee-chats",
+      title: "VP of Projects",
+      image: thanh,
+    },
+    {
+      name: "Jenny",
+      link: "https://www.linkedin.com/in/shobhanmangla/",
+      coffee_chat:"https://calendly.com/shobhan-mangla-berkeley/30min",
+      title: "VP of Projects",
+      image: jenny,
     },
     {
       name: "Morgan Dehdashti",
