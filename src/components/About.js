@@ -160,7 +160,7 @@ export default function About() {
     {
       name: "Arthur Wigo",
       link: "https://www.linkedin.com/in/arthur-wigo-2235062aa/",
-      coffee_chat:"https://calendly.com/arthur-wigo-berkeley/op-coffee-chaty",
+      coffee_chat:"https://calendly.com/arthur-wigo-berkeley/op-coffee-chat",
       title: "Project Manager",
       image: arthur,
     },
@@ -227,7 +227,7 @@ export default function About() {
     },
     {
       name: "Payam Erfan",
-      coffee_chat:"https://calendly.com/payamerfan-berkeley/30min",
+      coffee_chat:"https://calendly.com/payamerfan-berkeley/coffee-chat",
       title: "Project Manager",
       image: payam,
     },
@@ -245,7 +245,7 @@ export default function About() {
     },
     {
       name: "Sibi Saravanan",
-      coffee_chat:"https://calendly.com/4sibiking/30minn",
+      coffee_chat:"https://calendly.com/4sibiking/30min",
       title: "Project Manager",
       image: sibi,
     },
