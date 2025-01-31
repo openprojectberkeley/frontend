@@ -158,7 +158,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Jan 30th</h3>
                         <h3 className={styles.subtitle}>Club Infosession 1</h3>
-                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Thursday, Jan 30th 8pm</span>.</p>
+                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Thursday, Jan 30th 8pm @ Evans 60</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -168,7 +168,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>Jan 31st</h3>
                         <h3 className={styles.subtitle}>Club Infosession 2</h3>
-                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Friday, Jan 31st 8pm</span>.</p>
+                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Friday, Jan 31st 8pm @ Wheeler 102</span>.</p>
                       </div>
                     </div>
                   </div>
