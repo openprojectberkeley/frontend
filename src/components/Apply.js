@@ -130,7 +130,7 @@ export default function Apply() {
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
               <p>The application for Spring 2025 will open on <b>Friday, January 24th</b> and are due <b>Tuesday, February 4th at 11:59 pm</b>. Click the button to get started!</p>
-              <a href="https://docs.google.com/forms/d/e/1FAIpQLScdGpLyQLUrJaIcTmHxM0PyZWdSAP7NXm6Dnov5fKHcRnwsbw/closedform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSd6BszZZDpva4geAYaK6WZSptI86x92fTRwQx6XSdfBLJZuyQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
         </div>
@@ -204,7 +204,7 @@ export default function Apply() {
                   </div>
                 </div>
               </div>
-              <a href="https://docs.google.com/forms/d/e/1FAIpQLScdGpLyQLUrJaIcTmHxM0PyZWdSAP7NXm6Dnov5fKHcRnwsbw/closedform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSd6BszZZDpva4geAYaK6WZSptI86x92fTRwQx6XSdfBLJZuyQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
             </div>
           </div>
         </div>
