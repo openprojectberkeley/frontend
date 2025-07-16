@@ -1,11 +1,12 @@
 import styles from '../css/HomePage.module.css';
-import homepageShapes from '../images/homepage-shapes.png';
+import homepageShapes from '../images/homeShapes.png';
 import { NavLink } from 'react-router-dom';
 import topBlueCurve from '../images/topbluecurve.png';
 import bottomBlueCurve from '../images/bottombluecurve.png';
-import wordbubble from '../images/wordbubble.png';
-import computer from '../images/computer.png';
-import threeIcons from '../images/threeIcons.png';
+import tealCurve from '../images/tealCurve.png'
+import speechbubble from '../images/speechbubbles.png';
+import square from '../images/Square.png';
+import rocketTriangle from '../images/RocketTriangle.png';
 import orangecurve from '../images/orangecurve.png';
 
 export default function HomePage() {
@@ -22,21 +23,20 @@ export default function HomePage() {
           <img src={homepageShapes} alt="Homepage Shapes" />
         </div>
       </div>
-      <div className={styles.bluesection}>
-        <img src={topBlueCurve} className={styles.topBlueCurve} />
-        <div className={styles.bluebackground}>
-          <div className={`${styles.blue} limitWidth`}>
-            <div>
-              <img src={wordbubble} />
-            </div>
+      <div className={styles.tealSection}>
+        <div className="limitWidth">
+          <div className={styles.tealContent}>
+            <img src={speechbubble} alt="Speech bubbles" />
             <div className={styles.bluetext}>
               <h1>What is Open Project?</h1>
-              <h3>We are a group of students striving to redefine tech club culture at Berkeley. Open Project is dedicated to creating a medium for passionate students to meet and work on projects that make a positive difference in the world - without the unnecessary selective application process.</h3>
+              <h3>
+                We are a group of students striving to redefine tech club culture at Berkeley. Open Project is dedicated to creating a medium for passionate students to meet and work on projects that make a positive difference in the world - without the unnecessary selective application process.
+              </h3>
             </div>
           </div>
         </div>
-        <img src={bottomBlueCurve} className={styles.bottomBlueCurve} />
       </div>
+
       <div className="limitWidth">
         <div className={`${styles.about} ${styles.aboutProjects}`}>
           <div>
@@ -44,12 +44,12 @@ export default function HomePage() {
             <h3>Our club offers a dynamic array of projects, ranging from web/mobile development to data science. The projects undertaken each semester are <span className={styles.blueText}>student-led</span>, with members empowered to propose ideas, evaluate options, and select the projects they want to work on. This allows for a highly personalized and fulfilling experience for all members.<br/><br/>Additionally, we offer <span className={styles.blueText}>client</span> projects, giving members the opportunity to work on impactful projects for organizations and gain valuable experience. By providing a combination of student-led and client projects, we aim to offer a truly enriching and rewarding experience for all members.</h3>
           </div>
           <div>
-            <img src={computer} />
+            <img src={rocketTriangle} />
           </div>
         </div>
         <div className={`${styles.about} ${styles.aboutCommunity}`}>
           <div>
-            <img src={threeIcons} />
+            <img src={square} />
           </div>
           <div>
             <h1>Community</h1>
