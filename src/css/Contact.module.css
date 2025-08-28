@@ -9,6 +9,14 @@
     color:#2D5DED;
 }
 
+.tealText {
+    color:#4DB6AC;
+}
+
+.purpleText {
+    color: #9270C6;
+}
+
 .orangeText {
     color:#FF9C03;
 }
@@ -32,7 +40,7 @@
 }
 
 .fullform {
-    background-color: #F9C12C;
+    background-color: #9270C6;
     padding: 40px;
     width: 70%;
     border-radius: 20px;
@@ -62,7 +70,7 @@
 }
 
 .submit {
-    background-color: #2D5DED;
+    background-color: #4DB6AC;
     border: none;
     font-family: 'Brother Bold';
     font-size: 18px;

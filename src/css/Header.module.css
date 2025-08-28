@@ -14,7 +14,7 @@
 
 .links a {
     text-decoration: none;
-    color: black;
+    color: white;
     margin-left: 25px;
 }
 
@@ -28,6 +28,7 @@
 
 .hamburger {
     display: none;
+    background-color: white;
 }
 
 .bar {
@@ -67,7 +68,6 @@
         position: fixed;
         left: -100%;
         flex-direction: column;
-        background-color: rgba(255, 255, 255, 0.95);
         top: 0rem;
         width: 100%;
         text-align: center;
@@ -78,11 +78,15 @@
         align-items: center;
         gap: 20px;
         padding-left: 0px;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(6px); 
     }
 
     .linksActive {
         composes: links;
         left: 0px;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(6px); 
     }
 
     .links a {

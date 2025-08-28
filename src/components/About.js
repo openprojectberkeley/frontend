@@ -6,10 +6,10 @@ import aboutBlueCurveTop from "../images/about/aboutBlueCurveTop.png";
 import pwicon from "../images/pwicon.png";
 import linkedinicon from "../images/linkedinicon.png";
 import coffeechaticon from "../images/coffeechat.png";
-import inclusiveCommunity from "../images/about/inclusiveCommunity.png";
-import chooseYourOwnPath from "../images/about/chooseYourOwnPath.png";
-import buildAndLearnTogether from "../images/about/buildAndLearnTogether.png";
-import challengeYourLimits from "../images/about/challengeYourLimits.png";
+import inclusiveCommunity from "../images/about/bigerstarstar.png";
+import chooseYourOwnPath from "../images/about/biggerrocketship.png";
+import buildAndLearnTogether from "../images/about/squareshape.png";
+import challengeYourLimits from "../images/about/astro.png";
 
 //team photo
 import teamCover from "../images/about/spring2025/group.jpg"; // Update this path
@@ -417,6 +417,51 @@ export default function About() {
               on tech projects most meaningful to them.
             </h3>
           </div>
+          <div className={styles.ourValues}>
+            <h1>Our Values</h1>
+            <div className={styles.values}>
+              <div className={styles.value}>
+                <img src={inclusiveCommunity} alt="Inclusive Community" />
+                <h2 style={{ color: "#F9C12C" }}>Inclusive Community</h2>
+                <h3>
+                  We value individual differences and strive to build a
+                  welcoming environment for everyone passionate about the tech
+                  space and creating meaningful projects.
+                </h3>
+              </div>
+              <div className={styles.value}>
+                <img src={chooseYourOwnPath} alt="Choose Your Own Path" />
+                <h2 style={{ color: "#4DB6AC" }}>Choose Your Own Path</h2>
+                <h3>
+                  We believe it is crucial that students are able to facilitate
+                  and operate their own development teams, ensuring an outlet
+                  for creative independence.
+                </h3>
+              </div>
+              <div className={styles.value}>
+                <img
+                  src={buildAndLearnTogether}
+                  alt="Build and Learn Together"
+                />
+                <h2 style={{ color: "#AB8FF3" }}>Build and Learn Together</h2>
+                <h3>
+                  We aim to maintain a curious space for everyone to collaborate
+                  with and learn from one another by allowing every individual
+                  to have pivotal roles in their respective development teams.
+                </h3>
+              </div>
+              <div className={styles.value}>
+                <img src={challengeYourLimits} alt="Challenge Your Limits" />
+                <h2 style={{ color: "#83B8E0" }}>Challenge Your Limits</h2>
+                <h3>
+                  We always encourage our peers to reach beyond their comfort
+                  zones and explore areas they are unfamiliar with as we believe
+                  it is essential to their personal development.
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
           <div className={styles.aboutPics}>
             <h1>Spring 2025 Board</h1>
             <h2>Executive Team</h2>
@@ -434,53 +479,5 @@ export default function About() {
           </div>
         </div>
       </div>
-        <div className={styles.marginFromScreen}>
-          <div className={styles.ourValues}>
-            <h1>Our Values</h1>
-            <div className={styles.values}>
-              <div className={styles.value}>
-                <img src={inclusiveCommunity} alt="Inclusive Community" />
-                <h2>Inclusive Community</h2>
-                <h3>
-                  We value individual differences and strive to build a
-                  welcoming environment for everyone passionate about the tech
-                  space and creating meaningful projects.
-                </h3>
-              </div>
-              <div className={styles.value}>
-                <img src={chooseYourOwnPath} alt="Choose Your Own Path" />
-                <h2>Choose Your Own Path</h2>
-                <h3>
-                  We believe it is crucial that students are able to facilitate
-                  and operate their own development teams, ensuring an outlet
-                  for creative independence.
-                </h3>
-              </div>
-              <div className={styles.value}>
-                <img
-                  src={buildAndLearnTogether}
-                  alt="Build and Learn Together"
-                />
-                <h2>Build and Learn Together</h2>
-                <h3>
-                  We aim to maintain a curious space for everyone to collaborate
-                  with and learn from one another by allowing every individual
-                  to have pivotal roles in their respective development teams.
-                </h3>
-              </div>
-              <div className={styles.value}>
-                <img src={challengeYourLimits} alt="Challenge Your Limits" />
-                <h2>Challenge Your Limits</h2>
-                <h3>
-                  We always encourage our peers to reach beyond their comfort
-                  zones and explore areas they are unfamiliar with as we believe
-                  it is essential to their personal development.
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-   
   );
 }

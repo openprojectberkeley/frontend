@@ -52,3 +52,32 @@ pre {
 code {
   font-family: Consolas, monospace;
 }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  color: white;
+  background: transparent;
+}
+
+body {
+  background-image:
+    linear-gradient(
+      156.33deg,
+      #7050C2 18%,
+      #1B2D29 50%,
+      #1B2D29 86%
+    ),
+    linear-gradient(
+      156.33deg,
+      #0E111C 5.55%,
+      #040713 18.86%,
+      rgba(15, 77, 52, 0.2) 54.35%,
+      rgba(4, 7, 19, 0.6) 67.01%,
+      #0A0F2C 78.41%
+    );
+  background-repeat: no-repeat, no-repeat;
+  background-position: center top, center top;
+  background-size: 100% 100%, 100% 100%;
+  background-blend-mode: multiply;
+}

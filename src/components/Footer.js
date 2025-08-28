@@ -1,5 +1,5 @@
 import styles from '../css/Footer.module.css';
-import footerLogo from '../images/footerLogo.png';
+import footerLogo from '../images/op_footer.png';
 import { NavLink } from 'react-router-dom';
 import instagram from '../images/instagram.png';
 import github from '../images/github.png';
