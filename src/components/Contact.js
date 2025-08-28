@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import emailjs from 'emailjs-com';
 import styles from '../css/Contact.module.css';
-import homepageShapes from '../images/homepage-shapes.png';
+import homepageShapes from '../images/contact_shapes.png';
 
 export default function Contact() {
   const form = useRef();
@@ -23,8 +23,8 @@ export default function Contact() {
         <div className={styles.addMargin}>
           <div className={styles.cover}>
             <div className={styles.coverLeft}>
-              <h1 className={styles.blueText}>Experience</h1>
-              <h1 className={styles.orangeText}>For All.</h1>
+              <h1 className={styles.tealText}>Experience</h1>
+              <h1 className={styles.purpleText}>For All.</h1>
               <h2>If you have any questions, concerns or simply want to say hello, please don't hesitate to reach out to us through the form provided!</h2>
             </div>
             <div className={styles.coverRight}>

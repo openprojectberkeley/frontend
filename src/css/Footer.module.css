@@ -1,12 +1,12 @@
 .background {
-    background-color: #F9C12C;
+    background-color: #9270C6;
 }
 
 .footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: #F9C12C;
+    background-color: #9270C6;
     padding: 30px var(--margin-from-screen) 70px var(--margin-from-screen);
 }
 
