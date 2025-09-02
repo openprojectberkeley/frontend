@@ -12,42 +12,52 @@ import buildAndLearnTogether from "../images/about/squareshape.png";
 import challengeYourLimits from "../images/about/astro.png";
 
 //team photo
-import teamCover from "../images/about/spring2025/group.jpg"; // Update this path
+import teamCover from "../images/about/fall2025/board.jpg";
 
 // Exec
 import june from "../images/about/spring2025/june.jpg";
-import alyssa from "../images/about/spring2025/alyssa.jpg";
-import khush from "../images/about/spring2025/khush.jpg";
-import khushi from "../images/about/spring2025/khushi.jpg";
-import bilguun from "../images/about/spring2025/bilguun.jpg";
-import sia from "../images/about/spring2025/sia.jpg";
-import danh from "../images/about/fall2024/Danh.JPG";
+import arushi from "../images/about/fall2025/arushi.jpg";
+import khush from "../images/about/fall2025/khush.jpg";
+import meher from "../images/about/fall2025/meher.jpg";
+import neel from "../images/about/spring2025/neel.jpg";
+import helena from "../images/about/fall2025/helena.jpg";
+import sia from "../images/about/fall2025/sia.jpg";
 import mia from "../images/about/spring2025/mia.jpg";
-import jenny from "../images/about/spring2025/jenny.jpg";
-import thanh from "../images/about/spring2025/thanh.jpg";
-import gurmeher from "../images/about/spring2025/gurmeher.jpg";
+import jenny from "../images/about/fall2025/jenny.jpg";
+import thanh from "../images/about/fall2025/thanh.jpg";
+import ava from "../images/about/fall2025/ava.jpg";
+import devah from "../images/about/spring2025/devah.jpeg";
+import anupriya from "../images/about/spring2025/anupriya.jpg";
 
 // Project Leads
-import gabriel from "../images/about/fall2024/gabriel.JPG";
-import anthony from "../images/about/spring2025/anthony.jpg";
-import ethan2 from "../images/about/spring2025/ethan.jpg";
-import jesslyn from "../images/about/spring2025/jesslyn.jpg";
-import mihir from "../images/about/spring2025/mihir.jpg";
-import payam from "../images/about/spring2025/payam.jpg";
-import sofia from "../images/about/spring2025/sofia.jpg";
-import turner from "../images/about/spring2025/turner.jpg";
+import abhi from "../images/about/fall2025/abhi.jpg";
+import andre from "../images/about/fall2025/andre.jpeg";
+import ashwika from "../images/about/fall2025/ashwika.jpg";
+import aslesha from "../images/about/fall2025/aslesha.jpg";
+import ayman from "../images/about/fall2025/ayman.jpg";
+import ben from "../images/about/fall2025/ben.jpeg";
+import chad from "../images/about/fall2025/chad.jpg";
+import david from "../images/about/fall2025/david.jpg";
+import david2 from "../images/about/fall2025/david2.jpg";
+import devansh from "../images/about/fall2025/devansh.jpeg";
+import dylan from "../images/about/fall2025/dylan.jpg";
+import edwin from "../images/about/fall2025/edwin.jpg";
+import erin from "../images/about/fall2025/erin.jpg";
+import felicia from "../images/about/fall2025/felicia.jpg";
+import gunhui from "../images/about/fall2025/gunhui.jpg";
+import holden from "../images/about/fall2025/holden.jpg";
+import isaac from "../images/about/fall2025/isaac.jpg";
+import jonathan from "../images/about/fall2025/jonathan.jpg";
+import kailash from "../images/about/fall2025/kailash.jpg";
+import karthikeya from "../images/about/fall2025/karthikeya.jpg";
+import khushi from "../images/about/spring2025/khushi.jpg";
+import mahesh from "../images/about/fall2025/mahesh.jpg";
+import nishaad from "../images/about/fall2025/nishaad.jpg";
+import peyton from "../images/about/fall2025/peyton.jpg";
+import sami from "../images/about/fall2025/sami.jpg";
+import sophie from "../images/about/fall2025/sophie.jpg";
 import yashom from "../images/about/spring2025/yashom.jpg";
-import smriti from "../images/about/spring2025/smriti.jpg";
-import rachelc from "../images/about/spring2025/rachelc.jpg";
-import peyton from "../images/about/spring2025/peyton.jpg";
-import isaac from "../images/about/spring2025/isaac.jpg";
-import dennis from "../images/about/spring2025/dennis.jpeg";
-import anupriya from "../images/about/spring2025/anupriya.jpg";
-import ava from "../images/about/spring2025/ava.jpg";
-import sibi from "../images/about/spring2025/sibi.jpeg";
-import neel from "../images/about/spring2025/neel.jpg";
-import devah from "../images/about/spring2025/devah.jpeg";
-import arthur from "../images/about/spring2025/arthur.jpg";
+import yonatan from "../images/about/fall2025/yonatan.jpg";
 
 // Alumni
 import ethan from "../images/about/fall2023/ethan.webp";
@@ -72,45 +82,45 @@ export default function About() {
       image: sia,
     },
     {
-      name: "Bilguun Bayarkhuu",
+      name: "Khush Ghandi",
       link: "https://www.linkedin.com/in/bilguunbayarkhuu/",
       coffee_chat:"https://calendly.com/bilguunb-berkeley/open-project-coffee-chat",
       title: "Co-President",
-      image: bilguun,
+      image: khush,
     },
     {
-      name: "Mia Salinas ",
+      name: "Arushi Garg",
       link: "https://www.linkedin.com/in/mia-salinas-52384b1ba/",
-      title: "VP of Marketing",
-      image: mia,
+      title: "VP of Internals",
+      image: arushi,
     },
     {
-      name: "Khushi Bhalla",
+      name: "Meher Pereira",
       link: "https://www.linkedin.com/in/khushi-bhalla/",
       coffee_chat:"https://calendly.com/khushibhalla/open-project-coffee-chats-sp-25",
       title: "VP of Internals",
-      image: khushi,
+      image: meher,
     },
     {
-      name: "Gurmeher Bhasin",
+      name: "Helena Zhang",
       link: "https://www.linkedin.com/in/gurmeher",
       coffee_chat:"https://calendly.com/grmeher/30min",
-      title: "VP of Internals",
-      image: gurmeher,
+      title: "VP of Externals",
+      image: helena,
     },
     {
-      name: "Alyssa Chiu",
+      name: "Ava Joshi",
       link: "https://www.linkedin.com/in/sia-sama-b50256235/",
       coffee_chat:"https://calendly.com/alyssachiu-berkeley/30min",
-      title: "VP of Externals",
-      image: alyssa,
+      title: "VP of Marketing & Design",
+      image: ava,
     },
     {
-      name: "Danh Tran",
+      name: "Mia Salinas",
       link: "https://www.linkedin.com/in/danh-tran-55b646212/",
       coffee_chat:"https://calendly.com/danht-berkeley/op-coffee-chat",
-      title: "VP of Finance",
-      image: danh,
+      title: "VP of Marketing & Design",
+      image: mia,
     },
     {
       name: "June Mohan",
@@ -127,6 +137,13 @@ export default function About() {
       image: thanh,
     },
     {
+      name: "Devah Schafers",
+      link: "https://linkedin.com/in/thanhcongtran",
+      coffee_chat:"https://calendly.com/thanhctran-berkeley/open-project-coffee-chats-clone",
+      title: "VP of Projects",
+      image: devah,
+    },
+    {
       name: "Jenny Liang",
       link: "https://www.linkedin.com/in/jenny-liang-08571631a",
       coffee_chat:"https://calendly.com/jennyl5118-berkeley/op-coffee-chat",
@@ -134,145 +151,200 @@ export default function About() {
       image: jenny,
     },
     {
-      name: "Khush Gandhi",
+      name: "Neel Sharma",
       link: "https://www.linkedin.com/in/khush-gandhi-0a9353233/",
       coffee_chat:"https://calendly.com/khushgandhi8-berkeley/opcoffeechats",
       title: "VP of Professional Development",
-      image: khush,
+      image: neel,
+    },
+    {
+      name: "Anupriya Islam",
+      link: "https://www.linkedin.com/in/khush-gandhi-0a9353233/",
+      coffee_chat:"https://calendly.com/khushgandhi8-berkeley/opcoffeechats",
+      title: "VP of Tech",
+      image: anupriya,
     },
   ];
 
   const projectLeads = [
     {
-      name: "Anthony Kobzar",
+      name: "Abhinav Kiran",
       link: "https://www.linkedin.com/in/anthony-kobzar-182889252/",
       coffee_chat:"https://calendly.com/anthonykobzar-berkeley",
       title: "Project Manager",
-      image: anthony,
+      image: abhi,
     },
     {
-      name: "Anupriya Islam",
+      name: "Andre Ramos",
       link: "https://www.linkedin.com/in/anupriya-islam/",
       coffee_chat:"https://calendly.com/anupriyaislam-berkeley/30min",
       title: "Project Manager",
-      image: anupriya,
+      image: andre,
     },
     {
-      name: "Arthur Wigo",
+      name: "Ashwika Gampa",
       link: "https://www.linkedin.com/in/arthur-wigo-2235062aa/",
       coffee_chat:"https://calendly.com/arthur-wigo-berkeley/op-coffee-chat",
       title: "Project Manager",
-      image: arthur,
+      image: ashwika,
     },
     {
-      name: "Ava Joshi",
+      name: "Aslesha Chandra",
       coffee_chat:"https://calendly.com/joshi_ava-berkeley/open-project-coffee-chats",
       title: "Project Manager",
-      image: ava,
+      image: aslesha,
     },
     {
-      name: "Dennis Vengerov",
+      name: "Ayman Islam",
       link: "https://www.linkedin.com/in/dennis-vengerov-a78376294/",
       coffee_chat:"https://calendly.com/dennis_vengerov-berkeley/30min",
       title: "Project Manager",
-      image: dennis,
+      image: ayman,
     },
    
     {
-      name: "Devh Schaefers",
+      name: "Ben Ross",
       link: "https://www.linkedin.com/in/devah-schaefers-76b828253/",
       coffee_chat:"https://calendly.com/devahschaefers-berkeley/coffee-chat",
       title: "Project Manager",
-      image: devah,
+      image: ben,
     },
     {
-      name: "Ethan Zhang",
+      name: "Chad Park",
       link: "https://www.linkedin.com/in/ethan-zhang-693100270",
       coffee_chat:"https://calendly.com/ezhang06-berkeley",
       title: "Project Manager",
-      image: ethan2,
+      image: chad,
     },
     {
-      name: "Gabriel Gomes",
+      name: "David Cruz",
       coffee_chat:"https://calendly.com/gabgom784/30min?month=2025-01",
       title: "Project Manager",
-      image: gabriel,
+      image: david2,
     },
     {
-      name: "Isaac Lei",
+      name: "David Zhang",
       link: "https://www.linkedin.com/in/isaaclei018/",
+      title: "Project Manager",
+      image: david,
+    },
+    {
+      name: "Devansh Ojha",
+      link: "https://www.linkedin.com/in/jesslyn-ruswan-650210264/",
+      coffee_chat:"https://calendly.com/jesslyn_ruswan-berkeley/30min",
+      title: "Project Manager",
+      image: devansh,
+    },
+    {
+      name: "Dylan Stier",
+      link: "https://www.linkedin.com/in/mihir-mirchandani/",
+      coffee_chat:"https://calendly.com/mihirm-berkeley/30min",
+      title: "Project Manager",
+      image: dylan,
+    },
+    {
+      name: "Edwin Luck",
+      link: "https://www.linkedin.com/in/neel-sharma-906121240/",
+      coffee_chat:"https://calendly.com/neel_sharma-berkeley/30min",
+      title: "Project Manager",
+      image: edwin,
+    },
+    {
+      name: "Erin Lee",
+      coffee_chat:"https://calendly.com/payamerfan-berkeley/coffee-chat",
+      title: "Project Manager",
+      image: erin,
+    },
+    {
+      name: "Felicia Ye",
+      coffee_chat:"https://calendly.com/lipeyton2006/30min?month=2025-01",
+      title: "Project Manager",
+      image: felicia,
+    },
+    {
+      name: "Gunhui Kim",
+      coffee_chat:"https://calendly.com/cheungrachel-berkeley/30min",
+      title: "Project Manager",
+      image: gunhui,
+    },
+    {
+      name: "Holden Fees",
+      coffee_chat:"https://calendly.com/4sibiking/30min",
+      title: "Project Manager",
+      image: holden,
+    },
+    {
+      name: "Isaac Hwang",
+      coffee_chat:"https://calendly.com/smritig-berkeley/open-project-coffee-chats",
       title: "Project Manager",
       image: isaac,
     },
     {
-      name: "Jesslyn Ashley Ruswan",
-      link: "https://www.linkedin.com/in/jesslyn-ruswan-650210264/",
-      coffee_chat:"https://calendly.com/jesslyn_ruswan-berkeley/30min",
+      name: "Jonathan Tran",
+      coffee_chat:"https://calendly.com/sofvaladez-berkeley/30min",
       title: "Project Manager",
-      image: jesslyn,
+      image: jonathan,
     },
     {
-      name: "Mihir Mirchandani",
-      link: "https://www.linkedin.com/in/mihir-mirchandani/",
-      coffee_chat:"https://calendly.com/mihirm-berkeley/30min",
+      name: "Kailash Ramesh",
+      link: "www.linkedin.com/in/turner-osswald-6387a8307",
+      coffee_chat:"https://calendly.com/torner-berkeley/30min",
       title: "Project Manager",
-      image: mihir,
+      image: kailash,
     },
     {
-      name: "Neel Sharma",
-      link: "https://www.linkedin.com/in/neel-sharma-906121240/",
-      coffee_chat:"https://calendly.com/neel_sharma-berkeley/30min",
+      name: "Karthikeya Gannavarapu",
+      coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
       title: "Project Manager",
-      image: neel,
+      image: karthikeya,
     },
     {
-      name: "Payam Erfan",
-      coffee_chat:"https://calendly.com/payamerfan-berkeley/coffee-chat",
+      name: "Khushi Bhalla",
+      coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
       title: "Project Manager",
-      image: payam,
+      image: khushi,
+    },
+    {
+      name: "Mahesh Arunachalam",
+      coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
+      title: "Project Manager",
+      image: mahesh,
+    },
+    {
+      name: "Nishaad Sovani",
+      coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
+      title: "Project Manager",
+      image: nishaad,
     },
     {
       name: "Peyton Li",
-      coffee_chat:"https://calendly.com/lipeyton2006/30min?month=2025-01",
+      coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
       title: "Project Manager",
       image: peyton,
     },
     {
-      name: "Rachel Cheung",
-      coffee_chat:"https://calendly.com/cheungrachel-berkeley/30min",
+      name: "Sami Houssaini",
+      coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
       title: "Project Manager",
-      image: rachelc,
+      image: sami,
     },
     {
-      name: "Sibi Saravanan",
-      coffee_chat:"https://calendly.com/4sibiking/30min",
+      name: "Sohpie Nguyen",
+      coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
       title: "Project Manager",
-      image: sibi,
-    },
-    {
-      name: "Smriti Govindan",
-      coffee_chat:"https://calendly.com/smritig-berkeley/open-project-coffee-chats",
-      title: "Project Manager",
-      image: smriti,
-    },
-    {
-      name: "Sofia Valadez",
-      coffee_chat:"https://calendly.com/sofvaladez-berkeley/30min",
-      title: "Project Manager",
-      image: sofia,
-    },
-    {
-      name: "Turner Osswald",
-      link: "www.linkedin.com/in/turner-osswald-6387a8307",
-      coffee_chat:"https://calendly.com/torner-berkeley/30min",
-      title: "Project Manager",
-      image: turner,
+      image: sophie,
     },
     {
       name: "Yashom Kapoor",
       coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
       title: "Project Manager",
       image: yashom,
+    },
+    {
+      name: "Yonatan Herrera Gonzalez",
+      coffee_chat:"https://calendly.com/ykapoor-berkeley/30min",
+      title: "Project Manager",
+      image: yonatan,
     },
   ];
 
@@ -463,7 +535,7 @@ export default function About() {
           </div>
         </div>
           <div className={styles.aboutPics}>
-            <h1>Spring 2025 Board</h1>
+            <h1>Fall 2025 Board</h1>
             <h2>Executive Team</h2>
             <div className={styles.people}>
               {renderPeople(board)}
