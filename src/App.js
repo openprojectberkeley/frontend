@@ -7,6 +7,7 @@ import Apply from './components/Apply';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import Resources from './components/Resources';
+import CoffeeChats from "./components/CoffeeChats";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<About />} />
             <Route path="/apply" element={<Apply />} />
+            <Route path="/coffeechats" element={<CoffeeChats />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/resources" element={<Resources />} />
           </Routes>
