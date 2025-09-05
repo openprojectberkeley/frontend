@@ -25,13 +25,13 @@ export default function ClientsCarousel({ images = [], altPrefix = 'Client' }) {
             autoplay={{ delay: 3500, pauseOnMouseEnter: true, disableOnInteraction: true }}
             centeredSlides={false}
             slidesPerView={4}
-            spaceBetween={80}              // consistent comfortable gap
+            spaceBetween={80}
             breakpoints={{
             0:    { slidesPerView: 1.8, spaceBetween: 20 },
             560:  { slidesPerView: 2,   spaceBetween: 32 },
             860:  { slidesPerView: 3,   spaceBetween: 48 },
-            1100: { slidesPerView: 4,   spaceBetween: 72 }, // more comfortable gap
-            1400: { slidesPerView: 4,   spaceBetween: 96 }, // even wider on huge screens
+            1100: { slidesPerView: 4,   spaceBetween: 72 },
+            1400: { slidesPerView: 4,   spaceBetween: 96 },
             }}
           >
             {images.map((src, i) => (

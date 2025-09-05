@@ -147,7 +147,7 @@ export default function Apply() {
                       <h1 className={styles.title}>01</h1>
                       <div className={styles.content}>
                         <h3 className={styles.date}>August 29</h3>
-                        <h3 className={styles.subtitle}>Data Bytes & Applications Open</h3>
+                        <h3 className={styles.subtitle}>Data Bytes</h3>
                         <p className={styles.information}>Join us for Data Bytes, a joint Data Science club infosession on <span className={styles.blue}>Friday, Aug 29th 8pm @ VLSB 2050</span>!</p>
                       </div>
                     </div>
