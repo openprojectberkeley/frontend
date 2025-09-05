@@ -83,7 +83,7 @@ export default function About() {
       image: sia,
     },
     {
-      name: "Khush Ghandi",
+      name: "Khush Gandhi",
       title: "Co-President",
       image: khush,
     },
