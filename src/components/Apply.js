@@ -129,8 +129,8 @@ export default function Apply() {
           <div className="limitWidth">
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
-              <p>The application for the Fall 2025 cycle will open soon. Please check back soon!</p>
-              {/* <a href="https://docs.google.com/forms/d/e/1FAIpQLSd6BszZZDpva4geAYaK6WZSptI86x92fTRwQx6XSdfBLJZuyQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a> */}
+              <p>The application for Fall 2025 are now open! Applications are due September 6th at 11:59pm!</p>
+              {<a href="https://forms.gle/ELsu1uuSVV1EMrJM7" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a> }
             </div>
           </div>
         </div>
