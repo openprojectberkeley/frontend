@@ -59,6 +59,8 @@ import sami from "../images/about/fall2025/sami.jpg";
 import sophie from "../images/about/fall2025/sophie.jpg";
 import yashom from "../images/about/spring2025/yashom.jpg";
 import yonatan from "../images/about/fall2025/yonatan.jpg";
+import julia from "../images/about/fall2025/julia.jpg";
+import emily from "../images/about/fall2025/emily.jpg";
 
 // Alumni
 import ethan from "../images/about/fall2023/ethan.webp";
@@ -204,6 +206,11 @@ export default function About() {
       title: "Project Manager",
       image: edwin,
     },
+        {
+      name: "Emily Ma",
+      title: "Project Manager",
+      image: emily,
+    },
     {
       name: "Erin Lee",
       title: "Project Manager",
@@ -233,6 +240,11 @@ export default function About() {
       name: "Jonathan Tran",
       title: "Project Manager",
       image: jonathan,
+    },
+    {
+      name: "Julia Beaupré",
+      title: "Project Manager",
+      image: julia,
     },
     {
       name: "Kailash Ramesh",
