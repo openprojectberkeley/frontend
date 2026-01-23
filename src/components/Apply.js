@@ -10,10 +10,10 @@ const faqList = [
     "What sets this club apart from other tech clubs?",
   
     `Open Project is unique in that our community is built on the principle of ensuring the best club experience possible for everybody. 
-
-We do not believe in a rigorous application process as we believe that every student with an interest in tech and the motivation to succed in tech should have a space to improve their technical skills while finding a like-minded community they can be a part of.
-
-We also have a unique project matching process, where prospective members rank the projets they are interested in the most, to ensure that the work our members engage in are meaningful to them. This ensures a highly personalized and fulfilling process for all members. `
+    
+    We do not believe in a rigorous application process as we believe that every student with an interest in tech and the motivation to succed in tech should have a space to improve their technical skills while finding a like-minded community they can be a part of.
+    
+    We also have a unique project matching process, where prospective members rank the projets they are interested in the most, to ensure that the work our members engage in are meaningful to them. This ensures a highly personalized and fulfilling process for all members. `
   ],
 
   [
@@ -129,8 +129,8 @@ export default function Apply() {
           <div className="limitWidth">
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
-              <p>The application for the Fall 2025 cycle is now open!</p>
-              <a href="https://forms.gle/GJ6EEuybJoWTxZ1a6" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a>
+              <p>The application for the Spring 2026 cycle is now open!</p>
+              <a href="https://forms.gle/sCzjRXh4Adc2jtpK9" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Interest Form</button></a>
             </div>
           </div>
         </div>
@@ -139,16 +139,16 @@ export default function Apply() {
           <div className={styles.timeline}>
             <div className={styles.timelineWidth} id="timeline">
               <h1>Recruitment Timeline</h1>
-              <p className={styles.importantNote}>*It is mandatory to attend the infosession, team meet & greet, and coffee chat a board member to apply!</p>
+              <p className={styles.importantNote}>*It is mandatory to attend an infosession and coffee chat a board member to apply!</p>
               <div className={styles.timelineContent}>
                 <div className={styles.outer}>
                   <div className={styles.card}>
                     <div className={styles.info}>
                       <h1 className={styles.title}>01</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>August 29</h3>
-                        <h3 className={styles.subtitle}>Data Bytes</h3>
-                        <p className={styles.information}>Join us for Data Bytes, a joint Data Science club infosession on <span className={styles.blue}>Friday, Aug 29th 8pm @ VLSB 2050</span>!</p>
+                        <h3 className={styles.date}>January 21</h3>
+                        <h3 className={styles.subtitle}>Application Opens!</h3>
+                        <p className={styles.information}>Applications are now open for Spring 2026!</p>
                       </div>
                     </div>
                   </div>
@@ -156,9 +156,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>02</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>September 4</h3>
-                        <h3 className={styles.subtitle}>Club Infosession 1/Meet & Greet 1</h3>
-                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Thursday, Sept 4th 8-10pm @ Dwinelle 234</span>.</p>
+                        <h3 className={styles.date}>January 22 - February 6</h3>
+                        <h3 className={styles.subtitle}>Coffee Chats</h3>
+                        <p className={styles.information}>Coffee chats can be duo or individual, so bring a friend if you would like! Book now at <span className={styles.blue}>openprojectberkeley.com</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -166,9 +166,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>03</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>September 5</h3>
-                        <h3 className={styles.subtitle}>Club Infosession 2/Meet & Greet 2</h3>
-                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Friday, Sept 5th 8-10pm @ VLSB 2040</span>.</p>
+                        <h3 className={styles.date}>January 23</h3>
+                        <h3 className={styles.subtitle}>DataBytes</h3>
+                        <p className={styles.information}>Join us for DataBytes on <span className={styles.blue}>Thursday, Jan 23rd @ Room @ 9PM</span>!</p>
                       </div>
                     </div>
                   </div>
@@ -176,9 +176,9 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>04</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>September 6</h3>
-                        <h3 className={styles.subtitle}>Applications Due</h3>
-                        <p className={styles.information}>Applications are due <span className={styles.blue}>11:59 PM</span> that night.</p>
+                        <h3 className={styles.date}>January 26</h3>
+                        <h3 className={styles.subtitle}>Infosession #1</h3>
+                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Sunday, Jan 26th @ Room @ 9PM</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -186,9 +186,29 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>05</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>September 9</h3>
-                        <h3 className={styles.subtitle}>Welcome Night</h3>
-                        <p className={styles.information}>Welcome night is on <span className={styles.blue}>Tuesday, Sept 9th</span>! We are excited to have you on board!</p>
+                        <h3 className={styles.date}>January 30</h3>
+                        <h3 className={styles.subtitle}>Infosession #2</h3>
+                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Thursday, Jan 30th @ Room @ 9PM</span>.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.card}>
+                    <div className={styles.info}>
+                      <h1 className={styles.title}>06</h1>
+                      <div className={styles.content}>
+                        <h3 className={styles.date}>January 30</h3>
+                        <h3 className={styles.subtitle}>Application Due!</h3>
+                        <p className={styles.information}>Applications are due <span className={styles.blue}>11:59 PM</span> that night.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.card}>
+                    <div className={styles.info}>
+                      <h1 className={styles.title}>07</h1>
+                      <div className={styles.content}>
+                        <h3 className={styles.date}>February 1</h3>
+                        <h3 className={styles.subtitle}>Team Matching</h3>
+                        <p className={styles.information}>Team matching is on <span className={styles.blue}>Saturday, Feb 1st</span>! We are excited to have you on board!</p>
                       </div>
                     </div>
                   </div>

@@ -15,52 +15,54 @@ import challengeYourLimits from "../images/about/astro.png";
 //team photo
 import teamCover from "../images/about/fall2025/board.jpg";
 
+// TODO: Uncomment and update for Spring 2026
 // Exec
-import june from "../images/about/spring2025/june.jpg";
-import arushi from "../images/about/fall2025/arushi.jpg";
-import khush from "../images/about/fall2025/khush.jpg";
-import meher from "../images/about/fall2025/meher.jpg";
-import neel from "../images/about/spring2025/neel.jpg";
-import helena from "../images/about/fall2025/helena.jpg";
-import sia from "../images/about/fall2025/sia.jpg";
-import mia from "../images/about/spring2025/mia.jpg";
-import jenny from "../images/about/fall2025/jenny.jpg";
-import thanh from "../images/about/fall2025/thanh.jpg";
-import ava from "../images/about/fall2025/ava.jpg";
-import devah from "../images/about/spring2025/devah.jpeg";
-import anupriya from "../images/about/spring2025/anupriya.jpg";
+// import june from "../images/about/spring2025/june.jpg";
+// import arushi from "../images/about/fall2025/arushi.jpg";
+// import khush from "../images/about/fall2025/khush.jpg";
+// import meher from "../images/about/fall2025/meher.jpg";
+// import neel from "../images/about/spring2025/neel.jpg";
+// import helena from "../images/about/fall2025/helena.jpg";
+// import sia from "../images/about/fall2025/sia.jpg";
+// import mia from "../images/about/spring2025/mia.jpg";
+// import jenny from "../images/about/fall2025/jenny.jpg";
+// import thanh from "../images/about/fall2025/thanh.jpg";
+// import ava from "../images/about/fall2025/ava.jpg";
+// import devah from "../images/about/spring2025/devah.jpeg";
+// import anupriya from "../images/about/spring2025/anupriya.jpg";
 
+// TODO: Uncomment and update for Spring 2026
 // Project Leads
-import abhi from "../images/about/fall2025/abhi.jpg";
-import andre from "../images/about/fall2025/andre.jpeg";
-import ashwika from "../images/about/fall2025/ashwika.jpg";
-import aslesha from "../images/about/fall2025/aslesha.jpg";
-import ayman from "../images/about/fall2025/ayman.jpg";
-import ben from "../images/about/fall2025/ben.jpeg";
-import chad from "../images/about/fall2025/chad.jpg";
-import david from "../images/about/fall2025/david.jpg";
-import david2 from "../images/about/fall2025/david2.jpg";
-import devansh from "../images/about/fall2025/devansh.jpeg";
-import dylan from "../images/about/fall2025/dylan.jpg";
-import edwin from "../images/about/fall2025/edwin.jpg";
-import erin from "../images/about/fall2025/erin.jpg";
-import felicia from "../images/about/fall2025/felicia.jpg";
-import gunhui from "../images/about/fall2025/gunhui.jpg";
-import holden from "../images/about/fall2025/holden.jpg";
-import isaac from "../images/about/fall2025/isaac.jpg";
-import jonathan from "../images/about/fall2025/jonathan.jpg";
-import kailash from "../images/about/fall2025/kailash.jpg";
-import karthikeya from "../images/about/fall2025/karthikeya.jpg";
-import khushi from "../images/about/spring2025/khushi.jpg";
-import mahesh from "../images/about/fall2025/mahesh.jpg";
-import nishaad from "../images/about/fall2025/nishaad.jpg";
-import peyton from "../images/about/fall2025/peyton.jpg";
-import sami from "../images/about/fall2025/sami.jpg";
-import sophie from "../images/about/fall2025/sophie.jpg";
-import yashom from "../images/about/spring2025/yashom.jpg";
-import yonatan from "../images/about/fall2025/yonatan.jpg";
-import julia from "../images/about/fall2025/julia.jpg";
-import emily from "../images/about/fall2025/emily.jpg";
+// import abhi from "../images/about/fall2025/abhi.jpg";
+// import andre from "../images/about/fall2025/andre.jpeg";
+// import ashwika from "../images/about/fall2025/ashwika.jpg";
+// import aslesha from "../images/about/fall2025/aslesha.jpg";
+// import ayman from "../images/about/fall2025/ayman.jpg";
+// import ben from "../images/about/fall2025/ben.jpeg";
+// import chad from "../images/about/fall2025/chad.jpg";
+// import david from "../images/about/fall2025/david.jpg";
+// import david2 from "../images/about/fall2025/david2.jpg";
+// import devansh from "../images/about/fall2025/devansh.jpeg";
+// import dylan from "../images/about/fall2025/dylan.jpg";
+// import edwin from "../images/about/fall2025/edwin.jpg";
+// import erin from "../images/about/fall2025/erin.jpg";
+// import felicia from "../images/about/fall2025/felicia.jpg";
+// import gunhui from "../images/about/fall2025/gunhui.jpg";
+// import holden from "../images/about/fall2025/holden.jpg";
+// import isaac from "../images/about/fall2025/isaac.jpg";
+// import jonathan from "../images/about/fall2025/jonathan.jpg";
+// import kailash from "../images/about/fall2025/kailash.jpg";
+// import karthikeya from "../images/about/fall2025/karthikeya.jpg";
+// import khushi from "../images/about/spring2025/khushi.jpg";
+// import mahesh from "../images/about/fall2025/mahesh.jpg";
+// import nishaad from "../images/about/fall2025/nishaad.jpg";
+// import peyton from "../images/about/fall2025/peyton.jpg";
+// import sami from "../images/about/fall2025/sami.jpg";
+// import sophie from "../images/about/fall2025/sophie.jpg";
+// import yashom from "../images/about/spring2025/yashom.jpg";
+// import yonatan from "../images/about/fall2025/yonatan.jpg";
+// import julia from "../images/about/fall2025/julia.jpg";
+// import emily from "../images/about/fall2025/emily.jpg";
 
 // Alumni
 import ethan from "../images/about/fall2023/ethan.webp";
@@ -76,6 +78,8 @@ import rohan from "../images/about/spring2024/rohan.webp";
 import zee from "../images/about/fall2023/zee.webp";
 
 export default function About() {
+  // TODO: Uncomment and update board array for Spring 2026
+  /*
   const board = [
     {
       name: "Sia Sama",
@@ -143,7 +147,10 @@ export default function About() {
       image: anupriya,
     },
   ];
+  */
 
+  // TODO: Uncomment and update projectLeads array for Spring 2026
+  /*
   const projectLeads = [
     {
       name: "Abhinav Kiran",
@@ -297,6 +304,7 @@ export default function About() {
       image: yonatan,
     },
   ];
+  */
 
   const alumni = [
     {
@@ -485,15 +493,19 @@ export default function About() {
           </div>
         </div>
           <div className={styles.aboutPics}>
-            <h1>Fall 2025 Board</h1>
+            <h1>Spring 2026 Board</h1>
+            {/* TODO: Uncomment Executive Team section when photos are ready
             <h2>Executive Team</h2>
             <div className={styles.people}>
               {renderPeople(board)}
             </div>
+            */}
+            {/* TODO: Uncomment Project Managers section when photos are ready
             <h2>Project Managers</h2>
             <div className={styles.people}>
               {renderPeople(projectLeads)}
             </div>
+            */}
             <h2>OP Alumni</h2>
             <div className={styles.people}>
               {renderPeople(alumni)}
