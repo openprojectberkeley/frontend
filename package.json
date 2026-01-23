@@ -44,6 +44,10 @@
       "last 1 safari version"
     ]
   },
+  "reactSnap": {
+    "exclude": ["/coffeechats"],
+    "skipThirdPartyRequests": true
+  },
   "devDependencies": {
     "gh-pages": "^4.0.0"
   }
