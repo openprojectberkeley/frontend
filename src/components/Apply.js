@@ -156,7 +156,7 @@ export default function Apply() {
                     <div className={styles.info}>
                       <h1 className={styles.title}>02</h1>
                       <div className={styles.content}>
-                        <h3 className={styles.date}>January 22 - February 6</h3>
+                        <h3 className={styles.date}>January 21 - January 31</h3>
                         <h3 className={styles.subtitle}>Coffee Chats</h3>
                         <p className={styles.information}>Coffee chats can be duo or individual, so bring a friend if you would like! Book now at <span className={styles.blue}>openprojectberkeley.com</span>.</p>
                       </div>
@@ -168,7 +168,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>January 23</h3>
                         <h3 className={styles.subtitle}>DataBytes</h3>
-                        <p className={styles.information}>Join us for DataBytes on <span className={styles.blue}>Thursday, Jan 23rd @ Room @ 9PM</span>!</p>
+                        <p className={styles.information}>Join us for DataBytes on <span className={styles.blue}>Thursday, Jan 23rd in TBD @ 8PM</span>!</p>
                       </div>
                     </div>
                   </div>
@@ -178,7 +178,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>January 26</h3>
                         <h3 className={styles.subtitle}>Infosession #1</h3>
-                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Sunday, Jan 26th @ Room @ 9PM</span>.</p>
+                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Sunday, Jan 26th in Evans 10 @ 8PM</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -188,7 +188,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>January 30</h3>
                         <h3 className={styles.subtitle}>Infosession #2</h3>
-                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Thursday, Jan 30th @ Room @ 9PM</span>.</p>
+                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Thursday, Jan 30th in VLSB 2040 @ 8PM</span>.</p>
                       </div>
                     </div>
                   </div>
@@ -198,17 +198,7 @@ export default function Apply() {
                       <div className={styles.content}>
                         <h3 className={styles.date}>January 30</h3>
                         <h3 className={styles.subtitle}>Application Due!</h3>
-                        <p className={styles.information}>Applications are due <span className={styles.blue}>11:59 PM</span> that night.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.card}>
-                    <div className={styles.info}>
-                      <h1 className={styles.title}>07</h1>
-                      <div className={styles.content}>
-                        <h3 className={styles.date}>February 1</h3>
-                        <h3 className={styles.subtitle}>Team Matching</h3>
-                        <p className={styles.information}>Team matching is on <span className={styles.blue}>Saturday, Feb 1st</span>! We are excited to have you on board!</p>
+                        <p className={styles.information}>Applications are due <span className={styles.blue}>@11:59 PM</span> on Jan 31st.</p>
                       </div>
                     </div>
                   </div>
