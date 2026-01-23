@@ -493,7 +493,7 @@ export default function About() {
           </div>
         </div>
           <div className={styles.aboutPics}>
-            <h1>Spring 2026 Board</h1>
+            {/* <h1>Spring 2026 Board</h1>*/}
             {/* TODO: Uncomment Executive Team section when photos are ready
             <h2>Executive Team</h2>
             <div className={styles.people}>
