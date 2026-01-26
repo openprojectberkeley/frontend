@@ -32,7 +32,7 @@ export default function Footer() {
               <div className={styles.links}>
                 <NavLink to="/about">About</NavLink>
                 <NavHashLink smooth to="/about#team">Team</NavHashLink>
-                <NavHashLink smooth to="/about#values">Values</NavHashLink>
+                <NavLink to="/projects">Projects</NavLink>
                 <NavLink to="/contact">Contact</NavLink>
               </div>
             </div>

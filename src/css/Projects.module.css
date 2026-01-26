@@ -1,0 +1,220 @@
+/* Projects Page Styles */
+
+.pageContainer {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.content {
+  padding: 0 var(--margin-from-screen);
+}
+
+/* Page Header */
+.pageHeader {
+  text-align: center;
+  padding: 60px 0 40px;
+}
+
+.pageTitle {
+  font-family: 'Brother Bold';
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0 0 24px;
+  color: white;
+}
+
+.projectTypesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.projectTypesList li {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  color: rgba(255, 255, 255, 0.85);
+  position: relative;
+  padding-left: 16px;
+}
+
+.projectTypesList li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #4DB6AC;
+}
+
+/* Section Styles */
+.section {
+  margin-bottom: 60px;
+}
+
+.sectionHeader {
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-family: 'Brother Bold';
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin: 0 0 8px;
+}
+
+.sectionDescription {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  max-width: 500px;
+}
+
+/* Projects Grid - 2 columns */
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .projectsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Project Card - Full info layout */
+.projectCard {
+  position: relative;
+  background: linear-gradient(
+    145deg,
+    rgba(45, 35, 65, 0.6) 0%,
+    rgba(25, 30, 40, 0.8) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.projectCard:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Card Content - Logo + Info */
+.cardContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Logo Container (when logo exists) */
+.logoContainer {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.projectLogo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Card Info */
+.cardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.projectName {
+  font-family: 'Brother Bold';
+  font-size: 1.25rem;
+  margin: 0 0 6px;
+  color: white;
+}
+
+.projectPMs {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.projectDescription {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 12px;
+}
+
+.projectClient {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.projectClient strong {
+  color: #4DB6AC;
+}
+
+/* Coffee Chat Badge */
+.coffeeChatBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FF9C03;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 14px;
+  font-size: 0.75rem;
+  font-family: 'Brother Medium';
+}
+
+.coffeeIcon {
+  width: 14px;
+  height: 14px;
+  filter: brightness(0) invert(1);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 550px) {
+  .projectCard {
+    padding: 20px;
+  }
+
+  .cardContent {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .logoContainer {
+    width: 56px;
+    height: 56px;
+  }
+
+  .pageHeader {
+    padding: 40px 0 30px;
+  }
+
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .coffeeChatBadge {
+    position: static;
+    margin-bottom: 12px;
+  }
+}

@@ -130,7 +130,7 @@ export default function Apply() {
             <h1>Join us!</h1>
             <div className={styles.headerBlock}>
               <p>The application for the Spring 2026 cycle is now open!</p>
-              <a href="https://forms.gle/sCzjRXh4Adc2jtpK9" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Interest Form</button></a>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe-V2VIBt2JrB-GguIqrsyPRPNnX0YJFZQom5mwdmXF-ck7w/viewform" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Here!</button></a>
             </div>
           </div>
         </div>

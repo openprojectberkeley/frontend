@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import Resources from './components/Resources';
 import CoffeeChats from "./components/CoffeeChats";
+import Projects from "./components/Projects";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/apply" element={<Apply />} />
             <Route path="/coffeechats" element={<CoffeeChats />} />
+            <Route path="/projects" element={<Projects />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/resources" element={<Resources />} />
           </Routes>
