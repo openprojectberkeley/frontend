@@ -65,7 +65,7 @@
   font-size: clamp(0.875rem, 2vw, 1rem);
   color: rgba(255, 255, 255, 0.75);
   margin: 0;
-  max-width: 500px;
+  max-width: 90%;
 }
 
 /* Projects Grid - 2 columns */

@@ -153,10 +153,10 @@ export const projects = {
   competitive: [
     {
       id: 14,
-      name: "OSKIOps",
+      name: "Syncrate",
       // logo: oskiopsLogo,
       pms: ["Felicia Ye", "Helena Zhang"],
-      description: "OSKIOps is a warehouse operating system that helps private warehouse owners better communicate with retailers. By centralizing real-time updates and analytics-ready information, it reduces errors and enables more efficient, data-driven warehouse operations.",
+      description: "Syncrate is a warehouse operating system that helps private warehouse owners better communicate with retailers. By centralizing real-time updates and analytics-ready information, it reduces errors and enables more efficient, data-driven warehouse operations.",
       difficulty: 2
     }
   ]
