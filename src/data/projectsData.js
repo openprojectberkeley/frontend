@@ -5,6 +5,7 @@
 import tinyvillageLogo from '../images/projects/tinyvillage.png';
 import lgnovaLogo from '../images/projects/lgnova.webp';
 import quantizeLogo from '../images/projects/quantize.svg';
+import matXLogo from '../images/projects/matX.svg';
 
 // Unused logos - uncomment when ready
 // import copatibleLogo from '../images/projects/copatible.svg';
@@ -78,6 +79,16 @@ export const projects = {
       difficulty: 4,
       clientName: "iPick.ai",
       coffeeChatRequired: true
+    },
+    {
+      id: 15,
+      logo: matXLogo,
+      name: "MatX",
+      pms: ["Christopher Chang", "Jayden Lee", "Leo Park"],
+      description: "We are looking to build a benchmarking platform that evaluates how efficiently different machine learning algorithms run on MatX hardware, measuring both algorithm and system level performance.",
+      difficulty: 5,
+      clientName: "MatX",
+      coffeeChatRequired: true,
     }
   ],
   passion: [
@@ -96,13 +107,7 @@ export const projects = {
       description: "Built by DJs for DJs, QUANTIZE is a booking platform that helps beginner/student DJs find their first stage and gain essential industry exposure. Simultaneously, it will provide venues with a straightforward tool to discover fresh talent that fits their unique atmosphere and budget.",
       difficulty: 3
     },
-    {
-      id: 7,
-      name: "Cal Bites",
-      pms: ["Jayden Lee", "Christopher Chang", "Leo Park"],
-      description: "We're building a collaborative, student-driven dining app for UC Berkeley that goes beyond menus by letting students rate dishes, post reviews and photos, follow profiles, and get notified when highly rated or favorited items appear. The app also tracks dining hall performance trends and integrates meal plan info to give students both social and practical insights into campus dining.",
-      difficulty: 3
-    },
+
     {
       id: 8,
       name: "Fonar",

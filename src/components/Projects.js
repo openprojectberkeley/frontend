@@ -21,7 +21,7 @@ export default function Projects() {
             className={styles.coffeeIcon}
             aria-hidden="true"
           />
-          <span>Coffee Chat Required</span>
+          <span>Coffee Chat Highly Recommended</span>
         </div>
       )}
 
@@ -84,6 +84,7 @@ export default function Projects() {
         {/* Page Header */}
         <header className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>Spring 2026 Projects</h1>
+          <p className={styles.exploreText}>Explore more projects at the info sessions!</p>
           <ul className={styles.projectTypesList}>
             {projectTypes.map((type, index) => (
               <li key={index}>{type}</li>
