@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.f04dce08.css",
-    "main.js": "/static/js/main.2ad00c04.js",
+    "main.css": "/static/css/main.9d4a2bf7.css",
+    "main.js": "/static/js/main.292b439c.js",
     "static/js/787.a52046e0.chunk.js": "/static/js/787.a52046e0.chunk.js",
     "static/media/swirl.png": "/static/media/swirl.a2207575231d7bd43449.png",
     "static/media/chris.webp": "/static/media/chris.af10ff831c4fb6f79f55.webp",
@@ -118,6 +118,7 @@
     "static/media/colin.webp": "/static/media/colin.fefaf02367e7d9edd75f.webp",
     "static/media/image21.png": "/static/media/image21.2f4ec9a9723d394f4d6f.png",
     "static/media/pwicon.png": "/static/media/pwicon.ce0de5ba78e00944813d.png",
+    "static/media/matX.svg": "/static/media/matX.64625f8886e8184c7ce27fa34ad44dd5.svg",
     "static/media/squareshape.png": "/static/media/squareshape.8ffa287159f23d046be4.png",
     "static/media/quantize.svg": "/static/media/quantize.c8affd80c78125b2aa5f42a35ead2fbd.svg",
     "static/media/backend5.png": "/static/media/backend5.5e02923c5cda29587894.png",
@@ -146,12 +147,12 @@
     "static/media/lgnova.webp": "/static/media/lgnova.cf738e49181ac7fe45d2.webp",
     "index.html": "/index.html",
     "static/media/coffee-cup.svg": "/static/media/coffee-cup.24bc7d101a2cfd03492ea26967fa87c3.svg",
-    "main.f04dce08.css.map": "/static/css/main.f04dce08.css.map",
-    "main.2ad00c04.js.map": "/static/js/main.2ad00c04.js.map",
+    "main.9d4a2bf7.css.map": "/static/css/main.9d4a2bf7.css.map",
+    "main.292b439c.js.map": "/static/js/main.292b439c.js.map",
     "787.a52046e0.chunk.js.map": "/static/js/787.a52046e0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f04dce08.css",
-    "static/js/main.2ad00c04.js"
+    "static/css/main.9d4a2bf7.css",
+    "static/js/main.292b439c.js"
   ]
 }
