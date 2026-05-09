@@ -3,17 +3,23 @@
 
 // Project logos - enabled logos
 import tinyvillageLogo from '../images/projects/tinyvillage.png';
-import lgnovaLogo from '../images/projects/lgnova.webp';
-import quantizeLogo from '../images/projects/quantize.svg';
+import atlasLogo from '../images/projects/atlas.png';
 import matXLogo from '../images/projects/matX.svg';
+import chessblitzLogo from '../images/projects/chessblitz.png';
+import copatibleLogo from '../images/projects/copatible.png';
+import operativeLogo from '../images/projects/operative.svg';
+import nexusLogo from '../images/projects/nexus.png';
+import ibmLogo from '../images/projects/ibm.png';
+import bmLogo from '../images/projects/bm.png';
 
 // Unused logos - uncomment when ready
-// import copatibleLogo from '../images/projects/copatible.svg';
-// import nexusLogo from '../images/projects/nexus.svg';
 // import educalLogo from '../images/projects/educal.svg';
 // import fonarLogo from '../images/projects/fonar.svg';
 // import gisticeLogo from '../images/projects/gistice-league.svg';
-// import oskiopsLogo from '../images/projects/oskiops.svg';
+// import syncrateLogo from '../images/projects/syncrate.svg';
+// import huddleLogo from '../images/projects/huddle.svg';
+// import tracklistLogo from '../images/projects/tracklist.svg';
+// import matchlabLogo from '../images/projects/matchlab.svg';
 // import sightlineLogo from '../images/projects/sightline.svg';
 
 export const sectionInfo = {
@@ -29,7 +35,7 @@ export const sectionInfo = {
   },
   competitive: {
     title: "Competitive",
-    description: "Work in teams of five to turn MVPs into production-ready solutions with PM mentorship.",
+    description: "Work in teams to turn MVPs into production-ready solutions with PM mentorship.",
     color: "#FF9C03" // orange
   }
 };
@@ -45,7 +51,7 @@ export const projects = {
     {
       id: 1,
       name: "CoPatible",
-      // logo: copatibleLogo,
+      logo: copatibleLogo,
       pms: ["Karthik Subramanian", "Zehra Naqvi"],
       description: "CoPatible is a voice-first platform that plans, books, and matches people into small, in-person experiences based on how they feel and the life chapter they're in. Our project focuses on building the MVP web app, voice prototypes, and AI-powered matching tools to connect founders in San Francisco.",
       difficulty: 4,
@@ -61,10 +67,19 @@ export const projects = {
       clientName: "Tiny Village Spirit"
     },
     {
+      id: 9,
+      name: "Operative",
+      logo: operativeLogo,
+      pms: ["Sainik Ghosh", "Justin Le"],
+      description: "Operative is an advanced systems project focused on building an AI-powered cybersecurity platform that can learn tools, plan investigations, and execute workflows autonomously. The project combines backend infrastructure, agentic AI systems, and frontend interfaces to simulate a next-generation Security Operations Center (SOC).",
+      difficulty: 3,
+      clientName: "Operative",
+    },
+    {
       id: 3,
       name: "Atlas",
-      logo: lgnovaLogo,
-      pms: ["Anupriya Islam", "Andre Ramos"],
+      logo: atlasLogo,
+      pms: ["Anupriya Islam", "Andre Ramos", "Erin Lee"],
       description: "Atlas is an internal data and AI-powered platform built for LG NOVA that brings company-wide information into one place using AI-generated summaries, intelligent search, and interactive views to support everyday work and decision-making.",
       difficulty: 4,
       clientName: "LG NOVA",
@@ -73,8 +88,8 @@ export const projects = {
     {
       id: 4,
       name: "Nexus",
-      // logo: nexusLogo,
-      pms: ["Andrew Zhou", "Ganesh Karayi", "Jayden Szeto"],
+      logo: nexusLogo,
+      pms: ["Andrew Zhou", "Ganesh Karayi", "Jayden Szeto", "Arnav Mahadev"],
       description: "Nexus is a company relationship visualization platform that transforms iPick.ai's scattered data into an interactive graph database. Users can explore competitor, supplier, and subsidiary relationships between 8,000+ companies through a D3.js force-directed visualization, with AI-powered relationship suggestions and an admin panel for data curation.",
       difficulty: 4,
       clientName: "iPick.ai",
@@ -89,39 +104,51 @@ export const projects = {
       difficulty: 5,
       clientName: "MatX",
       coffeeChatRequired: true,
+    },
+    {
+      id: 16,
+      name: "IBM",
+      logo: ibmLogo,
+      pms: ["Jonathan Tran", "Diego Llamas, Benjamin Huang"],
+      description: "We're working with IBM to build an AI-powered simulation platform for international competitive events, integrating real-time commentary, live analytics, and intelligent team collaboration tools.",
+      difficulty: 4,
+      clientName: "IBM",
+      coffeeChatRequired: true,
+    },
+    {
+      id: 7,
+      name: "Behn Meyer AgriCare",
+      logo: bmLogo,
+      pms: ["Jenny Liang", "Mia Salinas"],
+      description: "Behn Meyer AgriCare is a loyalty and engagement platform that captures transaction data between distributors and retailers, giving them a way to submit invoices and redeem points while giving Behn Meyer direct visibility into sales and a channel to run promotions and technical support programs.",
+      difficulty: 4,
+      clientName: "Behn Meyer",
+      coffeeChatRequired: true,
     }
   ],
   passion: [
     {
       id: 5,
       name: "Huddle",
+      // logo: huddleLogo,
       pms: ["Annie Lin", "Parsa Faraji Alamouti"],
       description: "Huddle is a collaborative study app making it easier to find the right people and places to study with! It matches students into study groups and recommends locations on or near the Berkeley campus based on shared preferences, availability, and feedback from prior study sessions.",
       difficulty: 2
     },
     {
       id: 6,
-      name: "QUANTIZE",
-      logo: quantizeLogo,
-      pms: ["Jessica Chiu", "Megan Nguyen", "Althea Rosales"],
-      description: "Built by DJs for DJs, QUANTIZE is a booking platform that helps beginner/student DJs find their first stage and gain essential industry exposure. Simultaneously, it will provide venues with a straightforward tool to discover fresh talent that fits their unique atmosphere and budget.",
+      name: "TRACKLIST",
+      // logo: tracklistLogo,
+      pms: ["Jessica Chiu", "Megan Nguyen"],
+      description: "TRACKLIST is a music rating and review web app inspired by Letterboxd (for movies) and Beli (for restaurants). Users can search for any album, EP, or song, give it a star rating out of 5, write a short review, and build a personal profile that showcases everything they have listened to and loved.",
       difficulty: 3
     },
-
     {
       id: 8,
       name: "Fonar",
       // logo: fonarLogo,
       pms: ["Nishaad", "Ben Ross"],
       description: "Fonar streamlines phone calls by showing when your contacts are available and using an AI secretary to remember what was said.",
-      difficulty: 3
-    },
-    {
-      id: 9,
-      name: "EduCal",
-      // logo: educalLogo,
-      pms: ["Sainik Ghosh", "Justin Le", "Khushi Bhalla"],
-      description: "An educational tool made for grade school and college students, converting learning into gaming by taking in an assignment or exam and turns those into interactive games where students can learn without losing attention.",
       difficulty: 3
     },
     {
@@ -135,13 +162,15 @@ export const projects = {
     {
       id: 11,
       name: "ChessBlitz",
+      logo: chessblitzLogo,
       pms: ["Yashom Kapoor", "Peter Lourenco"],
-      description: "Chess tactics app for K-5 students.",
+      description: "ChessBlitz is building an educational chess tactics app for K-5 students by using AI-personalized hints, gamification, and a fun interface to make learning chess stimulating and accessible for young beginners.",
       difficulty: 2
     },
     {
       id: 12,
       name: "MatchLab",
+      // logo: matchlabLogo,
       pms: ["Noor Pirzada", "Surabhi Verma"],
       description: "Our project aims to create a web-based platform that helps students gain practical experience through short and structured micro-projects. The platform uses AI to generate beginner-friendly projects, match users to projects based on their skills and goals, and provide guidance when users get stuck.",
       difficulty: 3
@@ -159,7 +188,7 @@ export const projects = {
     {
       id: 14,
       name: "Syncrate",
-      // logo: oskiopsLogo,
+      // logo: syncrateLogo,
       pms: ["Felicia Ye", "Helena Zhang"],
       description: "Syncrate is a warehouse operating system that helps private warehouse owners better communicate with retailers. By centralizing real-time updates and analytics-ready information, it reduces errors and enables more efficient, data-driven warehouse operations.",
       difficulty: 2
