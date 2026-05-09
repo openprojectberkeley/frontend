@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
 import About from './components/About';
@@ -10,9 +10,16 @@ import Resources from './components/Resources';
 import CoffeeChats from "./components/CoffeeChats";
 import Projects from "./components/Projects";
 
+function SnapshotRouteMarker() {
+  const location = useLocation();
+
+  return <div data-snapshot-route={location.pathname} style={{ display: 'none' }} aria-hidden="true" />;
+}
+
 function App() {
   return (
     <BrowserRouter>
+        <SnapshotRouteMarker />
         <Header />
         <ScrollToTop>
           <Routes>
