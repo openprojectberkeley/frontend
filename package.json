@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "postbuild": "react-snap"
+    "postbuild": "node scripts/generate-thumbnails.js && react-snap"
   },
   "eslintConfig": {
     "extends": [
@@ -45,10 +45,14 @@
     ]
   },
   "reactSnap": {
-    "exclude": ["/coffeechats"],
+    "exclude": [
+      "/coffeechats"
+    ],
     "skipThirdPartyRequests": true
   },
   "devDependencies": {
-    "gh-pages": "^4.0.0"
+    "gh-pages": "^4.0.0",
+    "puppeteer-core": "^24.43.0",
+    "sharp": "^0.32.6"
   }
 }

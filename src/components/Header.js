@@ -24,12 +24,12 @@ export default function Header() {
     <header className={styles.header} id="header">
       <NavLink to="/"><img src={logo} alt="logo" /></NavLink>
       <div className={active ? `${styles.linksActive}` : `${styles.links}`} onClick={deActivate}>
-        <NavLink to="/about" className={activeLink}>about</NavLink>
-        <NavLink to="/apply" className={activeLink}>apply</NavLink>
-        <NavLink to="/coffeechats" className={activeLink}>coffee chats</NavLink>
-        <NavLink to="/projects" className={activeLink}>projects</NavLink>
-        <NavLink to="/contact" className={activeLink}>contact</NavLink>
-        <NavLink to="/resources" className={activeLink}>resources</NavLink>
+        <NavLink to="/about/" className={activeLink}>about</NavLink>
+        <NavLink to="/apply/" className={activeLink}>apply</NavLink>
+        <NavLink to="/coffeechats/" className={activeLink}>coffee chats</NavLink>
+        <NavLink to="/projects/" className={activeLink}>projects</NavLink>
+        <NavLink to="/contact/" className={activeLink}>contact</NavLink>
+        <NavLink to="/resources/" className={activeLink}>resources</NavLink>
       </div>
       <div className={styles.hamburger}>
         <div className={styles.hamburger} onClick={hamburgerMode}>

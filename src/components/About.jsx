@@ -2,6 +2,7 @@ import React from 'react';
 import styles from "../css/About.module.css";
 import orangeCurve from "../images/orangecurve.png";
 import aboutBlueCurveBottom from "../images/about/aboutBlueCurveBottom.png";
+import aboutBlueCurveMiddle from "../images/about/aboutBlueCurveMiddle.png";
 import aboutBlueCurveTop from "../images/about/aboutBlueCurveTop.png";
 import pwicon from "../images/pwicon.png";
 import linkedinicon from "../images/about/linkedin_blue.png";
@@ -17,47 +18,160 @@ import teamCover from "../images/about/spring2026/board.jpg";
 
 // TODO: Uncomment and update for Fall 2026
 // Exec
+import mia from "../images/about/spring2025/mia.thumb.jpg"; // President
+import jenny from "../images/about/spring2026/jenny.thumb.jpg";
+import anupriya from "../images/about/spring2026/anupriya.thumb.jpg"; // VPP
+import ashwika from "../images/about/spring2026/ashwika.thumb.jpg";
+import yashom from "../images/about/spring2025/yashom.thumb.jpg";
+import jonathan from "../images/about/spring2026/jonathan.thumb.jpg"; // VPPD
+import benh from "../images/about/spring2026/benh.thumb.jpg";
+import diego from "../images/about/spring2026/diego.thumb.jpg"; // VP Finance
+import sophie from "../images/about/spring2026/sophie.thumb.jpg";
+import felicia from "../images/about/spring2026/felicia.thumb.jpg";
+import ashleyl from "../images/about/spring2026/ashleyl.thumb.jpg"; // VP Marketing
+import ava from "../images/about/spring2025/ava.thumb.jpg";
+import ashleyi from "../images/about/spring2026/ashleyi.thumb.jpg"; // VP Design
+import devah from "../images/about/spring2026/devah.thumb.jpg"; // VP Tech
+import peter from "../images/about/spring2026/peter.thumb.jpg";
+import helena from "../images/about/spring2026/helena.thumb.jpg"; // VP Externals
+import karthik from "../images/about/spring2026/karthik.thumb.jpg";
+import ryan from "../images/about/spring2026/ryan.thumb.jpg"; // VP Internals
+import benr from "../images/about/spring2026/benr.thumb.jpg";
+import yon from "../images/about/spring2026/yon.thumb.jpg"; // VP Clients
+// import anupriya from "../images/about/spring2026/anupriya.thumb.jpg";
+// import jonathan from "../images/about/spring2026/jonathan.thumb.jpg";
+// import ashleyi from "../images/about/spring2026/ashleyi.thumb.jpg"; // VP Community
 
 // TODO: Uncomment and update for Fall 2026
 // Project Leads
-
+// import karthikeya from "../images/about/spring2026/karthikeya.thumb.jpg"; // CoPatible
+import zehra from "../images/about/spring2026/zehra.thumb.jpg";
+import charmi from "../images/about/spring2026/charmi.thumb.jpg"; // Village Hub
+import harshini from "../images/about/spring2026/harshini.thumb.jpg";
+import sainik from "../images/about/spring2026/sainik.thumb.jpg"; // Operative
+import justin from "../images/about/spring2026/justin.thumb.jpg";
+// import anupriya from "../images/about/spring2026/anupriya.thumb.jpg"; // Atlas
+import andre from "../images/about/fall2025/andre.thumb.jpg";
+import erin from "../images/about/spring2026/erin.thumb.jpg";
+import andrew from "../images/about/spring2026/andrew.thumb.jpg"; // Nexus
+import ganesh from "../images/about/spring2026/ganesh.thumb.jpg";
+import jaydens from "../images/about/spring2026/jaydens.thumb.jpg";
+import arnav from "../images/about/spring2026/arnav.thumb.jpg";
+import chris from "../images/about/spring2026/chris.thumb.jpg"; // MatX
+import jaydenl from "../images/about/spring2026/jaydenl.thumb.jpg";
+import leo from "../images/about/spring2026/leo.thumb.jpg";
+// import jonathan from "../images/about/spring2026/jonathan.thumb.jpg"; // IBM
+// import diego from "../images/about/spring2026/diego.thumb.jpg";
+// import benh from "../images/about/spring2026/benh.thumb.jpg";
+// import jenny from "../images/about/spring2026/jenny.thumb.jpg"; // BM
+// import mia from "../images/about/spring2026/mia.thumb.jpg";
+import annie from "../images/about/spring2026/annie.thumb.jpg"; // Huddle
+import parsa from "../images/about/spring2026/parsa.thumb.jpg";
+import jessica from "../images/about/spring2026/jessica.thumb.jpg"; // TRACKLIST
+import megan from "../images/about/spring2026/megan.thumb.jpg";
+import nishaad from "../images/about/spring2026/nishaad.thumb.jpg"; // Fonar
+// import benr from "../images/about/spring2026/benr.thumb.jpg";
+import emily from "../images/about/spring2026/emily.thumb.jpg"; // GIStice League
+import david from "../images/about/spring2026/david.thumb.jpg";
+// import yashom from "../images/about/spring2026/yashom.thumb.jpg"; // ChessBlitz
+// import peter from "../images/about/spring2026/peter.thumb.jpg";
+import noor from "../images/about/spring2026/noor.thumb.jpg"; // MatchLab
+import surabhi from "../images/about/spring2026/surabhi.thumb.jpg";
+import chad from "../images/about/spring2026/chad.thumb.jpg"; // SightLine
+// import ryan from "../images/about/spring2026/ryan.thumb.jpg";
+// import felicia from "../images/about/spring2026/felicia.thumb.jpg"; // Syncrate
+// import helena from "../images/about/spring2026/helena.thumb.jpg";
 
 // Alumni
-import ethan from "../images/about/fall2023/ethan.webp";
-import colin from "../images/about/spring2023/colin.webp";
-import nick from "../images/about/spring2023/nick.webp";
-import uyen from "../images/about/fall2023/uyen.webp";
-import joel from "../images/about/fall2023/joel.webp";
-import nhu from "../images/about/fall2023/nhu.webp";
-import jess from "../images/about/spring2024/jess.webp";
-import christopher from "../images/about/spring2024/chris.webp";
-import kitty from "../images/about/spring2024/kitty.webp";
-import rohan from "../images/about/spring2024/rohan.webp";
-import zee from "../images/about/fall2023/zee.webp";
+import ethan from "../images/about/fall2023/ethan.thumb.jpg";
+import colin from "../images/about/spring2023/colin.thumb.jpg";
+import nick from "../images/about/spring2023/nick.thumb.jpg";
+import uyen from "../images/about/fall2023/uyen.thumb.jpg";
+import joel from "../images/about/fall2023/joel.thumb.jpg";
+import nhu from "../images/about/fall2023/nhu.thumb.jpg";
+import jess from "../images/about/spring2024/jess.thumb.jpg";
+import christopher from "../images/about/spring2024/chris.thumb.jpg";
+import kitty from "../images/about/spring2024/kitty.thumb.jpg";
+import rohan from "../images/about/spring2024/rohan.thumb.jpg";
+import zee from "../images/about/fall2023/zee.thumb.jpg";
 
 export default function About() {
   // TODO: Uncomment and update board array for Spring 2026
-  /*
   const board = [
     {
-      name: "Sia Sama",
+      name: "Jenny Liang",
       title: "Co-President",
-      image: sia,
+      image: jenny,
     },
     {
-      name: "Khush Gandhi",
+      name: "Mia Salinas",
       title: "Co-President",
-      image: khush,
+      image: mia,
     },
     {
-      name: "Arushi Garg",
-      title: "VP of Internals",
-      image: arushi,
+      name: "Anupriya Islam",
+      title: "VP of Projects",
+      image: anupriya,
     },
     {
-      name: "Meher Pereira",
-      title: "VP of Internals",
-      image: meher,
+      name: "Ashwika Gampa",
+      title: "VP of Projects",
+      image: ashwika,
+    },
+    {
+      name: "Yashom Kapoor",
+      title: "VP of Projects",
+      image: yashom,
+    },
+    {
+      name: "Jonathan Tran",
+      title: "VP of Professional Development",
+      image: jonathan,
+    },
+    {
+      name: "Ben Huang",
+      title: "VP of Professional Development",
+      image: benh,
+    },
+    {
+      name: "Diego Llamas",
+      title: "VP of Finance",
+      image: diego,
+    },
+    {
+      name: "Sophie Nguyen",
+      title: "VP of Finance",
+      image: sophie,
+    },
+    {
+      name: "Felicia Ye",
+      title: "VP of Finance",
+      image: felicia,
+    },
+    {
+      name: "Ashley Li",
+      title: "VP of Marketing",
+      image: ashleyl,
+    },
+    {
+      name: "Ava Joshi",
+      title: "VP of Marketing",
+      image: ava,
+    },
+    {
+      name: "Ashley Iattoni",
+      title: "VP of Design",
+      image: ashleyi,
+    },
+    {
+      name: "Devah Schaefers",
+      title: "VP of Tech",
+      image: devah,
+    },
+    {
+      name: "Peter Lourenco",
+      title: "VP of Tech",
+      image: peter,
     },
     {
       name: "Helena Zhang",
@@ -65,55 +179,73 @@ export default function About() {
       image: helena,
     },
     {
-      name: "Ava Joshi",
-      title: "VP of Marketing & Design",
-      image: ava,
+      name: "Karthik Subramanian",
+      title: "VP of Externals",
+      image: karthik,
     },
     {
-      name: "Mia Salinas",
-      title: "VP of Marketing & Design",
-      image: mia,
+      name: "Ryan Lin",
+      title: "VP of Internals",
+      image: ryan,
     },
     {
-      name: "June Mohan",
-      title: "VP of Projects",
-      image: june,
+      name: "Ben Ross",
+      title: "VP of Internals",
+      image: benr,
     },
     {
-      name: "Thanh Tran",
-      title: "VP of Projects",
-      image: thanh,
+      name: "Yonatan Herrera Gonzalez",
+      title: "VP of Clients",
+      image: yon,
+    },
+    // {
+    //   name: "Anupriya Islam",
+    //   title: "VP of Clients",
+    //   image: anupriya,
+    // },
+    // {
+    //   name: "Jonathan Tran",
+    //   title: "VP of Clients",
+    //   image: jonathan,
+    // },
+    // {
+    //   name: "Ashley Iattoni",
+    //   title: "VP of Community",
+    //   image: ashleyi,
+    // },
+  ];
+
+  // TODO: Uncomment and update projectLeads array for Spring 2026
+  const projectLeads = [
+    {
+      name: "Zehra Naqvi",
+      title: "Project Manager",
+      image: zehra,
     },
     {
-      name: "Devah Schafers",
-      title: "VP of Projects",
-      image: devah,
+      name: "Charmi Buddaluru",
+      title: "Instructor PM",
+      image: charmi,
     },
     {
-      name: "Jenny Liang",
-      title: "VP of Professional Development",
-      image: jenny,
+      name: "Harshini Pulivarthi",
+      title: "Instructor PM",
+      image: harshini,
     },
     {
-      name: "Neel Sharma",
-      title: "VP of Professional Development",
-      image: neel,
+      name: "Sainik Ghosh",
+      title: "Project Manager",
+      image: sainik,
+    },
+    {
+      name: "Justin Le",
+      title: "Project Manager",
+      image: justin,
     },
     {
       name: "Anupriya Islam",
-      title: "VP of Tech",
-      image: anupriya,
-    },
-  ];
-  */
-
-  // TODO: Uncomment and update projectLeads array for Spring 2026
-  /*
-  const projectLeads = [
-    {
-      name: "Abhinav Kiran",
       title: "Project Manager",
-      image: abhi,
+      image: anupriya,
     },
     {
       name: "Andre Ramos",
@@ -121,85 +253,44 @@ export default function About() {
       image: andre,
     },
     {
-      name: "Ashwika Gampa",
-      title: "Project Manager",
-      image: ashwika,
-    },
-    {
-      name: "Aslesha Chandra",
-      title: "Project Manager",
-      image: aslesha,
-    },
-    {
-      name: "Ayman Islam",
-      title: "Project Manager",
-      image: ayman,
-    },
-   
-    {
-      name: "Ben Ross",
-      title: "Project Manager",
-      image: ben,
-    },
-    {
-      name: "Chad Park",
-      title: "Project Manager",
-      image: chad,
-    },
-    {
-      name: "David Cruz",
-      title: "Project Manager",
-      image: david2,
-    },
-    {
-      name: "David Zhang",
-      title: "Project Manager",
-      image: david,
-    },
-    {
-      name: "Devansh Ojha",
-      title: "Project Manager",
-      image: devansh,
-    },
-    {
-      name: "Dylan Stier",
-      title: "Project Manager",
-      image: dylan,
-    },
-    {
-      name: "Edwin Luck",
-      title: "Project Manager",
-      image: edwin,
-    },
-        {
-      name: "Emily Ma",
-      title: "Project Manager",
-      image: emily,
-    },
-    {
       name: "Erin Lee",
       title: "Project Manager",
       image: erin,
     },
     {
-      name: "Felicia Ye",
+      name: "Andrew Zhou",
       title: "Project Manager",
-      image: felicia,
+      image: andrew,
     },
     {
-      name: "Gunhui Kim",
+      name: "Ganesh Karayi",
       title: "Project Manager",
-      image: gunhui,
+      image: ganesh,
     },
     {
-      name: "Holden Fees",
+      name: "Jayden Szeto",
       title: "Project Manager",
-      image: holden,
+      image: jaydens,
     },
     {
-      name: "Isaac Hwang",
+      name: "Arnav Mahadev",
       title: "Project Manager",
-      image: isaac,
+      image: arnav,
+    },
+    {
+      name: "Christopher Chang",
+      title: "Project Manager",
+      image: chris,
+    },
+    {
+      name: "Jayden Lee",
+      title: "Project Manager",
+      image: jaydenl,
+    },
+    {
+      name: "Leo Park",
+      title: "Project Manager",
+      image: leo,
     },
     {
       name: "Jonathan Tran",
@@ -207,29 +298,44 @@ export default function About() {
       image: jonathan,
     },
     {
-      name: "Julia Beaupré",
+      name: "Diego Llamas",
       title: "Project Manager",
-      image: julia,
+      image: diego,
     },
     {
-      name: "Kailash Ramesh",
+      name: "Ben Huang",
       title: "Project Manager",
-      image: kailash,
+      image: benh,
     },
     {
-      name: "Karthikeya Gannavarapu",
+      name: "Jenny Liang",
       title: "Project Manager",
-      image: karthikeya,
+      image: jenny,
     },
     {
-      name: "Khushi Bhalla",
+      name: "Mia Salinas",
       title: "Project Manager",
-      image: khushi,
+      image: mia,
     },
     {
-      name: "Mahesh Arunachalam",
+      name: "Annie Lin",
+      title: "Instructor PM",
+      image: annie,
+    },
+    {
+      name: "Parsa Faraji Alamouti",
+      title: "Instructor PM",
+      image: parsa,
+    },
+    {
+      name: "Jessica Chiu",
       title: "Project Manager",
-      image: mahesh,
+      image: jessica,
+    },
+    {
+      name: "Megan Nguyen",
+      title: "Project Manager",
+      image: megan,
     },
     {
       name: "Nishaad Sovani",
@@ -237,19 +343,19 @@ export default function About() {
       image: nishaad,
     },
     {
-      name: "Peyton Li",
+      name: "Ben Ross",
       title: "Project Manager",
-      image: peyton,
+      image: benr,
     },
     {
-      name: "Sami Houssaini",
+      name: "Emily Ma",
       title: "Project Manager",
-      image: sami,
+      image: emily,
     },
     {
-      name: "Sohpie Nguyen",
+      name: "David Zhang",
       title: "Project Manager",
-      image: sophie,
+      image: david,
     },
     {
       name: "Yashom Kapoor",
@@ -257,12 +363,41 @@ export default function About() {
       image: yashom,
     },
     {
-      name: "Yonatan Herrera Gonzalez",
+      name: "Peter Lourenco",
       title: "Project Manager",
-      image: yonatan,
+      image: peter,
+    },
+    {
+      name: "Noor Pirzada",
+      title: "Project Manager",
+      image: noor,
+    },
+    {
+      name: "Surabhi Verma",
+      title: "Project Manager",
+      image: surabhi,
+    },
+    {
+      name: "Chad Park",
+      title: "Project Manager",
+      image: chad,
+    },
+    {
+      name: "Ryan Lin",
+      title: "Project Manager",
+      image: ryan,
+    },
+    {
+      name: "Felicia Ye",
+      title: "Project Manager",
+      image: felicia,
+    },
+    {
+      name: "Helena Zhang",
+      title: "Project Manager",
+      image: helena,
     },
   ];
-  */
 
   const alumni = [
     {
@@ -395,6 +530,7 @@ export default function About() {
         className={styles.aboutTeam}
         alt="Open Project Berkeley Team"
       />
+      <img src={aboutBlueCurveMiddle} className={styles.blueCurve} alt="Blue curve decoration" />
       <div className={`${styles.aboutTopHalf} limitWidth`}>
         <div className={styles.marginFromScreen}>
           <div className={styles.aboutUs}>
@@ -452,18 +588,14 @@ export default function About() {
         </div>
           <div className={styles.aboutPics}>
             {/* <h1>Spring 2026 Board</h1>*/}
-            {/* TODO: Uncomment Executive Team section when photos are ready
             <h2>Executive Team</h2>
             <div className={styles.people}>
               {renderPeople(board)}
             </div>
-            */}
-            {/* TODO: Uncomment Project Managers section when photos are ready
             <h2>Project Managers</h2>
             <div className={styles.people}>
               {renderPeople(projectLeads)}
             </div>
-            */}
             <h2>OP Alumni</h2>
             <div className={styles.people}>
               {renderPeople(alumni)}

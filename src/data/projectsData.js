@@ -109,7 +109,7 @@ export const projects = {
       id: 16,
       name: "IBM",
       logo: ibmLogo,
-      pms: ["Jonathan Tran", "Diego Llamas, Benjamin Huang"],
+      pms: ["Jonathan Tran", "Diego Llamas", "Benjamin Huang"],
       description: "We're working with IBM to build an AI-powered simulation platform for international competitive events, integrating real-time commentary, live analytics, and intelligent team collaboration tools.",
       difficulty: 4,
       clientName: "IBM",
@@ -147,7 +147,7 @@ export const projects = {
       id: 8,
       name: "Fonar",
       // logo: fonarLogo,
-      pms: ["Nishaad", "Ben Ross"],
+      pms: ["Nishaad Sovani", "Ben Ross"],
       description: "Fonar streamlines phone calls by showing when your contacts are available and using an AI secretary to remember what was said.",
       difficulty: 3
     },
