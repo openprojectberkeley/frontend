@@ -1,27 +1,68 @@
 .header {
     display: flex;
     flex-direction: row;
-    margin-top: 40px;
-    margin-left: var(--margin-from-screen);
-    margin-right: var(--margin-from-screen);
+    position: fixed;
+    top: 0;
+    left: var(--margin-from-screen);
+    right: var(--margin-from-screen);
     justify-content: space-between;
     align-items: center;
+    isolation: isolate;
+    font-family: 'ABeeZee Regular';
+    padding-left: 25px;
+    padding-right: 25px;
+    margin: 0px -30px;
+    z-index: 1000;
+    background: transparent;
+    padding-top: 20px;
+    padding-bottom: 60px;
+    
+    transition: background 0.3s ease;
+}
+
+.header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: 100% 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.header.headerScrolled::after {
+    opacity: 1;
+}
+
+.header > * {
+    position: relative;
+    z-index: 1;
 }
 
 .header img {
     width: 200px;
 }
 
+.links {
+    margin-bottom: 10px;
+}
+
 .links a {
     text-decoration: none;
     color: white;
     margin-left: 25px;
+    height: 90%;
 }
 
 .links a:hover, .activeLink {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift 0.5s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%232D5DED' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift 0.5s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23F9C12C' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E");
     background-position: 0 100%;
     background-size: auto 6px;
+    padding-bottom: 5px;
     background-repeat: repeat-x;
     text-decoration: none;
 }
@@ -41,7 +82,7 @@
     background-color: #101010;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 800px) {
     .hamburger {
         display: block;
         cursor: pointer;
@@ -79,18 +120,22 @@
         gap: 20px;
         padding-left: 0px;
         background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(6px); 
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
     }
 
     .linksActive {
         composes: links;
         left: 0px;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(6px); 
     }
 
     .links a {
         margin-left: 0;
+        height: auto;
+    }
+
+    .links a:hover, .activeLink {
+        margin-bottom: -5px;
     }
 }
 

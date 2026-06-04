@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import emailjs from 'emailjs-com';
 import styles from '../css/Contact.module.css';
-import homepageShapes from '../images/contact_shapes.png';
+import homepageShapes from '../images/contact/shapes.svg';
 
 export default function Contact() {
   const form = useRef();
@@ -10,7 +10,14 @@ export default function Contact() {
   const sendEmail = (e) => {
       e.preventDefault();
 
-      emailjs.sendForm('service_uuijmxu', 'template_3hiw07p', form.current, 'u1fSQ6SkoqE4EVFIT')
+      const templateParams = {
+        from_name: form.current.from_name.value,
+        reply_to: form.current.reply_to.value,
+        subject: form.current.subject.value,
+        message: form.current.message.value,
+      };
+
+      emailjs.send('service_uuijmxu', 'template_3hiw07p', templateParams, 'u1fSQ6SkoqE4EVFIT')
       .then((result) => {
           setSent("success")
       }, (error) => {
@@ -23,9 +30,12 @@ export default function Contact() {
         <div className={styles.addMargin}>
           <div className={styles.cover}>
             <div className={styles.coverLeft}>
-              <h1 className={styles.tealText}>Experience</h1>
-              <h1 className={styles.purpleText}>For All.</h1>
-              <h2>If you have any questions, concerns or simply want to say hello, please don't hesitate to reach out to us through the form provided!</h2>
+              <h1 className={styles.experienceText}>Experience</h1>
+              <div className={styles.forAllText}>
+                <h1 className={styles.forText}>For</h1>
+                <h1 className={styles.allText}>All.</h1>
+              </div>
+              <h2>If you have any questions, concerns or simply want to say hello, please don't hesitate to reach out to us through the form provided! We’ll get back to you as soon as we can!</h2>
             </div>
             <div className={styles.coverRight}>
               <img src={homepageShapes} alt="Homepage Shapes" />
@@ -35,9 +45,10 @@ export default function Contact() {
               <div className={styles.form}>
                 <input type="text" placeholder="Name" name="from_name" required/>
                 <input type="email" placeholder="Email" name="reply_to" required/>
+                <input type="text" placeholder="Subject" name="subject" required/>
                 <textarea placeholder="Your message..." name="message" required/>
               </div>
-              <input type="submit" value="send message" className={styles.submit}/>
+              <input type="submit" value="Send Message" className={styles.submit}/>
               {sent === "success" && <p className={styles.message}>Email sent! We'll get back to you soon!</p>}
               {sent === "error" && <p className={styles.message}>Email failed to send. Please reach us at openprojectberkeley@gmail.com!</p>}
           </form>

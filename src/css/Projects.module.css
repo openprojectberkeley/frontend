@@ -3,6 +3,37 @@
 .pageContainer {
   min-height: 100vh;
   padding-bottom: 80px;
+  padding-top: 80px;
+}
+
+.pageBG {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  --page-bg-offset: 0px;
+}
+
+.pageBG::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: min(2000px, 440vw);
+  height: 100%;
+  background-image: url('../images/projects/grid.svg');
+  opacity: 0.1;
+  background-repeat: repeat-y;
+  background-position: center 26rem;
+  background-size: 100% auto;
+  transform: translateX(-50%) translateY(var(--page-bg-offset));
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.pageBG>* {
+  position: relative;
+  z-index: 1;
 }
 
 .content {
@@ -16,17 +47,10 @@
 }
 
 .pageTitle {
-  font-family: 'Brother Bold';
+  font-family: 'ADLaM Display Regular';
   font-size: clamp(2rem, 5vw, 3rem);
   margin: 0 0 16px;
-  color: white;
-}
-
-.exploreText {
-  font-size: clamp(1rem, 2.5vw, 1.2rem);
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 24px;
-  font-style: italic;
+  color: #FAF3E0;
 }
 
 .projectTypesList {
@@ -50,7 +74,7 @@
   content: "•";
   position: absolute;
   left: 0;
-  color: #4DB6AC;
+  color: white;
 }
 
 /* Section Styles */
@@ -63,7 +87,7 @@
 }
 
 .sectionTitle {
-  font-family: 'Brother Bold';
+  font-family: 'Alata Regular';
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   margin: 0 0 8px;
 }
@@ -78,8 +102,21 @@
 /* Projects Grid - 2 columns */
 .projectsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 340px));
+  justify-content: center;
+  place-items: center;
+
+  .projectManagerLink {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .projectManagerLink:hover,
+  .projectManagerLink:focus-visible {
+    text-decoration: underline;
+  }
+
+  gap: 16px;
 }
 
 @media screen and (max-width: 768px) {
@@ -91,35 +128,100 @@
 /* Project Card - Full info layout */
 .projectCard {
   position: relative;
-  background: linear-gradient(
-    145deg,
-    rgba(45, 35, 65, 0.6) 0%,
-    rgba(25, 30, 40, 0.8) 100%
-  );
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  padding: 24px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  width: 100%;
+  max-width: 340px;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.projectCard:hover {
+.projectCard:hover,
+.projectCard:focus-within {
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
-/* Card Content - Logo + Info */
+.flashTarget {
+  animation: flashTile 2s ease-out;
+}
+
+/* Card Faces */
+.cardFace,
+.cardHover {
+  position: absolute;
+  inset: 0;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.cardFace {
+  opacity: 1;
+}
+
+.coffeeChatBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FF9C03;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 14px;
+  font-size: 0.72rem;
+  font-family: 'Alata Regular';
+  z-index: 2;
+}
+
+.coffeeIcon {
+  width: 14px;
+  height: 14px;
+  filter: brightness(0) invert(1);
+}
+
+.cardHover {
+  opacity: 0;
+  transform: translateY(8px);
+  background: linear-gradient(145deg,
+      rgba(25, 30, 40, 0.5) 0%,
+      rgba(45, 35, 65, 0.5) 100%);
+}
+
+.projectCard:hover .cardFace,
+.projectCard:focus-within .cardFace {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.projectCard:hover .cardHover,
+.projectCard:focus-within .cardHover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Front Face Content - Logo + Name */
 .cardContent {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
 }
 
 /* Logo Container (when logo exists) */
 .logoContainer {
-  flex-shrink: 0;
-  width: 64px;
-  height: 64px;
+  width: min(38%, 120px);
+  height: min(38%, 120px);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -135,31 +237,50 @@
   border-radius: 10px;
 }
 
-/* Card Info */
-.cardInfo {
-  flex: 1;
-  min-width: 0;
-}
-
 .projectName {
-  font-family: 'Brother Bold';
-  font-size: 1.25rem;
-  margin: 0 0 6px;
+  font-family: 'Alata Regular';
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  margin: 0;
   color: white;
 }
 
+/* Hover Face Content */
+.cardHoverInner {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-auto-rows: max-content;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-right: 4px;
+  overflow: auto;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-width: thin;
+}
+
+.hoverLabel {
+  font-family: 'Alata Regular';
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.65);
+}
+
 .projectPMs {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.75);
   margin: 0;
+  margin-bottom: 10px;
   line-height: 1.4;
 }
 
 .projectDescription {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.85);
-  margin: 0 0 12px;
+  margin: 0;
 }
 
 .projectClient {
@@ -171,45 +292,49 @@
 }
 
 .projectClient strong {
-  color: #4DB6AC;
+  color: #9BE9FF;
 }
 
-/* Coffee Chat Badge */
-.coffeeChatBadge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #FF9C03;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 14px;
-  font-size: 0.75rem;
-  font-family: 'Brother Medium';
+@keyframes flashTile {
+  0% {}
+
+  50% {
+    filter: brightness(1);
+    background-color: transparent;
+  }
+
+  60% {
+    filter: brightness(1.12);
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  100% {
+    background-color: transparent;
+    filter: brightness(1);
+  }
 }
 
-.coffeeIcon {
-  width: 14px;
-  height: 14px;
-  filter: brightness(0) invert(1);
+@media (prefers-reduced-motion: reduce) {
+  .flashTarget {
+    animation: none;
+  }
 }
 
 /* Responsive adjustments */
 @media screen and (max-width: 550px) {
   .projectCard {
-    padding: 20px;
+    aspect-ratio: 1 / 1;
+    max-width: 100%;
   }
 
-  .cardContent {
-    flex-direction: column;
-    align-items: flex-start;
+  .cardFace,
+  .cardHover {
+    padding: 16px;
   }
 
   .logoContainer {
-    width: 56px;
-    height: 56px;
+    width: min(34%, 108px);
+    height: min(34%, 108px);
   }
 
   .pageHeader {
@@ -220,8 +345,13 @@
     margin-bottom: 40px;
   }
 
+  .projectDescription {
+    font-size: 0.9rem;
+  }
+
   .coffeeChatBadge {
-    position: static;
-    margin-bottom: 12px;
+    top: 10px;
+    right: 10px;
+    font-size: 0.68rem;
   }
 }

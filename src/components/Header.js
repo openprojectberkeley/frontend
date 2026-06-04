@@ -1,10 +1,23 @@
 import styles from '../css/Header.module.css';
 import logo from '../images/navbarlogo.png';
 import { NavLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 export default function Header() {
   const activeLink = ({ isActive }) => isActive ? `${styles.activeLink}` : '';
   const [active, setActive] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const updateScrolledState = () => {
+      setScrolled(window.scrollY > 100);
+    };
+
+    updateScrolledState();
+    window.addEventListener('scroll', updateScrolledState, { passive: true });
+
+    return () => window.removeEventListener('scroll', updateScrolledState);
+  }, []);
+
   function deActivate() {
       if (active) {
           setActive(false)
@@ -21,7 +34,7 @@ export default function Header() {
       }
   }
   return (
-    <header className={styles.header} id="header">
+    <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`} id="header">
       <NavLink to="/"><img src={logo} alt="logo" /></NavLink>
       <div className={active ? `${styles.linksActive}` : `${styles.links}`} onClick={deActivate}>
         <NavLink to="/about/" className={activeLink}>about</NavLink>

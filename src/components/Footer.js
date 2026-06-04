@@ -3,6 +3,7 @@ import footerLogo from '../images/op_footer.png';
 import { NavLink } from 'react-router-dom';
 import instagram from '../images/instagram.png';
 import github from '../images/github.png';
+import email from '../images/email.png';
 import { NavHashLink } from 'react-router-hash-link';
 
 export default function Footer() {
@@ -15,13 +16,19 @@ export default function Footer() {
               <a href="https://www.instagram.com/openprojectberkeley/" target="_blank" rel="noopener noreferrer">
                 <div className={styles.socialsgroup}>
                   <img src={instagram} alt="instagram" className={styles.socialicons}/>
-                  <p>Instagram</p>
+                  <p>@openprojectberkeley</p>
                 </div>
               </a>
               <a href="https://github.com/openprojectberkeley" target="_blank" rel="noopener noreferrer">
                 <div className={styles.socialsgroup}>
                   <img src={github} alt="github" className={styles.socialicons}/>
-                  <p>Github</p>
+                  <p>openprojectberkeley</p>
+                </div>
+              </a>
+              <a href="mailto:openprojectberkeley@gmail.com" target="_blank" rel="noopener noreferrer">
+                <div className={styles.socialsgroup}>
+                  <img src={email} alt="email" className={styles.socialicons}/>
+                  <p>openprojectberkeley@gmail.com</p>
                 </div>
               </a>
             </div>
@@ -45,6 +52,9 @@ export default function Footer() {
               </div>
             </div>
           </div>
+        </div>
+        <div className={styles.copyright}>
+          <p>© {new Date().getFullYear()} Open Project at Berkeley. All rights reserved.</p>
         </div>
       </div>
     );

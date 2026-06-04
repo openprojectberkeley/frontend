@@ -26,17 +26,17 @@ export const sectionInfo = {
   client: {
     title: "Client",
     description: "Build real products with startups, nonprofits, and companies beyond Berkeley.",
-    color: "#4DB6AC" // teal
+    color: "#9BE9FF" // blue
   },
   passion: {
     title: "Passion",
     description: "Pitch and develop intermediate to advanced projects driven by your interests.",
-    color: "#9270C6" // purple
+    color: "#FDFFBC" // yellow
   },
   competitive: {
     title: "Competitive",
     description: "Work in teams to turn MVPs into production-ready solutions with PM mentorship.",
-    color: "#FF9C03" // orange
+    color: "#97FFC7" // green
   }
 };
 

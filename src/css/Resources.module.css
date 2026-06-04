@@ -22,6 +22,10 @@
     height: auto;
 }
 
+pre {
+    background-color: #7050C2;
+}
+
 @media (max-width: 768px) {
     .container {
         flex-direction: column;

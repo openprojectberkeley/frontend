@@ -1,59 +1,158 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { NavHashLink } from 'react-router-hash-link';
 import styles from '../css/Projects.module.css';
+import homeStyles from '../css/HomePage.module.css';
 import { projects, sectionInfo, projectTypes } from '../data/projectsData';
 import coffeeCupIcon from '../images/coffee-cup.svg';
 
 export default function Projects() {
+  const location = useLocation();
+  const pageBgRef = useRef(null);
+  const nextSectionRef = useRef(null);
+  const [showScrollCue, setShowScrollCue] = useState(true);
+  const [flashTargetId, setFlashTargetId] = useState('');
+
+  useEffect(() => {
+    const pageBg = pageBgRef.current;
+
+    if (!pageBg) {
+      return undefined;
+    }
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frameId = null;
+
+    const updateParallax = () => {
+      const offset = prefersReducedMotion ? 0 : Math.round(window.scrollY * 0.5);
+      pageBg.style.setProperty('--page-bg-offset', `${offset}px`);
+      setShowScrollCue(window.scrollY <= 8);
+      frameId = null;
+    };
+
+    const onScroll = () => {
+      if (frameId !== null) {
+        return;
+      }
+
+      frameId = window.requestAnimationFrame(updateParallax);
+    };
+
+    updateParallax();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const hashId = location.hash.replace('#', '');
+
+    if (!hashId) {
+      setFlashTargetId('');
+      return undefined;
+    }
+
+    const flashTimer = window.setTimeout(() => {
+      setFlashTargetId(hashId);
+      window.setTimeout(() => setFlashTargetId(''), 2000);
+    }, 50);
+
+    return () => window.clearTimeout(flashTimer);
+  }, [location.hash, location.pathname]);
+
   const formatPMs = (pms) => {
     if (pms.length === 1) return pms[0];
     if (pms.length === 2) return `${pms[0]} and ${pms[1]}`;
     return `${pms.slice(0, -1).join(', ')}, and ${pms[pms.length - 1]}`;
   };
 
-  const renderProjectCard = (project) => (
-    <div key={project.id} className={styles.projectCard}>
-      {/* Coffee Chat Badge */}
-      {project.coffeeChatRequired && (
-        <div className={styles.coffeeChatBadge}>
-          <img 
-            src={coffeeCupIcon} 
-            alt="" 
-            className={styles.coffeeIcon}
-            aria-hidden="true"
-          />
-          <span>Coffee Chat Highly Recommended</span>
-        </div>
-      )}
+  const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-      <div className={styles.cardContent}>
-        {/* Logo (if available) */}
-        {project.logo && (
-          <div className={styles.logoContainer}>
-            <img 
-              src={project.logo} 
-              alt={`${project.name} logo`} 
-              className={styles.projectLogo}
+  const renderPMs = (pms) => pms.map((pm, index) => {
+    const anchorId = `pm-${toAnchorId(pm)}`;
+
+    return (
+      <span key={pm}>
+        <NavHashLink
+          smooth
+          className={styles.projectManagerLink}
+          to={`/about/#${anchorId}`}
+          scroll={el => {
+            if (!el) return;
+
+            const rect = el.getBoundingClientRect();
+            const top = window.pageYOffset + rect.top;
+            const centeredTop = Math.max(0, top - (window.innerHeight / 2 - rect.height / 2));
+
+            window.scrollTo({ top: centeredTop, behavior: 'smooth' });
+          }}
+        >
+          {pm}
+        </NavHashLink>
+        {index < pms.length - 1 && (index === pms.length - 2 ? ' and ' : ', ')}
+      </span>
+    );
+  });
+
+  const renderProjectCard = (project, category) => (
+    <div
+      id={`project-${toAnchorId(project.name)}`}
+      key={project.id}
+      className={`${styles.projectCard}`}
+      tabIndex={0}
+      style={{ backgroundColor: `${sectionInfo[category]?.color}40` || 'transparent' }}
+    >
+      <div className={styles.cardFace}>
+        {project.coffeeChatRequired && (
+          <div className={styles.coffeeChatBadge}>
+            <img
+              src={coffeeCupIcon}
+              alt=""
+              className={styles.coffeeIcon}
+              aria-hidden="true"
             />
+            <span>Coffee Chat Required</span>
           </div>
         )}
 
-        <div className={styles.cardInfo}>
+        <div className={styles.cardContent}>
+          {project.logo && (
+            <div className={styles.logoContainer}>
+              <img
+                src={project.logo}
+                alt={`${project.name} logo`}
+                className={styles.projectLogo}
+              />
+            </div>
+          )}
+
           <h3 className={styles.projectName}>{project.name}</h3>
-          <p className={styles.projectPMs}>
-            Led by {formatPMs(project.pms)}
-          </p>
         </div>
       </div>
 
-      <p className={styles.projectDescription}>
-        {project.description}
-      </p>
+      <div className={`${styles.cardHover} ${flashTargetId === `project-${toAnchorId(project.name)}` ? styles.flashTarget : ''}`}>
+        <div className={styles.cardHoverInner}>
+          <p className={styles.hoverLabel}>Project Managers</p>
+          <p className={styles.projectPMs}>{renderPMs(project.pms)}</p>
 
-      {project.clientName && (
-        <p className={styles.projectClient}>
-          <strong>Client:</strong> {project.clientName}
-        </p>
-      )}
+          <p className={styles.hoverLabel}>Description</p>
+          <p className={styles.projectDescription}>{project.description}</p>
+
+          {project.clientName && (
+            <p className={styles.projectClient}>
+              <strong>Client:</strong> {project.clientName}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 
@@ -72,19 +171,30 @@ export default function Projects() {
           <p className={styles.sectionDescription}>{info.description}</p>
         </div>
         <div className={styles.projectsGrid}>
-          {categoryProjects.map((project) => renderProjectCard(project))}
+          {categoryProjects.map((project) => renderProjectCard(project, category))}
         </div>
       </section>
     );
   };
 
   return (
-    <div className={styles.pageContainer}>
+    <div ref={pageBgRef} className={`${styles.pageContainer} ${styles.pageBG}`}>
       <div className={`${styles.content} limitWidth`}>
+        <button
+          type="button"
+          className={homeStyles.scrollCue}
+          aria-label="Scroll down"
+          onClick={() => nextSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          style={{ opacity: showScrollCue ? 1 : 0, pointerEvents: showScrollCue ? 'auto' : 'none' }}
+        >
+          <span className={homeStyles.scrollCueMain}>⌄</span>
+          <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho1}`} aria-hidden="true">⌄</span>
+          <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho2}`} aria-hidden="true">⌄</span>
+        </button>
+
         {/* Page Header */}
         <header className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>Spring 2026 Projects</h1>
-          <p className={styles.exploreText}>Explore more projects at the info sessions!</p>
           <ul className={styles.projectTypesList}>
             {projectTypes.map((type, index) => (
               <li key={index}>{type}</li>
@@ -93,7 +203,9 @@ export default function Projects() {
         </header>
 
         {/* Project Sections */}
-        {renderSection('client')}
+        <div ref={nextSectionRef}>
+          {renderSection('client')}
+        </div>
         {renderSection('passion')}
         {renderSection('competitive')}
       </div>

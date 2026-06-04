@@ -41,7 +41,7 @@
     overflow: hidden;
     max-height: 0;
     transition: all 0.3s ease;
-    font-family: 'Brother Medium';
+    font-family: 'Alata Regular';
     font-size: 16px;
     color: #7050C2;
     cursor: pointer;
@@ -52,6 +52,6 @@
 }      
 
 .label {
-    font-family: 'Brother Medium';
+    font-family: 'Alata Regular';
     font-size: 16px;
 }

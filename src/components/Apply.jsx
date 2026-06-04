@@ -1,68 +1,21 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import styles from '../css/Apply.module.css';
+import homeStyles from '../css/HomePage.module.css';
 import faqPlus from "../images/faqPlus.png";
-import purpleCurve from "../images/purplewave.png";
-import homeStyles from "../css/HomePage.module.css";
-import applyCurveTan from '../images/tanwave.png';
-
-const faqList = [
-  [
-    "What sets this club apart from other tech clubs?",
-  
-    `Open Project is unique in that our community is built on the principle of ensuring the best club experience possible for everybody. 
-    
-    We do not believe in a rigorous application process as we believe that every student with an interest in tech and the motivation to succed in tech should have a space to improve their technical skills while finding a like-minded community they can be a part of.
-    
-    We also have a unique project matching process, where prospective members rank the projets they are interested in the most, to ensure that the work our members engage in are meaningful to them. This ensures a highly personalized and fulfilling process for all members. `
-  ],
-
-  [
-  "Who can join?",
-  
-  `We welcome everybody of all interests and ages! Whether you are a seasoned programmer or just trying to see if tech is a career for you, OP has a space dedicated to helping you grow. 
-
-  Open Project offers several programs to it’s members based on skill level. For those just getting started in tech, we have our Professional Development program where members will learn the fundamentals of web development and data science. 
-  
-  For more seasoned programmers and data scientists, we have passion projects led by project managers in teams of 10-15 where they work semester long in projects of varying scope and interests.
-  
-  We also have several client projects, where we work with entities outside of UC Berkeley. These projects are led by our most talented and skilled project managers to ensure our highest quality of work. 
-  
-  As a reminder, all prospective applicants must attend 1 infosession, 1 meet and greet, and coffee chat one member to apply. Infosession 1 and 2 cover the same material but serve as alternative dates for those that can’t make one.`
-  ],
-
-  [
-  "Is there a social aspect to this club?", "Yes! One of the main focuses outside of building technical experience in Open Project is fostering a strong tech community on campus. We have a big-little program, where new members can be paired with either upperclassmen or those who have spent more time in the club. They serve as friends and mentors! You will also be spending a lot of time in your project team, and chumming is a big part of our club, where you can spend time outside of work to bond with your teammates! We also host various socials and cross-club socials to help you build an extensive network."
-  ],
-
-
-  [
-  "How are teams decided?",
-
-  "Creating teams is a vital aspect of our club and we take great care in ensuring that members are placed in teams that align with their interests and capabilities. We consider a variety of factors including previous experiences, project interests and written prompts when forming teams. A matching algorithm is used to group members, which takes into account the preferences of each member and attempts to place them in teams where they will thrive and be able to make a meaningful contribution."
-  ],
-
-  [
-  "What is the time commitment?",
-
- " As a member of this club, you can expect to invest 4-8 hours per week in working on your project, collaborating with your team members, and attending team and club socials. However, it's important to note that the level of commitment may vary depending on the project team and the stage of the project. We understand that members have different schedules and priorities, so we aim to be flexible and accommodate members' needs while still ensuring that projects are completed successfully."
-  ],
-
-  [
- " I have no previous coding experience. What should I do?",
-
- "No worries! Our Professional Development progam has been meticuously engineered to help you build the fundamental skills necessary to succeed in the industry. From learning about web development to data science, you can build skills that will outlast college! "
-  ],
-
-  [
-  "Are there any club dues?",
-
-  "To help support the club's activities and ensure its sustainability, there is a $35 fee due at the start of each semester. This fee is used to cover expenses such as club socials, necessary supplies, and other costs associated with running the club. This small investment is essential to the club's success and allows us to provide a wide range of opportunities for members to learn, grow, and create meaningful projects."
-  ]
-];
+import headerCurve from "../images/apply/headerCurve.svg";
+import faqCurve from "../images/apply/faqCurve.svg";
+import { faqList } from '../data/faqList';
+import { recruitmentTimeline } from '../data/recruitmentTimeline';
+import circle from "../images/circle.png";
 
 export default function Apply() {
 
+  const pageBgRef = useRef(null);
   const [revealedAnswers, setRevealedAnswers] = useState(Array(faqList.length).fill(false));
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [comingSoonPosition, setComingSoonPosition] = useState({ x: 0, y: 0 });
+  const nextSectionRef = useRef(null);
+  const [showScrollCue, setShowScrollCue] = useState(true);
 
   const changeReveal = (index) => {
     let copy = revealedAnswers.slice();
@@ -122,97 +75,148 @@ export default function Apply() {
     );
   }
 
+  const renderTimelineText = (segments) => {
+    return segments.map((segment, index) => {
+      if (segment.highlight) {
+        return (
+          <span key={`${segment.text}-${index}`} className={styles.blue}>
+            {segment.text}
+          </span>
+        );
+      }
+
+      return <React.Fragment key={`${segment.text}-${index}`}>{segment.text}</React.Fragment>;
+    });
+  };
+
+  const handleApplyButtonMouseEnter = (event) => {
+    setComingSoonPosition({ x: event.clientX, y: event.clientY });
+    setShowComingSoon(true);
+  };
+
+  const handleApplyButtonMouseMove = (event) => {
+    setComingSoonPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const handleApplyButtonMouseLeave = () => {
+    setShowComingSoon(false);
+  };
+
+  useEffect(() => {
+    const pageBg = pageBgRef.current;
+
+    if (!pageBg) {
+      return undefined;
+    }
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frameId = null;
+
+    const updateParallax = () => {
+      const offset = prefersReducedMotion ? 0 : Math.round(window.scrollY * 0.5);
+      pageBg.style.setProperty('--page-bg-offset', `${offset}px`);
+      setShowScrollCue(window.scrollY <= 8);
+      frameId = null;
+    };
+
+    const onScroll = () => {
+      if (frameId !== null) {
+        return;
+      }
+
+      frameId = window.requestAnimationFrame(updateParallax);
+    };
+
+    updateParallax();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+    };
+  }, []);
+
   return (
-    <div>
+    <div ref={pageBgRef} className={styles.pageBG}>
+      {showComingSoon && (
+        <div
+          className={styles.comingSoonLabel}
+          style={{ left: comingSoonPosition.x, top: comingSoonPosition.y }}
+          aria-hidden="true"
+        >
+          {'coming soon! 👀'}
+        </div>
+      )}
+      
       <div className={styles.applyWrapper}>
-        <div className={styles.applyHeader}>
-          <div className="limitWidth">
-            <h1>Join us!</h1>
+        <button
+          type="button"
+          className={homeStyles.scrollCue}
+          aria-label="Scroll down"
+          onClick={() => nextSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          style={{ opacity: showScrollCue ? 1 : 0, pointerEvents: showScrollCue ? 'auto' : 'none' }}
+        >
+          <span className={homeStyles.scrollCueMain}>⌄</span>
+          <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho1}`} aria-hidden="true">⌄</span>
+          <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho2}`} aria-hidden="true">⌄</span>
+        </button>
+        <div className="limitWidth">
+          <div className={styles.applyHeader}>
             <div className={styles.headerBlock}>
+              <h1>Join us!</h1>
               <p>The application for the Spring 2026 cycle is no longer open, check back for Fall 2026!</p>
-              <button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`} style={{opacity: 0.3}}>Re-opening in August!</button> {/* https://docs.google.com/forms/d/e/1FAIpQLSfe-V2VIBt2JrB-GguIqrsyPRPNnX0YJFZQom5mwdmXF-ck7w/viewform */}
             </div>
+            <button
+              className={styles.applyButton}
+              style={{ opacity: 0.15 }}
+              onMouseEnter={handleApplyButtonMouseEnter}
+              onMouseMove={handleApplyButtonMouseMove}
+              onMouseLeave={handleApplyButtonMouseLeave}
+            >
+              Apply in August!
+            </button> {/* https://docs.google.com/forms/d/e/1FAIpQLSfe-V2VIBt2JrB-GguIqrsyPRPNnX0YJFZQom5mwdmXF-ck7w/viewform */}
           </div>
         </div>
-        <img src={applyCurveTan} className={styles.blueCurve} alt="Blue curve decoration" />
+        <img src={headerCurve} className={styles.headerCurve} alt="Header curve decoration" />
+        
         <div className="limitWidth">
           <div className={styles.timeline}>
-            <div className={styles.timelineWidth} id="timeline">
+            <div className={styles.timelineWidth} id="timeline" ref={nextSectionRef}>
               <h1>Recruitment Timeline</h1>
               <p className={styles.importantNote}>*It is mandatory to attend an infosession and coffee chat a board member to apply!</p>
               <div className={styles.timelineContent}>
                 <div className={styles.outer}>
-                  <div className={styles.card}>
-                    <div className={styles.info}>
-                      <h1 className={styles.title}>01</h1>
-                      <div className={styles.content}>
-                        <h3 className={styles.date}>January 21</h3>
-                        <h3 className={styles.subtitle}>Application Opens!</h3>
-                        <p className={styles.information}>Applications are now open for Spring 2026!</p>
+                  {recruitmentTimeline.map((item) => (
+                    <div className={styles.card} key={item.id}>
+                      <div className={styles.info}>
+                        <h1 className={styles.title}>{item.id}</h1>
+                        <div className={styles.content}>
+                          <h3 className={styles.date}>{item.date}</h3>
+                          <h3 className={styles.subtitle}>{item.subtitle}</h3>
+                          <p className={styles.information}>{renderTimelineText(item.information)}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className={styles.card}>
-                    <div className={styles.info}>
-                      <h1 className={styles.title}>02</h1>
-                      <div className={styles.content}>
-                        <h3 className={styles.date}>January 21 - January 31</h3>
-                        <h3 className={styles.subtitle}>Coffee Chats</h3>
-                        <p className={styles.information}>Coffee chats can be duo or individual, so bring a friend if you would like!</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.card}>
-                    <div className={styles.info}>
-                      <h1 className={styles.title}>03</h1>
-                      <div className={styles.content}>
-                        <h3 className={styles.date}>January 23</h3>
-                        <h3 className={styles.subtitle}>DataBytes</h3>
-                        <p className={styles.information}>Join us for DataBytes on <span className={styles.blue}>Friday, Jan 23rd in Dwinelle 145 @ 8PM</span>!</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.card}>
-                    <div className={styles.info}>
-                      <h1 className={styles.title}>04</h1>
-                      <div className={styles.content}>
-                        <h3 className={styles.date}>January 26</h3>
-                        <h3 className={styles.subtitle}>Infosession #1</h3>
-                        <p className={styles.information}>Our first infosession is on <span className={styles.blue}>Monday, Jan 26th in Evans 10 @ 8PM</span>.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.card}>
-                    <div className={styles.info}>
-                      <h1 className={styles.title}>05</h1>
-                      <div className={styles.content}>
-                        <h3 className={styles.date}>January 30</h3>
-                        <h3 className={styles.subtitle}>Infosession #2</h3>
-                        <p className={styles.information}>Our second infosession is on <span className={styles.blue}>Friday, Jan 30th in VLSB 2040 @ 8PM</span>.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.card}>
-                    <div className={styles.info}>
-                      <h1 className={styles.title}>06</h1>
-                      <div className={styles.content}>
-                        <h3 className={styles.date}>January 31</h3>
-                        <h3 className={styles.subtitle}>Application Due!</h3>
-                        <p className={styles.information}>Applications are due <span className={styles.blue}>@12:00 PM (noon)</span> on Jan 31st.</p>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
               {/* <a href="https://docs.google.com/forms/d/e/1FAIpQLSd6BszZZDpva4geAYaK6WZSptI86x92fTRwQx6XSdfBLJZuyQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer"><button className={`${homeStyles.getInvolvedButton} ${styles.applyButton}`}>Apply Now</button></a> */}
+            </div>
+            <div className={styles.circle}>
+              <img src={circle} alt="Circle decoration" />
             </div>
           </div>
         </div>
       </div>
       <img 
-        src={purpleCurve} 
-        className={styles.orangeCurve}
-        alt="Orange curve decoration"  
+        src={faqCurve} 
+        className={styles.faqCurve}
+        alt="FAQ curve decoration"  
       />
       {renderAllFaqs()}
     </div>
