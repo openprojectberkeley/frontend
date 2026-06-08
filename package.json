@@ -4,18 +4,18 @@
   "homepage": "https://openprojectberkeley.com",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "emailjs-com": "^3.2.0",
     "framer-motion": "^12.40.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-router-dom": "^6.6.1",
     "react-router-hash-link": "^2.4.3",
     "react-scripts": "^5.0.1",
     "react-snap": "^1.23.0",
-    "swiper": "^11.2.10",
+    "swiper": "^12.2.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -52,8 +52,8 @@
     "skipThirdPartyRequests": true
   },
   "devDependencies": {
-    "gh-pages": "^4.0.0",
-    "puppeteer-core": "^24.43.0",
+    "gh-pages": "^6.3.0",
+    "puppeteer-core": "^24.43.1",
     "sharp": "^0.32.6"
   }
 }

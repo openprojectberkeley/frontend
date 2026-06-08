@@ -167,6 +167,7 @@ export default function ClientsCarousel({ images = [], altPrefix = 'Client' }) {
           onTouchStart={pauseFrame}
           onTouchEnd={resumeFrame}
           onTouchCancel={resumeFrame}
+          touchEventsTarget='container'
         >
           {manualSlides.map((src, i) => (
             <SwiperSlide key={i} className={styles.clientSlide}>
