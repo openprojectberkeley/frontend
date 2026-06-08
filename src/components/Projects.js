@@ -4,7 +4,7 @@ import { NavHashLink } from 'react-router-hash-link';
 import styles from '../css/Projects.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import { projects, sectionInfo, projectTypes } from '../data/projectsData';
-import coffeeCupIcon from '../images/coffee-cup.svg';
+import coffeeCupIcon from '../images/projects/coffee-cup.svg';
 
 export default function Projects() {
   const location = useLocation();

@@ -30,51 +30,51 @@ const github = (
         </ul>
         <h2>Setup</h2>
         <p>Check your email with an invite from your project lead to collaborate on Github, and click on “accept or decline”</p>
-        <img src={hubL7}></img>
+        <img src={hubL7} alt="HubL7"></img>
         <p>If you do not have a Github account, you will be prompted to create one. Otherwise, skip to next step.</p>
-        <img src={hubL11}></img>
+        <img src={hubL11} alt="HubL11"></img>
         <p>Accept the invitation</p>
-        <img src={hubL18}></img>
+        <img src={hubL18} alt="HubL18"></img>
         <p>You will then be sent to the following page, copy the URL at the top of the browser page</p>
-        <img src={hubL12}></img>
+        <img src={hubL12} alt="HubL12"></img>
         <p>Open VSCode, and do Ctrl+` to open the terminal (if that doesn’t work you may pull it up from the purple bar below or by selecting “New Terminal”)</p>
-        <img src={hubL1}></img>
+        <img src={hubL1} alt="HubL1"></img>
         <p>Change your current path to wherever you want to create a folder with your team’s code using the cd command. Mine will be in the Downloads folder.</p>
         <p>After you are there, use the git clone command to copy the code from the Github repository.</p>
         <pre><code>git clone &lt;URL&gt;</code></pre>
-        <img src={hubL5}></img>
+        <img src={hubL5} alt="HubL5"></img>
         <p>Run the following command in the terminal to enter the folder</p>
         <pre><code>cd &lt;name of project&gt;</code></pre>
         <p>To open the folder, go to File &gt; Open Folder &gt; Select Project Folder in the VScode menu at the top</p>
-        <img src={hubL9}></img>
+        <img src={hubL9} alt="HubL9"></img>
         <p>This will open a new VScode window, and there will be files listed on the left. (for me it’s only one file called README.md)</p>
-        <img src={hubL14}></img>
+        <img src={hubL14} alt="HubL14"></img>
         <p>Create a new branch with a new name and switch to that branch. </p>
-        <img src={hubL13}></img>
+        <img src={hubL13} alt="HubL13"></img>
         <p>Now, you have everything setup and you can start making changes to the files. The next part is to learn how to move your changes to the Github repository.</p>
         <h2>Sending Your Changes to GitHub</h2>
         <p>After making a commit on your own branch like shown below</p>
-        <img src={hubL6}></img>
+        <img src={hubL6} alt="HubL6"></img>
         <p>Run the following command</p>
         <pre><code>git push --set-upstream origin &lt;name of your branch&gt;</code></pre>
         <p>And you should get a similar message</p>
-        <img src={hubL15}></img>
+        <img src={hubL15} alt="HubL15"></img>
         <p>After doing this once, you don’t have to use that last command anymore. You may simply use the following command:</p>
         <pre><code>git push</code></pre>
         <p>If you receive the following error, you are on the main branch. You may only push changes from non-main branches.</p>
-        <img src={hubL17}></img>
+        <img src={hubL17} alt="HubL17"></img>
         <p>To make a request to merge the code from your branch to the main branch, you will need to make a pull request. Select the green button “New pull request”</p>
-        <img src={hubL4}></img>
+        <img src={hubL4} alt="HubL4"></img>
         <p>Select the name of your branch</p>
-        <img src={hubL8}></img>
+        <img src={hubL8} alt="HubL8"></img>
         <p>Select “Create pull request”</p>
-        <img src={hubL3}></img>
+        <img src={hubL3} alt="HubL3"></img>
         <p>You may change the name of your pull request (PR) here. Afterwards, press the button “create pull request”</p>
-        <img src={hubL2}></img>
+        <img src={hubL2} alt="HubL2"></img>
         <p>You will notice the following on your page (if your project lead set up your project correctly)</p>
-        <img src={hubL10}></img>
+        <img src={hubL10} alt="HubL10"></img>
         <p>After the project lead approves your request, you will see that change to the following</p>
-        <img src={hubL16}></img>
+        <img src={hubL16} alt="HubL16"></img>
         <p>You may now press the button “merge pull request” and “confirm merge”. This will update the main branch to include the new code that you have written.</p>
         <p>Congratulations, you have successfully contributed code to your team (and you may now add this to your resume)</p>
     </div>

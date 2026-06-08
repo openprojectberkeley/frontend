@@ -1,17 +1,25 @@
 .container {
     position: relative;
+    min-width: 0;
+    user-select: none;
 }
   
 .button {
-    background-color: #7050C2;
+    background-color: #22114F;
     width: 170px;
-    height: 40px;
+    min-height: 40px;
+    height: auto;
     color: #fff;
     border: none;
     cursor: pointer;
     border-radius: 20px;
     transition: all 0.3s ease;
     position: relative;
+    text-align: left;
+    overflow: hidden;
+    text-wrap: nowrap;
+    white-space: nowrap;
+    padding: 8px 30px 8px 12px;
 }
 
 .button:hover {
@@ -21,7 +29,7 @@
 .triangle-shape {
     position: absolute;
     top: 20px;
-    left: 150px;
+    right: 12px;
     transform: translate(-50%, -50%);
     width: 0;
     height: 0;
@@ -37,13 +45,14 @@
 
 .content {
     padding: 10px;
+    padding-top: 0;
     border-radius: 5px;
     overflow: hidden;
     max-height: 0;
     transition: all 0.3s ease;
     font-family: 'Alata Regular';
     font-size: 16px;
-    color: #7050C2;
+    color: #a38dd9;
     cursor: pointer;
 }
 
@@ -52,6 +61,27 @@
 }      
 
 .label {
+    display: block;
     font-family: 'Alata Regular';
     font-size: 16px;
+    margin: 0;
+    padding-right: 6px;
+    line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        margin: -5px 0;
+    }
+    .button {
+        width: 100%;
+        min-width: 0;
+    }
+    .label {
+        font-size: 14px;
+    }
+    .content {
+        font-size: 14px;
+    }
 }

@@ -12,17 +12,20 @@
 
 .footerLogo {
     width: 200px;
+    user-select: none;
 }
 
 .title {
     font-family: 'ADLaM Display Regular';
     font-size: 18px;
     opacity: 0.4;
+    user-select: none;
 }
 
 .links {
     display: flex;
     flex-direction: column;
+    user-select: none;
 }
 
 .links a {
@@ -49,6 +52,7 @@
 
 .socialicons {
     width: 30px;
+    user-select: none;
 }
 
 .socialsgroup {
@@ -85,7 +89,7 @@
     gap: 50px;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
     .socialLinks {
         flex-direction: column;
         gap: 10px;

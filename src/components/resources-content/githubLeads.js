@@ -34,61 +34,61 @@ const githubLeads = (
         <h2>Setup</h2>
         <p>Go to your GitHub profile</p>
         <p>Select Repositories, and click on “New”</p>
-        <img src={hub21}></img>
+        <img src={hub21} alt="Hub21"></img>
         <p>Give your repository a name</p>
-        <img src={hub18}></img>
+        <img src={hub18} alt="Hub18"></img>
         <p>On your computer, create a new folder (this will be for your project)</p>
-        <img src={hub6}></img>
+        <img src={hub6} alt="Hub6"></img>
         <p>Open the folder in VSCode (several ways to do so)</p>
         <ul>
             <li>File &gt; Open Folder in VSCode</li>
             <li>right click on folder in file explorer</li>
             <li>code . command in the terminal when inside folder</li>
         </ul>
-        <img src={hub3}></img>
+        <img src={hub3} alt="Hub3"></img>
         <p>Initialize a git repository with the following command in your terminal </p>
         <pre><code>git init</code></pre>
-        <img src={hub19}></img>
+        <img src={hub19} alt="Hub19"></img>
         <p>Create a new file, such as a README.md, and add some contents</p>
-        <img src={hub5}></img>
+        <img src={hub5} alt="Hub5"></img>
         <p>Make a commit with your changes with the commands </p>
         <pre><code>git add . <br></br>git commit -m "&lt;message&gt;"</code></pre>
-        <img src={hub15}></img>
+        <img src={hub15} alt="Hub15"></img>
         <p>Run the three lines of code on the newly created Github repository in your terminal</p>
-        <img src={hub20}></img>
+        <img src={hub20} alt="Hub20"></img>
         <p>and the result should look similar to this</p>
-        <img src={hub9}></img>
+        <img src={hub9} alt="Hub9"></img>
         <p>Refresh your page to see the pushed code</p>
-        <img src={hub11}></img>
+        <img src={hub11} alt="Hub11"></img>
         <p>Click on the project settings &gt; Collaborators, and add all of your teammates accounts to the projects by clicking on the green button “Add people”</p>
-        <img src={hub1}></img>
+        <img src={hub1} alt="Hub1"></img>
         <p>The people you add will receive an invitation via email that they will need to accept. If they accept the invite, you will see them here.</p>
-        <img src={hub16}></img>
+        <img src={hub16} alt="Hub16"></img>
         <p>Select Branches &gt; Add branch protection rule, note that the default branch is called “main” here</p>
-        <img src={hub2}></img>
+        <img src={hub2} alt="Hub2"></img>
         <p>Fill in the name of the default branch and select the following options:</p>
-        <img src={hub12}></img>
+        <img src={hub12} alt="Hub12"></img>
         <p>OPTIONAL) With the above settings right now, YOU are still able to push to the main branch without making a pull request that requires approval. If you are worried about making a mistake, enable the following option.</p>
-        <img src={hub14}></img>
+        <img src={hub14} alt="Hub14"></img>
         <p>Scroll to the bottom of the page, and press on Create</p>
-        <img src={hub8}></img>
+        <img src={hub8} alt="Hub8"></img>
         <p>Make sure the branch protection rule is added and matches your default branch name</p>
-        <img src={hub17}></img>
+        <img src={hub17} alt="Hub17"></img>
         <h2>Approving Pull Requests</h2>
         <p>When your teammates make changes to your project's code, they will push it to a non-main branch on the Github repository and make a pull request.</p>
         <p>All pull requests will appear under the Pull requests tab.</p>
-        <img src={hub13}></img>
+        <img src={hub13} alt="Hub13"></img>
         <p>After clicking on one of the pull requests, you will be redirected to the following page.</p>
-        <img src={hub22}></img>
+        <img src={hub22} alt="Hub22"></img>
         <p>To view what changes your teammate has made, click on the Files changed tab.</p>
         <p>If you want to test whether the code is working without bugs before merging branches, you may use the following commands on your computer to get access to that code.</p>
         <pre><code>git pull <br></br>git checkout &lt;name of branch&gt;</code></pre>
         <p>If you approve of the changes made, click on “add your review” on the Github page (shown to the right of “Review Required” in red). You will be redirected to the following page.</p>
-        <img src={hub4}></img>
+        <img src={hub4} alt="Hub4"></img>
         <p>After pressing the green Review Changes button, select the following options and click “Submit Review”.</p>
-        <img src={hub10}></img>
+        <img src={hub10} alt="Hub10"></img>
         <p>You may then merge the pull request.</p>
-        <img src={hub7}></img>
+        <img src={hub7} alt="Hub7"></img>
         <p>You will now notice that your main branch has been updated.</p>
         <p>Congratulations, you have successfully set up your Github repository and know how to manage it (which looks very nice on your resume).</p>
     </div>

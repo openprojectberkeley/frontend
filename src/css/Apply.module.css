@@ -15,7 +15,7 @@
   width: min(2000px, 440vw);
   height: 100%;
   background-image: url('../images/apply/grid.svg');
-  opacity: 0.1;
+  opacity: 0.2;
   background-repeat: no-repeat;
   background-position: center 26rem;
   background-size: 100% auto;
@@ -54,22 +54,7 @@
   margin-top: 20px;
   height: fit-content;
   text-wrap: nowrap;
-}
-
-.comingSoonLabel {
-  position: fixed;
-  z-index: 9999;
-  pointer-events: none;
-  transform: translate(14px, 14px);
-  padding: 8px 12px;
-  border-radius: 999px;
-  color: white;
-  font-family: 'Alata Regular';
-  font-size: 18px;
-  letter-spacing: 0.02em;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
   user-select: none;
-  white-space: nowrap;
 }
 
 .applyButton:hover {
@@ -86,6 +71,7 @@
   width: 100%;
   margin-top: -100px;
   filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.2));
+  user-select: none;
 }
 
 .applyHeader h1 {
@@ -112,6 +98,7 @@
   width: 100%;
   height: fit-content;
   object-fit: contain;
+  user-select: none;
 
   /* animation */
   will-change: transform;
@@ -265,6 +252,13 @@
   .timeline {
     padding-bottom: 30px;
   }
+
+  .applyHeader {
+    flex-direction: column;
+  }
+  .applyHeader p {
+    font-size: 18px;
+  }
 }
 
 @media screen and (max-width: 400px) {
@@ -294,6 +288,7 @@
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
+  margin: 15px 0;
 }
 
 .faqBox:hover {
@@ -348,6 +343,7 @@
   width: 20px;
   height: 20px;
   transition: transform 0.3s;
+  user-select: none;
 }
 
 .faqPlusRotate {
@@ -371,6 +367,7 @@
 .faqCurve {
   width: 100%;
   filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.2));
+  user-select: none;
 }
 
 .faqQuestion {

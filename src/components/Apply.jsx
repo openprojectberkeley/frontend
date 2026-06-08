@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import styles from '../css/Apply.module.css';
 import homeStyles from '../css/HomePage.module.css';
-import faqPlus from "../images/faqPlus.png";
+import useComingSoonLabel from './useComingSoonLabel';
+import faqPlus from "../images/apply/faqPlus.png";
 import headerCurve from "../images/apply/headerCurve.svg";
 import faqCurve from "../images/apply/faqCurve.svg";
 import { faqList } from '../data/faqList';
@@ -12,8 +13,7 @@ export default function Apply() {
 
   const pageBgRef = useRef(null);
   const [revealedAnswers, setRevealedAnswers] = useState(Array(faqList.length).fill(false));
-  const [showComingSoon, setShowComingSoon] = useState(false);
-  const [comingSoonPosition, setComingSoonPosition] = useState({ x: 0, y: 0 });
+  const { label: comingSoonLabel, onMouseEnter, onMouseMove, onMouseLeave } = useComingSoonLabel();
   const nextSectionRef = useRef(null);
   const [showScrollCue, setShowScrollCue] = useState(true);
 
@@ -63,14 +63,12 @@ export default function Apply() {
       let brKey = `faq-br-${index}`;
 
       allFaqs.push(renderFaqBox(index));
-      allFaqs.push(<br key={brKey}></br>);
     }
 
     return (
         <div className={`${styles.allFaqs} limitWidth`} id="faqs">
           <h1 className={styles.faqTitle}>FAQs</h1>
           {allFaqs}
-          <br></br>
         </div>
     );
   }
@@ -87,19 +85,6 @@ export default function Apply() {
 
       return <React.Fragment key={`${segment.text}-${index}`}>{segment.text}</React.Fragment>;
     });
-  };
-
-  const handleApplyButtonMouseEnter = (event) => {
-    setComingSoonPosition({ x: event.clientX, y: event.clientY });
-    setShowComingSoon(true);
-  };
-
-  const handleApplyButtonMouseMove = (event) => {
-    setComingSoonPosition({ x: event.clientX, y: event.clientY });
-  };
-
-  const handleApplyButtonMouseLeave = () => {
-    setShowComingSoon(false);
   };
 
   useEffect(() => {
@@ -143,16 +128,8 @@ export default function Apply() {
 
   return (
     <div ref={pageBgRef} className={styles.pageBG}>
-      {showComingSoon && (
-        <div
-          className={styles.comingSoonLabel}
-          style={{ left: comingSoonPosition.x, top: comingSoonPosition.y }}
-          aria-hidden="true"
-        >
-          {'coming soon! 👀'}
-        </div>
-      )}
-      
+      {comingSoonLabel}
+
       <div className={styles.applyWrapper}>
         <button
           type="button"
@@ -174,9 +151,9 @@ export default function Apply() {
             <button
               className={styles.applyButton}
               style={{ opacity: 0.15 }}
-              onMouseEnter={handleApplyButtonMouseEnter}
-              onMouseMove={handleApplyButtonMouseMove}
-              onMouseLeave={handleApplyButtonMouseLeave}
+              onMouseEnter={onMouseEnter}
+              onMouseMove={onMouseMove}
+              onMouseLeave={onMouseLeave}
             >
               Apply in August!
             </button> {/* https://docs.google.com/forms/d/e/1FAIpQLSfe-V2VIBt2JrB-GguIqrsyPRPNnX0YJFZQom5mwdmXF-ck7w/viewform */}

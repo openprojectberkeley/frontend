@@ -21,7 +21,7 @@
   width: min(2000px, 440vw);
   height: 100%;
   background-image: url('../images/projects/grid.svg');
-  opacity: 0.1;
+  opacity: 0.2;
   background-repeat: repeat-y;
   background-position: center 26rem;
   background-size: 100% auto;
@@ -178,6 +178,7 @@
   font-size: 0.72rem;
   font-family: 'Alata Regular';
   z-index: 2;
+  user-select: none;
 }
 
 .coffeeIcon {
@@ -235,6 +236,7 @@
   max-height: 100%;
   object-fit: contain;
   border-radius: 10px;
+  user-select: none;
 }
 
 .projectName {

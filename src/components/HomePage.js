@@ -1,5 +1,4 @@
 import styles from '../css/HomePage.module.css';
-import homepageIcons from '../images/homepageIcons.png';
 import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import speechbubble from '../images/speechbubbles.png';

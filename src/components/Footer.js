@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import instagram from '../images/instagram.png';
 import github from '../images/github.png';
 import email from '../images/email.png';
+import linkedin from '../images/linkedin.png';
 import { NavHashLink } from 'react-router-hash-link';
 
 export default function Footer() {
@@ -17,6 +18,12 @@ export default function Footer() {
                 <div className={styles.socialsgroup}>
                   <img src={instagram} alt="instagram" className={styles.socialicons}/>
                   <p>@openprojectberkeley</p>
+                </div>
+              </a>
+              <a href="https://linkedin.com/company/openprojectberkeley" target="_blank" rel="noopener noreferrer">
+                <div className={styles.socialsgroup}>
+                  <img src={linkedin} alt="linkedin" className={styles.socialicons}/>
+                  <p>openprojectberkeley</p>
                 </div>
               </a>
               <a href="https://github.com/openprojectberkeley" target="_blank" rel="noopener noreferrer">

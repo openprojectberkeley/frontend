@@ -107,7 +107,7 @@ export const board = [
         image: jonathan,
     },
     {
-        name: "Ben Huang",
+        name: "Benjamin Huang",
         title: "VP of Professional Development",
         image: benh,
     },
@@ -285,7 +285,7 @@ export const projectLeads = [
         project: "IBM",
     },
     {
-        name: "Ben Huang",
+        name: "Benjamin Huang",
         image: benh,
         project: "IBM",
     },

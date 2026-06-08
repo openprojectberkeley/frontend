@@ -18,7 +18,8 @@ export default function ClientsCarousel({ images = [], altPrefix = 'Client' }) {
   const middleStartIndex = bandSize;
 
   const carouselBreakpoints = {
-    0: { slidesPerView: 1, spaceBetween: -220 },
+    300: { slidesPerView: 1, spaceBetween: -100 },
+    400: { slidesPerView: 1, spaceBetween: -150 },
     500: { slidesPerView: 1, spaceBetween: -220 },
     600: { slidesPerView: 3, spaceBetween: 50 },
     800: { slidesPerView: 3, spaceBetween: -100 },

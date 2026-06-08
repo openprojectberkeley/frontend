@@ -1,0 +1,18 @@
+.comingSoonLabel {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translate(14px, 14px);
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: white;
+  font-family: 'Alata Regular';
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.flipLeft {
+  transform: translate(calc(-100% - 14px), 14px);
+}

@@ -5,7 +5,7 @@ export const faqList = [
 `Open Project is unique in that our community is built on the principle of ensuring the best club experience possible for everybody. 
 
 We do not believe in a rigorous application process as we believe that every student with an interest in tech and the motivation to succed in tech should have a space to improve their technical skills while finding a like-minded community they can be a part of.
-    
+
 We also have a unique project matching process, where prospective members rank the projets they are interested in the most, to ensure that the work our members engage in are meaningful to them. This ensures a highly personalized and fulfilling process for all members. `
     ],
 

@@ -38,9 +38,17 @@
   position: absolute;
   left: 50%;
   top: 50%;
+  --orbit-shake: 0deg;
+  --orbit-shake-delay: 0s;
   transform-origin: center center;
   will-change: transform;
   pointer-events: none;
+  animation-name: shapeOrbitShake;
+  animation-duration: 6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-delay: var(--orbit-shake-delay);
+  user-select: none;
 }
 
 .shapeOrbitGlyph {
@@ -53,19 +61,23 @@
 }
 
 .shapeOrbitTop {
-  transform: translate(-50%, calc(-50% - var(--orbit-radius)));
+  --orbit-shake-delay: 0s;
+  transform: translate(-50%, calc(-50% - var(--orbit-radius))) rotate(var(--orbit-shake));
 }
 
 .shapeOrbitRight {
-  transform: translate(calc(-50% + var(--orbit-radius)), -50%);
+  --orbit-shake-delay: -1s;
+  transform: translate(calc(-50% + var(--orbit-radius)), -50%) rotate(var(--orbit-shake));
 }
 
 .shapeOrbitBottom {
-  transform: translate(-50%, calc(-50% + var(--orbit-radius)));
+  --orbit-shake-delay: -2s;
+  transform: translate(-50%, calc(-50% + var(--orbit-radius))) rotate(var(--orbit-shake));
 }
 
 .shapeOrbitLeft {
-  transform: translate(calc(-50% - var(--orbit-radius)), -50%);
+  --orbit-shake-delay: -3s;
+  transform: translate(calc(-50% - var(--orbit-radius)), -50%) rotate(var(--orbit-shake));
 }
 
 .pageBG {
@@ -83,7 +95,7 @@
   width: min(2000px, 440vw);
   height: 100%;
   background-image: url('../images/swirl.svg');
-  opacity: 0.1;
+  opacity: 0.2;
   background-repeat: no-repeat;
   background-position: center 26rem;
   background-size: 100% auto;
@@ -211,18 +223,13 @@
   }
 }
 
-
-@keyframes shake {
-  0% {
-    transform: rotate(0deg);
+@media (max-width: 500px) {
+  .coverRight {
+    margin-top: 100px;
   }
 
-  20% {
-    transform: rotate(10deg);
-  }
-
-  100% {
-    transform: rotate(0deg);
+  .coverLeft h2 {
+    font-size: 20px;
   }
 }
 
@@ -246,9 +253,27 @@
   }
 }
 
+@keyframes shapeOrbitShake {
+  0%,
+  100% {
+    --orbit-shake: -5deg;
+  }
+
+  50% {
+    --orbit-shake: 5deg;
+  }
+}
+
+@property --orbit-shake {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shapeOrbit,
-  .shapeOrbitGlyph {
+  .shapeOrbitGlyph,
+  .shapeOrbitItem {
     animation: none;
   }
 }
@@ -264,6 +289,7 @@
   transition: box-shadow 0.3s ease, color 0.3s ease;
   min-width: 200px;
   font-size: 25px;
+  user-select: none;
 }
 
 .getInvolvedButton2 {
@@ -426,70 +452,6 @@
   margin-bottom: 20px;
 }
 
-.orangeCurve {
-  width: 100%;
-}
-
-@media screen and (max-width: 870px) {
-  .cover {
-    flex-direction: column;
-    gap: 50px;
-  }
-
-  .coverLeft {
-    padding-top: 150px;
-    margin-bottom: -100px;
-  }
-
-  .coverLeft h1 {
-    text-align: center;
-  }
-
-  .coverLeft div {
-    justify-content: center;
-  }
-
-  .blue {
-    flex-direction: column-reverse;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .aboutCommunity {
-    flex-direction: column-reverse;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-  }
-
-  .aboutProjects {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-    padding-bottom: 50px;
-  }
-
-  .about h3 {
-    max-width: 900px;
-  }
-
-  .joinUs {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .joinUsText {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
-
-}
-
 @keyframes shakeRight {
   0% {
     transform: rotate(0deg);
@@ -570,7 +532,7 @@
   height: auto;
   display: block;
   filter: drop-shadow(0 12px 24px rgba(0, 0, 0, .25));
-  /* optional polish */
+  user-select: none;
 }
 
 @media (max-width: 900px) {
@@ -589,6 +551,63 @@
     order: 2;
     margin-inline: auto;
   }
+
+  .cover {
+    flex-direction: column;
+    gap: 50px;
+  }
+
+  .coverLeft {
+    padding-top: 150px;
+    margin-bottom: -100px;
+  }
+
+  .coverLeft h1 {
+    text-align: center;
+  }
+
+  .coverLeft div {
+    justify-content: center;
+  }
+
+  .blue {
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .aboutCommunity {
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+  }
+
+  .aboutProjects {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding-bottom: 50px;
+  }
+
+  .about h3 {
+    max-width: 900px;
+  }
+
+  .joinUs {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .joinUsText {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
 }
 
 .clientsSection {
@@ -596,7 +615,7 @@
   padding: clamp(2rem, 5vw, 3rem) var(--margin-from-screen);
   isolation: isolate;
   /* allows ::before at z-index:-1 safely */
-  background: #22114FD0;
+  background: #22114FA0;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
@@ -654,6 +673,7 @@
   transition: transform .3s ease, filter .2s ease, opacity .3s ease;
   filter: none;
   opacity: .95;
+  user-select: none;
 }
 
 .clientSlide:hover .clientLogo {
@@ -696,19 +716,20 @@
   place-items: center;
   font-size: 20px;
   color: #fff;
-  background: rgba(0, 0, 0, .35);
+  background: rgba(0, 0, 0, .5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   transition: background .2s, transform .2s, opacity .2s;
   opacity: 0;
   z-index: 10;
+  user-select: none;
 }
 
 .clientsWrap:hover .clientsPrev,
 .clientsWrap:hover .clientsNext,
 .clientsWrap:focus-within .clientsPrev,
 .clientsWrap:focus-within .clientsNext {
-  opacity: .85;
+  opacity: 1;
 }
 
 .clientsNext {
@@ -721,7 +742,7 @@
 
 .clientsPrev:hover,
 .clientsNext:hover {
-  background: rgba(0, 0, 0, .55);
+  background: rgba(0, 0, 0, 0.7);
   transform: scale(1.05);
   opacity: 1;
 }

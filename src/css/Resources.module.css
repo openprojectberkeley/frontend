@@ -9,11 +9,13 @@
     top: 0;
     text-align: center;
     padding-top: 150px;
+    display: flex;
+    flex-direction: column;
 }
 
 .mainContent {
     width: 75%;
-    margin: 20px;
+    margin: 70px 20px;
     max-width: 1000px;
 }
 
@@ -23,7 +25,7 @@
 }
 
 pre {
-    background-color: #7050C2;
+    background-color: #55477b;
 }
 
 @media (max-width: 768px) {
@@ -33,7 +35,14 @@ pre {
 
     .sidebar {
         width: 100%;
-        padding: 40px 0 0 0;
+        box-sizing: border-box;
+        padding: 40px 16px 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+        text-align: center;
+        margin-top: 60px;
+        margin-bottom: -30px;
     }
 
     .mainContent {
@@ -42,11 +51,11 @@ pre {
         max-height: fit-content;
         overflow: visible;
         margin: 0;
-        padding: 10px;
+        padding: 20px;
     }
 }
 
 .bold {
     font-style: italic;
-    color: #7050C2;
+    color: #22114F;
 }

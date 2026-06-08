@@ -5,7 +5,7 @@ import { NavHashLink } from 'react-router-hash-link';
 import homeStyles from "../css/HomePage.module.css";
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
-import coffeechaticon from "../images/coffeechat.png";
+import coffeechaticon from "../images/about/coffeechat.png";
 import inclusiveCommunity from "../images/star.png";
 import chooseYourOwnPath from "../images/triangle.png";
 import buildAndLearnTogether from "../images/square.png";
@@ -198,7 +198,7 @@ export default function About() {
           <section className={styles.ourValues}>
             <h1>Our Values</h1>
             <div className={styles.values}>
-              <div className={styles.value}>
+              <div className={`${styles.value} ${styles.star}`}>
                 <img src={inclusiveCommunity} alt="Inclusive Community" />
                 <h2 style={{ color: "#F9C12C" }}>Inclusive Community</h2>
                 <h3>
@@ -207,8 +207,8 @@ export default function About() {
                   space and creating meaningful projects.
                 </h3>
               </div>
-              <div className={styles.value}>
-                <img src={chooseYourOwnPath} alt="Choose Your Own Path" />
+              <div className={`${styles.value} ${styles.triangle}`}>
+                <img src={chooseYourOwnPath} className={styles.triangle} alt="Choose Your Own Path" />
                 <h2 style={{ color: "#4DB6AC" }}>Choose Your Own Path</h2>
                 <h3>
                   We believe it is crucial that students are able to facilitate
@@ -216,11 +216,8 @@ export default function About() {
                   for creative independence.
                 </h3>
               </div>
-              <div className={styles.value}>
-                <img
-                  src={buildAndLearnTogether}
-                  alt="Build and Learn Together"
-                />
+              <div className={`${styles.value} ${styles.square}`}>
+                <img src={buildAndLearnTogether} className={styles.square} alt="Build and Learn Together" />
                 <h2 style={{ color: "#AB8FF3" }}>Build and Learn Together</h2>
                 <h3>
                   We aim to maintain a curious space for everyone to collaborate
@@ -228,8 +225,8 @@ export default function About() {
                   to have pivotal roles in their respective development teams.
                 </h3>
               </div>
-              <div className={styles.value}>
-                <img src={challengeYourLimits} alt="Challenge Your Limits" />
+              <div className={`${styles.value} ${styles.circle}`}>
+                <img src={challengeYourLimits} className={styles.circle} alt="Challenge Your Limits" />
                 <h2 style={{ color: "#83B8E0" }}>Challenge Your Limits</h2>
                 <h3>
                   We always encourage our peers to reach beyond their comfort
