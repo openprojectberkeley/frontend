@@ -6,19 +6,21 @@ import About from './About';
 import Contact from './Contact';
 import Apply from './Apply';
 import Resources from './Resources';
-import CoffeeChats from './CoffeeChats';
 import Projects from './Projects';
+import Board from './Board';
+import NotFound from './NotFound';
 import styles from '../css/AnimatedRoutes.module.css';
-const ROUTE_ORDER = ['/', '/about', '/apply', '/coffeechats', '/projects', '/contact', '/resources'];
+const ROUTE_ORDER = ['/', '/about', '/board', '/apply', '/projects', '/contact', '/resources'];
 
 const routes = [
   { path: '/', element: <HomePage /> },
   { path: '/about', element: <About /> },
+  { path: '/board', element: <Board /> },
   { path: '/apply', element: <Apply /> },
-  { path: '/coffeechats', element: <CoffeeChats /> },
   { path: '/projects', element: <Projects /> },
   { path: '/contact', element: <Contact /> },
   { path: '/resources', element: <Resources /> },
+  { path: '*', element: <NotFound /> },
 ];
 
 function normalizePath(pathname) {

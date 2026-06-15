@@ -1,29 +1,22 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from "../css/About.module.css";
-import { NavHashLink } from 'react-router-hash-link';
 import homeStyles from "../css/HomePage.module.css";
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
-import coffeechaticon from "../images/about/coffeechat.png";
 import inclusiveCommunity from "../images/star.png";
 import chooseYourOwnPath from "../images/triangle.png";
 import buildAndLearnTogether from "../images/square.png";
 import challengeYourLimits from "../images/circle.png";
 import topHeaderCurve from "../images/about/topHeaderCurve.svg";
 import bottomHeaderCurve from "../images/about/bottomHeaderCurve.svg";
-import { alumni, board, projectLeads } from '../data/boardMembers';
-
-//team photo
 import teamCover from "../images/about/spring2026/board.jpg";
+import { alumni } from '../data/boardMembers';
 
 export default function About() {
-  const location = useLocation();
   const pageBgRef = useRef(null);
-  const [teamParallaxOffset, setTeamParallaxOffset] = useState(0);
   const nextSectionRef = useRef(null);
+  const [teamParallaxOffset, setTeamParallaxOffset] = useState(0);
   const [showScrollCue, setShowScrollCue] = useState(true);
-  const [flashTargetId, setFlashTargetId] = useState('');
 
   useEffect(() => {
     const pageBg = pageBgRef.current;
@@ -65,31 +58,9 @@ export default function About() {
     };
   }, []);
 
-  useEffect(() => {
-    const hashId = location.hash.replace('#', '');
-
-    if (!hashId) {
-      setFlashTargetId('');
-      return undefined;
-    }
-
-    const flashTimer = window.setTimeout(() => {
-      setFlashTargetId(hashId);
-      window.setTimeout(() => setFlashTargetId(''), 5000);
-    }, 50);
-
-    return () => window.clearTimeout(flashTimer);
-  }, [location.hash, location.pathname]);
-
-  const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-
-  const renderPeople = (people, idPrefix = '') => {
+  const renderPeople = (people) => {
     return people.map((person) => (
-      <div
-        className={`${styles.person} ${idPrefix ? styles.anchorTarget : ''} ${flashTargetId === `${idPrefix}${toAnchorId(person.name)}` ? styles.flashTarget : ''}`}
-        key={person.name}
-        id={idPrefix ? `${idPrefix}${toAnchorId(person.name)}` : undefined}
-      >
+      <div className={styles.person} key={person.name}>
         <div className={styles.imageWrapper}>
           <img
             className={styles.gridImage}
@@ -105,53 +76,15 @@ export default function About() {
               target="_blank"
               rel="noopener noreferrer"
             >
-            <img
-              src={
-                person.link.includes("linkedin")
-                  ? linkedinicon
-                  : websiteicon
-              }
-              className={`${styles.icon}`}
-              alt={`${person.name}'s profile link`}
-            />
-            </a>
-          )}
-          {person.coffee_chat && (
-            <a
-              href={person.coffee_chat}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-            <img
-              src={
-                person.coffee_chat.includes("calendly")
-                  ? coffeechaticon
-                  : websiteicon
-              }
-              className={`${styles.icon}`}
-              alt={`${person.name}'s profile link`}
-            />
+              <img
+                src={person.link.includes("linkedin") ? linkedinicon : websiteicon}
+                className={styles.icon}
+                alt={`${person.name}'s profile link`}
+              />
             </a>
           )}
         </div>
-            {person.title ? (
-              <p className={styles.title}>{person.title}</p>
-            ) : (person.project && (
-              <NavHashLink
-                to={`/projects/#project-${toAnchorId(person.project)}`}
-                className={`${styles.title} ${styles.projectLink}`}
-                scroll={el => {
-                  if (!el) return;
-                  // center element vertically in viewport
-                  const rect = el.getBoundingClientRect();
-                  const elTop = window.pageYOffset + rect.top;
-                  const target = Math.max(0, elTop - (window.innerHeight / 2 - rect.height / 2));
-                  window.scrollTo({ top: target, behavior: 'smooth' });
-                }}
-              >
-                {person.project}
-              </NavHashLink>
-            ))}
+        {person.title && <p className={styles.title}>{person.title}</p>}
       </div>
     ));
   };
@@ -161,7 +94,7 @@ export default function About() {
       <div className={styles.topHeaderCurve}>
         <img src={topHeaderCurve} alt="Top header curve decoration" />
       </div>
-      <section className={styles.aboutTeam} >
+      <section className={styles.teamHero}>
         <img
           src={teamCover}
           style={{ transform: `translateY(${teamParallaxOffset}px)` }}
@@ -171,9 +104,8 @@ export default function About() {
       <div className={styles.bottomHeaderCurve}>
         <img src={bottomHeaderCurve} alt="Bottom header curve decoration" />
       </div>
-      
-      <div className={`${styles.aboutTopHalf} limitWidth`} >
 
+      <div className={`${styles.aboutTopHalf} limitWidth`}>
         <button
           type="button"
           className={homeStyles.scrollCue}
@@ -188,7 +120,7 @@ export default function About() {
 
         <div className={styles.marginFromScreen}>
           <section className={styles.aboutUs} ref={nextSectionRef}>
-            <h1 >About Us</h1>
+            <h1>About Us</h1>
             <h3>
               <span style={{ color: "#F9C12C" }}>Mission statement:</span> We strive
               to build an open community for creators passionate about working
@@ -238,34 +170,9 @@ export default function About() {
           </section>
         </div>
       </div>
-      
+
       <section className={`${styles.aboutBottomHalf} limitWidth`}>
         <div className={styles.aboutPics}>
-          <h1>Spring 2026 Board</h1>
-          <h2>Executive Team</h2>
-          {/* Ensure Co-Presidents occupy the top row by rendering them separately */}
-          {(() => {
-            const coPresidents = board.filter(p => (p.title || '').toLowerCase().includes('co-president'));
-            const otherBoard = board.filter(p => !(p.title || '').toLowerCase().includes('co-president'));
-
-            return (
-              <>
-                {coPresidents.length > 0 && (
-                  <div className={styles.coPresidentsRow}>
-                    {renderPeople(coPresidents)}
-                  </div>
-                )}
-
-                <div className={styles.people}>
-                  {renderPeople(otherBoard)}
-                </div>
-              </>
-            );
-          })()}
-          <h2>Project Managers</h2>
-          <div className={styles.people}>
-            {renderPeople(projectLeads, 'pm-')}
-          </div>
           <h2>OP Alumni</h2>
           <div className={styles.people}>
             {renderPeople(alumni)}

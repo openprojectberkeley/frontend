@@ -21,8 +21,12 @@ import c10 from "../images/clients/superhuman.png";
 import c11 from "../images/clients/walmart.png";
 import c12 from "../images/clients/webai.png";
 import c13 from "../images/clients/woosh.png";
+import c14 from "../images/clients/ibm.png";
+import c15 from "../images/clients/bm.png";
+import c16 from "../images/clients/operative.png";
+import c17 from "../images/clients/matx.png";
 
-const CLIENTS = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13];
+const CLIENTS = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17];
 
 function Section({ title, children, imgSrc, imgAlt, reverse = false, className = '', titleClassName = '' }) {
   return (

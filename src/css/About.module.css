@@ -58,16 +58,6 @@
     margin-bottom: 40px;
 }
 
-/* co-presidents row lmao */
-.coPresidentsRow {
-    display: flex;
-    justify-content: center;
-    gap: 50px;
-    margin-top: 20px;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
-}
-
 .person {
     display: flex;
     flex-direction: column;
@@ -75,21 +65,13 @@
     border-radius: 20px;
 }
 
-.anchorTarget {
-    scroll-margin-top: 120px;
-}
-
-.flashTarget {
-    animation: flashTile 2s ease;
-}
-
 .gridImage {
     width: 250px;
     height: 250px;
     object-fit: cover;
-    object-position: 50% 30%; /* remove this after fixing the cropping manually lol */
+    object-position: 50% 30%;
     border-radius: 50%;
-  }
+}
 
 .name {
     display: flex;
@@ -120,11 +102,6 @@
     text-decoration: none;
 }
 
-.projectLink:hover {
-    text-decoration: underline;
-    opacity: 1;
-}
-
 @media screen and (max-width: 1200px) {
     .people {
         grid-template-columns: 1fr 1fr 1fr;
@@ -150,7 +127,6 @@
     height: 6rem;
     filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5));
     bottom: calc(100% - 6rem);
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -161,12 +137,12 @@
 .topHeaderCurve img {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    object-fit: cover;
     object-position: center 70%;
     overflow: visible;
 }
 
-.aboutTeam {
+.teamHero {
     margin-top: 40px;
     width: 100%;
     height: clamp(50vh, 60vw, 90vh);
@@ -175,7 +151,7 @@
     overflow: hidden;
 }
 
-.aboutTeam img {
+.teamHero img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -210,8 +186,9 @@
 .aboutTopHalf {
     position: relative;
     z-index: 200;
-    margin-top: calc(-1 * clamp(50vh, 60vw, 90vh) / 5);
+    margin-top: -120px;
     text-align: center;
+    margin-bottom: 100px;
 }
 
 .aboutUs {
@@ -220,7 +197,8 @@
     padding: 0 clamp(20px, 5vw, 100px);
 }
 
-.aboutUs h1, .aboutPics h1 {
+.aboutUs h1,
+.aboutPics h2 {
     font-family: 'ADLaM Display Regular';
     text-align: center;
     color: #FAF3E0;
@@ -229,6 +207,7 @@
 
 .ourValues h1 {
     color: #ffffff;
+    padding-bottom: 30px;
 }
 
 .values {
@@ -260,12 +239,15 @@
 .star:hover img {
     animation: starSpin 3s ease infinite;
 }
+
 .triangle:hover img {
     animation: triangleLaunch 4s ease infinite;
 }
+
 .square:hover img {
     animation: squareWiggle 4s ease-in-out infinite;
 }
+
 .circle:hover img {
     animation: circleFloat 8s ease-in-out infinite, slowSpin 20s linear infinite;
 }
@@ -453,10 +435,6 @@
     initial-value: 0deg;
 }
 
-.ourValues h1 {
-    padding-bottom: 30px;
-}
-
 .aboutBottomHalf {
     margin-bottom: 100px;
 }
@@ -470,110 +448,5 @@
 
     .aboutUs {
         margin-top: 50px;
-    }
-}
-
-/* Scroll cue (echo down arrow) copied from HomePage styles */
-.scrollCue {
-    position: fixed;
-    left: 50%;
-    bottom: clamp(0.75rem, 2.5vh, 1.5rem);
-    transform: translateX(-50%);
-    width: 48px;
-    height: 48px;
-    border: none;
-    border-radius: 999px;
-    background: transparent;
-    color: #fff;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    z-index: 300;
-    overflow: visible;
-    transition: opacity .3s ease;
-    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.7));
-}
-
-.scrollCueMain,
-.scrollCueEcho {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    line-height: 1;
-    user-select: none;
-}
-
-.scrollCueMain {
-    font-size: 22px;
-    animation: scrollCueBob 1.2s ease-in-out infinite;
-}
-
-.scrollCueEcho {
-    font-size: 22px;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.scrollCueEcho1 {
-    animation: scrollCueEcho 1.2s ease-out infinite;
-}
-
-.scrollCueEcho2 {
-    animation: scrollCueEcho 1.2s ease-out infinite 0.3s;
-}
-
-@keyframes scrollCueBob {
-    0%,
-    100% {
-        transform: translate(-50%, -52%);
-    }
-
-    50% {
-        transform: translate(-50%, -45%);
-    }
-}
-
-@keyframes scrollCueEcho {
-    0% {
-        transform: translate(-50%, -50%);
-        opacity: 0;
-    }
-
-    30% {
-        opacity: 0.55;
-    }
-
-    100% {
-        transform: translate(-50%, -15%);
-        opacity: 0;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .scrollCueMain,
-    .scrollCueEcho1,
-    .scrollCueEcho2 {
-        animation: none;
-    }
-}
-
-@keyframes flashTile {
-    0% {
-    }
-
-    50% {
-        filter: brightness(1);
-        background-color: transparent;
-    }
-
-    60% {
-        background-color: rgba(255, 255, 255, 0.7);
-        filter: brightness(1.12);
-    }
-
-    100% {
-        background-color: transparent;
-        filter: brightness(1);
     }
 }

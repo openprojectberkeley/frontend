@@ -17,31 +17,6 @@ html, body {
 }
 
 @font-face {
-  font-family: 'Brother 1816';
-  src: url('./fonts/brother\ regular.otf');
-}
-
-@font-face {
-  font-family: 'Brother Medium';
-  src: url('./fonts/brother\ medium.otf');
-}
-
-@font-face {
-  font-family: 'Brother Medium Italic';
-  src: url('./fonts/brother\ medium\ italic.otf');
-}
-
-@font-face {
-  font-family: 'Brother Light Italic';
-  src: url('./fonts/brother\ light\ italic.otf');
-}
-
-@font-face {
-  font-family: 'Brother Bold';
-  src: url('./fonts/brother\ bold.otf');
-}
-
-@font-face {
   font-family: 'Alata Regular';
   src: url('./fonts/alata_regular.ttf');
 }

@@ -46,9 +46,6 @@
     ]
   },
   "reactSnap": {
-    "exclude": [
-      "/coffeechats"
-    ],
     "skipThirdPartyRequests": true
   },
   "devDependencies": {

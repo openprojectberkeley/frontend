@@ -1,0 +1,73 @@
+.page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-around;
+  padding: 6rem var(--margin-from-screen) 4rem;
+  text-align: center;
+}
+
+.content {
+  max-width: 560px;
+  text-align: left;
+  width: fit-content;
+}
+
+.code {
+  margin: 0 0 0.5rem;
+  font-family: 'ADLaM Display Regular';
+  font-size: clamp(4rem, 12vw, 6rem);
+  line-height: 1;
+  color: #FAF3E0;
+}
+
+.content h1 {
+  margin: 0 0 1rem;
+  font-family: 'ADLaM Display Regular';
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: white;
+  opacity: 0.8;
+}
+
+.message {
+  margin: 0 0 2rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: white;
+  opacity: 0.4;
+}
+
+.homeLink {
+  display: inline-block;
+  background-color: #4DB6AC;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 10px 24px;
+  font-family: 'Alata Regular';
+  font-size: 1.25rem;
+  transition: box-shadow 0.3s ease, color 0.3s ease;
+  user-select: none;
+}
+
+.homeLink:hover {
+  box-shadow: 200px 0 0 white inset;
+  color: #4DB6AC;
+}
+
+.square {
+  width: auto;
+}
+
+.square img {
+  width: clamp(300px, 30vw, 500px);
+  height: auto;
+  user-select: none;
+}
+
+@media screen and (max-width: 900px) {
+  .page {
+    flex-direction: column;
+  }
+}

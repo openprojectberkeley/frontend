@@ -146,7 +146,7 @@ export default function Apply() {
           <div className={styles.applyHeader}>
             <div className={styles.headerBlock}>
               <h1>Join us!</h1>
-              <p>The application for the Spring 2026 cycle is no longer open, check back for Fall 2026!</p>
+              <p>The application for the Spring 2026 cycle is closed, check back for Fall 2026!</p>
             </div>
             <button
               className={styles.applyButton}

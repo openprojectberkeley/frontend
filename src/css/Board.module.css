@@ -1,0 +1,179 @@
+.pageBG {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    --page-bg-offset: 0px;
+}
+
+.pageBG::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: min(2000px, 440vw);
+    height: 100%;
+    background-image: url('../images/about/grid.svg');
+    opacity: 0.2;
+    background-repeat: repeat-y;
+    background-position: center 26rem;
+    background-size: 100% auto;
+    transform: translateX(-50%) translateY(var(--page-bg-offset));
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+}
+
+.pageBG > * {
+    position: relative;
+    z-index: 1;
+}
+
+.boardPics {
+    margin: 0 var(--margin-from-screen);
+}
+
+.boardPics h1 {
+    font-family: 'ADLaM Display Regular';
+    text-align: center;
+    color: #FAF3E0;
+    font-size: clamp(2.5rem, 4vw, 3rem);
+}
+
+.contentSection h2,
+.bottomSection h2 {
+    font-family: 'Alata Regular';
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    text-align: center;
+}
+
+.bottomSection img {
+    user-select: none;
+}
+
+.icon {
+    object-fit: contain;
+}
+
+.people {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 50px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.coPresidentsRow {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.anchorTarget {
+    scroll-margin-top: 120px;
+}
+
+.flashTarget {
+    animation: flashTile 2s ease;
+}
+
+.gridImage {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    object-position: 50% 30%;
+    border-radius: 50%;
+}
+
+.name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+.name img {
+    width: 20px;
+    height: 20px;
+}
+
+.name a {
+    height: 20px;
+}
+
+.name h3 {
+    margin: 0;
+}
+
+.title {
+    margin: 0;
+    font-style: italic;
+    opacity: 0.7;
+    color: white;
+    text-decoration: none;
+}
+
+.projectLink:hover {
+    text-decoration: underline;
+    opacity: 1;
+}
+
+@media screen and (max-width: 1200px) {
+    .people {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .people {
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 30px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .people {
+        grid-template-columns: 1fr;
+    }
+}
+
+.contentSection {
+    position: relative;
+    z-index: 200;
+    margin-top: 150px;
+    text-align: center;
+}
+
+.bottomSection {
+    margin-bottom: 100px;
+}
+
+@keyframes flashTile {
+    0% {
+    }
+
+    50% {
+        filter: brightness(1);
+        background-color: transparent;
+    }
+
+    60% {
+        background-color: rgba(255, 255, 255, 0.7);
+        filter: brightness(1.12);
+    }
+
+    100% {
+        background-color: transparent;
+        filter: brightness(1);
+    }
+}

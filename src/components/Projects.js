@@ -84,7 +84,7 @@ export default function Projects() {
         <NavHashLink
           smooth
           className={styles.projectManagerLink}
-          to={`/about/#${anchorId}`}
+          to={`/board/#${anchorId}`}
           scroll={el => {
             if (!el) return;
 

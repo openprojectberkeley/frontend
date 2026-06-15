@@ -45,7 +45,7 @@ export default function Footer() {
               <p className={styles.title}>General</p>
               <div className={styles.links}>
                 <NavLink to="/about/">About</NavLink>
-                <NavHashLink smooth to="/about/#team">Team</NavHashLink>
+                <NavHashLink smooth to="/board/#team">Team</NavHashLink>
                 <NavLink to="/projects/">Projects</NavLink>
                 <NavLink to="/contact/">Contact</NavLink>
               </div>
