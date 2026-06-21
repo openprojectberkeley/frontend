@@ -1,6 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import styles from '../css/Apply.module.css';
 import homeStyles from '../css/HomePage.module.css';
+import PageBackground from './PageBackground';
 import useComingSoonLabel from './useComingSoonLabel';
 import faqPlus from "../images/apply/faqPlus.png";
 import headerCurve from "../images/apply/headerCurve.svg";
@@ -11,11 +12,9 @@ import circle from "../images/circle.png";
 
 export default function Apply() {
 
-  const pageBgRef = useRef(null);
   const [revealedAnswers, setRevealedAnswers] = useState(Array(faqList.length).fill(false));
   const { label: comingSoonLabel, onMouseEnter, onMouseMove, onMouseLeave } = useComingSoonLabel();
   const nextSectionRef = useRef(null);
-  const [showScrollCue, setShowScrollCue] = useState(true);
 
   const changeReveal = (index) => {
     let copy = revealedAnswers.slice();
@@ -87,47 +86,10 @@ export default function Apply() {
     });
   };
 
-  useEffect(() => {
-    const pageBg = pageBgRef.current;
-
-    if (!pageBg) {
-      return undefined;
-    }
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let frameId = null;
-
-    const updateParallax = () => {
-      const offset = prefersReducedMotion ? 0 : Math.round(window.scrollY * 0.5);
-      pageBg.style.setProperty('--page-bg-offset', `${offset}px`);
-      setShowScrollCue(window.scrollY <= 8);
-      frameId = null;
-    };
-
-    const onScroll = () => {
-      if (frameId !== null) {
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(updateParallax);
-    };
-
-    updateParallax();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
-    };
-  }, []);
-
   return (
-    <div ref={pageBgRef} className={styles.pageBG}>
+    <PageBackground variant="apply">
+      {({ showScrollCue }) => (
+    <>
       {comingSoonLabel}
 
       <div className={styles.applyWrapper}>
@@ -196,6 +158,8 @@ export default function Apply() {
         alt="FAQ curve decoration"  
       />
       {renderAllFaqs()}
-    </div>
+    </>
+      )}
+    </PageBackground>
   );
 }

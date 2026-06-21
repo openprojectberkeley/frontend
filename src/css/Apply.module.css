@@ -1,35 +1,5 @@
 /* TIMELINE */
 
-.pageBG {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  --page-bg-offset: 0px;
-}
-
-.pageBG::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: min(2000px, 440vw);
-  height: 100%;
-  background-image: url('../images/apply/grid.svg');
-  opacity: 0.2;
-  background-repeat: no-repeat;
-  background-position: center 26rem;
-  background-size: 100% auto;
-  transform: translateX(-50%) translateY(calc(var(--page-bg-offset) - 350px));
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform;
-}
-
-.pageBG > * {
-  position: relative;
-  z-index: 1;
-}
-
 .applyHeader {
   margin: 140px var(--margin-from-screen);
   display: flex;

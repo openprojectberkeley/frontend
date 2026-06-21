@@ -1,32 +1,14 @@
 import styles from '../css/HomePage.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
+import PageBackground from './PageBackground';
 import speechbubble from '../images/speechbubbles.png';
 import ClientsCarousel from "./ClientsCarousel";
 import star from '../images/star.png';
 import triangle from '../images/triangle.png';
 import square from '../images/square.png';
 import circle from '../images/circle.png';
-
-import c1 from "../images/clients/carbongraph.png";
-import c2 from "../images/clients/getgreen.png";
-import c3 from "../images/clients/harp.png";
-import c4 from "../images/clients/lg.png";
-import c5 from "../images/clients/lmnt.png";
-import c6 from "../images/clients/numistoken.png";
-import c7 from "../images/clients/ore.png";
-import c8 from "../images/clients/otterz.png";
-import c9 from "../images/clients/relativity.png";
-import c10 from "../images/clients/superhuman.png";
-import c11 from "../images/clients/walmart.png";
-import c12 from "../images/clients/webai.png";
-import c13 from "../images/clients/woosh.png";
-import c14 from "../images/clients/ibm.png";
-import c15 from "../images/clients/bm.png";
-import c16 from "../images/clients/operative.png";
-import c17 from "../images/clients/matx.png";
-
-const CLIENTS = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17];
+import { clients } from '../data/clientsData';
 
 function Section({ title, children, imgSrc, imgAlt, reverse = false, className = '', titleClassName = '' }) {
   return (
@@ -43,51 +25,12 @@ function Section({ title, children, imgSrc, imgAlt, reverse = false, className =
 }
 
 export default function HomePage() {
-  const pageBgRef = useRef(null);
   const nextSectionRef = useRef(null);
-  const [showScrollCue, setShowScrollCue] = useState(true);
-
-  useEffect(() => {
-    const pageBg = pageBgRef.current;
-
-    if (!pageBg) {
-      return undefined;
-    }
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let frameId = null;
-
-    const updateParallax = () => {
-      const offset = prefersReducedMotion ? 0 : Math.round(window.scrollY * 0.5);
-      pageBg.style.setProperty('--page-bg-offset', `${offset}px`);
-      setShowScrollCue(window.scrollY <= 8);
-      frameId = null;
-    };
-
-    const onScroll = () => {
-      if (frameId !== null) {
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(updateParallax);
-    };
-
-    updateParallax();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
-    };
-  }, []);
 
   return (
-    <div ref={pageBgRef} className={styles.pageBG}>
+    <PageBackground variant="home">
+      {({ showScrollCue }) => (
+    <>
       <div className={`${styles.heroSection} limitWidth`}>
         <div className={styles.coverLeft}>
           <h1 className={styles.experienceText}>Experience</h1>
@@ -164,7 +107,7 @@ export default function HomePage() {
 
       <section className={styles.clientsSection}>
         <div className="limitWidth">
-          <ClientsCarousel images={CLIENTS} altPrefix="Client" />
+          <ClientsCarousel images={clients} altPrefix="Client" />
         </div>
       </section>
 
@@ -191,6 +134,8 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-    </div>
+    </>
+      )}
+    </PageBackground>
   );
 }

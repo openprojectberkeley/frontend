@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#000000" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta
       name="description"
       content="Open Project - Berkeley Tech Club"
@@ -43,6 +44,9 @@
     gtag('config', 'G-7M92HVCHP6');
   </script>
   <body>
+    <div id="site-background" aria-hidden="true">
+      <div class="site-background__image"></div>
+    </div>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

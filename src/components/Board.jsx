@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import styles from "../css/Board.module.css";
 import { NavHashLink } from 'react-router-hash-link';
 import homeStyles from "../css/HomePage.module.css";
+import PageBackground from './PageBackground';
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
@@ -10,49 +11,8 @@ import { board, projectLeads } from '../data/boardMembers';
 
 export default function Board() {
   const location = useLocation();
-  const pageBgRef = useRef(null);
   const nextSectionRef = useRef(null);
-  const [showScrollCue, setShowScrollCue] = useState(true);
   const [flashTargetId, setFlashTargetId] = useState('');
-
-  useEffect(() => {
-    const pageBg = pageBgRef.current;
-
-    if (!pageBg) {
-      return undefined;
-    }
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let frameId = null;
-
-    const updateParallax = () => {
-      const offset = prefersReducedMotion ? 0 : Math.round(window.scrollY * 0.5);
-      pageBg.style.setProperty('--page-bg-offset', `${offset}px`);
-      setShowScrollCue(window.scrollY <= 8);
-      frameId = null;
-    };
-
-    const onScroll = () => {
-      if (frameId !== null) {
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(updateParallax);
-    };
-
-    updateParallax();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     const hashId = location.hash.replace('#', '');
@@ -145,8 +105,9 @@ export default function Board() {
   };
 
   return (
-    <div ref={pageBgRef} className={styles.pageBG}>
-      <section className={`${styles.contentSection} ${styles.bottomSection} limitWidth`}>
+    <PageBackground variant="about">
+      {({ showScrollCue }) => (
+    <section className={`${styles.contentSection} ${styles.bottomSection} limitWidth`}>
         <button
           type="button"
           className={homeStyles.scrollCue}
@@ -186,6 +147,7 @@ export default function Board() {
           </div>
         </div>
       </section>
-    </div>
+      )}
+    </PageBackground>
   );
 }

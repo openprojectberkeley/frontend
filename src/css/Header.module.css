@@ -102,7 +102,36 @@
     background-color: #101010;
 }
 
+.menuBackdrop {
+    display: none;
+}
+
 @media screen and (max-width: 950px) {
+    .menuBackdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        border: none;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .menuBackdropOpen {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .menuBackdrop {
+            transition: none;
+        }
+    }
     .hamburger {
         display: block;
         cursor: pointer;
@@ -133,15 +162,12 @@
         width: 100%;
         text-align: center;
         transition: 0.3s;
-        height: 100%;
-        z-index: 1;
+        height: 99%;
+        z-index: 2;
         justify-content: center;
         align-items: center;
         gap: 20px;
         padding-left: 0px;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
     }
 
     .linksActive {
