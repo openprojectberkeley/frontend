@@ -2,7 +2,6 @@ import styles from '../css/Header.module.css';
 import logo from '../images/navbarlogo.png';
 import { NavLink } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import useComingSoonLabel from './useComingSoonLabel';
 
 export default function Header() {
   const activeLink = ({ isActive }) => isActive ? `${styles.activeLink}` : '';
@@ -11,7 +10,6 @@ export default function Header() {
   const [renderBackdrop, setRenderBackdrop] = useState(false);
   const [backdropOpen, setBackdropOpen] = useState(false);
   const backdropOpenRef = useRef(false);
-  const { label: comingSoonLabel, onMouseEnter, onMouseMove, onMouseLeave } = useComingSoonLabel();
 
   useEffect(() => {
     const updateScrolledState = () => {
@@ -90,7 +88,6 @@ export default function Header() {
         />
       )}
       <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`} id="header">
-        {comingSoonLabel}
         <NavLink to="/"><img src={logo} alt="logo" /></NavLink>
         <div className={active ? `${styles.linksActive}` : `${styles.links}`} onClick={deActivate}>
           <NavLink to="/about/" className={activeLink}>about</NavLink>
@@ -99,15 +96,14 @@ export default function Header() {
           <NavLink to="/projects/" className={activeLink}>projects</NavLink>
           <NavLink to="/contact/" className={activeLink}>contact</NavLink>
           <NavLink to="/resources/" className={activeLink}>resources</NavLink>
-          <span
+          <a
             className={styles.openportalLink}
-            aria-disabled="true"
-            onMouseEnter={onMouseEnter}
-            onMouseMove={onMouseMove}
-            onMouseLeave={onMouseLeave}
+            href="https://portal.openprojectberkeley.com"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             open portal
-          </span>
+          </a>
         </div>
         <div className={styles.hamburger}>
           <div className={styles.hamburger} onClick={hamburgerMode}>

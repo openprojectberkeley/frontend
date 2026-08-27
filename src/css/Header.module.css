@@ -74,16 +74,17 @@
 .openportalLink {
     margin-left: 25px;
     color: white;
-    opacity: 0.3; /* disabled */
-    cursor: default;
+    cursor: pointer;
     user-select: none;
+    text-decoration: none;
     background-color: #cd9700;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.openportalLink:hover {
+.links a.openportalLink:hover {
     background-color: white;
+    background-image: none;
     color: #cd9700;
 }
 

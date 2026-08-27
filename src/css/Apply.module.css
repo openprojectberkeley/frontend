@@ -10,17 +10,16 @@
 }
 
 .applyButton {
-  background-color: #F9C12C;
-  color: #2D2B2B;
+  background-color: #cd9700;
+  color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   font-family: 'Alata Regular';
   cursor: pointer;
   transition: box-shadow 0.3s ease, color 0.3s ease;
-  width: 240px;
+  min-width: 200px;
   font-size: 25px;
-  cursor: default;
   margin-top: 20px;
   height: fit-content;
   text-wrap: nowrap;
@@ -28,7 +27,8 @@
 }
 
 .applyButton:hover {
-  box-shadow: 240px 0px 0px white inset;
+  box-shadow: 200px 0px 0px white inset;
+  color: #2D2B2B;
 }
 
 .headerBlock {

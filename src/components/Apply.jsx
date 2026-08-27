@@ -2,7 +2,6 @@ import React, {useState, useRef} from 'react';
 import styles from '../css/Apply.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import PageBackground from './PageBackground';
-import useComingSoonLabel from './useComingSoonLabel';
 import faqPlus from "../images/apply/faqPlus.png";
 import headerCurve from "../images/apply/headerCurve.svg";
 import faqCurve from "../images/apply/faqCurve.svg";
@@ -13,7 +12,6 @@ import circle from "../images/circle.png";
 export default function Apply() {
 
   const [revealedAnswers, setRevealedAnswers] = useState(Array(faqList.length).fill(false));
-  const { label: comingSoonLabel, onMouseEnter, onMouseMove, onMouseLeave } = useComingSoonLabel();
   const nextSectionRef = useRef(null);
 
   const changeReveal = (index) => {
@@ -90,8 +88,6 @@ export default function Apply() {
     <PageBackground variant="apply">
       {({ showScrollCue }) => (
     <>
-      {comingSoonLabel}
-
       <div className={styles.applyWrapper}>
         <button
           type="button"
@@ -108,17 +104,17 @@ export default function Apply() {
           <div className={styles.applyHeader}>
             <div className={styles.headerBlock}>
               <h1>Join us!</h1>
-              <p>The application for the Spring 2026 cycle is closed, check back for Fall 2026!</p>
+              <p>Applications are now open for the Fall 2026 cycle — apply today!</p>
             </div>
-            <button
-              className={styles.applyButton}
-              style={{ opacity: 0.15 }}
-              onMouseEnter={onMouseEnter}
-              onMouseMove={onMouseMove}
-              onMouseLeave={onMouseLeave}
+            <a
+              href="https://portal.openprojectberkeley.com"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Apply in August!
-            </button> {/* https://docs.google.com/forms/d/e/1FAIpQLSfe-V2VIBt2JrB-GguIqrsyPRPNnX0YJFZQom5mwdmXF-ck7w/viewform */}
+              <button className={styles.applyButton}>
+                Apply now!
+              </button>
+            </a>
           </div>
         </div>
         <img src={headerCurve} className={styles.headerCurve} alt="Header curve decoration" />
