@@ -1,7 +1,7 @@
 // Exec
 import mia from "../images/about/spring2025/mia.thumb.jpg"; // President
 import jenny from "../images/about/spring2026/jenny.thumb.jpg";
-import anupriya from "../images/about/spring2026/anupriya.thumb.jpg"; // VPP
+import anupriya from "../images/about/spring2026/anupriyaalt.thumb.jpg"; // VPP
 import ashwika from "../images/about/spring2026/ashwika.thumb.jpg";
 import yashom from "../images/about/spring2025/yashom.thumb.jpg";
 import jonathan from "../images/about/spring2026/jonathan.thumb.jpg"; // VPPD
