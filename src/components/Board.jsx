@@ -126,19 +126,26 @@ export default function Board() {
             {person.title ? (
               <p className={styles.title}>{person.title}</p>
             ) : (person.project && (
-              <NavHashLink
-                to={`/projects/#project-${toAnchorId(person.project)}`}
-                className={`${styles.title} ${styles.projectLink}`}
-                scroll={el => {
-                  if (!el) return;
-                  const rect = el.getBoundingClientRect();
-                  const elTop = window.pageYOffset + rect.top;
-                  const target = Math.max(0, elTop - (window.innerHeight / 2 - rect.height / 2));
-                  window.scrollTo({ top: target, behavior: 'smooth' });
-                }}
-              >
-                {person.project}
-              </NavHashLink>
+              <p className={styles.title}>
+                {person.project.split(',').map((project) => project.trim()).map((project, index, projects) => (
+                  <React.Fragment key={project}>
+                    <NavHashLink
+                      to={`/projects/#project-${toAnchorId(project)}`}
+                      className={`${styles.title} ${styles.projectLink}`}
+                      scroll={el => {
+                        if (!el) return;
+                        const rect = el.getBoundingClientRect();
+                        const elTop = window.pageYOffset + rect.top;
+                        const target = Math.max(0, elTop - (window.innerHeight / 2 - rect.height / 2));
+                        window.scrollTo({ top: target, behavior: 'smooth' });
+                      }}
+                    >
+                      {project}
+                    </NavHashLink>
+                    {index < projects.length - 1 ? ', ' : ''}
+                  </React.Fragment>
+                ))}
+              </p>
             ))}
       </div>
     ));
@@ -160,7 +167,7 @@ export default function Board() {
         </button>
 
         <div className={styles.boardPics} id="team" ref={nextSectionRef}>
-          <h1>Spring 2026 Board</h1>
+          <h1>Fall 2026 Board</h1>
           <h2>Executive Team</h2>
           {(() => {
             const coPresidents = board.filter(p => (p.title || '').toLowerCase().includes('co-president'));

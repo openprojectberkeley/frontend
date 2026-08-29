@@ -194,7 +194,7 @@ export default function Projects() {
 
         {/* Page Header */}
         <header className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Spring 2026 Projects</h1>
+          <h1 className={styles.pageTitle}>Fall 2026 Projects</h1>
           <ul className={styles.projectTypesList}>
             {projectTypes.map((type, index) => (
               <li key={index}>{type}</li>
