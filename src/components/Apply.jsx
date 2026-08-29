@@ -72,6 +72,20 @@ export default function Apply() {
 
   const renderTimelineText = (segments) => {
     return segments.map((segment, index) => {
+      if (segment.href) {
+        return (
+          <a
+            key={`${segment.text}-${index}`}
+            className={styles.blue}
+            href={segment.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {segment.text}
+          </a>
+        );
+      }
+
       if (segment.highlight) {
         return (
           <span key={`${segment.text}-${index}`} className={styles.blue}>
@@ -115,6 +129,29 @@ export default function Apply() {
                 Apply now!
               </button>
             </a>
+          </div>
+          <div className={styles.applySteps}>
+            <div className={styles.stepItem}>
+              <div className={styles.stepCircle}>1</div>
+              <div className={styles.stepBody}>
+                <p className={styles.stepTitle}>Book a coffee chat</p>
+                <p className={styles.stepText}>Schedule a coffee chat with a board member through Open Portal.</p>
+              </div>
+            </div>
+            <div className={styles.stepItem}>
+              <div className={styles.stepCircle}>2</div>
+              <div className={styles.stepBody}>
+                <p className={styles.stepTitle}>Attend an infosession</p>
+                <p className={styles.stepText}>Attend one of our two infosessions and enter the unique code a board member gives you in Open Portal.</p>
+              </div>
+            </div>
+            <div className={styles.stepItem}>
+              <div className={styles.stepCircle}>3</div>
+              <div className={styles.stepBody}>
+                <p className={styles.stepTitle}>Rank projects &amp; apply</p>
+                <p className={styles.stepText}>Rank the projects by interest and apply to the ones that excite you most.</p>
+              </div>
+            </div>
           </div>
         </div>
         <img src={headerCurve} className={styles.headerCurve} alt="Header curve decoration" />

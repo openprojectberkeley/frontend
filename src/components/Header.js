@@ -1,10 +1,20 @@
 import styles from '../css/Header.module.css';
 import logo from '../images/navbarlogo.png';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
+function normalizePath(pathname) {
+  if (pathname.length > 1 && pathname.endsWith('/')) {
+    return pathname.slice(0, -1);
+  }
+  return pathname;
+}
+
 export default function Header() {
-  const activeLink = ({ isActive }) => isActive ? `${styles.activeLink}` : '';
+  const location = useLocation();
+  const currentPath = normalizePath(location.pathname);
+  const activeLink = (to) =>
+    normalizePath(to) === currentPath ? `${styles.activeLink}` : '';
   const [active, setActive] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [renderBackdrop, setRenderBackdrop] = useState(false);
@@ -90,12 +100,12 @@ export default function Header() {
       <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`} id="header">
         <NavLink to="/"><img src={logo} alt="logo" /></NavLink>
         <div className={active ? `${styles.linksActive}` : `${styles.links}`} onClick={deActivate}>
-          <NavLink to="/about/" className={activeLink}>about</NavLink>
-          <NavLink to="/board/" className={activeLink}>board</NavLink>
-          <NavLink to="/apply/" className={activeLink}>apply</NavLink>
-          <NavLink to="/projects/" className={activeLink}>projects</NavLink>
-          <NavLink to="/contact/" className={activeLink}>contact</NavLink>
-          <NavLink to="/resources/" className={activeLink}>resources</NavLink>
+          <NavLink to="/about/" className={activeLink('/about')}>about</NavLink>
+          <NavLink to="/board/" className={activeLink('/board')}>board</NavLink>
+          <NavLink to="/apply/" className={activeLink('/apply')}>apply</NavLink>
+          <NavLink to="/projects/" className={activeLink('/projects')}>projects</NavLink>
+          <NavLink to="/contact/" className={activeLink('/contact')}>contact</NavLink>
+          <NavLink to="/resources/" className={activeLink('/resources')}>resources</NavLink>
           <a
             className={styles.openportalLink}
             href="https://portal.openprojectberkeley.com"

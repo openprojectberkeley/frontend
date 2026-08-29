@@ -133,7 +133,7 @@ export default function AnimatedRoutes() {
     >
       <AnimatePresence initial={false} custom={directionRef.current}>
         <motion.div
-          key={location.pathname}
+          key={currentPath}
           ref={pageRef}
           custom={directionRef.current}
           variants={slideVariants}
