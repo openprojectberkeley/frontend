@@ -23,13 +23,13 @@ import nexusLogo from '../images/projects/nexus.png';
 
 export const sectionInfo = {
   client: {
-    title: "Client",
-    description: "Build real products with startups, nonprofits, and companies beyond Berkeley.",
+    title: "OP Studio",
+    description: "For returning members looking to be involved in a more serious client project. Working with more experienced devs and PMs, you'll hone your skills and learn what tech looks like in industry.",
     color: "#9BE9FF" // blue
   },
   passion: {
-    title: "Passion",
-    description: "Pitch and develop intermediate to advanced projects driven by your interests.",
+    title: "OP Launch",
+    description: "Your first steps in Open Project. Projects in OP Launch help grow your fundamentals in development and systems while becoming a part of our growing OP community! We have lots of passion and client projects - there's something here for everyone.",
     color: "#FDFFBC" // yellow
   },
   competitive: {
