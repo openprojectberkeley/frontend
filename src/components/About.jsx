@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import styles from "../css/About.module.css";
 import homeStyles from "../css/HomePage.module.css";
+import PageBackground from './PageBackground';
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import inclusiveCommunity from "../images/star.png";
@@ -13,50 +14,7 @@ import teamCover from "../images/about/spring2026/board.jpg";
 import { alumni } from '../data/boardMembers';
 
 export default function About() {
-  const pageBgRef = useRef(null);
   const nextSectionRef = useRef(null);
-  const [teamParallaxOffset, setTeamParallaxOffset] = useState(0);
-  const [showScrollCue, setShowScrollCue] = useState(true);
-
-  useEffect(() => {
-    const pageBg = pageBgRef.current;
-
-    if (!pageBg) {
-      return undefined;
-    }
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let frameId = null;
-
-    const updateParallax = () => {
-      const offset = prefersReducedMotion ? 0 : Math.round(window.scrollY * 0.5);
-      pageBg.style.setProperty('--page-bg-offset', `${offset}px`);
-      setTeamParallaxOffset(Math.min(window.scrollY * 0.35, 300));
-      setShowScrollCue(window.scrollY <= 8);
-      frameId = null;
-    };
-
-    const onScroll = () => {
-      if (frameId !== null) {
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(updateParallax);
-    };
-
-    updateParallax();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
-    };
-  }, []);
 
   const renderPeople = (people) => {
     return people.map((person) => (
@@ -90,7 +48,12 @@ export default function About() {
   };
 
   return (
-    <div ref={pageBgRef} className={styles.pageBG}>
+    <PageBackground variant="about">
+      {({ showScrollCue, scrollY }) => {
+        const teamParallaxOffset = Math.min(scrollY * 0.35, 300);
+
+        return (
+    <>
       <div className={styles.topHeaderCurve}>
         <img src={topHeaderCurve} alt="Top header curve decoration" />
       </div>
@@ -179,6 +142,9 @@ export default function About() {
           </div>
         </div>
       </section>
-    </div>
+    </>
+        );
+      }}
+    </PageBackground>
   );
 }

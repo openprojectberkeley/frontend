@@ -1,0 +1,50 @@
+.pageBG {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  --page-bg-offset: 0px;
+}
+
+.pageBG::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: min(2000px, 440vw);
+  height: 100%;
+  opacity: 0.2;
+  background-position: center 26rem;
+  background-size: 100% auto;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.pageBG > * {
+  position: relative;
+  z-index: 1;
+}
+
+.home::before {
+  background-image: url('../images/swirl.svg');
+  background-repeat: no-repeat;
+  transform: translateX(-50%) translateY(var(--page-bg-offset));
+}
+
+.about::before {
+  background-image: url('../images/about/grid.svg');
+  background-repeat: repeat-y;
+  transform: translateX(-50%) translateY(var(--page-bg-offset));
+}
+
+.apply::before {
+  background-image: url('../images/apply/grid.svg');
+  background-repeat: no-repeat;
+  transform: translateX(-50%) translateY(calc(var(--page-bg-offset) - 350px));
+}
+
+.projects::before {
+  background-image: url('../images/projects/grid.svg');
+  background-repeat: repeat-y;
+  transform: translateX(-50%) translateY(var(--page-bg-offset));
+}

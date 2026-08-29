@@ -3,54 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { NavHashLink } from 'react-router-hash-link';
 import styles from '../css/Projects.module.css';
 import homeStyles from '../css/HomePage.module.css';
+import PageBackground from './PageBackground';
 import { projects, sectionInfo, projectTypes } from '../data/projectsData';
 import coffeeCupIcon from '../images/projects/coffee-cup.svg';
 
 export default function Projects() {
   const location = useLocation();
-  const pageBgRef = useRef(null);
   const nextSectionRef = useRef(null);
-  const [showScrollCue, setShowScrollCue] = useState(true);
   const [flashTargetId, setFlashTargetId] = useState('');
-
-  useEffect(() => {
-    const pageBg = pageBgRef.current;
-
-    if (!pageBg) {
-      return undefined;
-    }
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let frameId = null;
-
-    const updateParallax = () => {
-      const offset = prefersReducedMotion ? 0 : Math.round(window.scrollY * 0.5);
-      pageBg.style.setProperty('--page-bg-offset', `${offset}px`);
-      setShowScrollCue(window.scrollY <= 8);
-      frameId = null;
-    };
-
-    const onScroll = () => {
-      if (frameId !== null) {
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(updateParallax);
-    };
-
-    updateParallax();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     const hashId = location.hash.replace('#', '');
@@ -178,7 +138,8 @@ export default function Projects() {
   };
 
   return (
-    <div ref={pageBgRef} className={`${styles.pageContainer} ${styles.pageBG}`}>
+    <PageBackground variant="projects" className={styles.pageContainer}>
+      {({ showScrollCue }) => (
       <div className={`${styles.content} limitWidth`}>
         <button
           type="button"
@@ -209,6 +170,7 @@ export default function Projects() {
         {renderSection('passion')}
         {renderSection('competitive')}
       </div>
-    </div>
+      )}
+    </PageBackground>
   );
 }

@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import styles from '../css/Apply.module.css';
 import homeStyles from '../css/HomePage.module.css';
-import useComingSoonLabel from './useComingSoonLabel';
+import PageBackground from './PageBackground';
 import faqPlus from "../images/apply/faqPlus.png";
 import headerCurve from "../images/apply/headerCurve.svg";
 import faqCurve from "../images/apply/faqCurve.svg";
@@ -11,11 +11,8 @@ import circle from "../images/circle.png";
 
 export default function Apply() {
 
-  const pageBgRef = useRef(null);
   const [revealedAnswers, setRevealedAnswers] = useState(Array(faqList.length).fill(false));
-  const { label: comingSoonLabel, onMouseEnter, onMouseMove, onMouseLeave } = useComingSoonLabel();
   const nextSectionRef = useRef(null);
-  const [showScrollCue, setShowScrollCue] = useState(true);
 
   const changeReveal = (index) => {
     let copy = revealedAnswers.slice();
@@ -75,6 +72,20 @@ export default function Apply() {
 
   const renderTimelineText = (segments) => {
     return segments.map((segment, index) => {
+      if (segment.href) {
+        return (
+          <a
+            key={`${segment.text}-${index}`}
+            className={styles.blue}
+            href={segment.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {segment.text}
+          </a>
+        );
+      }
+
       if (segment.highlight) {
         return (
           <span key={`${segment.text}-${index}`} className={styles.blue}>
@@ -87,49 +98,10 @@ export default function Apply() {
     });
   };
 
-  useEffect(() => {
-    const pageBg = pageBgRef.current;
-
-    if (!pageBg) {
-      return undefined;
-    }
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let frameId = null;
-
-    const updateParallax = () => {
-      const offset = prefersReducedMotion ? 0 : Math.round(window.scrollY * 0.5);
-      pageBg.style.setProperty('--page-bg-offset', `${offset}px`);
-      setShowScrollCue(window.scrollY <= 8);
-      frameId = null;
-    };
-
-    const onScroll = () => {
-      if (frameId !== null) {
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(updateParallax);
-    };
-
-    updateParallax();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
-    };
-  }, []);
-
   return (
-    <div ref={pageBgRef} className={styles.pageBG}>
-      {comingSoonLabel}
-
+    <PageBackground variant="apply">
+      {({ showScrollCue }) => (
+    <>
       <div className={styles.applyWrapper}>
         <button
           type="button"
@@ -146,17 +118,40 @@ export default function Apply() {
           <div className={styles.applyHeader}>
             <div className={styles.headerBlock}>
               <h1>Join us!</h1>
-              <p>The application for the Spring 2026 cycle is closed, check back for Fall 2026!</p>
+              <p>Applications are now open for the Fall 2026 cycle — apply today!</p>
             </div>
-            <button
-              className={styles.applyButton}
-              style={{ opacity: 0.15 }}
-              onMouseEnter={onMouseEnter}
-              onMouseMove={onMouseMove}
-              onMouseLeave={onMouseLeave}
+            <a
+              href="https://portal.openprojectberkeley.com"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Apply in August!
-            </button> {/* https://docs.google.com/forms/d/e/1FAIpQLSfe-V2VIBt2JrB-GguIqrsyPRPNnX0YJFZQom5mwdmXF-ck7w/viewform */}
+              <button className={styles.applyButton}>
+                Apply now!
+              </button>
+            </a>
+          </div>
+          <div className={styles.applySteps}>
+            <div className={styles.stepItem}>
+              <div className={styles.stepCircle}>1</div>
+              <div className={styles.stepBody}>
+                <p className={styles.stepTitle}>Book a coffee chat</p>
+                <p className={styles.stepText}>Schedule a coffee chat with a board member through Open Portal.</p>
+              </div>
+            </div>
+            <div className={styles.stepItem}>
+              <div className={styles.stepCircle}>2</div>
+              <div className={styles.stepBody}>
+                <p className={styles.stepTitle}>Attend an infosession</p>
+                <p className={styles.stepText}>Attend one of our two infosessions and enter the unique code a board member gives you in Open Portal.</p>
+              </div>
+            </div>
+            <div className={styles.stepItem}>
+              <div className={styles.stepCircle}>3</div>
+              <div className={styles.stepBody}>
+                <p className={styles.stepTitle}>Rank projects &amp; apply</p>
+                <p className={styles.stepText}>Rank the projects by interest and apply to the ones that excite you most.</p>
+              </div>
+            </div>
           </div>
         </div>
         <img src={headerCurve} className={styles.headerCurve} alt="Header curve decoration" />
@@ -196,6 +191,8 @@ export default function Apply() {
         alt="FAQ curve decoration"  
       />
       {renderAllFaqs()}
-    </div>
+    </>
+      )}
+    </PageBackground>
   );
 }
