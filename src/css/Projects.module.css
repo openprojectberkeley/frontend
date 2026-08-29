@@ -53,7 +53,17 @@
 }
 
 .sectionHeader {
+  /* Mirror the projects grid's column tracks so the title and description
+     line up with the left edge of the first card column at every width. */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 340px));
+  justify-content: center;
+  column-gap: 16px;
   margin-bottom: 24px;
+}
+
+.sectionHeader > * {
+  grid-column: 1 / -1;
 }
 
 .sectionTitle {
@@ -91,6 +101,10 @@
 
 @media screen and (max-width: 768px) {
   .projectsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionHeader {
     grid-template-columns: 1fr;
   }
 }
@@ -221,9 +235,11 @@
   width: 100%;
   height: 100%;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-auto-rows: max-content;
-  align-items: center;
-  justify-content: center;
+  align-content: start;
+  justify-items: start;
+  text-align: left;
   gap: 10px;
   padding-right: 4px;
   overflow: auto;
