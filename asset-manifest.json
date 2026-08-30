@@ -1,9 +1,11 @@
 {
   "files": {
-    "main.css": "/static/css/main.1b2b7aad.css",
-    "main.js": "/static/js/main.0c445cb0.js",
+    "main.css": "/static/css/main.d96a2ca3.css",
+    "main.js": "/static/js/main.4cc41d5d.js",
     "static/js/453.655fe70d.chunk.js": "/static/js/453.655fe70d.chunk.js",
     "static/media/board.jpg": "/static/media/board.c5a9c5da0d1129720a5d.jpg",
+    "static/media/nothingbutnet.png": "/static/media/nothingbutnet.b79b2ad55314b0cb996b.png",
+    "static/media/calconnect.png": "/static/media/calconnect.a6f84402c31cf699412f.png",
     "static/media/react10.png": "/static/media/react10.b81312657006734da3f0.png",
     "static/media/react13.png": "/static/media/react13.290f8912a5105c17ce85.png",
     "static/media/react16.png": "/static/media/react16.659dc349c4efba59e7ae.png",
@@ -16,6 +18,8 @@
     "static/media/hubL (4).png": "/static/media/hubL (4).c5ffafb7b75ebe251871.png",
     "static/media/hubL (7).png": "/static/media/hubL (7).5515bf7c594661bb4698.png",
     "static/media/hubL (12).png": "/static/media/hubL (12).93ca214a82f47a433420.png",
+    "static/media/cabal.png": "/static/media/cabal.f675d4620861735b0bb0.png",
+    "static/media/nexus.png": "/static/media/nexus.8d33d3ffd69fceaf3e8a.png",
     "static/media/image1.png": "/static/media/image1.f84afc60eaab68eeee47.png",
     "static/media/image2.png": "/static/media/image2.47727ac44b98032e33b7.png",
     "static/media/react2.png": "/static/media/react2.2ed64594cbabdcbe55fb.png",
@@ -109,6 +113,7 @@
     "static/media/rohan.thumb.jpg": "/static/media/rohan.thumb.526e3831e1fbfd35ba43.jpg",
     "static/media/kitty.thumb.jpg": "/static/media/kitty.thumb.4213ba8b0613efa47c97.jpg",
     "static/media/jess.thumb.jpg": "/static/media/jess.thumb.5daf99934627bc2f508a.jpg",
+    "static/media/sightline.jpg": "/static/media/sightline.a5bae2c2939e10a695f1.jpg",
     "static/media/diego.thumb.jpg": "/static/media/diego.thumb.1cbc8aa376cb691dad16.jpg",
     "static/media/image21.png": "/static/media/image21.2f4ec9a9723d394f4d6f.png",
     "static/media/superhuman.png": "/static/media/superhuman.74c3ad64e7c500117377.png",
@@ -116,7 +121,6 @@
     "static/media/carbongraph.png": "/static/media/carbongraph.93582e2295238f23cba5.png",
     "static/media/justin.thumb.jpg": "/static/media/justin.thumb.e20e721d41c11e1be8fc.jpg",
     "static/media/annie.thumb.jpg": "/static/media/annie.thumb.3a54c84ec3c4dd3c79d2.jpg",
-    "static/media/jessica.thumb.jpg": "/static/media/jessica.thumb.65b7d1eab925b83a4c94.jpg",
     "static/media/mia.thumb.jpg": "/static/media/mia.thumb.4ec28aedf78180ee1b23.jpg",
     "static/media/jonathan.thumb.jpg": "/static/media/jonathan.thumb.b3baa074a68ece8b7859.jpg",
     "static/media/harshini.thumb.jpg": "/static/media/harshini.thumb.ae259395d0db791e0688.jpg",
@@ -152,7 +156,6 @@
     "static/media/git18.png": "/static/media/git18.a7785ac3fcde3668a047.png",
     "static/media/ethan.thumb.jpg": "/static/media/ethan.thumb.5da28669e5aa2179f327.jpg",
     "static/media/git2.png": "/static/media/git2.6121ae1c008954fcb3f9.png",
-    "static/media/nexus.png": "/static/media/nexus.f59e6ebf8528e687ba58.png",
     "static/media/backend4.png": "/static/media/backend4.042a3dfea71eee57211e.png",
     "static/media/matx.png": "/static/media/matx.d231ac93e88b31c1b194.png",
     "static/media/git7.png": "/static/media/git7.394d52f8d5ab4a34a77e.png",
@@ -180,12 +183,12 @@
     "static/media/topHeaderCurve.svg": "/static/media/topHeaderCurve.374cc6129c5cbf0fce4256bbb79e133e.svg",
     "static/media/coffee-cup.svg": "/static/media/coffee-cup.24bc7d101a2cfd03492ea26967fa87c3.svg",
     "static/media/person-placeholder.svg": "/static/media/person-placeholder.4883a1e2dc5a65eb6aaf41e8bfa33587.svg",
-    "main.1b2b7aad.css.map": "/static/css/main.1b2b7aad.css.map",
-    "main.0c445cb0.js.map": "/static/js/main.0c445cb0.js.map",
+    "main.d96a2ca3.css.map": "/static/css/main.d96a2ca3.css.map",
+    "main.4cc41d5d.js.map": "/static/js/main.4cc41d5d.js.map",
     "453.655fe70d.chunk.js.map": "/static/js/453.655fe70d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1b2b7aad.css",
-    "static/js/main.0c445cb0.js"
+    "static/css/main.d96a2ca3.css",
+    "static/js/main.4cc41d5d.js"
   ]
 }
