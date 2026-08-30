@@ -131,7 +131,9 @@ export default function Projects() {
           <p className={styles.sectionDescription}>{info.description}</p>
         </div>
         <div className={styles.projectsGrid}>
-          {categoryProjects.map((project) => renderProjectCard(project, category))}
+          {[...categoryProjects]
+            .sort((a, b) => (b.logo ? 1 : 0) - (a.logo ? 1 : 0))
+            .map((project) => renderProjectCard(project, category))}
         </div>
       </section>
     );

@@ -48,7 +48,7 @@ import leo from "../images/about/spring2026/leo.thumb.jpg";
 // import mia from "../images/about/spring2026/mia.thumb.jpg";
 import annie from "../images/about/spring2026/annie.thumb.jpg";
 // import parsa from "../images/about/spring2026/parsa.thumb.jpg"; // no longer a project manager
-import jessica from "../images/about/spring2026/jessica.thumb.jpg";
+// import jessica from "../images/about/spring2026/jessica.thumb.jpg"; // no longer a project manager
 import megan from "../images/about/spring2026/megan.thumb.jpg";
 import nishaad from "../images/about/spring2026/nishaad.thumb.jpg";
 // import emily from "../images/about/spring2026/emily.thumb.jpg"; // no longer a project manager
@@ -350,7 +350,7 @@ export const projectLeads = [
         project: "Atlas",
     },
     {
-        name: "Benjamin Yin Wang",
+        name: "Benjamin Wang",
         image: placeholder,
         title: "Project Manager",
     },
@@ -363,11 +363,6 @@ export const projectLeads = [
         name: "Leo Park",
         image: leo,
         project: "Mechanistic Transfer During Fine-Tuning",
-    },
-    {
-        name: "Ryan Wang",
-        image: placeholder,
-        title: "Project Manager",
     },
     {
         name: "Arnav Mahadev",
@@ -413,21 +408,6 @@ export const projectLeads = [
         name: "Karthik Subramanian",
         image: karthik,
         project: "Cabal",
-    },
-    {
-        name: "Annie Lin",
-        image: annie,
-        title: "Project Manager",
-    },
-    {
-        name: "Jessica Chiu",
-        image: jessica,
-        title: "Project Manager",
-    },
-    {
-        name: "Megan Nguyen",
-        image: megan,
-        title: "Project Manager",
     },
 ];
 

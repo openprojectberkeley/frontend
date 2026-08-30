@@ -8,6 +8,29 @@ import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
 import { board, projectLeads } from '../data/boardMembers';
+import { projects } from '../data/projectsData';
+
+// Canonical project order, matching how projects render on the /projects page
+// (client then passion, logos first within each section).
+const projectOrder = ['client', 'passion', 'competitive'].flatMap((category) =>
+  [...(projects[category] || [])]
+    .sort((a, b) => (b.logo ? 1 : 0) - (a.logo ? 1 : 0))
+    .map((project) => project.name)
+);
+
+// Group project managers by their project, following projectOrder. People with
+// no (or an unrecognized) project fall to the end. Array.sort is stable, so
+// relative order within a group — and among the unassigned — is preserved.
+const projectRank = (person) => {
+  if (!person.project) return Number.MAX_SAFE_INTEGER;
+  const firstProject = person.project.split(',')[0].trim();
+  const index = projectOrder.indexOf(firstProject);
+  return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+};
+
+const orderedProjectLeads = [...projectLeads].sort(
+  (a, b) => projectRank(a) - projectRank(b)
+);
 
 export default function Board() {
   const location = useLocation();
@@ -150,7 +173,7 @@ export default function Board() {
           })()}
           <h2>Project Managers</h2>
           <div className={styles.people}>
-            {renderPeople(projectLeads, 'pm-')}
+            {renderPeople(orderedProjectLeads, 'pm-')}
           </div>
         </div>
       </section>

@@ -5,6 +5,10 @@ import tinyvillageLogo from '../images/projects/tinyvillage.png';
 import atlasLogo from '../images/projects/atlas.png';
 import chessblitzLogo from '../images/projects/chessblitz.png';
 import nexusLogo from '../images/projects/nexus.png';
+import calconnectLogo from '../images/projects/calconnect.png';
+import cabalLogo from '../images/projects/cabal.png'
+import nothingbutnetLogo from '../images/projects/nothingbutnet.png'
+import sightlineLogo from '../images/projects/sightline.jpg'
 
 // Unused logos - uncomment when ready
 // import matXLogo from '../images/projects/matX.svg';
@@ -19,7 +23,6 @@ import nexusLogo from '../images/projects/nexus.png';
 // import huddleLogo from '../images/projects/huddle.svg';
 // import tracklistLogo from '../images/projects/tracklist.svg';
 // import matchlabLogo from '../images/projects/matchlab.svg';
-// import sightlineLogo from '../images/projects/sightline.svg';
 
 export const sectionInfo = {
   client: {
@@ -63,6 +66,16 @@ export const projects = {
       clientName: "Traffic Patterns, LLC"
     },
     {
+      id: 5,
+      name: "Nexus",
+      logo: nexusLogo,
+      pms: ["Ganesh Karayi", "Arnav Mahadev"],
+      description: "AI-powered investment platform, utilizing real-time financial data and live news events to create a hub of information so that investors can make the most informed finance decisions possible.",
+      clientName: "iPick.ai"
+    }
+  ],
+  passion: [
+    {
       id: 3,
       name: "Smpler",
       pms: ["Sainik Ghosh", "Justin Le"],
@@ -77,16 +90,6 @@ export const projects = {
       clientName: "Tiny Village Spirit & Hope Solutions"
     },
     {
-      id: 5,
-      name: "Nexus",
-      logo: nexusLogo,
-      pms: ["Ganesh Karayi", "Arnav Mahadev"],
-      description: "AI-powered investment platform, utilizing real-time financial data and live news events to create a hub of information so that investors can make the most informed finance decisions possible.",
-      clientName: "iPick.ai"
-    }
-  ],
-  passion: [
-    {
       id: 6,
       name: "Get to the Surface",
       pms: ["Turner Osswald"],
@@ -95,6 +98,7 @@ export const projects = {
     {
       id: 7,
       name: "CalConnect",
+      logo: calconnectLogo,
       pms: ["Leo Li", "Jamil Shirinov", "James Apuyan"],
       description: "A personalized tutoring platform that helps UC Berkeley students find peer tutors who match not only what they're learning, but how they learn best. Build an AI-assisted matching experience around courses, availability, learning styles, and personality to make finding the right academic support easier."
     },
@@ -107,6 +111,7 @@ export const projects = {
     {
       id: 9,
       name: "Cabal",
+      logo: cabalLogo,
       pms: ["Karthik Subramanian", "Christopher Chang"],
       description: "Diplomacy is a seven-player game of pure negotiation and betrayal, with a devoted community stuck on software from 2012. Cabal is the modern version. Its real edge: when a player ghosts mid-game, which is the thing that kills online Diplomacy, AI takes over their position and plays plausibly instead of letting their units sit frozen. Everything else, correct adjudication and a reputation system that deters abandoners, is what earns the community's trust."
     },
@@ -125,6 +130,7 @@ export const projects = {
     {
       id: 12,
       name: "SightLine",
+      logo: sightlineLogo,
       pms: ["Chad Park", "Ryan Lin", "Austin Tenbrink"],
       description: "SightLine is a mobile app that turns the best moments of your day into a single 60-second video for you to save, share, and remember. The app will connect to the user's Meta Ray-Ban Glasses, capturing video and audio whenever the user is recording with the glasses. By the end of the day, the final video will be generated with one click of a button."
     },
@@ -143,6 +149,7 @@ export const projects = {
     {
       id: 15,
       name: "NothingButNet",
+      logo: nothingbutnetLogo,
       pms: ["Navya Lella", "Ayah Elzein"],
       description: "NothingButNet is an app that analyzes a basketball player's shooting form using computer vision and pose estimation. A user records a free throw or jump shot on their phone, uploads it to the app, and receives instant feedback on their shooting mechanics — including a visual overlay showing their joint positions, angle measurements for key checkpoints, and specific tips for improvement."
     },
