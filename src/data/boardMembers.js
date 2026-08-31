@@ -352,7 +352,7 @@ export const projectLeads = [
     {
         name: "Benjamin Wang",
         image: placeholder,
-        title: "Project Manager",
+        project: "Mechanistic Transfer During Fine-Tuning",
     },
     {
         name: "Haaziq Kazi",
@@ -408,6 +408,16 @@ export const projectLeads = [
         name: "Karthik Subramanian",
         image: karthik,
         project: "Cabal",
+    },
+    {
+        name: "Jason Shorey",
+        image: placeholder,
+        project: "DevPad",
+    },
+    {
+        name: "Yuchan Chang",
+        image: placeholder,
+        project: "DevPad",
     },
 ];
 

@@ -162,8 +162,8 @@ export const projects = {
     {
       id: 17,
       name: "Mechanistic Transfer During Fine-Tuning",
-      pms: ["Leo Park", "Haaziq Kazi"],
-      description: ""
+      pms: ["Leo Park", "Haaziq Kazi", "Benjamin Wang"],
+      description: "We study how fine-tuning on one reasoning task changes a model’s internal mechanisms and whether those same mechanisms are reused on related, unseen tasks. By tracking behavior and causal circuit changes across fine-tuning checkpoints, we test whether mechanistic transfer emerges before, alongside, or after behavioral generalization."
     },
     {
       id: 18,
@@ -171,6 +171,12 @@ export const projects = {
       logo: chessblitzLogo,
       pms: ["Matthew Rodrigues", "Yashom Kapoor", "Peter Lourenco", "Ashley Iattoni"],
       description: "Application for teaching problem solving skills to students K-8 in a gamified manner through chess tactics. Building out custom curriculums, game design, and an LLM coach."
+    },
+    {
+      id: 19,
+      name: "DevPad",
+      pms: ["Jason Shorey", "Yuchan Chang"],
+      description: "DevPad is a productivity-focused mobile app that assists STEM students in note-taking. It differs from traditional note-taking apps by including features especially helpful for Computer Science topics, such as a built-in interpreter for multiple programming languages."
     }
   ],
   competitive: []
