@@ -171,7 +171,8 @@ export const projects = {
       name: "ChessBlitz",
       logo: chessblitzLogo,
       pms: ["Matthew Rodrigues", "Yashom Kapoor", "Peter Lourenco", "Ashley Iattoni"],
-      description: "Application for teaching problem solving skills to students K-8 in a gamified manner through chess tactics. Building out custom curriculums, game design, and an LLM coach."
+      description: "Application for teaching problem solving skills to students K-8 in a gamified manner through chess tactics. Building out custom curriculums, game design, and an LLM coach.",
+      clientName: "School of the Madeline"
     },
     {
       id: 19,
