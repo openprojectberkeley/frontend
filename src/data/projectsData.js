@@ -79,7 +79,8 @@ export const projects = {
       id: 3,
       name: "Smpler",
       pms: ["Sainik Ghosh", "Justin Le"],
-      description: "Smpler is an AI-powered SaaS platform helping institutional investment managers automate investment analysis, turning hours of manual work across messy Excels and PDFs into minutes. This project builds a data pipeline that ingests ~50 public real estate and economic data sources (cap rates, occupancy, job growth, migration trends) into a structured database with an analytics layer and API, so Smpler can benchmark deals against real market context."
+      description: "Smpler is an AI-powered SaaS platform helping institutional investment managers automate investment analysis, turning hours of manual work across messy Excels and PDFs into minutes. This project builds a data pipeline that ingests ~50 public real estate and economic data sources (cap rates, occupancy, job growth, migration trends) into a structured database with an analytics layer and API, so Smpler can benchmark deals against real market context.",
+      clientName: "Smpler"
     },
     {
       id: 4,
