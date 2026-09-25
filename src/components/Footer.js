@@ -12,7 +12,17 @@ export default function Footer() {
       <div className={styles.background}>
         <div className={`${styles.footer} limitWidth`}>
           <div className={styles.socials}>
-            <NavLink to="/"><img src={footerLogo} alt="footer logo" className={styles.footerLogo} /></NavLink>
+            <a
+              href="https://spypage.openprojectberkeley.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.logoButton}
+              aria-label="Open Project spy page"
+            >
+              <img src={footerLogo} alt="footer logo" className={styles.footerLogo} />
+              <img src={footerLogo} alt="" aria-hidden="true" className={`${styles.footerLogo} ${styles.glitchLayer} ${styles.glitchLayerOne}`} />
+              <img src={footerLogo} alt="" aria-hidden="true" className={`${styles.footerLogo} ${styles.glitchLayer} ${styles.glitchLayerTwo}`} />
+            </a>
             <div className={styles.socialLinks}>
               <a href="https://www.instagram.com/openprojectberkeley/" target="_blank" rel="noopener noreferrer">
                 <div className={styles.socialsgroup}>
