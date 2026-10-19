@@ -1,0 +1,163 @@
+.root {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: var(--ll-size, 120px);
+}
+
+.svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.label {
+    margin: 0;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Every pivot already sits at its group's local origin, so each animation only
+   rotates about 0,0. This resolves against the viewBox's min-x/min-y, which is
+   why the viewBox has to stay at 0 0. */
+.orbit,
+.drift,
+.spin {
+    transform-box: view-box;
+    transform-origin: 0px 0px;
+    animation-duration: var(--ll-duration, 3.4s);
+    animation-iteration-count: infinite;
+}
+
+.orbitCircle { animation-name: llOrbitCircle; }
+.orbitBar    { animation-name: llOrbitBar; }
+.orbitArc    { animation-name: llOrbitArc; }
+.driftCircle { animation-name: llDriftCircle; }
+.driftBar    { animation-name: llDriftBar; }
+.driftArc    { animation-name: llDriftArc; }
+.spinCircle  { animation-name: llSpinCircle; }
+.spinBar     { animation-name: llSpinBar; }
+.spinArc     { animation-name: llSpinArc; }
+
+/* With every animation off, the transforms fall back to identity, which is the
+   untouched mark. Used by the preview harness and by reduced motion below. */
+.frozen .orbit,
+.frozen .drift,
+.frozen .spin {
+    animation: none;
+}
+
+/*
+ * Every curve below is a cubic-bezier(x, 0, y, 1): velocity is zero at both
+ * ends, so each movement eases out of rest and back into it. That is what keeps
+ * the loop from clicking over at 100%, and what lets the drift reverse at its
+ * peak without a bounce.
+ *
+ * Each rotation is one single segment from rest to rest. Intermediate keyframes
+ * would interpolate linearly between stops and snap the angular velocity at
+ * every boundary, which is the usual source of jerk in a keyframed spin.
+ *
+ * Everything lands at 90% and holds the assembled mark for the last 10%.
+ * Rotation totals are whole turns in every case, so that held pose is the
+ * starting pose and the loop closes on itself.
+ */
+
+/* Orbit: carries the whole shape around F. All three travel the same way, so
+   the pieces trail in one direction rather than crossing each other. */
+@keyframes llOrbitCircle {
+    0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
+    90%  { transform: rotate(360deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes llOrbitBar {
+    0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+    90%  { transform: rotate(360deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes llOrbitArc {
+    0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.52, 0, 0.48, 1); }
+    90%  { transform: rotate(360deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Drift: straight out from F and straight back, in the orbit's frame. The peaks
+   are staggered (44 / 53 / 48%) so the three never travel as one body. */
+@keyframes llDriftCircle {
+    0%   { transform: translate(0px, 0px); animation-timing-function: cubic-bezier(0.4, 0, 0.5, 1); }
+    44%  { transform: translate(-8.767px, -15.721px); animation-timing-function: cubic-bezier(0.5, 0, 0.6, 1); }
+    90%  { transform: translate(0px, 0px); }
+    100% { transform: translate(0px, 0px); }
+}
+
+@keyframes llDriftBar {
+    0%   { transform: translate(0px, 0px); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
+    53%  { transform: translate(-6.904px, 16.623px); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
+    90%  { transform: translate(0px, 0px); }
+    100% { transform: translate(0px, 0px); }
+}
+
+@keyframes llDriftArc {
+    0%   { transform: translate(0px, 0px); animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1); }
+    48%  { transform: translate(29.993px, 0.65px); animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); }
+    90%  { transform: translate(0px, 0px); }
+    100% { transform: translate(0px, 0px); }
+}
+
+/* Spin: each shape turning about its own center. The arc's center is the center
+   of the circle it is half of, so it sweeps rather than tumbles. */
+
+/* -720 against the +360 orbit, so the disc still nets a single turn. Matching
+   the orbit at -360 would cancel it out and the disc would slide without ever
+   turning, which on a plain filled circle means its gradient never moves. */
+@keyframes llSpinCircle {
+    0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1); }
+    90%  { transform: rotate(-720deg); }
+    100% { transform: rotate(-720deg); }
+}
+
+@keyframes llSpinBar {
+    0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1); }
+    90%  { transform: rotate(720deg); }
+    100% { transform: rotate(720deg); }
+}
+
+@keyframes llSpinArc {
+    0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.55, 0, 0.45, 1); }
+    90%  { transform: rotate(-720deg); }
+    100% { transform: rotate(-720deg); }
+}
+
+/* A frozen mark stops saying "working", so the pieces hold still and the whole
+   mark breathes instead. Opacity is not motion in the vestibular sense. */
+@media (prefers-reduced-motion: reduce) {
+    .orbit,
+    .drift,
+    .spin {
+        animation: none !important;
+    }
+
+    .svg {
+        animation: llPulse 2s ease-in-out infinite;
+    }
+}
+
+@keyframes llPulse {
+    0%, 100% { opacity: 0.55; }
+    50%      { opacity: 1; }
+}
