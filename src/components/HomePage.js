@@ -1,13 +1,11 @@
 import styles from '../css/HomePage.module.css';
 import { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import PageBackground from './PageBackground';
+import ImmersiveHero from './ImmersiveHero';
 import speechbubble from '../images/speechbubbles.png';
 import ClientsCarousel from "./ClientsCarousel";
 import star from '../images/star.png';
 import triangle from '../images/triangle.png';
-import square from '../images/square.png';
-import circle from '../images/circle.png';
 import { clients } from '../data/clientsData';
 
 function Section({ title, children, imgSrc, imgAlt, reverse = false, className = '', titleClassName = '' }) {
@@ -28,48 +26,8 @@ export default function HomePage() {
   const nextSectionRef = useRef(null);
 
   return (
-    <PageBackground variant="home">
-      {({ showScrollCue }) => (
     <>
-      <div className={`${styles.heroSection} limitWidth`}>
-        <div className={styles.coverLeft}>
-          <h1 className={styles.experienceText}>Experience</h1>
-          <div className={styles.forAllText}>
-            <h1 className={styles.forText}>For</h1>
-            <h1 className={styles.allText}>All.</h1>
-          </div>
-          <h2>We strive to build an open community for creators passionate about working on tech projects most meaningful to them.</h2>
-          <NavLink to="/apply"><button className={styles.getInvolvedButton}>Get Involved</button></NavLink>
-        </div>
-        <div className={styles.coverRight}>
-          <div className={styles.shapeOrbit} aria-hidden="true">
-            <span className={`${styles.shapeOrbitItem} ${styles.shapeOrbitTop}`}>
-              <img className={styles.shapeOrbitGlyph} src={square} alt="" />
-            </span>
-            <span className={`${styles.shapeOrbitItem} ${styles.shapeOrbitRight}`}>
-              <img className={styles.shapeOrbitGlyph} src={triangle} alt="" />
-            </span>
-            <span className={`${styles.shapeOrbitItem} ${styles.shapeOrbitBottom}`}>
-              <img className={styles.shapeOrbitGlyph} src={star} alt="" />
-            </span>
-            <span className={`${styles.shapeOrbitItem} ${styles.shapeOrbitLeft}`}>
-              <img className={styles.shapeOrbitGlyph} src={circle} alt="" />
-            </span>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          className={styles.scrollCue}
-          aria-label="Scroll down"
-          onClick={() => nextSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-          style={{ opacity: showScrollCue ? 1 : 0, pointerEvents: showScrollCue ? 'auto' : 'none' }}
-        >
-          <span className={styles.scrollCueMain}>⌄</span>
-          <span className={`${styles.scrollCueEcho} ${styles.scrollCueEcho1}`} aria-hidden="true">⌄</span>
-          <span className={`${styles.scrollCueEcho} ${styles.scrollCueEcho2}`} aria-hidden="true">⌄</span>
-        </button>
-      </div>
+      <ImmersiveHero nextSectionRef={nextSectionRef} />
 
       <div ref={nextSectionRef}>
         <Section
@@ -135,7 +93,5 @@ export default function HomePage() {
         </div>
       </div>
     </>
-      )}
-    </PageBackground>
   );
 }

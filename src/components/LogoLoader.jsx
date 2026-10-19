@@ -2,7 +2,16 @@ import { useId } from 'react';
 import styles from '../css/LogoLoader.module.css';
 
 /*
- * The Open Project mark, taken apart and put back together.
+ * A loading indicator: the Open Project mark, taken apart and put back
+ * together, looping for as long as something is in flight.
+ *
+ * This is not the site's logo. It is a spinner that happens to be built from
+ * the mark, so it belongs wherever a spinner belongs - while data, a route or
+ * an embed is loading - and it announces itself as a live region
+ * (role="status", labelled "Loading" by default) to match. Anywhere the
+ * brand itself is wanted, a page hero or a nav bar, use the real lockup in
+ * `src/images/navbarlogo.png` instead; a perpetually moving logo reads as a
+ * page that never finished loading.
  *
  * The three shapes drift apart, orbit a shared focal point while each turns at
  * its own rate, then land back in their exported positions, so every loop

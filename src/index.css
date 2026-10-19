@@ -1,47 +1,63 @@
 html, body {
   margin: 0;
   min-height: 100%;
-  font-family: 'Alata Regular';
-  background-color: #FFFDF8;
+  font-family: 'Paper Mono', monospace;
   letter-spacing: 0;
   color: white;
-  background-color: transparent;
-}
-
-body {
   background-color: black;
 }
+
+/* Form controls take the system UI font unless told otherwise, so they are the
+   one place the page font has to be handed down by hand. */
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+/*
+ * Headings, in Paper Mono. Mono gives every glyph the same advance, which at
+ * heading sizes leaves words looking loose and underweight beside body copy set
+ * in the same face; the weight and the negative tracking buy back the density a
+ * proportional display face would have had. h3 is body copy in this codebase,
+ * so the rule stops at h2.
+ */
+h1,
+h2 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/*
+ * Titles, in Argent Pixel CF. Reserved for them: a pixel face needs size to
+ * read, and below about 40px the grid the letterforms are drawn on turns into
+ * noise, so this is asked for per title rather than attached to h1/h2 - the
+ * section sub-headings in between keep the Paper Mono treatment above.
+ *
+ * It ships one weight, so a title takes 400; 700 would get a synthesised bold,
+ * which thickens stems by uneven numbers of pixels and breaks that same grid.
+ * The tracking goes back to normal too, since the negative value above is there
+ * to tighten mono's fixed advance and this face is proportional.
+ *
+ * Paper Mono is the fallback rather than a system face, so a title painted
+ * before Typekit's stylesheet lands still reads as a title, and the swap when
+ * it arrives is a change of face rather than of character.
+ */
 
 #root {
   position: relative;
   z-index: 0;
+  /* `clip` rather than `hidden`, so stopping sideways overflow does not turn
+     the root into a scroll container and break position: sticky inside it.
+     `hidden` first is the fallback for browsers without `clip`. */
   overflow-x: hidden;
-}
-
-#site-background {
-  position: sticky;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  overflow: visible;
-  height: calc(100lvh + 200px);
-  margin-bottom: calc(-100lvh - 200px);
-}
-
-.site-background__image {
-  position: absolute;
-  inset: 0;
-  background-image: url('images/background.svg');
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: cover;
-  min-height: 100vh;
-  min-height: 100dvh;
-  min-height: -webkit-fill-available;
+  overflow-x: clip;
 }
 
 :root {
   --margin-from-screen: 30px;
+  --font-title: "argent-pixel-cf", "Paper Mono", monospace;
 }
 
 .limitWidth {
@@ -50,24 +66,73 @@ body {
   margin-right: auto;
 }
 
+/*
+ * Paper Mono is the heading face: one family across all eight weights, so a
+ * heading picks its weight with font-weight and the browser loads only the file
+ * it needs. Licensed under the OFL, whose text sits beside the fonts.
+ */
 @font-face {
-  font-family: 'Alata Regular';
-  src: url('./fonts/alata_regular.ttf');
+  font-family: 'Paper Mono';
+  src: url('./fonts/papermono/PaperMono-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: 'ABeeZee Regular';
-  src: url('./fonts/abeezee_regular.ttf');
+  font-family: 'Paper Mono';
+  src: url('./fonts/papermono/PaperMono-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: 'ABeeZee Italic';
-  src: url('./fonts/abeezee_italic.ttf');
+  font-family: 'Paper Mono';
+  src: url('./fonts/papermono/PaperMono-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: 'ADLaM Display Regular';
-  src: url('./fonts/adlamdisplay_regular.ttf');
+  font-family: 'Paper Mono';
+  src: url('./fonts/papermono/PaperMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Paper Mono';
+  src: url('./fonts/papermono/PaperMono-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Paper Mono';
+  src: url('./fonts/papermono/PaperMono-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Paper Mono';
+  src: url('./fonts/papermono/PaperMono-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Paper Mono';
+  src: url('./fonts/papermono/PaperMono-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
 }
 
 pre {

@@ -1,7 +1,18 @@
 .routeContainer {
   position: relative;
   width: 100%;
+  /*
+   * `clip`, not `hidden`. Both clip the page sliding in and out, but `hidden`
+   * also makes this a scroll container, and a scroll container is what
+   * position: sticky sticks to - so the home page's pinned stage would stick to
+   * a box that scrolls away with it and never pin at all. `clip` clips without
+   * becoming scrollable, leaving the viewport as the scrollport.
+   *
+   * The `hidden` first is the fallback for browsers without `clip` (Safari
+   * before 16): they keep the clipping and lose only the pinning.
+   */
   overflow: hidden;
+  overflow: clip;
 }
 
 .page {

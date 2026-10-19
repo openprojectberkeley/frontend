@@ -25,6 +25,11 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <!-- Argent Pixel CF, the title face. Served by Typekit, so the connection
+         is warmed before the stylesheet is asked for. -->
+    <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+    <link rel="preconnect" href="https://p.typekit.net" crossorigin />
+    <link rel="stylesheet" href="https://use.typekit.net/yrr2bbd.css" />
     <title>Open Project</title>
     <meta name="title" key="title" content="Open Project" />
     <meta property="og:url" content="openprojectberkeley.com/" />
@@ -44,9 +49,6 @@
     gtag('config', 'G-7M92HVCHP6');
   </script>
   <body>
-    <div id="site-background" aria-hidden="true">
-      <div class="site-background__image"></div>
-    </div>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

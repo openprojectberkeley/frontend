@@ -99,7 +99,6 @@
 }
 
 .title {
-    font-family: 'ADLaM Display Regular';
     font-size: 18px;
     opacity: 0.4;
     user-select: none;
@@ -149,12 +148,17 @@
     margin-bottom: 5px;
 }
 
+/*
+ * Stacked rather than in a row. Set in mono, the four handles come to ~1090px
+ * on their own, and the footer's content box tops out at 1200px, so a row can
+ * no longer sit beside the link columns at any window width.
+ */
 .socialLinks {
     padding-left: 10px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: flex-start;
-    gap: 24px;
+    gap: 10px;
 }
 
 .socialsgroup p {
@@ -170,13 +174,6 @@
     display: flex;
     flex-direction: row;
     gap: 50px;
-}
-
-@media screen and (max-width: 1200px) {
-    .socialLinks {
-        flex-direction: column;
-        gap: 10px;
-    }
 }
 
 @media screen and (max-width: 550px) {

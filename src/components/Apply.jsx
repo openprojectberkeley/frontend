@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react';
 import styles from '../css/Apply.module.css';
 import homeStyles from '../css/HomePage.module.css';
-import PageBackground from './PageBackground';
+import useScrollCue from './useScrollCue';
 import faqPlus from "../images/apply/faqPlus.png";
 import headerCurve from "../images/apply/headerCurve.svg";
 import faqCurve from "../images/apply/faqCurve.svg";
@@ -10,6 +10,7 @@ import { recruitmentTimeline } from '../data/recruitmentTimeline';
 import circle from "../images/circle.png";
 
 export default function Apply() {
+  const showScrollCue = useScrollCue();
 
   const [revealedAnswers, setRevealedAnswers] = useState(Array(faqList.length).fill(false));
   const nextSectionRef = useRef(null);
@@ -99,8 +100,6 @@ export default function Apply() {
   };
 
   return (
-    <PageBackground variant="apply">
-      {({ showScrollCue }) => (
     <>
       <div className={styles.applyWrapper}>
         <button
@@ -192,7 +191,5 @@ export default function Apply() {
       />
       {renderAllFaqs()}
     </>
-      )}
-    </PageBackground>
   );
 }

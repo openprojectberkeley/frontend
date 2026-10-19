@@ -42,7 +42,9 @@
 }
 
 .coverLeft h1 {
-    font-family: 'Alata Regular';
+    font-family: var(--font-title);
+    font-weight: 400;
+    letter-spacing: normal;
     margin: -20px 0;
     font-size: 40px;
 }
@@ -50,6 +52,11 @@
 .coverLeft h2 {
     font-size: 20px;
     opacity: 0.9;
+    /* Prose, not a heading - it only carries a heading tag. Body weight, and
+       body tracking too: the h1/h2 title rule tightens for display sizes, not
+       for a paragraph. */
+    font-weight: 400;
+    letter-spacing: normal;
 }
 
 .coverRight img {
@@ -77,7 +84,6 @@
     padding: 10px 15px;
     border: none;
     border-radius: 10px;
-    font-family: 'Alata Regular';
     font-size: 18px;
 }
 
@@ -86,7 +92,6 @@
 }
 
 .form input::placeholder, .form textarea::placeholder {
-    font-family: 'Alata Regular';
     opacity: 0.7;
     user-select: none;
 }
@@ -97,7 +102,6 @@
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
-    font-family: 'Alata Regular';
     cursor: pointer;
     transition: box-shadow 0.3s ease, color 0.3s ease;
     width: 210px;

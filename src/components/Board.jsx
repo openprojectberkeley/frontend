@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import styles from "../css/Board.module.css";
 import { NavHashLink } from 'react-router-hash-link';
 import homeStyles from "../css/HomePage.module.css";
-import PageBackground from './PageBackground';
+import useScrollCue from './useScrollCue';
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
@@ -36,6 +36,7 @@ export default function Board() {
   const location = useLocation();
   const nextSectionRef = useRef(null);
   const [flashTargetId, setFlashTargetId] = useState('');
+  const showScrollCue = useScrollCue();
 
   useEffect(() => {
     const hashId = location.hash.replace('#', '');
@@ -135,49 +136,45 @@ export default function Board() {
   };
 
   return (
-    <PageBackground variant="about">
-      {({ showScrollCue }) => (
     <section className={`${styles.contentSection} ${styles.bottomSection} limitWidth`}>
-        <button
-          type="button"
-          className={homeStyles.scrollCue}
-          aria-label="Scroll down"
-          onClick={() => nextSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-          style={{ opacity: showScrollCue ? 1 : 0, pointerEvents: showScrollCue ? 'auto' : 'none' }}
-        >
-          <span className={homeStyles.scrollCueMain}>⌄</span>
-          <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho1}`} aria-hidden="true">⌄</span>
-          <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho2}`} aria-hidden="true">⌄</span>
-        </button>
+      <button
+        type="button"
+        className={homeStyles.scrollCue}
+        aria-label="Scroll down"
+        onClick={() => nextSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+        style={{ opacity: showScrollCue ? 1 : 0, pointerEvents: showScrollCue ? 'auto' : 'none' }}
+      >
+        <span className={homeStyles.scrollCueMain}>⌄</span>
+        <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho1}`} aria-hidden="true">⌄</span>
+        <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho2}`} aria-hidden="true">⌄</span>
+      </button>
 
-        <div className={styles.boardPics} id="team" ref={nextSectionRef}>
-          <h1>Fall 2026 Board</h1>
-          <h2>Executive Team</h2>
-          {(() => {
-            const coPresidents = board.filter(p => (p.title || '').toLowerCase().includes('co-president'));
-            const otherBoard = board.filter(p => !(p.title || '').toLowerCase().includes('co-president'));
+      <div className={styles.boardPics} id="team" ref={nextSectionRef}>
+        <h1>Fall 2026 Board</h1>
+        <h2>Executive Team</h2>
+        {(() => {
+          const coPresidents = board.filter(p => (p.title || '').toLowerCase().includes('co-president'));
+          const otherBoard = board.filter(p => !(p.title || '').toLowerCase().includes('co-president'));
 
-            return (
-              <>
-                {coPresidents.length > 0 && (
-                  <div className={styles.coPresidentsRow}>
-                    {renderPeople(coPresidents)}
-                  </div>
-                )}
-
-                <div className={styles.people}>
-                  {renderPeople(otherBoard)}
+          return (
+            <>
+              {coPresidents.length > 0 && (
+                <div className={styles.coPresidentsRow}>
+                  {renderPeople(coPresidents)}
                 </div>
-              </>
-            );
-          })()}
-          <h2>Project Managers</h2>
-          <div className={styles.people}>
-            {renderPeople(orderedProjectLeads, 'pm-')}
-          </div>
+              )}
+
+              <div className={styles.people}>
+                {renderPeople(otherBoard)}
+              </div>
+            </>
+          );
+        })()}
+        <h2>Project Managers</h2>
+        <div className={styles.people}>
+          {renderPeople(orderedProjectLeads, 'pm-')}
         </div>
-      </section>
-      )}
-    </PageBackground>
+      </div>
+    </section>
   );
 }

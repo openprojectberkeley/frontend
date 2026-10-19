@@ -15,7 +15,6 @@
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
-  font-family: 'Alata Regular';
   cursor: pointer;
   transition: box-shadow 0.3s ease, color 0.3s ease;
   min-width: 200px;
@@ -59,7 +58,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Alata Regular';
   font-weight: bold;
   font-size: 24px;
   color: #fff;
@@ -74,7 +72,6 @@
 }
 
 .stepTitle {
-  font-family: 'Alata Regular';
   font-weight: bold;
   margin: 0 0 4px;
   color: #F9C12C;
@@ -96,9 +93,11 @@
 }
 
 .applyHeader h1 {
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: normal;
   font-size: 40px;
   margin: 0;
-  font-family: 'Alata Regular';
 }
 
 .applyHeader p {
@@ -210,9 +209,11 @@
 }
 
 .title {
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: normal;
   position: relative;
   font-size: 50px;
-  font-family: 'Alata Regular';
   margin: 0;
   padding: 0;
   width: 70px;
@@ -243,7 +244,6 @@
 }
 
 .subtitle {
-  font-family: 'Alata Regular';
   margin: 0;
 }
 
@@ -267,7 +267,6 @@
 }
 
 .importantNote {
-  font-family: 'Alata Regular';
   border: 3px solid #F9C12C;
   padding: 10px 20px;
   background-color: #F9C12C;
@@ -404,5 +403,4 @@
 
 .faqQuestion {
   margin: 0;
-  font-family: 'Alata Regular';
 }

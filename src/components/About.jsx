@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import styles from "../css/About.module.css";
 import homeStyles from "../css/HomePage.module.css";
-import PageBackground from './PageBackground';
+import useScrollCue from './useScrollCue';
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import inclusiveCommunity from "../images/star.png";
@@ -15,6 +15,7 @@ import { alumni } from '../data/boardMembers';
 
 export default function About() {
   const nextSectionRef = useRef(null);
+  const showScrollCue = useScrollCue();
 
   const renderPeople = (people) => {
     return people.map((person) => (
@@ -48,21 +49,12 @@ export default function About() {
   };
 
   return (
-    <PageBackground variant="about">
-      {({ showScrollCue, scrollY }) => {
-        const teamParallaxOffset = Math.min(scrollY * 0.35, 300);
-
-        return (
     <>
       <div className={styles.topHeaderCurve}>
         <img src={topHeaderCurve} alt="Top header curve decoration" />
       </div>
       <section className={styles.teamHero}>
-        <img
-          src={teamCover}
-          style={{ transform: `translateY(${teamParallaxOffset}px)` }}
-          alt="Open Project Berkeley Team"
-        />
+        <img src={teamCover} alt="Open Project Berkeley Team" />
       </section>
       <div className={styles.bottomHeaderCurve}>
         <img src={bottomHeaderCurve} alt="Bottom header curve decoration" />
@@ -143,8 +135,5 @@ export default function About() {
         </div>
       </section>
     </>
-        );
-      }}
-    </PageBackground>
   );
 }

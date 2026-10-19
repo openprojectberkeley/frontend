@@ -5,12 +5,11 @@ import HomePage from './HomePage';
 import About from './About';
 import Contact from './Contact';
 import Apply from './Apply';
-import Resources from './Resources';
 import Projects from './Projects';
 import Board from './Board';
 import NotFound from './NotFound';
 import styles from '../css/AnimatedRoutes.module.css';
-const ROUTE_ORDER = ['/', '/about', '/board', '/apply', '/projects', '/contact', '/resources'];
+const ROUTE_ORDER = ['/', '/about', '/board', '/apply', '/projects', '/contact'];
 
 const routes = [
   { path: '/', element: <HomePage /> },
@@ -19,7 +18,6 @@ const routes = [
   { path: '/apply', element: <Apply /> },
   { path: '/projects', element: <Projects /> },
   { path: '/contact', element: <Contact /> },
-  { path: '/resources', element: <Resources /> },
   { path: '*', element: <NotFound /> },
 ];
 

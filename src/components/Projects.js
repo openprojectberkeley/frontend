@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { NavHashLink } from 'react-router-hash-link';
 import styles from '../css/Projects.module.css';
 import homeStyles from '../css/HomePage.module.css';
-import PageBackground from './PageBackground';
+import useScrollCue from './useScrollCue';
 import { projects, sectionInfo, projectTypes } from '../data/projectsData';
 import coffeeCupIcon from '../images/projects/coffee-cup.svg';
 
@@ -11,6 +11,7 @@ export default function Projects() {
   const location = useLocation();
   const nextSectionRef = useRef(null);
   const [flashTargetId, setFlashTargetId] = useState('');
+  const showScrollCue = useScrollCue();
 
   useEffect(() => {
     const hashId = location.hash.replace('#', '');
@@ -140,8 +141,7 @@ export default function Projects() {
   };
 
   return (
-    <PageBackground variant="projects" className={styles.pageContainer}>
-      {({ showScrollCue }) => (
+    <div className={styles.pageContainer}>
       <div className={`${styles.content} limitWidth`}>
         <button
           type="button"
@@ -172,7 +172,6 @@ export default function Projects() {
         {renderSection('passion')}
         {renderSection('competitive')}
       </div>
-      )}
-    </PageBackground>
+    </div>
   );
 }

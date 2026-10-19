@@ -3,7 +3,9 @@
 }
 
 .boardPics h1 {
-    font-family: 'ADLaM Display Regular';
+    font-family: var(--font-title);
+    font-weight: 400;
+    letter-spacing: normal;
     text-align: center;
     color: #FAF3E0;
     font-size: clamp(2.5rem, 4vw, 3rem);
@@ -11,7 +13,6 @@
 
 .contentSection h2,
 .bottomSection h2 {
-    font-family: 'Alata Regular';
     font-size: clamp(1.5rem, 3vw, 2rem);
     text-align: center;
 }

@@ -50,7 +50,6 @@
     overflow: hidden;
     max-height: 0;
     transition: all 0.3s ease;
-    font-family: 'Alata Regular';
     font-size: 16px;
     color: #a38dd9;
     cursor: pointer;
@@ -62,7 +61,6 @@
 
 .label {
     display: block;
-    font-family: 'Alata Regular';
     font-size: 16px;
     margin: 0;
     padding-right: 6px;

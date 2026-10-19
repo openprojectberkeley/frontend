@@ -105,7 +105,6 @@ export default function Header() {
           <NavLink to="/apply/" className={activeLink('/apply')}>apply</NavLink>
           <NavLink to="/projects/" className={activeLink('/projects')}>projects</NavLink>
           <NavLink to="/contact/" className={activeLink('/contact')}>contact</NavLink>
-          <NavLink to="/resources/" className={activeLink('/resources')}>resources</NavLink>
           <a
             className={styles.openportalLink}
             href="https://portal.openprojectberkeley.com"

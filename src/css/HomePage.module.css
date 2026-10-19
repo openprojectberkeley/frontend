@@ -1,97 +1,3 @@
-.cover {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 50px var(--margin-from-screen);
-  justify-content: space-between;
-}
-
-.coverLeft h1 {
-  font-family: 'Alata Regular';
-  margin: -20px 0;
-  font-size: 50px;
-}
-
-.coverLeft h2 {
-  margin: 26px 0;
-  max-width: 500px;
-}
-
-.coverRight {
-  flex: 1 1 420px;
-  width: auto;
-  height: auto;
-  display: block;
-}
-
-.shapeOrbit {
-  position: relative;
-  width: min(600px, 80vw);
-  aspect-ratio: 1;
-  margin-inline: auto;
-  --orbit-radius: clamp(200px, min(20vw, 40vh), 400px) / 1.6;
-  animation: shapeOrbitSpin 20s linear infinite;
-  transform-origin: center center;
-}
-
-.shapeOrbitItem {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  --orbit-shake: 0deg;
-  --orbit-shake-delay: 0s;
-  transform-origin: center center;
-  will-change: transform;
-  pointer-events: none;
-  animation-name: shapeOrbitShake;
-  animation-duration: 6s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-delay: var(--orbit-shake-delay);
-  user-select: none;
-}
-
-.shapeOrbitGlyph {
-  width: clamp(200px, min(20vw, 40vh), 300px);
-  height: auto;
-  display: block;
-  animation: shapeOrbitCounter 20s linear infinite;
-  transform-origin: center center;
-  will-change: transform;
-}
-
-.shapeOrbitTop {
-  --orbit-shake-delay: 0s;
-  transform: translate(-50%, calc(-50% - var(--orbit-radius))) rotate(var(--orbit-shake));
-}
-
-.shapeOrbitRight {
-  --orbit-shake-delay: -1s;
-  transform: translate(calc(-50% + var(--orbit-radius)), -50%) rotate(var(--orbit-shake));
-}
-
-.shapeOrbitBottom {
-  --orbit-shake-delay: -2s;
-  transform: translate(-50%, calc(-50% + var(--orbit-radius))) rotate(var(--orbit-shake));
-}
-
-.shapeOrbitLeft {
-  --orbit-shake-delay: -3s;
-  transform: translate(calc(-50% - var(--orbit-radius)), -50%) rotate(var(--orbit-shake));
-}
-
-.heroSection {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: clamp(1.5rem, 4vw, 4rem);
-  padding: 0px var(--margin-from-screen);
-  min-height: 100vh;
-  background: transparent !important;
-  color: white;
-}
-
 .scrollCue {
   position: fixed;
   left: 50%;
@@ -176,85 +82,12 @@
   }
 }
 
-.coverLeft {
-  flex: 1 1 42ch;
-  max-width: 640px;
-}
-
-@media (max-width: 900px) {
-  .heroSection {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .coverLeft,
-  .coverRight {
-    max-width: 720px;
-  }
-}
-
-@media (max-width: 500px) {
-  .coverRight {
-    margin-top: 100px;
-  }
-
-  .coverLeft h2 {
-    font-size: 20px;
-  }
-}
-
-@keyframes shapeOrbitSpin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes shapeOrbitCounter {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(-360deg);
-  }
-}
-
-@keyframes shapeOrbitShake {
-  0%,
-  100% {
-    --orbit-shake: -5deg;
-  }
-
-  50% {
-    --orbit-shake: 5deg;
-  }
-}
-
-@property --orbit-shake {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .shapeOrbit,
-  .shapeOrbitGlyph,
-  .shapeOrbitItem {
-    animation: none;
-  }
-}
-
 .getInvolvedButton {
   background-color: #5BBC88;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
-  font-family: 'Alata Regular';
   cursor: pointer;
   transition: box-shadow 0.3s ease, color 0.3s ease;
   min-width: 200px;
@@ -293,7 +126,9 @@
 }
 
 .bluesectiontitle {
-  font-family: 'ADLaM Display Regular';
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: normal;
   color: #FAF3E0;
   font-size: 40px;
 }
@@ -319,7 +154,6 @@
 }
 
 .bluetext h1 {
-  font-family: 'Alata Regular';
   color: #F5F5DC;
 }
 
@@ -329,26 +163,6 @@
 
 .blueText {
   color: #2D5DED;
-}
-
-.experienceText {
-  color: #74A1FF;
-}
-
-.forText {
-  color: #F9C915;
-}
-
-.allText {
-  color: #5BBC88;
-}
-
-.forAllText {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  margin: 26px 0;
 }
 
 .about {
@@ -361,7 +175,6 @@
 }
 
 .about h1 {
-  font-family: 'Alata Regular';
 }
 
 .aboutCommunity h1 {
@@ -406,8 +219,10 @@
 }
 
 .joinUsText h1 {
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: normal;
   display: flex;
-  font-family: 'Alata Regular';
   font-size: 60px;
 }
 
@@ -416,6 +231,8 @@
   font-size: 20px;
   max-width: 600px;
   margin-top: -20px;
+  /* Prose, not a heading - it only carries a heading tag. */
+  font-weight: 400;
 }
 
 .joinUsRight {
@@ -482,6 +299,8 @@
 .section h3 {
   margin: 0;
   line-height: 1.55;
+  /* Prose, not a heading - it only carries a heading tag. */
+  font-weight: 400;
 }
 
 .reverse .media {
@@ -593,7 +412,6 @@
 
 .clientsHeading {
   margin: 0 0 1.25rem;
-  font-family: 'Alata Regular';
   color: #67e1d3;
   text-align: center;
 }

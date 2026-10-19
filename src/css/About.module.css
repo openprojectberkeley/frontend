@@ -7,7 +7,6 @@
 }
 
 .aboutBottomHalf h2 {
-    font-family: 'Alata Regular';
     font-size: clamp(1.5rem, 3vw, 2rem);
     text-align: center;
 }
@@ -116,7 +115,6 @@
     margin-top: 40px;
     width: 100%;
     height: clamp(50vh, 60vw, 90vh);
-    will-change: transform;
     z-index: 1;
     overflow: hidden;
 }
@@ -167,9 +165,17 @@
     padding: 0 clamp(20px, 5vw, 100px);
 }
 
+/* Prose, not headings - they only carry heading tags. */
+.aboutUs h3,
+.value h3 {
+    font-weight: 400;
+}
+
 .aboutUs h1,
 .aboutPics h2 {
-    font-family: 'ADLaM Display Regular';
+    font-family: var(--font-title);
+    font-weight: 400;
+    letter-spacing: normal;
     text-align: center;
     color: #FAF3E0;
     font-size: clamp(2.5rem, 4vw, 3rem);
@@ -198,7 +204,6 @@
 }
 
 .value h2 {
-    font-family: 'Alata Regular';
 }
 
 .value img {
