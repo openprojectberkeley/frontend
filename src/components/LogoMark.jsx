@@ -24,13 +24,14 @@ export const DISC_CENTRE_X = 324.473 / 896;
 export const DISC_CENTRE_Y = 324.386 / 1024;
 export const DISC_WIDTH = 648.946 / 896;
 
-export default function LogoMark({ className, discClassName, barClassName, arcClassName }) {
+export default function LogoMark({ className, discClassName, shadowClassName, barClassName, arcClassName }) {
   // useId hands back ":r0:"-style strings, which are fine in a fill attribute
   // but invalid in a CSS selector, so drop the colons before they spread.
   const uid = useId().replace(/:/g, '');
   const discFill = `lm-disc-${uid}`;
   const barFill = `lm-bar-${uid}`;
   const arcFill = `lm-arc-${uid}`;
+  const discShadow = `lm-discshadow-${uid}`;
 
   return (
     <svg
@@ -54,8 +55,27 @@ export default function LogoMark({ className, discClassName, barClassName, arcCl
           <stop stopColor="#FACA15" />
           <stop offset="1" stopColor="#FF910E" />
         </linearGradient>
+
+        {/*
+          The disc's paper shadow: the same gradient taken down to about half
+          brightness. A duplicate of the shape rather than a blur, so it reads
+          as a second sheet of paper underneath rather than as a glow.
+        */}
+        <linearGradient id={discShadow} x1="324.473" y1="0" x2="324.473" y2="648.772" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#453E80" />
+          <stop offset="1" stopColor="#2F6480" />
+        </linearGradient>
       </defs>
 
+      {/* Drawn before the disc, so it sits under it and shows only where it
+          peeks out below. */}
+      <circle
+        className={shadowClassName}
+        cx="324.473"
+        cy="356"
+        r="324.386"
+        fill={`url(#${discShadow})`}
+      />
       <path
         className={discClassName}
         d="M324.473 648.772C503.674 648.772 648.946 503.54 648.946 324.386C648.946 145.233 503.674 0 324.473 0C145.271 0 0 145.233 0 324.386C0 503.54 145.271 648.772 324.473 648.772Z"

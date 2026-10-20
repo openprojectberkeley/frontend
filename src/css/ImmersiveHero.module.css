@@ -33,10 +33,11 @@
   font-weight: 400;
   letter-spacing: normal;
   /*
-   * Sized by the longest phrase, not by the club's name. The lockup is centred
-   * on "Open Project" and the longer phrases run off its right-hand end, so
-   * what has to fit the viewport is the name's centred position plus the
-   * widest phrase's full width - about twice what the name alone would need.
+   * Sized so the longest phrase fits, not just the club's name: the lockup is
+   * laid out around "Open Project" and the longer phrases run off its
+   * right-hand end, and JS then slides the whole lockup left so that the phrase
+   * on screen reads centred. What has to fit the viewport is therefore the
+   * mark, the gap and the widest phrase together.
    */
   font-size: clamp(1.6rem, 6.2vw, 4.6rem);
   /* Tall enough to hold the descenders of p and j inside the line box rather
@@ -44,9 +45,11 @@
   line-height: 1.25;
   user-select: none;
 
-  /* Scale about the disc's centre, then carry that centre to the middle of the
-     stage. Both values are written from JS in px, because where the disc sits
-     depends on the width the word happens to take. */
+  /* Scale about the disc's centre, then carry that centre where the scene wants
+     it. Both values are written from JS in px, because where the disc sits
+     depends on the width the word happens to take - and before the zoom starts,
+     --zoom-dx is the sideways offset that keeps the typed phrase centred, so
+     one transform covers the centring and the scene alike. */
   transform: translate(var(--zoom-dx, 0px), var(--zoom-dy, 0px)) scale(var(--zoom, 1));
   transform-origin: var(--zoom-origin-x, 50%) var(--zoom-origin-y, 50%);
   /*
@@ -81,6 +84,22 @@
   display: block;
   height: 100%;
   width: auto;
+  transform-box: fill-box;
+  /*
+   * Always animating, and held at a standstill until the zoom begins, rather
+   * than having the animation added and removed.
+   *
+   * Adding it mid-scene jumps the mark to whatever pose the keyframes are at by
+   * then, and since the bar and the arc are inside the same SVG they are
+   * teleported with it. Pausing and resuming is continuous in both directions:
+   * it resumes from exactly where it stopped, and stops exactly where it is.
+   *
+   * floatOrbitRest rather than floatOrbit because a paused animation holds its
+   * 0% pose, and this one's is the untouched logo - no delay, for the same
+   * reason.
+   */
+  animation: floatOrbitRest 23s ease-in-out infinite;
+  animation-play-state: paused;
   /* The bar and the arc fly past the viewBox on their way out, and must not be
      clipped back into the mark's own box when they do. */
   overflow: visible;
@@ -92,19 +111,28 @@
  * are in the mark's own coordinates and scale up with the zoom exactly as the
  * shapes themselves do.
  */
+/*
+ * fill-box, so transform-origin lands on each shape's own centre and the
+ * rotation below is a shape turning as it goes rather than one swung around the
+ * viewBox's corner. The translations are unaffected - a translate is the same
+ * wherever the origin is - and px inside an SVG transform is user units either
+ * way, so these distances stay in the mark's own coordinates.
+ */
 .markBar,
 .markArc {
-  transform-box: view-box;
-  transform-origin: 0 0;
+  transform-box: fill-box;
+  transform-origin: center;
   opacity: var(--part-opacity, 1);
 }
 
 .markBar {
-  transform: translate(calc(var(--fly, 0) * -1450px), calc(var(--fly, 0) * 1850px));
+  transform: translate(calc(var(--fly, 0) * -1450px), calc(var(--fly, 0) * 1850px))
+    rotate(calc(var(--fly, 0) * -34deg));
 }
 
 .markArc {
-  transform: translate(calc(var(--fly, 0) * 2150px), calc(var(--fly, 0) * -1500px));
+  transform: translate(calc(var(--fly, 0) * 2150px), calc(var(--fly, 0) * -1500px))
+    rotate(calc(var(--fly, 0) * 48deg));
 }
 
 .wordmark {
@@ -117,6 +145,21 @@
 .wordmarkSizer {
   visibility: hidden;
   white-space: pre;
+}
+
+/*
+ * The phrase as typed so far, shrink-wrapped and out of flow so its width can
+ * be read without it costing any layout or being seen. JS compares it with the
+ * sizer above and slides the whole lockup by half the difference, which is what
+ * keeps the changing phrase centred on the screen.
+ */
+.wordmarkLive {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  white-space: pre;
+  pointer-events: none;
 }
 
 /*
@@ -201,11 +244,700 @@
 .bubble {
   position: absolute;
   top: 100%;
-  border-radius: 50%;
   transform: translate(-50%, -50%)
     translateY(calc(var(--pad, 20vh) - var(--rise, 0) * var(--speed, 200vh)));
   will-change: transform;
+}
+
+/*
+ * The circle fills its group, so copy in the same group can be placed against
+ * the circle's own box rather than against the stage.
+ *
+ * The circle is drawn by ::after rather than by this element's own background,
+ * which is what lets ::before sit underneath it. A negative z-index would not:
+ * this element carries a transform for the float, so it forms a stacking
+ * context of its own, and a negative child of that context still paints above
+ * the element's own background. Two pseudo-elements paint in document order
+ * instead, no z-index involved.
+ */
+.bubbleCircle {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
+  animation: floatOrbit 19s ease-in-out -4s infinite;
+}
+
+.bubbleCircle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-image: var(--bubble-gradient);
+}
+
+/*
+ * Front bubbles only: the same circle again, darker and set a little low, so
+ * the bubble reads as a piece of paper lifted off the one behind it. The
+ * background bubbles get nothing - they are flat colour and stay that way.
+ */
+.bubbleFront::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-image: var(--bubble-gradient);
+  filter: brightness(0.45);
+  transform: translateY(5.5%);
+}
+
+/* The disc's own paper shadow, faded in with the zoom from the component. */
+.markShadow {
+  opacity: var(--disc-shadow-opacity, 0);
+}
+
+/*
+ * Copy laid over a circle, not inside one. It keeps an ordinary text block's
+ * shape, sits to one side, and is allowed to hang off the circle's edge: the
+ * circle is a backdrop, so nothing is clipped to it and the text is free to be
+ * as wide as it needs.
+ */
+.overlayCopy,
+.discCopy {
+  position: absolute;
+  top: 50%;
+  /*
+   * A phone has one block on screen at a time and can give it most of the
+   * width; a desktop has both, side by side, so each is held to under half.
+   * The 52ch cap stops either from running to a line length nobody can track
+   * back from.
+   */
+  width: min(62ch, 86vw);
+  color: #ffffff;
+  z-index: 3;
+}
+
+@media (min-width: 761px) {
+  .overlayCopy,
+  .discCopy {
+    width: min(62ch, 52vw);
+  }
+
+  .overlayCopy {
+    width: min(68ch, 56vw);
+  }
+}
+
+.overlayCopy {
+  transform: translateY(-50%);
+}
+
+/*
+ * The disc's copy is positioned against the stage instead of against a bubble,
+ * because the disc lives inside the lockup and the lockup is being scaled.
+ * Taking only --disc-drift keeps the copy travelling with the disc at its own
+ * size.
+ */
+.discCopy {
+  /* A phone's block is already most of the screen wide, so the inset there is
+     just a gutter; the deep one is set below. */
+  left: clamp(1rem, 6vw, 2.5rem);
+  transform: translateY(calc(-50% + var(--disc-drift, 0px)));
+  will-change: transform, opacity;
+}
+
+/*
+ * Both overlays blur in when the component says their moment has come, and blur
+ * back out on the way up. A transition rather than keyframes: it reverses by
+ * itself, and interrupting one mid-way turns it round from wherever it has got
+ * to instead of snapping.
+ *
+ * Opacity and filter only - no transform - because every one of these elements
+ * already carries a transform for its placement, its parallax or its float, and
+ * animating transform here would simply replace it.
+ */
+.discCopy,
+.overlayCopy,
+.arcTitle {
+  opacity: 0;
+  filter: blur(7px);
+  transition: opacity 700ms ease, filter 700ms ease;
+}
+
+/*
+ * The heading on the arc, sitting astride the inside of the bowl so that its
+ * top half is over the empty middle and its bottom half crosses the stroke.
+ *
+ * Centred on the screen, left to right, for the whole of the scene - the arc
+ * is carried onto the screen's centre by a correction of its own, so the two
+ * share an axis and the heading needs no nudge towards the bowl.
+ *
+ * The height is still measured against the arc's circle, whose centre sits
+ * 71.32 viewBox units above the element's own - 0.1572 of the 453.6-unit box.
+ * From there the heading is dropped a tenth of the box into the bowl, which is
+ * high in the opening and well clear of the stroke below.
+ *
+ * That tenth is given back as the bowl straightens. A heading sitting low in
+ * an opening that no longer exists would hang off the bottom edge of the band
+ * and onto the paper, where black stops being a word cut out of the stroke and
+ * becomes black text on white; riding --flat back up to the circle's own
+ * centre leaves it sitting squarely in the band instead.
+ *
+ * All three offsets repeat the arc's own min(), so a shallow window - where the
+ * height term wins and the arc shrinks - moves the heading by exactly as much,
+ * and the lift keeps the two travelling together.
+ *
+ * Until --title-drop, which undoes what is left. Both offsets that tie the
+ * heading to the arc - the height inside the band and the lift - are multiplied
+ * by (1 - drop), so at 1 nothing of the arc is left in the position and the
+ * heading is in the middle of the stage. Sideways it was there already. The
+ * band carries on up; the heading has stopped taking the lift and stays where
+ * it landed.
+ *
+ * It is under .arcHolder rather than over it, so the stroke hides the word for
+ * the part of the drop that crosses it: the heading goes in at the band's top
+ * edge and comes out below its bottom one.
+ */
+.arcTitle {
+  position: absolute;
+  left: 50%;
+  top: calc(
+    50% + min(54.5vw, 86vh) * (-0.057 - var(--flat, 0) * 0.1002) *
+      (1 - var(--title-drop, 0))
+  );
+  z-index: 5;
+  margin: 0;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  transform: translate(-50%, -50%)
+    translateY(calc(var(--arc-lift, 0) * -165vh * (1 - var(--title-drop, 0))));
+  text-align: center;
+  pointer-events: none;
+  /*
+   * All three, not just colour. A transition shorthand replaces the one on the
+   * shared rule above outright, so naming only colour here left the heading
+   * with no opacity or filter transition at all - it snapped in and out
+   * instead of fading, every time it was scrolled past.
+   */
+  transition: color 420ms ease, opacity 700ms ease, filter 700ms ease;
+}
+
+/*
+ * The page's own black, held there for the whole scene rather than changing
+ * hands as the sheet passes.
+ *
+ * Which is what lets the heading sit on paper at the end of its drop and need
+ * nothing doing to it: by the time it comes out from under the band the sheet
+ * is up, and black on that sheet is simply the page's own heading colour. It
+ * is behind the band, so for the stretch of the drop that crosses the stroke
+ * there is nothing of it to colour.
+ *
+ * Two classes, not one. .overlayTitle's cream is a single class like this one
+ * and sits later in the file, so on equal specificity it would win on source
+ * order alone.
+ */
+.arcTitle.arcTitle {
+  color: #000;
+}
+
+/* Faded up by the sheet rather than switched, so the arc changes colour as the
+   white passes it. */
+.arcDark {
+  opacity: var(--sheet, 0);
+}
+
+/* The logos arrive last, once the page is nearly light: opacity clamps on its
+   own, so the division alone holds them at nothing until the sheet is 72% up. */
+.tickerFade {
+  opacity: calc((var(--sheet, 0) - 0.72) / 0.28);
+}
+
+.revealed {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* The images carry no blur of their own - nested inside a parent that has one,
+   the two would compound - and follow their copy in rather than arriving with
+   it. */
+.discImage,
+.bubbleImage {
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+
+.revealed .discImage,
+.revealed .bubbleImage {
+  opacity: 1;
+  transition-delay: 220ms;
+}
+
+/*
+ * The copy drifts on its own account rather than riding its circle, and every
+ * heading and paragraph drifts on its own account rather than riding its block:
+ * the same motion at well under half the amplitude, each line on a period of
+ * its own.
+ *
+ * The group is only a grouping - it keeps the text apart from the image, which
+ * has a motion of its own - and carries no animation itself, or its children
+ * would inherit a common movement underneath their own.
+ *
+ * Long periods, because a paragraph that visibly wanders is a paragraph that is
+ * hard to read, and all of them prime, so no two lines ever come back into step
+ * with each other or with the shapes behind them.
+ */
+.copyGroup {
+  animation: none;
+}
+
+.drift1 {
+  animation: floatOrbitSoft 37s ease-in-out -5s infinite;
+}
+
+.drift2 {
+  animation: floatOrbitSoft 41s ease-in-out -22s infinite;
+}
+
+.drift3 {
+  animation: floatOrbitSoft 43s ease-in-out -13s infinite;
+}
+
+.drift4 {
+  animation: floatOrbitSoft 47s ease-in-out -31s infinite;
+}
+
+.drift5 {
+  animation: floatOrbitSoft 53s ease-in-out -9s infinite;
+}
+
+/*
+ * Deep enough that the text starts a good way inside the disc rather than at
+ * its edge; the width then carries it out past the far side.
+ *
+ * This has to come after the rule above, not before it: both are a single
+ * class, a media query adds no specificity, and so the later one wins at every
+ * width - which is how the phone's gutter ended up applying to desktop too.
+ */
+@media (min-width: 761px) {
+  .discCopy {
+    left: clamp(2rem, 19vw, 22rem);
+  }
+}
+
+/*
+ * Set well inside the circle's right-hand edge, which both leaves a real margin
+ * to the screen and starts the text a good way into the circle. The hanging off
+ * is done by the width, out to the left.
+ */
+.overlayRight {
+  right: 30%;
+  text-align: right;
+}
+
+/*
+ * On a phone the circle is already close to the right-hand edge, so the
+ * overhang has to come back inside it: pulled out by the same -12% there, the
+ * copy would run off the screen and the stage would clip it.
+ */
+@media (max-width: 760px) {
+  .overlayRight {
+    right: 10%;
+  }
+}
+
+.overlayLeft {
+  text-align: left;
+}
+
+/*
+ * The marker that wipes in behind the copy once the circles have got busy
+ * enough to fight it.
+ *
+ * Inline with box-decoration-break: clone, so the background is drawn once per
+ * line box and hugs the ragged ends of the text, rather than as the one
+ * rectangle a block element would give. The background grows from 0% to 100%
+ * of each line's width, which is what makes it wipe left to right.
+ *
+ * #22114F is the footer's background - a colour the site already uses, dark
+ * enough to carry white text at about 15:1.
+ */
+/*
+ * The marker that wipes in behind the copy once the circles have got busy
+ * enough to fight it.
+ *
+ * Inline with box-decoration-break: clone, so the background is drawn once per
+ * line box and hugs the ragged ends of the text, rather than as the one
+ * rectangle a block element would give. The background grows from 0% to 100%
+ * of each line's width, which is what makes it wipe left to right.
+ *
+ * Vertical padding is what gives the band its height, and on an inline box it
+ * costs no layout.
+ *
+ * --ink-colour comes from the component: a darkened version of the circle the
+ * copy is lying on, so each block's marker belongs to its own backdrop.
+ */
+.ink {
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.2em 0.34em;
+  background-image: linear-gradient(var(--ink-colour, #22114F), var(--ink-colour, #22114F));
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  border-radius: 3px;
+  transition: background-size 760ms cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+
+.highlighted .ink {
+  background-size: 100% 100%;
+}
+
+/*
+ * Paragraph after paragraph: each starts as the one above it finishes, so the
+ * block fills from the top rather than lighting up at once. The gaps are close
+ * to the transition's own 760ms, which is what makes them read as separate
+ * strokes instead of one.
+ */
+.highlighted .overlayBody:nth-of-type(1) .ink {
+  transition-delay: 600ms;
+}
+
+.highlighted .overlayBody:nth-of-type(2) .ink {
+  transition-delay: 1200ms;
+}
+
+.overlayTitle {
+  margin: 0 0 0.55em;
+  /* The title face, at the weight it actually ships and with the tracking the
+     h1/h2 rule's negative value would otherwise impose on it. */
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: normal;
+  font-size: clamp(1.85rem, 4.1vw, 3.4rem);
+  /* Loose enough that a two-line title's marker bands do not run into each
+     other; an inline background takes no space from the line box. */
+  line-height: 1.35;
+  color: #FAF3E0;
+}
+
+/*
+ * The two decorative images, each beside its block and each moving a little
+ * slower than it. Both parents already carry the scene's movement, so the
+ * parallax is a counter-translation: give back a fraction of what the parent
+ * travelled and what is left is a slower rate, without either image needing to
+ * know where on the page it is.
+ */
+.discImage,
+.bubbleImage {
+  position: absolute;
+  top: 50%;
+  display: block;
+  width: clamp(200px, 42vmin, 560px);
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+.discImage img,
+.bubbleImage img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.floatSlow {
+  animation: floatOrbit 31s ease-in-out -17s infinite;
+}
+
+.floatSlower {
+  animation: floatOrbit 27s ease-in-out -8s infinite;
+}
+
+.discImage img,
+.bubbleImage img,
+.bubbleCircle,
+.drift1,
+.drift2,
+.drift3,
+.drift4,
+.drift5,
+.mark {
+  will-change: transform;
+  transform-origin: center center;
+}
+
+/*
+ * The same drift the astronaut on the apply page has, lifted from
+ * Apply.module.css so the two read as one idea rather than two near-misses.
+ *
+ * Everything that uses it shares these keyframes and differs only in period -
+ * 19s, 23s, 27s, 31s - and in how far into the loop it starts. Those four
+ * numbers have no small common multiple, so the elements never come back into
+ * step and the scene never settles into a single visible pulse.
+ */
+/* The whole mark, not the disc alone: at rest the three shapes have to hold
+   together as one logo. */
+.markFloating {
+  animation-play-state: running;
+}
+
+/*
+ * The same path as floatOrbit, scaled to about 40%. Kept as its own keyframe
+ * set rather than a transform on the parent, so the two amplitudes stay legible
+ * side by side in this file.
+ */
+@keyframes floatOrbitSoft {
+  0% {
+    transform: translate(-0.8%, -0.4%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(2.4%, -1.6%) rotate(0.8deg) scale(1.004);
+  }
+  50% {
+    transform: translate(-1.2%, 2%) rotate(-0.6deg) scale(0.998);
+  }
+  75% {
+    transform: translate(1.6%, 1.2%) rotate(0.4deg) scale(1.002);
+  }
+  100% {
+    transform: translate(-0.8%, -0.4%) rotate(0deg) scale(1);
+  }
+}
+
+/*
+ * floatOrbit's path, shifted so that 0% is the untouched pose. What the mark
+ * needs that the others do not: it is the one element whose animation starts
+ * and stops mid-scene, so its resting frame has to be the identity transform.
+ */
+@keyframes floatOrbitRest {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(8%, -3%) rotate(2deg) scale(1.01);
+  }
+  50% {
+    transform: translate(-1%, 6%) rotate(-1.5deg) scale(0.995);
+  }
+  75% {
+    transform: translate(6%, 4%) rotate(1deg) scale(1.005);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes floatOrbit {
+  0% {
+    transform: translate(-2%, -1%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(6%, -4%) rotate(2deg) scale(1.01);
+  }
+  50% {
+    transform: translate(-3%, 5%) rotate(-1.5deg) scale(0.995);
+  }
+  75% {
+    transform: translate(4%, 3%) rotate(1deg) scale(1.005);
+  }
+  100% {
+    transform: translate(-2%, -1%) rotate(0deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink {
+    transition: none;
+  }
+
+  .bubbleCircle,
+  .floatSlow,
+  .floatSlower,
+  .drift1,
+  .drift2,
+  .drift3,
+  .drift4,
+  .drift5,
+  .markFloating {
+    animation: none;
+  }
+
+  /* The copy still has to appear; it just does so without the blur. */
+  .discCopy,
+  .overlayCopy {
+    filter: none;
+    transition: opacity 250ms linear;
+  }
+}
+
+/* To the right of the top block. Its parent moved by --disc-drift, so handing
+   back 12% of it leaves the image travelling at 88% of the copy's rate: enough
+   lag to read as a separate plane, not enough to look becalmed. */
+.discImage {
+  left: 100%;
+  margin-left: clamp(2rem, 6.5vw, 8rem);
+  transform: translate(0, -50%) translateY(calc(var(--disc-drift, 0px) * -0.12));
+}
+
+/* To the left of the bottom block, lagging its bubble the same way. */
+.bubbleImage {
+  right: 100%;
+  /* A smaller gap than the disc's image gets: the Projects block is the wider
+     of the two and starts further left, so there is simply less room beside it
+     before the screen's edge. */
+  margin-right: clamp(1rem, 3vw, 4rem);
+  transform: translate(0, -50%)
+    translateY(calc(var(--rise, 0) * var(--speed, 200vh) * 0.12));
+}
+
+/* On a phone there is no room beside a block that already fills the width. */
+@media (max-width: 760px) {
+  .discImage,
+  .bubbleImage {
+    display: none;
+  }
+}
+
+.overlayBody {
+  margin: 0 0 1em;
+  font-size: clamp(0.9rem, 1.35vw, 1.05rem);
+  line-height: 1.6;
+}
+
+.overlayBody:last-child {
+  margin-bottom: 0;
+}
+
+/* The accent words keep their emphasis without a colour that would disappear
+   into the circle behind them. */
+.overlayBody strong {
+  font-weight: 700;
+  color: #FAF3E0;
+}
+
+/*
+ * The light world, as a white sheet that rises over the dark one.
+ *
+ * The top edge is an ellipse half a sheet wide and a few vh tall, which is what
+ * gives the long shallow bow - a small radius would read as rounded corners,
+ * not as a curved surface. The sheet is wider than the stage so that bow runs
+ * off both sides rather than meeting the edges in a visible corner.
+ *
+ * It sits above everything belonging to the dark scene - the bubbles, the mark
+ * - and below everything that carries on into the light: the arc, its heading
+ * and the readout.
+ */
+.sheet {
+  position: absolute;
+  left: -6vw;
+  right: -6vw;
+  /*
+   * Starts above the stage by more than the bow is deep. The dome's lowest
+   * points are its two corners, 13vh below its crown, so a sheet whose top sat
+   * at 0 would finish with a black wedge still showing in each top corner.
+   */
+  top: -15vh;
+  bottom: -12vh;
+  z-index: 4;
+  background-color: #FFFDF8;
+  border-radius: 50% 50% 0 0 / 13vh 13vh 0 0;
+  transform: translateY(calc((1 - var(--sheet, 0)) * 118%));
+  will-change: transform;
+  pointer-events: none;
+}
+
+/*
+ * Scene three's arc.
+ *
+ * The holder does the travel: off the right of the screen at --arc 0, in place
+ * at 1. Its drop-shadow is the arc's own paper shadow - a flat silhouette of
+ * whatever the arc looks like once the rotation below has been applied, offset
+ * straight down. That is why the two transforms are split across two elements:
+ * a filter on the element that is rotating would turn the shadow with it.
+ */
+.arcHolder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Over the heading, which drops out from under it - and over the sheet, which
+     is what the heading is left standing on. */
+  z-index: 6;
+  /*
+   * Sized by what it becomes, not by what it is. The arc is drawn portrait -
+   * 453.6 units across by 583.1 down - and comes to rest on its side, so the
+   * width set here is the height it ends up occupying on screen and the height
+   * it computes to is the width. 54.5vw of width therefore renders about 70vw
+   * across; the vh term is a ceiling so that on a shallow window it cannot grow
+   * taller than the stage.
+   */
+  width: min(54.5vw, 86vh);
+  /*
+   * In from past the bottom right corner, which keeps it clear of the copy
+   * still drifting up the middle of the screen as the scene opens. Far enough
+   * out to be hidden at rest and no further: an earlier version started 130vw
+   * away and spent most of the scene crossing empty space outside the frame.
+   *
+   * The scale rides the same eased value, so it arrives small and grows into
+   * place. It goes last in the list and the transform origin is the element's
+   * own centre, so scaling never moves the centre off the point the translates
+   * put it on.
+   */
+  transform: translate(-50%, -50%)
+    translateX(calc((1 - var(--arc, 0)) * 70vw))
+    translateY(calc((1 - var(--arc, 0)) * 72vh))
+    translateY(calc(var(--arc-lift, 0) * -165vh))
+    scale(calc(0.25 + var(--arc-grow, 0) * 0.75))
+    /*
+     * The shape is not centred in its own element. The viewBox is cropped to
+     * the path, and a stroke with round caps on an arc this long puts more of
+     * itself on one side of the box than the other, so the box centres on
+     * something that is not the shape's own axis: with the element centred, the
+     * two stroke tips and the bottom of the bulge all line up 0.0432 of the
+     * box's width right of the middle of the screen.
+     *
+     * Which is exactly what the heading used to be nudged right to meet. It is
+     * the arc that is off centre, so it is the arc that is moved: everything
+     * sitting in the bowl can then simply be centred.
+     *
+     * After the scale rather than before it, so it is scaled with the shape -
+     * the offset is in the element's own coordinates, and an arc drawn at a
+     * quarter size is off centre by a quarter as much.
+     */
+    translateX(calc(min(54.5vw, 86vh) * -0.0432));
+  /*
+   * The paper shadow darkens with the arc above it, from the warm brown that
+   * sits under orange to an indigo that sits under purple. Interpolated per
+   * channel off --sheet, because a filter's colour cannot be transitioned
+   * through a variable any other way - and a hard swap would leave a brown rim
+   * under a purple arc for as long as it took to notice.
+   */
+  filter: drop-shadow(
+    0 3.2vmin 0
+      rgb(
+        calc(122 - var(--sheet, 0) * 101) calc(68 - var(--sheet, 0) * 58)
+          calc(6 + var(--sheet, 0) * 45)
+      )
+  );
+  pointer-events: none;
+  will-change: transform;
+}
+
+/*
+ * 112 degrees is what puts the opening straight up, and it is measured rather
+ * than guessed: the arc is not a half circle, so a quarter turn leaves it
+ * visibly tilted. Its two stroke ends are 67.86 degrees apart from horizontal,
+ * so turning it 180 - 67.86 levels them with the bulge directly below, which is
+ * the pose that reads as a cup.
+ *
+ * The 430 degrees on top is the spin it arrives with - a turn and a fifth,
+ * unwinding on the same eased value as the travel so the two stop together. It
+ * contributes nothing at rest, which is why it is not what sets the alignment.
+ */
+.arcSpin {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transform: rotate(calc(112.145deg + (1 - var(--arc, 0)) * 430deg));
+  will-change: transform;
 }
 
 /*

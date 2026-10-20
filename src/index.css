@@ -67,70 +67,14 @@ h2 {
 }
 
 /*
- * Paper Mono is the heading face: one family across all eight weights, so a
- * heading picks its weight with font-weight and the browser loads only the file
- * it needs. Licensed under the OFL, whose text sits beside the fonts.
+ * Paper Mono is the heading face. One variable file carries the whole 100-800
+ * weight axis, so a heading picks its weight with font-weight and any value in
+ * between interpolates. Licensed under the OFL, whose text sits beside the font.
  */
 @font-face {
   font-family: 'Paper Mono';
-  src: url('./fonts/papermono/PaperMono-Thin.ttf') format('truetype');
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Paper Mono';
-  src: url('./fonts/papermono/PaperMono-ExtraLight.ttf') format('truetype');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Paper Mono';
-  src: url('./fonts/papermono/PaperMono-Light.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Paper Mono';
-  src: url('./fonts/papermono/PaperMono-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Paper Mono';
-  src: url('./fonts/papermono/PaperMono-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Paper Mono';
-  src: url('./fonts/papermono/PaperMono-SemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Paper Mono';
-  src: url('./fonts/papermono/PaperMono-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Paper Mono';
-  src: url('./fonts/papermono/PaperMono-ExtraBold.ttf') format('truetype');
-  font-weight: 800;
+  src: url('./fonts/papermono/PaperMono-Variable.woff2') format('woff2');
+  font-weight: 100 800;
   font-style: normal;
   font-display: swap;
 }

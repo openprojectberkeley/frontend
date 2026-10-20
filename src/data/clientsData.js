@@ -15,6 +15,11 @@ import ibm from "../images/clients/ibm.png";
 import bm from "../images/clients/bm.png";
 import operative from "../images/clients/operative.png";
 import matx from "../images/clients/matx.png";
+import tinyvillage from "../images/clients/tinyvillage.png";
+import ipickai from "../images/clients/ipickai.png";
+import trafficpatterns from "../images/clients/trafficpatterns.png";
+import smpler from "../images/clients/smpler.png";
+import copatible from "../images/clients/copatible.png";
 
 export const clients = [
     relativity, 
@@ -34,4 +39,9 @@ export const clients = [
     otterz,
     woosh,
     operative,
+    tinyvillage,
+    ipickai,
+    trafficpatterns,
+    smpler,
+    copatible,
 ];

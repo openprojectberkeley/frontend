@@ -24,7 +24,27 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+    /*
+     * Two washes in one layer stack, the pale one over the dark: the dark fades
+     * out as the home page's white sheet finishes climbing and the pale one
+     * comes up behind it, each on its own ramp, so the header crosses over
+     * gradually rather than swapping backdrops in a step.
+     *
+     * Both variables are set on the root by ImmersiveHero and are absent
+     * everywhere else, where the fallbacks leave the dark wash at full strength
+     * and the pale one at nothing - which is the header every other page wants.
+     */
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255, 253, 248, calc(0.5 * var(--header-wash, 0))),
+            rgba(255, 253, 248, 0)
+        ),
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, calc(0.85 * var(--header-scrim, 1))),
+            rgba(0, 0, 0, 0)
+        );
     background-repeat: no-repeat;
     background-position: center top;
     background-size: 100% 100%;
@@ -57,6 +77,7 @@
 .links a {
     text-decoration: none;
     color: white;
+    transition: color 420ms ease;
     margin-left: 25px;
     height: 90%;
 }
@@ -190,4 +211,20 @@
     .header img {
         width: 150px;
     }
+}
+
+/*
+ * Light mode, switched on by ImmersiveHero when its rising sheet reaches the
+ * top of the screen. A root class rather than a prop, because the header is a
+ * sibling of that section and knows nothing about it.
+ */
+:global(html.op-light) .links a,
+:global(html.op-light) .linksActive a {
+    color: #22114F;
+}
+
+:global(html.op-light) .bar,
+:global(html.op-light) .barLeft,
+:global(html.op-light) .barRight {
+    background-color: #22114F;
 }
