@@ -61,6 +61,12 @@ const GAP_FLOOR = 0.75;
  * pointer events off and there are no controls to reach.
  */
 export default function ArcTicker({
+  /*
+   * Given when something else has to draw this row a second time - a <use>
+   * needs a reference, and a row is one group however many times it is
+   * painted, so the copy cannot drift out of step with the original.
+   */
+  id,
   pathRef,
   items,
   running,
@@ -271,7 +277,7 @@ export default function ArcTicker({
   }, [pathRef, items, running, rowOffset, direction, height, aspects, growRef, overhang]);
 
   return (
-    <g ref={groupRef} className={className} aria-hidden="true" pointerEvents="none">
+    <g ref={groupRef} id={id} className={className} aria-hidden="true" pointerEvents="none">
       {items.map((src, index) => (
         <image
           /* eslint-disable-next-line react/no-array-index-key */

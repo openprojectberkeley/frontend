@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import styles from '../css/ImmersiveHero.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import LogoMark, { DISC_CENTRE_X, DISC_CENTRE_Y, DISC_WIDTH } from './LogoMark';
 import useScrollPlayhead from './useScrollPlayhead';
-import LogoArc, { arcPath, STROKE_WIDTH } from './LogoArc';
+import LogoArc, { arcMiddle, arcPath, STROKE_WIDTH } from './LogoArc';
 import ArcTicker from './ArcTicker';
 import { clients } from '../data/clientsData';
 import speechbubble from '../images/speechbubbles.png';
@@ -99,6 +99,18 @@ const CLIENTS_AT = 2.4;
 const ARC_LIFT_AT = 2.45;
 
 /*
+ * The arc no longer leaves: it rises to just under the header and parks there,
+ * as the bar of clients the rest of the scene plays beneath.
+ *
+ * It is parked before the wipes start, so what they run across is something
+ * standing still. The rest in px rather than in stages because what it is
+ * clearing is the header, which is its own size whatever the window is - 66px
+ * of it at the moment, and the rest of this is the little below.
+ */
+const ARC_LIFT_OVER = 0.35;
+const ARC_REST_TOP = 88;
+
+/*
  * Where the bowl straightens out: both ends swing outwards and the bulge drops
  * away until what is left is a level band running off either side of the
  * screen, with the heading sitting in it and the logos riding along it.
@@ -124,11 +136,94 @@ const TITLE_DROP_AT = 2.64;
 const TITLE_DROP_OVER = 0.22;
 
 /*
- * And becomes the heading for what the band is carrying, over the whole of the
- * drop rather than a flourish at the end of it: the word is turning over for as
- * long as it is moving, and lands on the last letter as it lands in the middle
- * of the screen.
+ * The black comes into the band. It opens out from the middle of the band as a
+ * circle, under the logos and inside the band's own mask, until the whole of
+ * the band is black - and the paper shadow it has been sitting on goes with it,
+ * drawing in and fading out, so what is left is a flat black band rather than
+ * one still pretending to be a sheet lying on the page.
+ *
+ * Thrown open and coasting, like the arc's own arrival: a fill that starts
+ * where it says it does.
  */
+const INK_AT = 2.73;
+const INK_OVER = 0.12;
+
+/*
+ * Each row of logos turns over: a white box runs the length of it, the row's
+ * half of the band going white behind the box and every logo in it black as it
+ * passes. The rows go opposite ways and one is a little behind the other, so
+ * the band reads as two things turning rather than one.
+ *
+ * Both are read off the playhead like everything else here, and that is the
+ * point of them being so: the band is only straight because the playhead is
+ * past the flatten, and a wipe running on a clock of its own could still be
+ * painting its straight bars across a band that had been scrolled back into a
+ * bowl. Tied to the same number, the two cannot disagree.
+ */
+const WIPE_SECOND_AT = 2.8;
+const WIPE_TOP_AT = 2.86;
+const WIPE_OVER = 0.18;
+
+/*
+ * With the second row turned over there is nothing left for the band to do.
+ * The purple, the black that filled it and the white the rows were turned with
+ * were all only ever how the logos got onto the page; what is worth looking at
+ * now is the logos, so the rest of it goes and leaves them on the paper.
+ *
+ * Keyed off the wipes rather than written down, so it cannot start before they
+ * have finished however they are retimed.
+ */
+const BAND_FADE_AT = WIPE_TOP_AT + WIPE_OVER;
+/*
+ * Short, because what is waiting on it is an edge rather than a shape. The
+ * band and the white laid over it are clipped by the same mask, so along the
+ * mask's own soft edge both are painted at part strength and the dark one
+ * shows through the white as a line around the band. Nothing can cover it -
+ * the cover is masked by the same edge - so the only thing that takes it away
+ * is the band underneath going, and that wants to be over with.
+ */
+const BAND_FADE_OVER = 0.06;
+
+/*
+ * The white of the wipes goes after it, not with it.
+ *
+ * Together, the two fades cross: the white thins at the same rate as the black
+ * behind it, and the band spends the middle of the move as a grey bar. Held
+ * until the band under it has gone, the white has nothing left to reveal - and
+ * it is the paper's own colour, so by then taking it away is not a change
+ * anyone can see.
+ */
+const WIPE_FADE_AT = BAND_FADE_AT + BAND_FADE_OVER;
+const WIPE_FADE_OVER = 0.06;
+
+/*
+ * And they are page, and the page is being scrolled: they leave upwards at the
+ * rate the reader is going.
+ *
+ * This one is a mark of its own rather than the end of the chain above, and it
+ * is deliberately inside it: the band is already on its way out while the
+ * second row is still turning over and while the fades are running, which is
+ * what keeps the end of the scene from being a list of things happening one
+ * after another.
+ *
+ * The span is held rather than run to the end of the timeline, so moving the
+ * start earlier moves the whole journey earlier instead of stretching it over
+ * more scrolling and slowing it down.
+ */
+const ARC_EXIT_AT = 2.9;
+const ARC_EXIT_OVER = 0.95;
+/* How far past the top of the band to carry it before it is certainly gone. */
+const ARC_EXIT_CLEAR = 48;
+
+/*
+ * And becomes the heading for what the band is carrying - on its own stretch of
+ * the timeline rather than the drop's, so the word changes as the rows above it
+ * turn over rather than on the way down to them. It is still settling for a
+ * moment after the heading has landed, which is what keeps the landing and the
+ * change from being one event.
+ */
+const SCRAMBLE_AT = 2.8;
+const SCRAMBLE_OVER = 0.2;
 const HEADING_FROM = 'Clients';
 const HEADING_TO = 'Where We Work';
 
@@ -376,7 +471,7 @@ const smootherstep = (t) => t * t * t * (t * (t * 6 - 15) + 10);
 /*
  * Starts from a standstill and settles into a constant rate, which is not what
  * an ease-in-out does - that would slow down again at the end, and something
- * travelling with the page should keep travelling with it.
+ * leaving with the page should keep leaving with it.
  *
  * It is the integral of a velocity that ramps up over the first fifth and then
  * holds, normalised to arrive at 1.
@@ -384,6 +479,28 @@ const smootherstep = (t) => t * t * t * (t * (t * 6 - 15) + 10);
 const SCROLL_RAMP = 0.2;
 const easeIntoScroll = (t) =>
   (t <= SCROLL_RAMP ? (t * t) / (2 * SCROLL_RAMP) : t - SCROLL_RAMP / 2) / (1 - SCROLL_RAMP / 2);
+
+/*
+ * A short ease in and a long one out: away almost at once, and the rest of
+ * itself spent arriving.
+ *
+ * The even ends of a smoothstep read as hesitation on something that is meant
+ * to be travelling - a wipe should be gone before you have looked at where it
+ * started, and the part worth watching is it coming to rest. This takes about
+ * three quarters of the distance in the first half of the time.
+ *
+ * The two powers are the lengths of those eases - the first how it leaves, the
+ * second how it arrives - and the distance between them is the whole of the
+ * asymmetry. Both ends still start and finish at a standstill, which is what
+ * keeps it from reading as a cut.
+ */
+const LEAD_IN = 1.6;
+const LEAD_OUT = 3;
+const easeLead = (t) => {
+  const away = t ** LEAD_IN;
+
+  return away / (away + (1 - t) ** LEAD_OUT);
+};
 
 /*
  * Where `element` sits inside `ancestor`, in layout coordinates.
@@ -428,10 +545,22 @@ export default function ImmersiveHero({ nextSectionRef }) {
      A ref, because it changes every frame and the ticker reads it in its own
      loop rather than being re-rendered with it. */
   const arcFlatRef = useRef(0);
-  /* The last d written, so a frame that has not changed the shape does not
-     touch the attribute - rewriting it invalidates the path's cached length,
-     which the ticker asks for on every frame of its own. */
-  const arcShapeRef = useRef(null);
+  /* The black filling the band. */
+  const arcInkRef = useRef(null);
+  const arcHolderRef = useRef(null);
+  /* How far each row's white has travelled: rects inside clip paths, whose
+     leading edge is all a wipe is. */
+  const topWipeRef = useRef(null);
+  const secondWipeRef = useRef(null);
+
+  /*
+   * Names for the two rows, so each can be drawn a second time in black over
+   * its own white. useId, because two of this component on one page would
+   * otherwise both answer to the same href.
+   */
+  const uid = useId().replace(/:/g, '');
+  const topRowId = `clients-top-${uid}`;
+  const secondRowId = `clients-second-${uid}`;
   /* The heading the band carries off. */
   const arcTitleRef = useRef(null);
   const readoutValueRef = useRef(null);
@@ -682,15 +811,47 @@ export default function ImmersiveHero({ nextSectionRef }) {
      * opens out at the end, which is what makes it read as approaching rather
      * than as being dropped in place.
      */
-    stage.style.setProperty('--arc-grow', smoothstep(arcRaw).toFixed(4));
+    const grow = smoothstep(arcRaw);
+
+    stage.style.setProperty('--arc-grow', grow.toFixed(4));
 
     /*
-     * Once the heading has arrived the arc stops being a thing the page scrolls
-     * past and becomes part of the page, travelling up with it. The heading
-     * takes the same value, so the two keep their spacing.
+     * The arc rises to its place under the header and stops.
+     *
+     * Worked out rather than set: where the band's top edge would sit with no
+     * rise at all, less where it is wanted, is how far it has to go - which
+     * depends on how big the arc has been drawn and how tall the stage is, and
+     * is therefore not a number that can be written down. The heading takes the
+     * same travel, so the two keep their spacing until the drop takes it off.
+     *
+     * Eased to a stop at both ends: it is arriving somewhere now, not setting
+     * off up the page.
      */
-    const lift = easeIntoScroll(clamp01((playhead - ARC_LIFT_AT) / (TIMELINE_END - ARC_LIFT_AT)));
-    stage.style.setProperty('--arc-lift', lift.toFixed(4));
+    const arcScale = 0.25 + grow * 0.75;
+    const holderWidth = arcHolderRef.current?.offsetWidth ?? 0;
+    // The arc's box is 453.6 of its own units across, however wide it is drawn.
+    const unit = (holderWidth * arcScale) / 453.6;
+    const bandTop =
+      stageHeight / 2 - 0.1572 * holderWidth * arcScale - (STROKE_WIDTH / 2) * unit;
+    /*
+     * Two journeys on one value, one after the other: up to the resting place
+     * under the header, and then - once there is nothing left of the band but
+     * the logos - on up and out of the top of the screen.
+     *
+     * The second is measured from where the band is parked rather than from
+     * where it started, so the two add rather than one undoing the other, and
+     * it carries the band's whole depth plus a little, which is what makes it
+     * gone rather than nearly gone.
+     */
+    // Not `rise`: scene two has one of those, and it is the bubbles'.
+    const arcPark =
+      smootherstep(clamp01((playhead - ARC_LIFT_AT) / ARC_LIFT_OVER)) *
+      Math.max(0, bandTop - ARC_REST_TOP);
+    const arcExit =
+      easeIntoScroll(clamp01((playhead - ARC_EXIT_AT) / ARC_EXIT_OVER)) *
+      (ARC_REST_TOP + STROKE_WIDTH * unit + ARC_EXIT_CLEAR);
+
+    stage.style.setProperty('--arc-rise', `${(-(arcPark + arcExit)).toFixed(2)}px`);
 
     /*
      * The arc unbends. Written straight onto both paths rather than through a
@@ -719,9 +880,10 @@ export default function ImmersiveHero({ nextSectionRef }) {
      * which is what makes the landing read as a stop rather than as a value
      * running out of range.
      */
-    const dropRaw = clamp01((playhead - TITLE_DROP_AT) / TITLE_DROP_OVER);
-
-    stage.style.setProperty('--title-drop', smootherstep(dropRaw).toFixed(4));
+    stage.style.setProperty(
+      '--title-drop',
+      smootherstep(clamp01((playhead - TITLE_DROP_AT) / TITLE_DROP_OVER)).toFixed(4),
+    );
 
     /*
      * And the word it lands as. Written straight to the node, like everything
@@ -731,12 +893,11 @@ export default function ImmersiveHero({ nextSectionRef }) {
      */
     const title = arcTitleRef.current;
     /*
-     * Off the drop's raw progress, not its eased one. The easing is nearly flat
-     * at both ends, so letters taken from it would sit still through the start
-     * of the move and then all turn over at once in the middle; against the
-     * scroll itself they turn at a steady rate for the whole of it.
+     * Straight off the scroll, with no easing on it: the letters turn at a
+     * steady rate across the whole of their stretch rather than bunching in the
+     * middle of it.
      */
-    const word = scrambled(dropRaw);
+    const word = scrambled(clamp01((playhead - SCRAMBLE_AT) / SCRAMBLE_OVER));
 
     /*
      * Against the node rather than against a remembered string: React owns this
@@ -747,12 +908,80 @@ export default function ImmersiveHero({ nextSectionRef }) {
       title.textContent = word;
     }
 
-    if (shape !== arcShapeRef.current) {
-      arcShapeRef.current = shape;
-      arcPathRef.current?.setAttribute('d', shape);
-      arcDarkPathRef.current?.setAttribute('d', shape);
-      arcMaskPathRef.current?.setAttribute('d', shape);
+    /*
+     * Against the paths themselves rather than against a remembered string.
+     * React owns these elements: rebuild the tree around them - which is all it
+     * takes to get new nodes carrying the d they were written with - and a
+     * remembered shape agrees with itself while the arc on screen is still the
+     * semicircle it was born as. Reading the attribute cannot be wrong, and it
+     * still saves the write, which is the point: rewriting d invalidates the
+     * path's cached length, and the ticker asks for that on every frame.
+     */
+    [arcPathRef, arcDarkPathRef, arcMaskPathRef].forEach((ref) => {
+      if (ref.current && ref.current.getAttribute('d') !== shape) {
+        ref.current.setAttribute('d', shape);
+      }
+    });
+
+    /*
+     * The black filling the band, and the paper shadow going with it.
+     *
+     * Both the centre and the radius are the arc's, read off the same flat
+     * value the shape itself is drawn from: the middle of the band rides up as
+     * the bulge drops away, and the reach is to the far end of the stroke, so
+     * at 1 the circle covers the band exactly and at no point is it covering
+     * anything else. The mask around it in LogoArc is what keeps it off the
+     * page; this is only what decides how much of the band it has reached.
+     */
+    const ink = easeOut(clamp01((playhead - INK_AT) / INK_OVER));
+    const middle = arcMiddle(flat);
+
+    stage.style.setProperty('--ink', ink.toFixed(4));
+
+    if (arcInkRef.current) {
+      arcInkRef.current.setAttribute('cx', middle.x.toFixed(2));
+      arcInkRef.current.setAttribute('cy', middle.y.toFixed(2));
+      arcInkRef.current.setAttribute('r', (ink * middle.reach).toFixed(2));
     }
+
+    /*
+     * The white running along each row.
+     *
+     * The rect lives in the band's own frame, where x runs along the band and
+     * nil is the middle of it, so a wipe is a leading edge travelling from one
+     * end of the reach to the other. `from` is which end it sets off from: that
+     * frame's x points to the left of the screen, so 1 is a box coming in from
+     * the left and -1 one coming in from the right.
+     */
+    const wipe = (rect, progress, from) => {
+      if (!rect) {
+        return;
+      }
+
+      const span = 2 * middle.reach * easeLead(progress);
+
+      rect.setAttribute('x', (from > 0 ? middle.reach - span : -middle.reach).toFixed(2));
+      rect.setAttribute('width', span.toFixed(2));
+    };
+
+    wipe(secondWipeRef.current, clamp01((playhead - WIPE_SECOND_AT) / WIPE_OVER), 1);
+    wipe(topWipeRef.current, clamp01((playhead - WIPE_TOP_AT) / WIPE_OVER), -1);
+
+    /*
+     * And then everything that was holding the logos goes. One value for the
+     * band, the ink and the rows' white originals, which are grouped together
+     * in the SVG for exactly this, and for the white of the wipes - which is
+     * not in that group, because the black logos drawn over it must not fade
+     * with it.
+     */
+    stage.style.setProperty(
+      '--band-fade',
+      smoothstep(clamp01((playhead - BAND_FADE_AT) / BAND_FADE_OVER)).toFixed(4),
+    );
+    stage.style.setProperty(
+      '--wipe-fade',
+      smoothstep(clamp01((playhead - WIPE_FADE_AT) / WIPE_FADE_OVER)).toFixed(4),
+    );
 
     /*
      * The sheet that turns the page light. Everything that has to change with
@@ -1042,15 +1271,25 @@ export default function ImmersiveHero({ nextSectionRef }) {
           it sees the arc already turned and drops its silhouette downward.
         */}
         {!prefersReducedMotion && (
-          <span className={styles.arcHolder} aria-hidden="true">
+          <span ref={arcHolderRef} className={styles.arcHolder} aria-hidden="true">
             <LogoArc
               className={styles.arcSpin}
               pathRef={arcPathRef}
               darkPathRef={arcDarkPathRef}
               maskPathRef={arcMaskPathRef}
+              inkRef={arcInkRef}
               darkClassName={styles.arcDark}
+              inkClassName={styles.arcInk}
+              fadeClassName={styles.bandFade}
+              wipeClassName={styles.rowWipe}
+              wipeLogoClassName={styles.rowWipeLogos}
+              wipes={[
+                { id: secondRowId, rectRef: secondWipeRef, half: -1 },
+                { id: topRowId, rectRef: topWipeRef, half: 1 },
+              ]}
             >
               <ArcTicker
+                id={topRowId}
                 className={styles.tickerFade}
                 pathRef={arcPathRef}
                 items={CLIENTS_OUTER}
@@ -1062,6 +1301,7 @@ export default function ImmersiveHero({ nextSectionRef }) {
                 overhang={STROKE_WIDTH / 2}
               />
               <ArcTicker
+                id={secondRowId}
                 className={styles.tickerFade}
                 pathRef={arcPathRef}
                 items={CLIENTS_INNER}

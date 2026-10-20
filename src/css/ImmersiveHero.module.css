@@ -408,7 +408,7 @@
   margin: 0;
   font-size: clamp(3rem, 8vw, 6.5rem);
   transform: translate(-50%, -50%)
-    translateY(calc(var(--arc-lift, 0) * -165vh * (1 - var(--title-drop, 0))));
+    translateY(calc(var(--arc-rise, 0px) * (1 - var(--title-drop, 0))));
   text-align: center;
   pointer-events: none;
   /*
@@ -442,6 +442,48 @@
    white passes it. */
 .arcDark {
   opacity: var(--sheet, 0);
+}
+
+/* The black that fills the band. The page's own, so what the band becomes is
+   the page rather than a dark panel laid over it. */
+.arcInk {
+  fill: #000;
+}
+
+/*
+ * Everything the band is made of, once the rows have turned and none of it is
+ * needed: the stroke, the black that filled it, the white originals of the
+ * logos. Faded as one group rather than one by one, so what is behind them -
+ * each other - never shows through on the way out.
+ */
+.bandFade {
+  opacity: calc(1 - var(--band-fade, 0));
+}
+
+/*
+ * The white running along a row: the page's paper, so a turned row reads as a
+ * piece of the page rather than as a lamp shining on the band.
+ *
+ * It fades separately, and later: separately because it is the one piece of the
+ * band that cannot be in the group above - the black logos are drawn directly
+ * over it and would go with it - and later because it is what hides the group
+ * on its way out.
+ */
+.rowWipe {
+  fill: #FFFDF8;
+  opacity: calc(1 - var(--wipe-fade, 0));
+}
+
+/*
+ * The same row again over that white, in black.
+ *
+ * brightness(0) rather than a swap for black copies of the files: it takes
+ * every channel to nothing and leaves alpha alone, so a white logo comes out
+ * black at exactly its own shape and a logo that is not white comes out black
+ * too. Nothing here has to know what any of them look like.
+ */
+.rowWipeLogos {
+  filter: brightness(0);
 }
 
 /* The logos arrive last, once the page is nearly light: opacity clamps on its
@@ -883,7 +925,7 @@
   transform: translate(-50%, -50%)
     translateX(calc((1 - var(--arc, 0)) * 70vw))
     translateY(calc((1 - var(--arc, 0)) * 72vh))
-    translateY(calc(var(--arc-lift, 0) * -165vh))
+    translateY(var(--arc-rise, 0px))
     scale(calc(0.25 + var(--arc-grow, 0) * 0.75))
     /*
      * The shape is not centred in its own element. The viewBox is cropped to
@@ -908,12 +950,18 @@
    * channel off --sheet, because a filter's colour cannot be transitioned
    * through a variable any other way - and a hard swap would leave a brown rim
    * under a purple arc for as long as it took to notice.
+   *
+   * It draws back in and fades out as --ink fills the band. The shadow is what
+   * makes the band read as a sheet lying a little off the page, and a band
+   * going black is a band that has stopped being one: the offset closing to
+   * nothing takes it back under the shape it belongs to, and the alpha takes it
+   * from there, so neither a rim nor a sudden absence is left behind.
    */
   filter: drop-shadow(
-    0 3.2vmin 0
+    0 calc(3.2vmin * (1 - var(--ink, 0))) 0
       rgb(
         calc(122 - var(--sheet, 0) * 101) calc(68 - var(--sheet, 0) * 58)
-          calc(6 + var(--sheet, 0) * 45)
+          calc(6 + var(--sheet, 0) * 45) / calc(1 - var(--ink, 0))
       )
   );
   pointer-events: none;
