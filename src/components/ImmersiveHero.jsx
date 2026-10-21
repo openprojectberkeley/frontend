@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import styles from '../css/ImmersiveHero.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import LogoMark, { DISC_CENTRE_X, DISC_CENTRE_Y, DISC_WIDTH } from './LogoMark';
@@ -24,6 +25,13 @@ const BETWEEN_MS = 350;
  * the mark glides alongside the letters instead of stepping once per letter.
  */
 const CENTRE_TAU = 110;
+
+/*
+ * How long the scroll cue takes to carry the page the one screen to playhead
+ * 1.00. Long enough that the zoom reads as a move through the scene rather
+ * than a cut to the end of it.
+ */
+const CUE_SCROLL_MS = 1250;
 
 /*
  * The scenes the pinned stage plays through, as playhead positions: scene one
@@ -79,6 +87,15 @@ const DISC_DRIFT_VH = 178;
 const DISC_REVEAL_AT = 0.46;
 const PROJECTS_REVEAL_AT = 0.86;
 const MARK_FLOAT_AT = 0.18;
+
+/*
+ * Where the call to action gives up its place. Almost at nil: the first touch
+ * of scroll is a statement that you are going somewhere, and the button has
+ * said its piece by then. It does not fade across a range - crossing this sets
+ * a class and the stylesheet takes it from there - so this is the one moment
+ * it goes, not the start of a wipe.
+ */
+const CTA_HIDE_AT = 0.03;
 
 /* Where the dark panel wipes in behind each block's lines, once the copy has
    been read against bare colour for a while and the circles start getting busy
@@ -374,6 +391,13 @@ const BUBBLE_COLOURS = {
  * diameter in vmin, `left` a position in percent, `layer` 2 in front of the
  * mark and 0 behind.
  */
+/*
+ * How far into the rise the bubbles are back to their own opacities, as a
+ * fraction of scene two. The slowest of them covers 212vh over the scene, so
+ * this is a little over 4vh of travel - past anything floatOrbit can nudge.
+ */
+const GATE_RISE = 0.02;
+
 const BUBBLES = [
   // Front: the content carrier. Large, slow, in front of the mark. Its stagger
   // is nil, so it clears the fold at the first moment it can and rides close
@@ -530,7 +554,7 @@ function offsetWithin(element, ancestor) {
   return { x, y };
 }
 
-export default function ImmersiveHero({ nextSectionRef }) {
+export default function ImmersiveHero() {
   const prefersReducedMotion = useReducedMotion();
 
   const sectionRef = useRef(null);
@@ -538,6 +562,9 @@ export default function ImmersiveHero({ nextSectionRef }) {
   const lockupRef = useRef(null);
   const markBoxRef = useRef(null);
   const cueRef = useRef(null);
+  /* The frame id of the cue's scroll tween, so a second click replaces the
+     first rather than fighting it. */
+  const cueScrollRef = useRef(null);
   const arcPathRef = useRef(null);
   const arcDarkPathRef = useRef(null);
   const arcMaskPathRef = useRef(null);
@@ -599,6 +626,7 @@ export default function ImmersiveHero({ nextSectionRef }) {
     projectsHighlight: false,
     clients: false,
     headerLight: false,
+    ctaHidden: false,
   };
   const revealedRef = useRef(initialFlags);
   const [revealed, setRevealed] = useState(initialFlags);
@@ -737,6 +765,9 @@ export default function ImmersiveHero({ nextSectionRef }) {
          well as on the way down, so the two cannot be a dead band apart. */
       clients: crossed(flags.clients, playhead, CLIENTS_AT, 0),
       headerLight: crossed(flags.headerLight, playhead, HEADER_LIGHT_AT),
+      /* A narrow band, because the threshold itself is close enough to nil
+         that the default one would sit below zero and never let go. */
+      ctaHidden: crossed(flags.ctaHidden, playhead, CTA_HIDE_AT, 0.02),
     };
 
     if (Object.keys(next).some((key) => next[key] !== flags[key])) {
@@ -790,6 +821,22 @@ export default function ImmersiveHero({ nextSectionRef }) {
     // as parallax rather than as an animation that happens to be scrubbed.
     const rise = clamp01((playhead - ZOOM_END) / (BUBBLE_RISE_END - ZOOM_END));
     stage.style.setProperty('--rise', rise.toFixed(4));
+
+    /*
+     * One gate over the whole flock, not a fade per bubble.
+     *
+     * At rest every bubble is parked exactly flush with the bottom of the
+     * stage - its own radius below the edge - and floatOrbit then lifts it by a
+     * few percent of its diameter, which is enough to show a cap of colour
+     * above the fold before the scene has started. Holding them all at zero
+     * until the rise begins covers that, whatever the float happens to be doing
+     * at the moment the page loads.
+     *
+     * GATE_RISE is small enough that the slowest bubble is only a sliver clear
+     * of the fold by the time the gate is fully open, so this reads as them
+     * entering, not as a flock fading up.
+     */
+    stage.style.setProperty('--bubble-gate', clamp01(rise / GATE_RISE).toFixed(4));
 
     // --- scene 3: the arc comes back ----------------------------------------
     /*
@@ -1207,6 +1254,61 @@ export default function ImmersiveHero({ nextSectionRef }) {
 
   const caretResting = charCount === 0 || charCount === phrase.length;
 
+  /*
+   * The cue takes you to playhead 1.00 - the end of the zoom, with the disc at
+   * rest and the first bubbles on their way up - rather than past the whole
+   * pinned timeline. The playhead is screens travelled inside the section, so
+   * one screen past where the section's top meets the viewport's is it.
+   *
+   * Under reduced motion the section is one screen tall and this lands on the
+   * next section, which is what the cue used to do and still should.
+   */
+  const scrollToPlayheadOne = useCallback(() => {
+    const section = sectionRef.current;
+
+    if (!section) {
+      return;
+    }
+
+    const from = window.scrollY;
+    const to = from + section.getBoundingClientRect().top + window.innerHeight;
+
+    if (prefersReducedMotion) {
+      window.scrollTo(0, to);
+      return;
+    }
+
+    /*
+     * Driven here rather than by `behavior: 'smooth'`, whose duration is the
+     * browser's to choose and which covers a whole screen too briskly to read
+     * as anything but a jump. A screen of travel over CUE_SCROLL_MS, eased in
+     * and out, gives the scenes time to play as they pass.
+     */
+    if (cueScrollRef.current !== null) {
+      window.cancelAnimationFrame(cueScrollRef.current);
+    }
+
+    const start = performance.now();
+
+    const step = (now) => {
+      const t = clamp01((now - start) / CUE_SCROLL_MS);
+      window.scrollTo(0, from + (to - from) * smoothstep(t));
+      cueScrollRef.current = t < 1 ? window.requestAnimationFrame(step) : null;
+    };
+
+    cueScrollRef.current = window.requestAnimationFrame(step);
+  }, [prefersReducedMotion]);
+
+  /* A tween still running when the route changes would scroll the next page. */
+  useEffect(
+    () => () => {
+      if (cueScrollRef.current !== null) {
+        window.cancelAnimationFrame(cueScrollRef.current);
+      }
+    },
+    [],
+  );
+
   return (
     <section
       ref={sectionRef}
@@ -1216,6 +1318,14 @@ export default function ImmersiveHero({ nextSectionRef }) {
       style={{ height: prefersReducedMotion ? '100vh' : `${(TIMELINE_END + 1) * 100}vh` }}
     >
       <div ref={stageRef} className={styles.stage}>
+        {/*
+          The furthest thing back: the swirl the rest of the site uses, drifting
+          up behind the bubbles over the whole of their scene. First in the
+          stage so it paints before them - it shares their z-index, and at the
+          back of the pack document order is what decides.
+        */}
+        {!prefersReducedMotion && <span className={styles.swirl} aria-hidden="true" />}
+
         {/* The light world, rising. Everything dark is behind it; everything
             that survives into the light is in front. */}
         {!prefersReducedMotion && <div className={styles.sheet} aria-hidden="true" />}
@@ -1343,55 +1453,75 @@ export default function ImmersiveHero({ nextSectionRef }) {
           </div>
         )}
 
-        <h1 ref={lockupRef} className={styles.lockup}>
-          <span ref={markBoxRef} className={styles.markBox}>
-            <LogoMark
-              className={`${styles.mark} ${revealed.markFloat ? styles.markFloating : ''}`}
-              discClassName={styles.markDisc}
-              shadowClassName={styles.markShadow}
-              barClassName={styles.markBar}
-              arcClassName={styles.markArc}
-            />
-          </span>
-
-          {/* The club's name, read once. The phrases cycling beside it are
-              decoration and are hidden from the accessibility tree. */}
-          <span className={styles.srOnly}>Open Project</span>
-
-          <span className={styles.wordmark} aria-hidden="true">
-            {/*
-              The box is the club's name and nothing else, so the layout never
-              moves as the words change and the pivot the zoom turns about stays
-              put. Centring the phrase is left to a transform on the lockup,
-              measured off the hidden copy below - the one thing that must not
-              depend on the phrase is the geometry scene one is measured from.
-
-              Both boxes come from rendered text rather than a character count,
-              which a proportional face would make a lie.
-            */}
-            <span ref={sizerRef} className={styles.wordmarkSizer}>
-              {PHRASES[0]}
-              <span className={styles.caret} />
+        {/* The title and the one thing to do about it, as a column: keeping the
+            button out of the lockup is what stops the zoom from taking it with
+            the disc. */}
+        <div className={styles.titleGroup}>
+          <h1 ref={lockupRef} className={styles.lockup}>
+            <span ref={markBoxRef} className={styles.markBox}>
+              <LogoMark
+                className={`${styles.mark} ${revealed.markFloat ? styles.markFloating : ''}`}
+                discClassName={styles.markDisc}
+                shadowClassName={styles.markShadow}
+                barClassName={styles.markBar}
+                arcClassName={styles.markArc}
+              />
             </span>
 
-            {/*
-              The same letters again, out of flow and hidden, purely to be
-              measured: the lockup is moved sideways by half of however much
-              wider this is than the box above, which is what keeps the phrase
-              centred on the stage while the box - and so the zoom's pivot -
-              stays where the club's name put it.
-            */}
-            <span ref={liveSizerRef} className={styles.wordmarkLive} aria-hidden="true">
-              {phrase.slice(0, charCount)}
-              <span className={styles.caret} />
-            </span>
+            {/* The club's name, read once. The phrases cycling beside it are
+                decoration and are hidden from the accessibility tree. */}
+            <span className={styles.srOnly}>Open Project</span>
 
-            <span className={styles.wordmarkTyped}>
-              {phrase.slice(0, charCount)}
-              <span className={`${styles.caret} ${caretResting ? styles.caretResting : ''}`} />
+            <span className={styles.wordmark} aria-hidden="true">
+              {/*
+                The box is the club's name and nothing else, so the layout never
+                moves as the words change and the pivot the zoom turns about stays
+                put. Centring the phrase is left to a transform on the lockup,
+                measured off the hidden copy below - the one thing that must not
+                depend on the phrase is the geometry scene one is measured from.
+
+                Both boxes come from rendered text rather than a character count,
+                which a proportional face would make a lie.
+              */}
+              <span ref={sizerRef} className={styles.wordmarkSizer}>
+                {PHRASES[0]}
+                <span className={styles.caret} />
+              </span>
+
+              {/*
+                The same letters again, out of flow and hidden, purely to be
+                measured: the lockup is moved sideways by half of however much
+                wider this is than the box above, which is what keeps the phrase
+                centred on the stage while the box - and so the zoom's pivot -
+                stays where the club's name put it.
+              */}
+              <span ref={liveSizerRef} className={styles.wordmarkLive} aria-hidden="true">
+                {phrase.slice(0, charCount)}
+                <span className={styles.caret} />
+              </span>
+
+              <span className={styles.wordmarkTyped}>
+                {phrase.slice(0, charCount)}
+                <span className={`${styles.caret} ${caretResting ? styles.caretResting : ''}`} />
+              </span>
             </span>
-          </span>
-        </h1>
+          </h1>
+
+          {/* The foot of the page's button, reskinned for a black stage: the
+              shape, size and the wipe's timing are HomePage's and are not
+              copied here, while .ctaButton hollows it out and takes the wipe
+              the whole way across. .cta only places it and lifts it clear of
+              the overlay copy. */}
+          <Link
+            to="/apply"
+            className={`${styles.cta} ${revealed.ctaHidden ? styles.ctaGone : ''}`}
+          >
+            <button className={`${homeStyles.getInvolvedButton} ${styles.ctaButton}`}>
+              Get Involved
+              <span className={styles.ctaArrow} aria-hidden="true">→</span>
+            </button>
+          </Link>
+        </div>
 
         <button
           ref={cueRef}
@@ -1401,7 +1531,7 @@ export default function ImmersiveHero({ nextSectionRef }) {
           // The shared rule fades the cue over 0.3s, which would lag a value
           // the playhead rewrites every frame.
           style={{ transition: 'none' }}
-          onClick={() => nextSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          onClick={scrollToPlayheadOne}
         >
           <span className={homeStyles.scrollCueMain}>⌄</span>
           <span className={`${homeStyles.scrollCueEcho} ${homeStyles.scrollCueEcho1}`} aria-hidden="true">⌄</span>

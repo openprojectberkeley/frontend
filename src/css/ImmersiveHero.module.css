@@ -20,6 +20,24 @@
   color: white;
 }
 
+/*
+ * The title and its call to action, stacked. The stage is a one-row grid with
+ * everything else absolutely positioned, so this group is what the grid
+ * centres - the lockup alone used to be. It carries no transform and nothing
+ * positioned, which keeps it out of the offsetParent chain the zoom's pivot is
+ * measured along.
+ */
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /*
+   * Deliberately no z-index. The lockup keeps its own, between the two bubble
+   * layers, and the button needs a different one - a stacking context here
+   * would trap them both at this group's level instead.
+   */
+}
+
 .lockup {
   display: flex;
   align-items: center;
@@ -64,6 +82,142 @@
   /* Between the two bubble layers: the deep ones pass behind, the near ones in
      front. */
   z-index: 1;
+}
+
+/*
+ * The one thing to do about the title, directly under it and only in scene
+ * one - the playhead fades it out, and takes its clicks away with it, as the
+ * zoom gets going.
+ *
+ * Placement only. The button inside wears HomePage's .getInvolvedButton, the
+ * same one the foot of the page ends on, so there is one call to action in the
+ * site rather than two that merely resemble each other.
+ */
+.cta {
+  /*
+   * Above the overlay copy, which is laid across the middle of the stage at
+   * z-index 3 and still takes clicks while it is faded out. The button is gone
+   * long before that copy is actually on screen, so nothing is covered by it.
+   */
+  position: relative;
+  z-index: 5;
+  /* Measured off the viewport so the gap below the word holds from a phone to
+     a wide desktop without a breakpoint. The lockup's own box is taller than
+     the mark it draws, so this is a good deal more air than it looks. */
+  margin-top: clamp(3.5rem, 8vh, 5.75rem);
+  line-height: 0;
+  text-decoration: none;
+  /*
+   * The same blur-and-fade the copy on the circles uses, so the button leaves
+   * the way everything else on this stage does. It runs on its own clock, not
+   * on the playhead: the component sets .ctaGone once, at CTA_HIDE_AT, and the
+   * transition plays out at its own pace from there instead of being scrubbed
+   * a frame at a time by how fast the wheel happens to be turning.
+   */
+  opacity: 1;
+  filter: blur(0);
+  transition: opacity 500ms ease, filter 500ms ease;
+}
+
+/* Gone, and not taking clicks on its way out - a link faded to nothing is
+   still a link. */
+.ctaGone {
+  opacity: 0;
+  filter: blur(7px);
+  pointer-events: none;
+}
+
+/*
+ * The hero's skin on HomePage's button. The structure - the padding, the
+ * radius, the minimum width and the size of the type - is inherited from
+ * .getInvolvedButton and deliberately not repeated; this rule changes how it
+ * is coloured and how the wipe is timed.
+ *
+ * Nothing at rest: no fill and no outline, so on a black stage it is a line of
+ * type with a generous target around it. The hover is the whole of the button,
+ * which is what makes the wipe worth watching.
+ *
+ * Doubled class name for specificity, the same trick .arcTitle uses: both
+ * stylesheets set these properties with one class each, and HomePage's is
+ * injected after this one, so on an equal count it would win on source order.
+ */
+.ctaButton.ctaButton {
+  background-color: transparent;
+  color: #FFFDF8;
+  /*
+   * Smaller than the one at the foot of the page. That one closes the page and
+   * can afford to be the loudest thing on it; this one sits under the mark and
+   * must not compete with it. The padding comes down with the type so the
+   * proportions hold, and the minimum width with both so it is the label that
+   * sets the size rather than a floor meant for a bigger button.
+   */
+  min-width: 170px;
+  padding: 9px 18px;
+  font-size: 21px;
+  /* At rest the inset shadow has no width at all, so there is nothing to see
+     until the hover grows it. */
+  box-shadow: 0 0 0 0 #FFFDF8 inset;
+  /*
+   * The way back out, and only that: a transition is read off whichever state
+   * the element is heading INTO, so this rule times the return to rest and the
+   * :hover rule below times the fill. That split is what lets the cream leave
+   * briskly but arrive at a pace worth watching.
+   *
+   * Hard out: almost all of the travel is spent in the first fifth of the
+   * time, so the fill retreats at once and then takes an age to come to rest.
+   */
+  transition: box-shadow 620ms cubic-bezier(0.13, 1, 0.26, 1),
+    color 620ms cubic-bezier(0.13, 1, 0.26, 1);
+}
+
+/*
+ * The wipe, run to the end - and only just past it.
+ *
+ * HomePage's 200px stops short of its own 222px button and leaves a sliver of
+ * background down the right-hand edge, so this has to clear the button's
+ * width. But every pixel beyond it is travel spent off the end where nothing
+ * can be seen, and the clock keeps running through it: at 600px the fill
+ * looked finished two fifths of the way into the transition and the rest was
+ * the shadow sweeping into the void. 221px against a 212px button is about
+ * the smallest overshoot that still closes cleanly, so the timing below is
+ * spent almost entirely on screen.
+ *
+ * This number is not free to drift from the button's width: the two set the
+ * speed together. Shrinking the type from 25px to 21px took the button from
+ * 249px to 212px, and leaving the travel at 260px would have handed the sweep
+ * a longer run-up through the steep opening of the curve and made it quicker
+ * again, with nothing in the timing to show why. Change one, remeasure and
+ * change the other - about 1.04x the rendered width.
+ */
+.ctaButton.ctaButton:hover,
+.ctaButton.ctaButton:focus-visible {
+  box-shadow: 221px 0 0 0 #FFFDF8 inset;
+  color: #30093A;
+  /*
+   * The fill, on the exit's own curve so the two directions match, and 200ms
+   * shorter: a 254ms sweep against the 262ms the button takes to empty.
+   *
+   * How fast this reads is the distance and the curve together, not the
+   * duration on its own. While the shadow travelled 600px across a 249px
+   * button only the first two fifths of the curve was ever on screen - the
+   * front-loaded part of it - and the sweep was over in 65ms however long the
+   * transition nominally ran. That is why this same curve was unusable then
+   * and is right now: with the travel barely clearing the button, the whole
+   * of it is visible, and what was a flash is a readable sweep that is 60%
+   * done a quarter of the way in and eases into the last of it.
+   *
+   * The ink is tied to exactly the same clock as the paper. Let the colour run
+   * ahead and the label turns dark purple while the button behind it is still
+   * black, which is a word you cannot read for as long as it lasts.
+   */
+  transition: box-shadow 600ms cubic-bezier(0.13, 1, 0.26, 1),
+    color 600ms cubic-bezier(0.13, 1, 0.26, 1);
+}
+
+/* Decoration, so it is out of the accessibility tree: the label already says
+   where the button goes. */
+.ctaArrow {
+  margin-left: 0.5em;
 }
 
 .markBox {
@@ -231,6 +385,45 @@
 }
 
 /*
+ * The swirl behind scene two.
+ *
+ * The slowest thing on the stage by a long way: the nearest bubble covers 212vh
+ * while this covers 90, which is the whole of why it reads as being a long way
+ * behind them rather than as another one of them.
+ *
+ * Its box is the stage plus the distance it travels, so there is something of
+ * it over the screen at both ends of the journey rather than a bare strip
+ * appearing underneath it on the way up.
+ *
+ * The file carries its own 0.3 alpha, which is most of the answer to how faint
+ * this is: against black, a quarter of 112,80,194 is a wash you notice only
+ * where it moves past something. The 0.85 here is therefore nearly all of what
+ * the artwork will give, and still reads as low - turn it down rather than up
+ * if it ever wants to be quieter.
+ *
+ * Faded in over the opening of the scene rather than being there from the top
+ * of the page, and taken away at the other end by the sheet, which is opaque
+ * and four layers in front.
+ */
+.swirl {
+  position: absolute;
+  left: 50%;
+  top: -45vh;
+  z-index: 0;
+  width: min(1900px, 260vw);
+  height: 190vh;
+  background-image: url('../images/swirl.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+  opacity: min(calc(var(--rise, 0) * 10), 0.85);
+  transform: translateX(-50%) translateY(calc(var(--rise, 0) * -90vh));
+  pointer-events: none;
+  /* Only ever translated, so there is nothing to re-raster. */
+  will-change: transform;
+}
+
+/*
  * Scene two. Every bubble is anchored to the bottom of the stage, waits --pad
  * below it, and then travels --speed upward over the course of the scene.
  *
@@ -246,6 +439,13 @@
   top: 100%;
   transform: translate(-50%, -50%)
     translateY(calc(var(--pad, 20vh) - var(--rise, 0) * var(--speed, 200vh)));
+  /*
+   * Held shut until the rise starts, so the float on .bubbleCircle cannot lift
+   * a parked bubble's cap over the fold during scene one. Set on the group
+   * rather than the circle, so it multiplies the per-bubble opacity the
+   * component sets there instead of fighting it. See --bubble-gate.
+   */
+  opacity: var(--bubble-gate, 1);
   will-change: transform;
 }
 

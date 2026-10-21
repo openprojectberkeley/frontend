@@ -102,6 +102,19 @@
     border-radius: 5px;
 }
 
+/*
+ * The fill and the ring ride the same short ramp as the label, so the whole
+ * button changes over as one thing instead of the text leading the swatch.
+ * Needs to out-specify the 420ms colour fade `.links a` puts on every link.
+ */
+.links a.openportalLink {
+    box-shadow: inset 0 0 0 1.5px transparent;
+    transition:
+        color 140ms ease,
+        background-color 140ms ease,
+        box-shadow 140ms ease;
+}
+
 .links a.openportalLink:hover {
     background-color: white;
     background-image: none;
@@ -227,4 +240,15 @@
 :global(html.op-light) .barLeft,
 :global(html.op-light) .barRight {
     background-color: #22114F;
+}
+
+/*
+ * On white, a white hover fill would dissolve into the page, so the button
+ * keeps a gold ring to hold its edge. Drawn inset so it costs no layout.
+ */
+:global(html.op-light) .links a.openportalLink:hover,
+:global(html.op-light) .linksActive a.openportalLink:hover {
+    background-color: white;
+    color: #cd9700;
+    box-shadow: inset 0 0 0 1.5px #cd9700;
 }
