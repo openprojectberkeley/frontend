@@ -1326,8 +1326,16 @@
  * It sits above everything belonging to the dark scene - the bubbles, the mark
  * - and below everything that carries on into the light: the arc, its heading
  * and the readout.
+ *
+ * Two elements are cut to this shape and travel on it, not one: the paper
+ * itself, and the grid printed on it. The grid cannot be the paper's own child
+ * - it has to lie over the band's white wipes, and anything inside the paper
+ * is four layers under them - so it is a second copy of the sheet carrying no
+ * colour. Every line of the shape and the travel is shared here, which is what
+ * stops the print from sliding off the page it belongs to.
  */
-.sheet {
+.sheet,
+.gridSheet {
   position: absolute;
   left: -6vw;
   right: -6vw;
@@ -1338,12 +1346,87 @@
    */
   top: -15vh;
   bottom: -12vh;
-  z-index: 4;
-  background-color: #FFFDF8;
   border-radius: 50% 50% 0 0 / 13vh 13vh 0 0;
+  /* What cuts the grid off at the bow rather than letting it run on into the
+     dark the paper has not covered yet. */
+  overflow: hidden;
   transform: translateY(calc((1 - var(--sheet, 0)) * 118%));
   will-change: transform;
   pointer-events: none;
+}
+
+.sheet {
+  z-index: 4;
+  background-color: #FFFDF8;
+}
+
+/*
+ * The grid the light scenes play over, from the moment the paper arrives to
+ * the end of the timeline.
+ *
+ * Level with the arc's holder and after it in the stage, so it paints over the
+ * band - and so over the white boxes the rows are turned with, which are the
+ * one place the page goes light without the paper being what you are looking
+ * at. Under the panel at 7 and the moments at 8, which are things on the page
+ * rather than the page itself.
+ *
+ * Multiplied rather than laid on top, which is what lets it cross all of that
+ * without being a sheet of lines over the scene: ink on white shows, ink on
+ * the band's black is black, and a line over a logo only darkens it. The clip
+ * to the bow above is still what keeps it off the dark scene, where the
+ * bubbles are bright enough to take a line.
+ */
+.gridSheet {
+  z-index: 6;
+  opacity: var(--sheet, 0);
+  mix-blend-mode: multiply;
+}
+
+/*
+ * One grid, drifting: up with the scroll for the whole of its life, and
+ * sideways at an eighth of the frame's rate once scene five starts travelling
+ * - enough to be the ground going past behind the moments rather than a
+ * pattern stuck to the screen.
+ *
+ * Graph paper, so two rulings and not two layers: the cell, and four smaller
+ * boxes to a side inside it at a little over half the ink. Both are drawn on
+ * this one element and drift as one sheet - the difference between them is
+ * how finely the paper is ruled, not how far away it is.
+ *
+ * Square by construction. The same length sets the spacing across and down.
+ * The component writes --grid-sub already snapped to a whole number of device
+ * pixels and a multiple of four, so a cell is four of the small boxes on the
+ * glass, not only in the arithmetic.
+ *
+ * A tile and a size, not a repeating gradient. A repeating-linear-gradient of
+ * 1px rules is rasterised one period at a time and then stamped; any rounding
+ * in that period walks against the pixel grid until a line lands between two
+ * pixels and is dropped - which is why some rules vanished at one zoom and
+ * not the next. background-size is one tile the renderer can hit exactly.
+ *
+ * The drift is a shift of that tile, not a transform of the box. Transforming
+ * a hairline grid resamples it, and a line with four percent of ink does not
+ * survive being drawn between pixels.
+ */
+.grid {
+  --sub: var(--grid-sub, 32px);
+  --cell: calc(var(--sub) * 4);
+  --hair: var(--grid-hair, 1px);
+  --line: rgba(34, 17, 79, 0.07);
+  --line-fine: rgba(34, 17, 79, 0.04);
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--line) var(--hair), transparent var(--hair)),
+    linear-gradient(to bottom, var(--line) var(--hair), transparent var(--hair)),
+    linear-gradient(to right, var(--line-fine) var(--hair), transparent var(--hair)),
+    linear-gradient(to bottom, var(--line-fine) var(--hair), transparent var(--hair));
+  background-size:
+    var(--cell) var(--cell),
+    var(--cell) var(--cell),
+    var(--sub) var(--sub),
+    var(--sub) var(--sub);
+  background-position: var(--grid-shift, 0 0);
 }
 
 /*

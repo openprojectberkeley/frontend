@@ -467,6 +467,17 @@ const CLIENTS_INNER = clients.filter((_, index) => index % 2 === 1);
  */
 const SHEET_AT = ARC_RETURN_AT;
 const SHEET_OVER = 0.75;
+
+/*
+ * And the grid printed on that sheet, which is the backdrop every scene from
+ * here plays over.
+ *
+ * Nothing of it is written down. It arrives with the paper, because it is on
+ * the paper - the stylesheet takes its opacity from --sheet - and it never
+ * leaves, because the paper never does: the white is the page from scene three
+ * to the end of the timeline, and a background that saw itself out halfway
+ * would only be a light going off.
+ */
 const HEADER_LIGHT_AT = 2.6;
 
 /*
@@ -633,6 +644,16 @@ const STARS = STAR_LAYERS.flatMap((layer, index) => {
 });
 
 const clamp01 = (value) => Math.min(1, Math.max(0, value));
+
+/*
+ * A length on the glass, not on the page: whole device pixels, so a rule the
+ * size of one of them is actually drawn as one of them.
+ *
+ * CSS pixels and device pixels only agree at 1x. A 1.25 scale - Windows at
+ * 125 percent, a browser zoomed to 80 - makes 32px a 40-pixel stride with a
+ * half-pixel left over, and that remainder is what ate a line every few cells.
+ */
+const snapToDevice = (px, dpr) => Math.round(px * dpr) / dpr;
 
 /*
  * The copy that rides on the two big circles. It is laid out as ordinary text,
@@ -1255,10 +1276,41 @@ export default function ImmersiveHero() {
      * single picture being panned across rather than a set of things that
      * happen to be sliding at similar rates.
      */
-    stage.style.setProperty(
-      '--pan',
-      `${(-clamp01((playhead - PAN_AT) / PAN_OVER) * PAN_TRAVEL * stageWidth).toFixed(1)}px`,
-    );
+    const panPx = -clamp01((playhead - PAN_AT) / PAN_OVER) * PAN_TRAVEL * stageWidth;
+
+    stage.style.setProperty('--pan', `${panPx.toFixed(1)}px`);
+
+    /*
+     * The grid on the paper. Written here in whole device pixels so the
+     * stylesheet can tile it without rounding a period: see .grid.
+     *
+     * The small box is the measure. It is snapped first, then forced to a
+     * multiple of four device pixels so the cell - four of it - lands on the
+     * same grid and the two rulings share their lines rather than drawing a
+     * double-weight rule where they meet.
+     *
+     * The rule itself is at least two device pixels, and grows with the window
+     * so a 4K view is not looking at a 1px hairline from across the room.
+     *
+     * Linear, and for the bubbles' reason - a backdrop that eased would be a
+     * backdrop keeping time with something, and this one is only keeping time
+     * with the scroll.
+     */
+    {
+      const dpr = window.devicePixelRatio || 1;
+      const vmin = Math.min(stageWidth, stageHeight) / 100;
+      const subDevice = Math.round(
+        Math.min(42, Math.max(26, 3.2 * vmin)) * dpr,
+      );
+      const sub = Math.max(4, Math.round(subDevice / 4) * 4) / dpr;
+      const hair = Math.max(2, Math.round(Math.max(1, 0.12 * vmin) * dpr)) / dpr;
+      const shiftX = snapToDevice(panPx * 0.12, dpr);
+      const shiftY = snapToDevice(Math.max(0, playhead - SHEET_AT) * -0.1 * stageHeight, dpr);
+
+      stage.style.setProperty('--grid-sub', `${sub.toFixed(3)}px`);
+      stage.style.setProperty('--grid-hair', `${hair.toFixed(3)}px`);
+      stage.style.setProperty('--grid-shift', `${shiftX.toFixed(3)}px ${shiftY.toFixed(3)}px`);
+    }
     /* The bar's exit, on the curve it arrived on so the two read as one move
        made twice. */
     stage.style.setProperty(
@@ -1837,6 +1889,22 @@ export default function ImmersiveHero() {
                 overhang={STROKE_WIDTH / 2}
               />
             </LogoArc>
+          </span>
+        )}
+
+        {/*
+          The grid the light scenes play over: a second copy of the paper,
+          carrying no colour.
+
+          After the arc in the stage and level with it, which is the whole
+          reason it is not simply inside the sheet - at the same z-index,
+          document order is what decides, and this way the grid runs across the
+          white boxes the rows of logos are turned with instead of stopping
+          dead at them.
+        */}
+        {!prefersReducedMotion && (
+          <span className={styles.gridSheet} aria-hidden="true">
+            <span className={styles.grid} />
           </span>
         )}
 
