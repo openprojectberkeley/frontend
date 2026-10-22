@@ -20,19 +20,44 @@ import Matter from 'matter-js';
  * playhead. Everything else there can be scrubbed in both directions because
  * it is read off the scroll position; this runs on a clock, so once the scroll
  * has let it go it plays at its own speed and scrolling back up does not
- * rewind it - it resets and plays again from the top.
+ * rewind it. The floor is taken away instead, the pile drops off the bottom
+ * of the stage, and only after it has faded is the world thrown away - so
+ * arriving at the mark again is the spill starting over.
  */
 
 const { Bodies, Body, Composite, Engine, Mouse, MouseConstraint, Query, Render, Sleeping } =
   Matter;
 
-/* How often the next logo is let out of the banner. */
-const SPAWN_EVERY = 110;
+/*
+ * How often the next logo is let out of the banner.
+ *
+ * One at a time, quicker than a tenth of a second, so the set is out in about
+ * a second rather than lingering in a long drip. Still long enough that the
+ * one in front has started to leave before the next appears under the word.
+ */
+const SPAWN_EVERY = 50;
+/*
+ * Scrolling back up takes the floor away and lets the pile fall off the
+ * bottom of the stage. Once every logo has cleared that edge, the linger is
+ * how long it keeps being drawn before the fade, and the fade is how long
+ * that takes. The limit is the same fade starting anyway, for a logo that
+ * never makes it off the stage.
+ */
+const EXIT_LINGER = 380;
+const EXIT_FADE = 420;
+const EXIT_LIMIT = 2200;
 /* How far above the bottom of the stage the pile stands. */
 const FLOOR_INSET = 24;
 /* Sideways and turning, either way, as it leaves the banner. */
 const DRIFT = 90;
 const SPIN = 2.4;
+/*
+ * Downward, in the same units as the drift: pixels a second.
+ *
+ * A small head start. The next logo is only a moment behind and often
+ * nearby, and without this it appears inside the one in front of it.
+ */
+const DROP = 300;
 
 /*
  * What a logo is made of.
@@ -285,7 +310,11 @@ const measureInk = (src) =>
 
 export default function LogoSpill({
   items,
-  /* Crossing the playhead mark lets it go; dropping back below clears it. */
+  /*
+   * Crossing the playhead mark lets it go. Dropping back below does not cut
+   * the pile off: the floor goes and the logos fall off the bottom, and the
+   * world is only thrown away once they have faded.
+   */
   running,
   stageRef,
   /*
@@ -313,6 +342,27 @@ export default function LogoSpill({
   const groupRef = useRef(null);
   const debugRef = useRef(null);
   const [ink, setInk] = useState(null);
+  /*
+   * The loop has to see the flag change without being torn down by it, so the
+   * flag lives in a ref and a run id is what actually starts a world. The id
+   * only advances on the rising edge: scrolling back up keeps the world that
+   * is already falling, and scrolling down again starts a new one.
+   */
+  const runningRef = useRef(running);
+  const wasRunningRef = useRef(false);
+  const [runId, setRunId] = useState(0);
+
+  runningRef.current = running;
+
+  useEffect(() => {
+    const started = running && !wasRunningRef.current;
+
+    wasRunningRef.current = running;
+
+    if (started) {
+      setRunId((id) => id + 1);
+    }
+  }, [running]);
 
   useEffect(() => {
     let live = true;
@@ -367,7 +417,7 @@ export default function LogoSpill({
     const group = groupRef.current;
     const stage = stageRef.current;
 
-    if (!group || !stage || !running || !items.length || !sized) {
+    if (!runId || !group || !stage || !items.length || !sized) {
       return undefined;
     }
 
@@ -408,6 +458,11 @@ export default function LogoSpill({
     let sinceSpawn = SPAWN_EVERY;
     let last = null;
     let frame = null;
+    /* Set the frame the floor is removed, and the frame every logo has
+       cleared the bottom of the stage. */
+    let exitAt = null;
+    let clearedAt = null;
+    let retired = false;
 
     /*
      * Picking one up.
@@ -487,7 +542,10 @@ export default function LogoSpill({
         ? Bodies.circle(x, y, Math.min(shape.inkWidth, shape.inkHeight) / 2, options)
         : Bodies.rectangle(x, y, shape.inkWidth, shape.inkHeight, options);
 
-      Body.setVelocity(body, { x: ((Math.random() * 2 - 1) * DRIFT) / 60, y: 0 });
+      Body.setVelocity(body, {
+        x: ((Math.random() * 2 - 1) * DRIFT) / 60,
+        y: DROP / 60,
+      });
       Body.setAngularVelocity(body, ((Math.random() * 2 - 1) * SPIN) / 60);
       Composite.add(engine.world, body);
 
@@ -643,19 +701,53 @@ export default function LogoSpill({
 
       sinceSpawn += used;
 
-      if (spawned < nodes.length && sinceSpawn >= SPAWN_EVERY) {
+      /*
+       * The floor leaving is the end of the spill, not a pause in it. Nothing
+       * further is let out, the floor and the obstacles go - the community
+       * panel sits parked just under the fold and would otherwise be a second
+       * floor - and anything asleep is woken so gravity can take it.
+       */
+      if (!runningRef.current && exitAt === null) {
+        if (spawned === 0) {
+          retire();
+
+          return;
+        }
+
+        exitAt = now;
+        Composite.remove(engine.world, walls[0]);
+        obstacles.forEach((obstacle, index) => {
+          if (!obstacle) {
+            return;
+          }
+
+          Composite.remove(engine.world, obstacle);
+          obstacles[index] = null;
+        });
+        bodies.forEach((body) => {
+          if (body && body.isSleeping) {
+            Sleeping.set(body, false);
+          }
+        });
+      }
+
+      if (exitAt === null && spawned < nodes.length && sinceSpawn >= SPAWN_EVERY) {
         sinceSpawn = 0;
         spawn(spawned);
         spawned += 1;
       }
 
-      const targets = readObstacles();
+      const targets = exitAt === null ? readObstacles() : null;
       const steps = clamp(Math.round(used / STEP_MS), 1, MAX_STEPS);
 
       for (let step = 0; step < steps; step += 1) {
         /* An equal share of what is left each time, so the wall arrives over
-           the whole frame rather than at the start of it. */
-        moveObstacles(targets, 1 / (steps - step));
+           the whole frame rather than at the start of it. Once the floor has
+           gone there is nothing on the page the pile should land on. */
+        if (targets) {
+          moveObstacles(targets, 1 / (steps - step));
+        }
+
         Engine.update(engine, STEP_MS);
 
         for (let index = 0; index < bodies.length; index += 1) {
@@ -694,13 +786,22 @@ export default function LogoSpill({
         watching -= 1;
       }
 
-      if (watching > 0 && frames % SUPPORT_EVERY === 0) {
+      /*
+       * While the floor is gone this keeps running even if nothing else is
+       * moving: a logo that nods off on the way down has to be asked whether
+       * anything is still under it, and the old floor line is not an answer.
+       */
+      if ((exitAt !== null || watching > 0) && frames % SUPPORT_EVERY === 0) {
         const everything = bodies.filter(Boolean).concat(obstacles.filter(Boolean));
 
         for (let index = 0; index < bodies.length; index += 1) {
           const body = bodies[index];
 
-          if (!body || !body.isSleeping || body.bounds.max.y >= floor - SUPPORT_PROBE) {
+          if (!body || !body.isSleeping) {
+            continue;
+          }
+
+          if (exitAt === null && body.bounds.max.y >= floor - SUPPORT_PROBE) {
             continue;
           }
 
@@ -764,12 +865,53 @@ export default function LogoSpill({
         }
       }
 
+      /*
+       * Off the bottom, then a beat, then the fade, then the world stops.
+       * The beat is what keeps the last logo from being faded while it is
+       * still crossing the edge. Past the limit the fade starts anyway.
+       */
+      if (exitAt !== null) {
+        if (clearedAt === null) {
+          const gone = bodies.every((body) => !body || body.bounds.min.y > height);
+
+          if (gone || now - exitAt > EXIT_LIMIT) {
+            clearedAt = now;
+          }
+        }
+
+        if (clearedAt !== null) {
+          const fade = clamp((now - clearedAt - EXIT_LINGER) / EXIT_FADE, 0, 1);
+
+          if (fade > 0) {
+            for (let index = 0; index < bodies.length; index += 1) {
+              if (bodies[index]) {
+                nodes[index].style.opacity = (1 - fade).toFixed(3);
+              }
+            }
+          }
+
+          if (fade >= 1) {
+            retire();
+
+            return;
+          }
+        }
+      }
+
       frame = window.requestAnimationFrame(tick);
     };
 
-    frame = window.requestAnimationFrame(tick);
+    /*
+     * Thrown away once, from the fade finishing or from the effect going
+     * away. Arriving at the mark again builds a new world rather than
+     * resuming this one.
+     */
+    const retire = () => {
+      if (retired) {
+        return;
+      }
 
-    return () => {
+      retired = true;
       window.cancelAnimationFrame(frame);
 
       if (render) {
@@ -780,17 +922,18 @@ export default function LogoSpill({
 
       Composite.clear(engine.world, false);
       Engine.clear(engine);
-
-      /* Scrolled back above the mark: put every logo away, so arriving at it
-         again is the spill starting rather than resuming. */
       nodes.forEach((node) => {
         node.style.opacity = '0';
         node.style.transform = '';
       });
     };
+
+    frame = window.requestAnimationFrame(tick);
+
+    return retire;
     // sized is rebuilt each render; ink and scales are what actually change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, running, stageRef, originRef, ink, scales, obstacleRefs, roundSet]);
+  }, [runId, items, stageRef, originRef, ink, scales, obstacleRefs, roundSet]);
 
   if (!items.length) {
     return null;

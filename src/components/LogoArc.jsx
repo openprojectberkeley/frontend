@@ -71,10 +71,11 @@ const HALF_STROKE = STROKE_WIDTH / 2;
  * How far a row's white runs past its own share of the band, which is not the
  * same at the two ends of it.
  *
- * Outwards it costs nothing, so it is generous: the band's mask cuts it off at
- * the edge of the stroke, and what that buys is the edge being the mask's
- * rather than the rect's - the difference between a clean edge and a hair of
- * whatever is underneath showing along it.
+ * Outwards it has to clear the stroke's own soft edge. The white is not masked
+ * to the band: stopped on the mask, it would be only part strength there and
+ * the dark stroke would show through as a line above and below the bar. Past
+ * the stroke the extra is the page's own colour, so it covers that line and
+ * does not itself show.
  *
  * Inwards every unit is a unit of one row's white lying over the other's half,
  * so it is only as much as it has to be: two shapes abutting on an exact line
@@ -131,6 +132,56 @@ export function arcPath(flat = 0) {
 }
 
 /*
+ * The outline of the stroke arcPath(flat) draws, as a shape to fill.
+ *
+ * What a clip path needs: it clips to fill geometry, and the band is a stroke.
+ * Two arcs half a stroke-width either side of the path's own - the same circle,
+ * grown and shrunk - joined at each end by a half circle, which is the round
+ * cap. Once the path is a straight line, so is this: two parallel lines and the
+ * same two caps.
+ *
+ * Walked the way the path is drawn along its outer edge and back along its
+ * inner one, so both caps turn the same way as the outer arc.
+ */
+export function arcOutline(flat = 0) {
+  const f = Math.min(1, Math.max(0, flat));
+  const half = RADIUS * (1 + f * (CHORD_GROW - 1));
+  const sagitta = RADIUS * (1 - f);
+  const x0 = CENTRE_X - CHORD_X * half;
+  const y0 = CENTRE_Y - CHORD_Y * half;
+  const x1 = CENTRE_X + CHORD_X * half;
+  const y1 = CENTRE_Y + CHORD_Y * half;
+  const h = HALF_STROKE;
+  const n = (value) => value.toFixed(3);
+
+  if (sagitta < 0.5) {
+    return (
+      `M${n(x0 + BULGE_X * h)} ${n(y0 + BULGE_Y * h)}` +
+      `L${n(x1 + BULGE_X * h)} ${n(y1 + BULGE_Y * h)}` +
+      `A${n(h)} ${n(h)} 0 0 1 ${n(x1 - BULGE_X * h)} ${n(y1 - BULGE_Y * h)}` +
+      `L${n(x0 - BULGE_X * h)} ${n(y0 - BULGE_Y * h)}` +
+      `A${n(h)} ${n(h)} 0 0 1 ${n(x0 + BULGE_X * h)} ${n(y0 + BULGE_Y * h)}Z`
+    );
+  }
+
+  const r = (half * half + sagitta * sagitta) / (2 * sagitta);
+  /* The circle's centre: back from the top of the bulge by the radius. */
+  const cx = CENTRE_X + BULGE_X * (sagitta - r);
+  const cy = CENTRE_Y + BULGE_Y * (sagitta - r);
+  const at = (x, y, radius) => `${n(cx + ((x - cx) * radius) / r)} ${n(cy + ((y - cy) * radius) / r)}`;
+  const outer = r + h;
+  const inner = r - h;
+
+  return (
+    `M${at(x0, y0, outer)}` +
+    `A${n(outer)} ${n(outer)} 0 0 1 ${at(x1, y1, outer)}` +
+    `A${n(h)} ${n(h)} 0 0 1 ${at(x1, y1, inner)}` +
+    `A${n(inner)} ${n(inner)} 0 0 0 ${at(x0, y0, inner)}` +
+    `A${n(h)} ${n(h)} 0 0 1 ${at(x0, y0, outer)}Z`
+  );
+}
+
+/*
  * The middle of the band, and how far it is from there to the far end of it.
  *
  * For anything that fills the band outwards from its centre: the point is the
@@ -159,6 +210,9 @@ export default function LogoArc({
   pathRef,
   darkPathRef,
   maskPathRef,
+  /* The band's outline, which the caller rewrites per frame with arcOutline
+     alongside the paths above. */
+  clipPathRef,
   inkRef,
   darkClassName,
   inkClassName,
@@ -171,14 +225,20 @@ export default function LogoArc({
    */
   fadeClassName,
   /*
-   * The rows that get wiped over, outermost first. Each is { id, rectRef,
-   * half }: the id of the row's own group, a ref onto the rect that says how
-   * much of the wipe has arrived, and which side of the band's middle the row
-   * is on - 1 for the half the chord's frame calls up, -1 for the other.
+   * The rows that get wiped over, outermost first. Each is { slotRef,
+   * rectRef, half }: a ref for the group the row's black copy is drawn into,
+   * a ref onto the rect that says how much of the wipe has arrived, and which
+   * side of the band's middle the row is on - 1 for the half the chord's frame
+   * calls up, -1 for the other.
    */
   wipes = [],
   wipeClassName,
-  wipeLogoClassName,
+  /*
+   * The group that paints each row a second time, in black, over its white.
+   * Hidden until a wipe has started: while the arc is still scaling, that
+   * second paint is every logo being redrawn for nothing.
+   */
+  wipesRef,
   children,
 }) {
   // useId hands back ":r0:"-style strings, which are fine in a fill attribute
@@ -187,6 +247,7 @@ export default function LogoArc({
   const arcFill = `la-arc-${uid}`;
   const arcDarkFill = `la-arc-dark-${uid}`;
   const arcMask = `la-arc-mask-${uid}`;
+  const arcClip = `la-arc-clip-${uid}`;
   const wipeClip = (index) => `la-arc-wipe-${uid}-${index}`;
   /* Where a row's white starts, in the band's own frame: just the far side of
      the middle for the upper half, well past the edge for the lower. */
@@ -222,15 +283,8 @@ export default function LogoArc({
           <stop offset="1" stopColor="#22114F" />
         </linearGradient>
         {/*
-          The shape itself, painted white, used as a mask for anything riding
-          it. Belt and braces: what rides the arc is sized to stay inside it,
-          but a logo is a straight rectangle laid across a curve, so how far
-          its ends stand off the stroke depends on both how wide it is and how
-          tight the bend - and there is no width this cannot answer for.
-
-          A mask rather than a clip path because a clip path is made from fill
-          geometry, and the band is a stroke: clipping to this path would clip
-          to the empty area it encloses rather than to the ink.
+          The shape itself, painted white, used as a mask for the black that
+          fills the band.
 
           The region is given in user space and set wide enough for the path at
           its longest, since the default is worked out from the bounding box of
@@ -254,6 +308,22 @@ export default function LogoArc({
           />
         </mask>
         {/*
+          The same shape again as a clip, for anything riding it. Belt and
+          braces: what rides the arc is sized to stay inside it, but a logo is a
+          straight rectangle laid across a curve, so how far its ends stand off
+          the stroke depends on both how wide it is and how tight the bend - and
+          there is no width this cannot answer for.
+
+          A clip and not the mask above: in Chrome, content moving inside a
+          masked group is not reliably repainted, and the logos move every
+          frame - they were left behind as ghosts, cut off at hard edges or
+          missing altogether. A clip path is made from fill geometry rather than
+          a stroke, so this is the stroke's outline, drawn as a filled shape.
+        */}
+        <clipPath id={arcClip} clipPathUnits="userSpaceOnUse">
+          <path ref={clipPathRef} d={arcOutline(0)} />
+        </clipPath>
+        {/*
           How far each wipe has travelled. The rect is in the band's frame, so
           its x runs along the band and its height is the one row's share of the
           stroke; the caller moves its leading edge per frame and this clips
@@ -261,7 +331,8 @@ export default function LogoArc({
           cannot part company.
         */}
         {wipes.map((wipe, index) => (
-          <clipPath key={wipe.id} id={wipeClip(index)} clipPathUnits="userSpaceOnUse">
+          // eslint-disable-next-line react/no-array-index-key
+          <clipPath key={index} id={wipeClip(index)} clipPathUnits="userSpaceOnUse">
             <rect
               ref={wipe.rectRef}
               transform={BAND_FRAME}
@@ -314,27 +385,30 @@ export default function LogoArc({
         </g>
 
         {/* Anything riding the arc goes here, inside the same SVG, so the
-            rotation and scale above carry it too - and inside the mask, so none
-            of it can paint outside the band. */}
-        <g mask={`url(#${arcMask})`}>{children}</g>
+            rotation and scale above carry it too - and clipped to the band, so
+            none of it can paint outside it. */}
+        <g clipPath={`url(#${arcClip})`}>{children}</g>
       </g>
 
       {/*
         The white running across a row, and the row again in black on top of it.
 
-        The second one is a <use> rather than another ticker: it is the same
-        group painted twice, so the black copy is on the logo the white copy is
-        under, exactly, for free and for ever - two tickers would be two
-        animations agreeing only for as long as they happened to.
+        The second one is an empty group handed to the row's own ticker, which
+        draws its black copy into it from the same loop that places the row -
+        so the black copy is on the logo the white copy is under, exactly,
+        every frame. Two tickers would be two animations agreeing only for as
+        long as they happened to.
 
         Both are clipped to the same travelling rect, so the white arrives and
-        the logos turn with it at one edge, and both are inside the band's mask,
-        so a row can be made white without a white rectangle appearing on the
-        page beside it.
+        the logos turn with it at one edge. Only the logos take the band's
+        clip. The white does not: the band's edge is soft, and a white stopped
+        on it leaves a dark line of the stroke above and below the bar. The
+        rect runs past that edge, in the page's own colour, and covers it.
       */}
-      <g mask={`url(#${arcMask})`}>
+      <g ref={wipesRef}>
         {wipes.map((wipe, index) => (
-          <g key={wipe.id} clipPath={`url(#${wipeClip(index)})`}>
+          // eslint-disable-next-line react/no-array-index-key
+          <g key={index} clipPath={`url(#${wipeClip(index)})`}>
             <rect
               className={wipeClassName}
               transform={BAND_FRAME}
@@ -343,9 +417,14 @@ export default function LogoArc({
               width="4000"
               height={WIPE_HEIGHT}
             />
-            <use href={`#${wipe.id}`} className={wipeLogoClassName} />
           </g>
         ))}
+        <g clipPath={`url(#${arcClip})`}>
+          {wipes.map((wipe, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <g key={index} ref={wipe.slotRef} clipPath={`url(#${wipeClip(index)})`} />
+          ))}
+        </g>
       </g>
     </svg>
   );

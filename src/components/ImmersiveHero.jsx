@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import styles from '../css/ImmersiveHero.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import LogoMark, { DISC_CENTRE_X, DISC_CENTRE_Y, DISC_WIDTH } from './LogoMark';
 import useScrollPlayhead from './useScrollPlayhead';
-import LogoArc, { arcMiddle, arcPath, STROKE_WIDTH } from './LogoArc';
+import LogoArc, { arcMiddle, arcOutline, arcPath, STROKE_WIDTH } from './LogoArc';
 import ArcTicker from './ArcTicker';
 import LogoSpill from './LogoSpill';
 import { clients } from '../data/clientsData';
@@ -203,12 +203,9 @@ const WIPE_OVER = 0.18;
  */
 const BAND_FADE_AT = WIPE_TOP_AT + WIPE_OVER;
 /*
- * Short, because what is waiting on it is an edge rather than a shape. The
- * band and the white laid over it are clipped by the same mask, so along the
- * mask's own soft edge both are painted at part strength and the dark one
- * shows through the white as a line around the band. Nothing can cover it -
- * the cover is masked by the same edge - so the only thing that takes it away
- * is the band underneath going, and that wants to be over with.
+ * Short, because what is waiting on it is the stroke going, and the white is
+ * already lying over it. The white runs past the stroke, so there is no dark
+ * edge left to hide; the fade only has to be long enough to be gone.
  */
 const BAND_FADE_OVER = 0.06;
 
@@ -663,6 +660,7 @@ export default function ImmersiveHero() {
   const arcPathRef = useRef(null);
   const arcDarkPathRef = useRef(null);
   const arcMaskPathRef = useRef(null);
+  const arcClipPathRef = useRef(null);
   /* How far the arc has straightened, for the ticker to size its logos by.
      A ref, because it changes every frame and the ticker reads it in its own
      loop rather than being re-rendered with it. */
@@ -674,15 +672,18 @@ export default function ImmersiveHero() {
      leading edge is all a wipe is. */
   const topWipeRef = useRef(null);
   const secondWipeRef = useRef(null);
+  /* The second paint of the rows. Kept out of the tree until a wipe starts,
+     so the arc can scale without redrawing a second copy of every logo. */
+  const wipesRef = useRef(null);
 
   /*
-   * Names for the two rows, so each can be drawn a second time in black over
-   * its own white. useId, because two of this component on one page would
-   * otherwise both answer to the same href.
+   * Where each row draws itself a second time, in black over its own white:
+   * groups inside LogoArc's wipe clips, handed to the rows' tickers. State
+   * rather than refs because the tickers render into them, and cannot until
+   * they exist.
    */
-  const uid = useId().replace(/:/g, '');
-  const topRowId = `clients-top-${uid}`;
-  const secondRowId = `clients-second-${uid}`;
+  const [topWipeSlot, setTopWipeSlot] = useState(null);
+  const [secondWipeSlot, setSecondWipeSlot] = useState(null);
   /* The heading the band carries off. */
   const arcTitleRef = useRef(null);
   /* The two pieces of the community panel, which are also the two things the
@@ -815,6 +816,9 @@ export default function ImmersiveHero() {
     const markWidth = markBox.offsetWidth;
     const stageWidth = stage.clientWidth;
     const stageHeight = stage.clientHeight;
+    /* Up here with the other reads: after the writes below it would make the
+       browser recalculate the whole stage's style mid-frame to answer it. */
+    const holderWidth = arcHolderRef.current?.offsetWidth ?? 0;
 
     // The disc's centre, as a pivot inside the lockup and as a point on the
     // stage: it is both what the zoom turns about and what has to land on the
@@ -984,7 +988,6 @@ export default function ImmersiveHero() {
      * off up the page.
      */
     const arcScale = 0.25 + grow * 0.75;
-    const holderWidth = arcHolderRef.current?.offsetWidth ?? 0;
     // The arc's box is 453.6 of its own units across, however wide it is drawn.
     const unit = (holderWidth * arcScale) / 453.6;
     const bandTop =
@@ -1133,6 +1136,13 @@ export default function ImmersiveHero() {
       }
     });
 
+    /* The outline the logos are clipped to, which is the same band. */
+    const outline = arcOutline(flat);
+
+    if (arcClipPathRef.current && arcClipPathRef.current.getAttribute('d') !== outline) {
+      arcClipPathRef.current.setAttribute('d', outline);
+    }
+
     /*
      * The black filling the band, and the paper shadow going with it.
      *
@@ -1162,20 +1172,45 @@ export default function ImmersiveHero() {
      * end of the reach to the other. `from` is which end it sets off from: that
      * frame's x points to the left of the screen, so 1 is a box coming in from
      * the left and -1 one coming in from the right.
+     *
+     * The whole of that second paint stays unrendered until a wipe has actually
+     * started. Up to then it is a copy of both rows, redrawn on every frame of
+     * the arc's scale for a clip that is still closed.
      */
+    const secondProgress = clamp01((playhead - WIPE_SECOND_AT) / WIPE_OVER);
+    const topProgress = clamp01((playhead - WIPE_TOP_AT) / WIPE_OVER);
     const wipe = (rect, progress, from) => {
       if (!rect) {
         return;
       }
 
       const span = 2 * middle.reach * easeLead(progress);
+      const x = (from > 0 ? middle.reach - span : -middle.reach).toFixed(2);
+      const width = span.toFixed(2);
 
-      rect.setAttribute('x', (from > 0 ? middle.reach - span : -middle.reach).toFixed(2));
-      rect.setAttribute('width', span.toFixed(2));
+      if (rect.getAttribute('x') !== x) {
+        rect.setAttribute('x', x);
+      }
+
+      if (rect.getAttribute('width') !== width) {
+        rect.setAttribute('width', width);
+      }
     };
 
-    wipe(secondWipeRef.current, clamp01((playhead - WIPE_SECOND_AT) / WIPE_OVER), 1);
-    wipe(topWipeRef.current, clamp01((playhead - WIPE_TOP_AT) / WIPE_OVER), -1);
+    const wiping = secondProgress > 0 || topProgress > 0;
+
+    if (wiping) {
+      wipe(secondWipeRef.current, secondProgress, 1);
+      wipe(topWipeRef.current, topProgress, -1);
+    }
+
+    if (wipesRef.current) {
+      const next = wiping ? '' : 'none';
+
+      if (wipesRef.current.style.display !== next) {
+        wipesRef.current.style.display = next;
+      }
+    }
 
     /*
      * And then everything that was holding the logos goes. One value for the
@@ -1400,6 +1435,14 @@ export default function ImmersiveHero() {
     };
   }, [measureCentre]);
 
+  /* Before the first paint, so the second copy of the rows is not drawn while
+     the arc is still scaling in. The scroll loop shows it once a wipe starts. */
+  useLayoutEffect(() => {
+    if (wipesRef.current) {
+      wipesRef.current.style.display = 'none';
+    }
+  }, []);
+
   useScrollPlayhead(sectionRef, applyPlayhead, !prefersReducedMotion);
 
   // Solid under a typist's hands, blinking whenever they have stopped.
@@ -1550,19 +1593,20 @@ export default function ImmersiveHero() {
               pathRef={arcPathRef}
               darkPathRef={arcDarkPathRef}
               maskPathRef={arcMaskPathRef}
+              clipPathRef={arcClipPathRef}
               inkRef={arcInkRef}
               darkClassName={styles.arcDark}
               inkClassName={styles.arcInk}
               fadeClassName={styles.bandFade}
               wipeClassName={styles.rowWipe}
-              wipeLogoClassName={styles.rowWipeLogos}
+              wipesRef={wipesRef}
               wipes={[
-                { id: secondRowId, rectRef: secondWipeRef, half: -1 },
-                { id: topRowId, rectRef: topWipeRef, half: 1 },
+                { slotRef: setSecondWipeSlot, rectRef: secondWipeRef, half: -1 },
+                { slotRef: setTopWipeSlot, rectRef: topWipeRef, half: 1 },
               ]}
             >
               <ArcTicker
-                id={topRowId}
+                twinContainer={topWipeSlot}
                 className={styles.tickerFade}
                 pathRef={arcPathRef}
                 items={CLIENTS_OUTER}
@@ -1574,7 +1618,7 @@ export default function ImmersiveHero() {
                 overhang={STROKE_WIDTH / 2}
               />
               <ArcTicker
-                id={secondRowId}
+                twinContainer={secondWipeSlot}
                 className={styles.tickerFade}
                 pathRef={arcPathRef}
                 items={CLIENTS_INNER}

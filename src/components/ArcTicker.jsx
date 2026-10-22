@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 /* All in the arc's own viewBox units, so they hold whatever size it is drawn at. */
 const LOGO_HEIGHT = 54;
@@ -19,6 +20,51 @@ const GAP_SHARE = 1.6;
  */
 const GROW_FLOOR = 0.58;
 const GAP_FLOOR = 0.75;
+
+/*
+ * The tallest bitmap a logo is drawn from, in device pixels. A row is never
+ * much more than 150 of them tall even on a large high-density screen, and
+ * some of the source files are over 1300: resampling those down on every frame,
+ * twice over, is most of what drawing the rows costs.
+ */
+const BITMAP_MAX_HEIGHT = 320;
+
+/*
+ * Each logo at no more than BITMAP_MAX_HEIGHT, and the same again as a black
+ * silhouette for the second paint of the row.
+ *
+ * The silhouette keeps the logo's alpha and drops its colour, which is what
+ * filter: brightness(0) did - done once here instead of on every frame. If the
+ * canvas will not hand the pixels back, the original file is used and the
+ * filter is kept for that one logo.
+ */
+function prepare(image) {
+  const width = image.naturalWidth;
+  const height = image.naturalHeight;
+  const scale = Math.min(1, BITMAP_MAX_HEIGHT / height);
+  const canvas = document.createElement('canvas');
+
+  canvas.width = Math.max(1, Math.round(width * scale));
+  canvas.height = Math.max(1, Math.round(height * scale));
+
+  const context = canvas.getContext('2d');
+  context.imageSmoothingQuality = 'high';
+
+  const toUrl = () =>
+    new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => (blob ? resolve(URL.createObjectURL(blob)) : reject()));
+    });
+
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  return toUrl().then((light) => {
+    context.globalCompositeOperation = 'source-in';
+    context.fillStyle = '#000';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    return toUrl().then((dark) => ({ light, dark }));
+  });
+}
 
 /*
  * A marquee of client logos riding the arc.
@@ -50,7 +96,7 @@ const GAP_FLOOR = 0.75;
  * other way beside it: both read the same geometry, so neither has to know the
  * shape and the two cannot come apart as it bends.
  *
- * Nothing fades at the ends. The band's own shape is the mask for everything
+ * Nothing fades at the ends. The band's own shape is the clip for everything
  * riding it, so a logo leaving simply slides out under the edge of the stroke
  * and is cut away by it - which is both why an opacity ramp is not needed and
  * why it would be wrong, since it would start dimming a logo that is still in
@@ -61,16 +107,20 @@ const GAP_FLOOR = 0.75;
  * pointer events off and there are no controls to reach.
  */
 export default function ArcTicker({
-  /*
-   * Given when something else has to draw this row a second time - a <use>
-   * needs a reference, and a row is one group however many times it is
-   * painted, so the copy cannot drift out of step with the original.
-   */
-  id,
   pathRef,
   items,
   running,
   className,
+  /*
+   * Where to draw the row a second time, in black - an element somewhere else
+   * in the same SVG, for whoever is clipping that copy. The copy is written by
+   * the same loop with the same values as the row itself, so it cannot drift
+   * out of step with it.
+   *
+   * Real nodes rather than a <use> of the row: a <use> mirrors every attribute
+   * written to what it references, which here is every logo on every frame.
+   */
+  twinContainer,
   /* Across the stroke rather than along it, in viewBox units: the distance
      from the path's own line to the line this row rides. */
   rowOffset = 0,
@@ -91,15 +141,17 @@ export default function ArcTicker({
   overhang = 0,
 }) {
   const groupRef = useRef(null);
+  const twinRef = useRef(null);
   /*
    * How wide each logo wants to be at the height they all share, which only the
-   * file itself can say. Decoded once: the browser is fetching these for the
-   * <image> elements anyway, so this reads the same cache entry.
+   * file itself can say, and the bitmaps each row is drawn from. Decoded once:
+   * the browser has these files cached already.
    */
-  const [aspects, setAspects] = useState(null);
+  const [logos, setLogos] = useState(null);
 
   useEffect(() => {
     let live = true;
+    const urls = [];
 
     Promise.all(
       items.map(
@@ -109,18 +161,30 @@ export default function ArcTicker({
 
             // A square is the least surprising fallback, and a logo that will
             // not decode is not going to be visible to be wrong about.
-            image.onload = () =>
-              resolve(image.naturalHeight ? image.naturalWidth / image.naturalHeight : 1);
-            image.onerror = () => resolve(1);
+            image.onload = () => {
+              const aspect = image.naturalHeight ? image.naturalWidth / image.naturalHeight : 1;
+              prepare(image)
+                .then(({ light, dark }) => {
+                  urls.push(light, dark);
+                  resolve({ aspect, light, dark, filtered: false });
+                })
+                .catch(() => resolve({ aspect, light: src, dark: src, filtered: true }));
+            };
+            image.onerror = () => resolve({ aspect: 1, light: src, dark: src, filtered: true });
             image.src = src;
           }),
       ),
-    ).then((measured) => {
-      if (live) setAspects(measured);
+    ).then((prepared) => {
+      if (live) {
+        setLogos(prepared);
+      } else {
+        urls.forEach((url) => URL.revokeObjectURL(url));
+      }
     });
 
     return () => {
       live = false;
+      urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [items]);
 
@@ -128,20 +192,15 @@ export default function ArcTicker({
     const path = pathRef.current;
     const group = groupRef.current;
 
-    if (!path || !group || !running || !aspects) {
+    if (!path || !group || !running || !logos) {
       return undefined;
     }
 
     const nodes = Array.from(group.children);
+    const count = nodes.length;
     const gap = height * GAP_SHARE;
-    const widths = aspects.map((aspect) => height * aspect);
+    const widths = logos.map(({ aspect }) => height * aspect);
 
-    /*
-     * Where the middle of each logo sits in the train, and how long the whole
-     * train is. Laid out once rather than per frame: it depends on the logos
-     * and not on the path, so bending the arc sends the same train along a
-     * different route instead of re-spacing it.
-     */
     /*
      * How much logo there is in front of each one. The train is laid out from
      * this per frame rather than once, because its two parts - the logos and
@@ -156,9 +215,17 @@ export default function ArcTicker({
       totalWidth += width;
     });
 
-    nodes.forEach((node, index) => {
-      node.setAttribute('width', widths[index].toFixed(2));
-    });
+    /*
+     * This frame's answer for each logo, worked out in full before any of it
+     * is written. getPointAtLength brings layout up to date before it answers,
+     * so a read after every write would lay the whole page out once per logo.
+     */
+    const transforms = new Array(count).fill(null);
+    /* What each node was last told, so an unchanged opacity is not rewritten:
+       it is a presentation attribute, and every write is a style recalc. */
+    const shown = new Array(count).fill(false);
+    const twinShown = new Array(count).fill(false);
+    let lastTwins = null;
 
     let frame = null;
     let last = null;
@@ -169,6 +236,23 @@ export default function ArcTicker({
      * moment the train resized; a fraction of it rides the change.
      */
     let progress = 0;
+
+    const place = (node, index, transform, seen) => {
+      if (!node) {
+        return;
+      }
+
+      const visible = transform !== null;
+
+      if (seen[index] !== visible) {
+        seen[index] = visible;
+        node.setAttribute('opacity', visible ? '1' : '0');
+      }
+
+      if (visible) {
+        node.setAttribute('transform', transform);
+      }
+    };
 
     const tick = (now) => {
       const elapsed = last === null ? 0 : (now - last) / 1000;
@@ -182,7 +266,7 @@ export default function ArcTicker({
        *
        * getPointAtLength clamps, so without this every logo that had run out
        * of path would stack up on the last point of it. Running the tangent on
-       * instead lets them carry on out of the band, where the mask takes them
+       * instead lets them carry on out of the band, where the clip takes them
        * off - which is what leaving at the end looks like when nothing is
        * fading.
        */
@@ -214,13 +298,13 @@ export default function ArcTicker({
       const flat = growRef ? growRef.current : 1;
       const grow = GROW_FLOOR + (1 - GROW_FLOOR) * flat;
       const gapGrow = GAP_FLOOR + (1 - GAP_FLOOR) * flat;
-      const loop = totalWidth * grow + nodes.length * gap * gapGrow;
+      const loop = totalWidth * grow + count * gap * gapGrow;
 
       // A tab left in the background hands back one enormous delta on return.
       progress = (progress + (SPEED * Math.min(elapsed, 0.1)) / loop) % 1;
       const offset = progress * loop;
 
-      nodes.forEach((node, index) => {
+      for (let index = 0; index < count; index += 1) {
         /*
          * The train runs backwards rather than its carriages being reordered,
          * so both rows are the one layout travelling opposite ways. The lean
@@ -246,27 +330,37 @@ export default function ArcTicker({
            cap is still on screen, and dropping it there is what made them
            vanish while they could plainly still be seen. */
         if (distance + reach < -overhang || distance - reach > length + overhang) {
-          node.setAttribute('opacity', '0');
-          return;
+          transforms[index] = null;
+        } else {
+          const point = sample(distance);
+          /*
+           * Turned to lie along the curve, and then half a turn further. The
+           * arc is travelled from the end that ends up on the right, so without
+           * the 180 every logo would ride it upside down.
+           */
+          const lean = (Math.atan2(point.ty, point.tx) * 180) / Math.PI + 180;
+
+          /* The last translate is in the turned frame, so its y runs across
+             the stroke whatever angle this stretch of the path is at - which
+             is what keeps a row parallel to the arc instead of to the screen. */
+          transforms[index] =
+            `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${lean.toFixed(2)}) translate(0 ${rowOffset.toFixed(2)}) scale(${grow.toFixed(4)}) translate(${(-widths[index] / 2).toFixed(2)} ${(-height / 2).toFixed(2)})`;
         }
+      }
 
-        const point = sample(distance);
-        /*
-         * Turned to lie along the curve, and then half a turn further. The arc
-         * is travelled from the end that ends up on the right, so without the
-         * 180 every logo would ride it upside down.
-         */
-        const lean = (Math.atan2(point.ty, point.tx) * 180) / Math.PI + 180;
+      const twins = twinRef.current ? twinRef.current.children : null;
 
-        node.setAttribute('opacity', '1');
-        /* The last translate is in the turned frame, so its y runs across the
-           stroke whatever angle this stretch of the path is at - which is what
-           keeps a row parallel to the arc instead of to the screen. */
-        node.setAttribute(
-          'transform',
-          `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${lean.toFixed(2)}) translate(0 ${rowOffset.toFixed(2)}) scale(${grow.toFixed(4)}) translate(${(-widths[index] / 2).toFixed(2)} ${(-height / 2).toFixed(2)})`,
-        );
-      });
+      /* The copy can be mounted, or mounted again, after this loop started,
+         and new nodes start out hidden whatever was last written. */
+      if (twins !== lastTwins) {
+        lastTwins = twins;
+        twinShown.fill(false);
+      }
+
+      for (let index = 0; index < count; index += 1) {
+        place(nodes[index], index, transforms[index], shown);
+        place(twins && twins[index], index, transforms[index], twinShown);
+      }
 
       frame = window.requestAnimationFrame(tick);
     };
@@ -274,20 +368,38 @@ export default function ArcTicker({
     frame = window.requestAnimationFrame(tick);
 
     return () => window.cancelAnimationFrame(frame);
-  }, [pathRef, items, running, rowOffset, direction, height, aspects, growRef, overhang]);
+  }, [pathRef, items, running, rowOffset, direction, height, logos, growRef, overhang]);
 
-  return (
-    <g ref={groupRef} id={id} className={className} aria-hidden="true" pointerEvents="none">
-      {items.map((src, index) => (
+  const images = (dark) =>
+    items.map((src, index) => {
+      const logo = logos && logos[index];
+
+      return (
         <image
           /* eslint-disable-next-line react/no-array-index-key */
           key={index}
-          href={src}
+          href={logo ? (dark ? logo.dark : logo.light) : undefined}
+          width={logo ? (height * logo.aspect).toFixed(2) : undefined}
           height={height}
           opacity="0"
           preserveAspectRatio="xMidYMid meet"
+          style={dark && logo && logo.filtered ? { filter: 'brightness(0)' } : undefined}
         />
-      ))}
-    </g>
+      );
+    });
+
+  return (
+    <>
+      <g ref={groupRef} className={className} aria-hidden="true" pointerEvents="none">
+        {images(false)}
+      </g>
+      {twinContainer &&
+        createPortal(
+          <g ref={twinRef} className={className} aria-hidden="true" pointerEvents="none">
+            {images(true)}
+          </g>,
+          twinContainer,
+        )}
+    </>
   );
 }

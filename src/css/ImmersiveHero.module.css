@@ -842,18 +842,6 @@
   opacity: calc(1 - var(--wipe-fade, 0));
 }
 
-/*
- * The same row again over that white, in black.
- *
- * brightness(0) rather than a swap for black copies of the files: it takes
- * every channel to nothing and leaves alpha alone, so a white logo comes out
- * black at exactly its own shape and a logo that is not white comes out black
- * too. Nothing here has to know what any of them look like.
- */
-.rowWipeLogos {
-  filter: brightness(0);
-}
-
 /* The logos arrive last, once the page is nearly light: opacity clamps on its
    own, so the division alone holds them at nothing until the sheet is 72% up. */
 .tickerFade {
