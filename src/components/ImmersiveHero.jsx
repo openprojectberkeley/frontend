@@ -8,6 +8,7 @@ import useScrollPlayhead from './useScrollPlayhead';
 import LogoArc, { arcMiddle, arcOutline, arcPath, STROKE_WIDTH } from './LogoArc';
 import ArcTicker from './ArcTicker';
 import LogoSpill from './LogoSpill';
+import MomentStrip from './MomentStrip';
 import { clients } from '../data/clientsData';
 import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWeWork';
 import speechbubble from '../images/speechbubbles.png';
@@ -52,7 +53,10 @@ const SCENES = [
      overlap by design - so this is where the community takes over the frame
      rather than where the arc has finished leaving it. */
   { name: 'the arc returns', end: 3.2 },
-  { name: 'the community rises', end: 4.9 },
+  /* The panel is still settling when the frame starts travelling, which is the
+     same overlap as above: scene five opens on scene four finishing. */
+  { name: 'the community rises', end: 3.4 },
+  { name: 'the moments pass', end: 6.4 },
 ];
 
 const TIMELINE_END = SCENES[SCENES.length - 1].end;
@@ -291,6 +295,35 @@ const BANNER_OUT_OVER = 0.13;
 const TITLE_GONE_AT = 3.4;
 
 /*
+ * Scene five: the frame starts travelling.
+ *
+ * The panel and the pile it has just carried up the page stop being the thing
+ * on screen and become the thing being left behind - everything already in
+ * shot slides off to the left while scattered moments come past from the
+ * right. The scroll stays vertical; what it drives is sideways.
+ *
+ * It opens while the panel is still settling, which is the same overlap the
+ * rest of the timeline is built on: the pan is already under way by the time
+ * the thing being panned has finished arriving.
+ *
+ * Linear, with no easing anywhere on it. Everything else here is a move with
+ * a beginning and an end and is eased accordingly; this is the reader's own
+ * scrolling turned on its side, and a scroller that accelerates out from
+ * under the hand feels broken rather than smooth.
+ */
+const PAN_AT = 3.4;
+const PAN_OVER = 2.9;
+/*
+ * How far the frame travels over that, in screens.
+ *
+ * The tuning knob for the whole scene: it is what decides how much of the
+ * strip is seen and how fast it goes past, and the moments are placed in the
+ * same units - see communityMoments.js - so the two can be read against each
+ * other.
+ */
+const PAN_TRAVEL = 3.6;
+
+/*
  * The last beat. A black banner arrives behind the heading, the heading rises
  * out of the middle of the screen to sit near the top of it, and the logos of
  * where our members have gone start tipping out of the bar.
@@ -316,6 +349,14 @@ const BANNER_OVER = 0.115;
 const BANNER_INK_AT = 2.995;
 const TITLE_RAISE_AT = 2.95;
 const TITLE_RAISE_OVER = 0.25;
+/*
+ * And then it starts emptying.
+ *
+ * Its own mark rather than the bar's arrival, which is what it used to ride.
+ * A bar that is pouring logos before it has finished arriving is a bar that
+ * was full of them all along; let it get there, be read as a bar, and tip.
+ */
+const SPILL_AT = 3.0;
 /* How far past the top of the band to carry it before it is certainly gone. */
 const ARC_EXIT_CLEAR = 48;
 
@@ -686,11 +727,24 @@ export default function ImmersiveHero() {
   const [secondWipeSlot, setSecondWipeSlot] = useState(null);
   /* The heading the band carries off. */
   const arcTitleRef = useRef(null);
-  /* The two pieces of the community panel, which are also the two things the
-     fallen logos are pushed along by as it comes up. */
+  /*
+   * The three pieces of the community panel, which are also the three things
+   * the fallen logos are pushed along by as it comes up.
+   *
+   * Separately rather than as one box, because the panel is mostly air: the
+   * heading is a short word above a much wider paragraph, and a single box
+   * around the pair sweeps the logos out of the gap beside the heading that
+   * they ought to be able to sit in. The star is a shape rather than a box
+   * for the same reason, only more so.
+   */
   const communityStarRef = useRef(null);
-  const communityTextRef = useRef(null);
-  const communityBodies = useRef([communityStarRef, communityTextRef]);
+  const communityTitleRef = useRef(null);
+  const communityBodyRef = useRef(null);
+  const communityBodies = useRef([
+    { ref: communityStarRef, outline: star },
+    communityTitleRef,
+    communityBodyRef,
+  ]);
   const readoutValueRef = useRef(null);
   const readoutSceneRef = useRef(null);
   /* Two hidden copies of the word: the club's name, which is the box the lockup
@@ -880,7 +934,7 @@ export default function ImmersiveHero() {
       titleGone: crossed(flags.titleGone, playhead, TITLE_GONE_AT, 0.02),
       /* What lets the spill go. Everything past this point is the spill's own
          clock, which is why it is a flag and not a value. */
-      spill: crossed(flags.spill, playhead, BANNER_AT, 0.02),
+      spill: crossed(flags.spill, playhead, SPILL_AT, 0.02),
     };
 
     if (Object.keys(next).some((key) => next[key] !== flags[key])) {
@@ -1086,6 +1140,18 @@ export default function ImmersiveHero() {
         COMMUNITY_LEAD_IN,
         COMMUNITY_LEAD_OUT,
       ).toFixed(4),
+    );
+    /*
+     * Scene five: how far the frame has travelled, in pixels of the stage.
+     *
+     * One number for the whole scene. The panel, the pile and every moment
+     * card are moved by this and nothing else, which is what keeps them a
+     * single picture being panned across rather than a set of things that
+     * happen to be sliding at similar rates.
+     */
+    stage.style.setProperty(
+      '--pan',
+      `${(-clamp01((playhead - PAN_AT) / PAN_OVER) * PAN_TRAVEL * stageWidth).toFixed(1)}px`,
     );
     /* The bar's exit, on the curve it arrived on so the two read as one move
        made twice. */
@@ -1660,16 +1726,20 @@ export default function ImmersiveHero() {
           to sit further down the page, arriving at the end of the hero instead
           of being scrolled past after it.
 
-          The star and the paragraph are handed to the spill as obstacles, so
-          the panel does not slide up through the pile of logos on the floor -
-          it gets underneath them and carries them up the page.
+          The star, the heading and the paragraph are handed to the spill as
+          obstacles, so the panel does not slide up through the pile of logos
+          on the floor - it gets underneath them and carries them up the page.
+          Three of them and not one: what pushes is the words and the star
+          themselves, and the logos keep the room between them.
         */}
         {!prefersReducedMotion && (
           <div className={styles.community} aria-hidden="true">
             <img ref={communityStarRef} className={styles.communityStar} src={star} alt="" />
-            <div ref={communityTextRef} className={styles.communityText}>
-              <h2 className={styles.communityTitle}>Community</h2>
-              <p className={styles.communityBody}>
+            <div className={styles.communityText}>
+              <h2 ref={communityTitleRef} className={styles.communityTitle}>
+                Community
+              </h2>
+              <p ref={communityBodyRef} className={styles.communityBody}>
                 Project teams will be with a{' '}
                 <span className={styles.communityHighlight}>group of students (10-15)</span> to
                 encourage a tight-knit community where team members can really get to know each
@@ -1681,6 +1751,18 @@ export default function ImmersiveHero() {
             </div>
           </div>
         )}
+
+        {/*
+          Scene five, waiting off the right of the screen.
+
+          The panel above and the pile on the floor both carry the stage's
+          --pan and are taken off to the left by it; these come the other way
+          on the same number, each at its own share of it. Nothing about the
+          strip is timed here - where every card waits, how fast it travels and
+          how big it is are communityMoments.js, and the one thing this scene
+          needs from the playhead is --pan itself.
+        */}
+        {!prefersReducedMotion && <MomentStrip />}
 
         {/* Outside the arc's holder, which is being scaled: a heading inside it
             would be scaled with it. Under it in the stack, though, so the band

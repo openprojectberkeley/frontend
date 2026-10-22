@@ -741,6 +741,17 @@
   inset: 0;
   z-index: 5;
   pointer-events: none;
+  /*
+   * The pile goes with the panel in scene five.
+   *
+   * On the container rather than on each logo: the per-logo transform is the
+   * simulation's and is rewritten every frame, and the pan is the frame those
+   * transforms are read in. It is also why the spill measures the panel
+   * against this element rather than the stage - see LogoSpill - so that the
+   * two moving together comes to the world standing still.
+   */
+  transform: translateX(var(--pan, 0px));
+  will-change: transform;
 }
 
 /*
@@ -765,6 +776,9 @@
   inset: 0;
   z-index: 6;
   pointer-events: none;
+  /* With the pile, or the boxes would come off the logos the moment the pan
+     started and the picture would be a lie exactly when it was wanted. */
+  transform: translateX(var(--pan, 0px));
 }
 
 .spillDebug canvas {
@@ -1245,10 +1259,11 @@
 /*
  * Scene four: the community panel, which comes up from under the fold.
  *
- * It is a wall as much as a picture. The two pieces inside it are handed to
- * the spill as obstacles, so the pile of logos lying on the floor is pushed up
- * the page in front of them rather than being slid through - which is why they
- * are two boxes and not one, and why the star keeps its own.
+ * It is a wall as much as a picture. The three pieces inside it - the star,
+ * the heading and the paragraph - are handed to the spill as obstacles, so the
+ * pile of logos lying on the floor is pushed up the page in front of them
+ * rather than being slid through. Three walls and not one because the panel is
+ * mostly air, and a box drawn round the whole of it pushes the air too.
  *
  * At nil the whole panel sits just below the fold, so nothing of it shows
  * during the scenes before it. The distance is the panel's own half-height
@@ -1267,21 +1282,22 @@
   gap: clamp(1.5rem, 4vw, 3.5rem);
   width: min(calc(100vw - 2 * var(--margin-from-screen)), 68rem);
   padding: 0 var(--margin-from-screen);
+  /* And then scene five carries the whole thing sideways, in the stage's own
+     pixels. */
   transform: translate(-50%, -50%)
-    translateY(calc((1 - var(--community, 0)) * (50svh + 50% + 2vh)));
+    translateY(calc((1 - var(--community, 0)) * (50svh + 50% + 2vh)))
+    translateX(var(--pan, 0px));
   pointer-events: none;
   will-change: transform;
 }
 
 .communityStar {
   flex: none;
-  width: clamp(6rem, 15vw, 12.25rem);
+  width: clamp(9rem, 21vw, 18rem);
   height: auto;
 }
 
 .communityText {
-  /* Its own box rather than the panel's, because this is the half the logos
-     are pushed by and the star is the other. */
   display: flex;
   flex-direction: column;
   gap: clamp(0.5rem, 1.4vw, 1rem);
@@ -1289,6 +1305,10 @@
 
 .communityTitle {
   margin: 0;
+  /* Only as wide as the word. A heading in a flex column is otherwise as wide
+     as the paragraph under it, and the heading is a wall: stretched, it sweeps
+     the logos out of the space to the right of it that they can sit in. */
+  align-self: flex-start;
   font-family: var(--font-title);
   font-size: clamp(1.75rem, 4.4vw, 3.25rem);
   line-height: 1.1;
@@ -1309,6 +1329,65 @@
   max-width: 62ch;
   font-size: clamp(0.95rem, 1.5vw, 1.2rem);
   line-height: 1.55;
+  color: #1A1A1A;
+}
+
+/*
+ * Scene five: the strip of moments coming the other way.
+ *
+ * Over the panel rather than behind it. These are the near distance - the
+ * thing the camera is passing - and the panel and its pile are what is being
+ * left; a card sliding under the paragraph it has caught up with would read as
+ * the strip being somewhere else rather than nearer.
+ */
+.moments {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+/*
+ * One card, and the whole of the scene's movement.
+ *
+ * Its own four numbers are written once by MomentStrip and never again; the
+ * only thing that changes after that is --pan, which the stage sets from the
+ * playhead. So the travel is `where it waits, plus its share of how far the
+ * frame has gone`, and the compositor has everything it needs to carry all
+ * eight of them without a frame of script.
+ *
+ * The origin is the top left corner, so zoom sizes a card without moving it
+ * out of the lane it was given: scaled about its centre, a small card would
+ * drift down the screen and a large one up it, and the lanes in the data would
+ * stop meaning what they say.
+ */
+.moment {
+  position: absolute;
+  top: var(--lane, 0%);
+  left: 0;
+  width: clamp(14rem, 26vw, 24rem);
+  margin: 0;
+  transform: translate3d(calc(var(--stagger, 100vw) + var(--pan, 0px) * var(--speed, 1)), 0, 0)
+    scale(var(--zoom, 1));
+  transform-origin: top left;
+  will-change: transform;
+}
+
+/* Four by three, whichever of the two is in it, so the strip keeps its rhythm
+   however the photographs that land here are cropped. */
+.momentImage,
+.momentBlank {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.momentCaption {
+  margin-top: 0.7rem;
+  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  line-height: 1.4;
   color: #1A1A1A;
 }
 

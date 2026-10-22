@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Matter from 'matter-js';
 
+import { measureOutline } from './alphaOutline';
+
 /*
  * Logos tipping out of the banner and piling up at the bottom of the screen.
  *
@@ -196,7 +198,27 @@ const DEBUG_WALL = SHOW_HITBOXES
     }
   : null;
 
+/*
+ * The smallest sliver of a traced outline worth making a body out of, in
+ * square pixels.
+ *
+ * Ear clipping leaves the occasional needle where two corners of the trace
+ * nearly coincide, and a body with no area has no inertia either - matter
+ * divides by it. Dropping them changes nothing anyone can see.
+ */
+const MIN_PART_AREA = 4;
+
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
+
+/*
+ * An obstacle is a ref, or a ref with an image to take its shape from.
+ *
+ * The plain form is the common one and stays plain. The object form is for
+ * something whose box is not its shape - see alphaOutline.js - and the two are
+ * told apart by the ref itself, which is the only object here with a current.
+ */
+const entryRef = (entry) => (entry && 'current' in entry ? entry : (entry?.ref ?? null));
+const entryOutline = (entry) => (entry && 'current' in entry ? null : (entry?.outline ?? null));
 
 /*
  * Where the ink is inside the file, as fractions of it, and whether that ink
@@ -331,6 +353,11 @@ export default function LogoSpill({
    * themselves. Each becomes a static body the size of its box, moved to
    * follow it every frame - so content that slides up from underneath shoves
    * the logos along in front of it rather than passing through them.
+   *
+   * An entry may instead be { ref, outline }, where outline is an image src.
+   * That one collides as the shape drawn in the image rather than as its box,
+   * which is what a picture with corners full of nothing needs: the logos
+   * come to rest against the thing itself.
    */
   obstacleRefs,
   /* Logos to collide as a circle whatever the corner test made of them. */
@@ -342,6 +369,9 @@ export default function LogoSpill({
   const groupRef = useRef(null);
   const debugRef = useRef(null);
   const [ink, setInk] = useState(null);
+  /* One entry per obstacle: its traced shape, or null for the ones that are
+     happy being their own box. */
+  const [outlines, setOutlines] = useState(null);
   /*
    * The loop has to see the flag change without being torn down by it, so the
    * flag lives in a ref and a run id is what actually starts a world. The id
@@ -375,6 +405,27 @@ export default function LogoSpill({
       live = false;
     };
   }, [items]);
+
+  /* The obstacles that collide as a picture rather than as a box, traced once.
+     Nothing is built until this has answered, which costs nothing: the spill
+     is a long way down the page from where the component mounts. */
+  useEffect(() => {
+    let live = true;
+
+    Promise.all(
+      (obstacleRefs ?? []).map((entry) => {
+        const src = entryOutline(entry);
+
+        return src ? measureOutline(src) : Promise.resolve(null);
+      }),
+    ).then((measured) => {
+      if (live) setOutlines(measured);
+    });
+
+    return () => {
+      live = false;
+    };
+  }, [obstacleRefs]);
 
   /*
    * How big each one is drawn: the same area of ink for every logo, the
@@ -417,7 +468,7 @@ export default function LogoSpill({
     const group = groupRef.current;
     const stage = stageRef.current;
 
-    if (!runId || !group || !stage || !items.length || !sized) {
+    if (!runId || !group || !stage || !items.length || !sized || !outlines) {
       return undefined;
     }
 
@@ -448,6 +499,15 @@ export default function LogoSpill({
     /* One static body per obstacle, made the first time its element has a
        size to measure, and moved to follow it from then on. */
     const obstacles = (obstacleRefs ?? []).map(() => null);
+    /*
+     * Where each obstacle's body sits relative to the middle of its element.
+     *
+     * Zero for a box, and not for a traced one: matter puts a compound body's
+     * position at its centre of mass, and the middle of a star's mass is not
+     * the middle of the picture it was cut out of. Carrying the difference
+     * here is what keeps the shape lined up with the thing on the page.
+     */
+    const offsets = (obstacleRefs ?? []).map(() => ({ x: 0, y: 0 }));
     /* Whether each body was asleep at the end of the last frame, so that the
        moment one wakes can be spotted and passed on. */
     const slept = nodes.map(() => false);
@@ -494,6 +554,35 @@ export default function LogoSpill({
 
     Composite.add(engine.world, dragging);
 
+    /*
+     * The frame the simulation is in, which is this group and not the stage.
+     *
+     * The two are the same box until the page slides the pile sideways, and
+     * then they are not: the group carries that move as a transform, so a logo
+     * written to x = 40 is drawn wherever 40 has been carried to. Measuring
+     * everything the world is told about against the group is what makes the
+     * move cost the world nothing - the panel and the pile travel together and
+     * the simulation never learns it happened. Against the stage, the panel
+     * would arrive in the world as a wall crossing the screen and would plough
+     * the whole pile into the corner.
+     *
+     * The mouse is bound to the stage, because that is the element with the
+     * pointer on it, so it is handed the difference: an offset that turns
+     * where the cursor is into where the cursor is in the world.
+     */
+    const readFrame = () => {
+      const frameBox = group.getBoundingClientRect();
+      const stageBox = stage.getBoundingClientRect();
+      const offsetX = stageBox.left - frameBox.left;
+      const offsetY = stageBox.top - frameBox.top;
+
+      if (mouse.offset.x !== offsetX || mouse.offset.y !== offsetY) {
+        Mouse.setOffset(mouse, { x: offsetX, y: offsetY });
+      }
+
+      return frameBox;
+    };
+
     /* The engine's own picture of the world, drawn over the stage. */
     let render = null;
 
@@ -520,7 +609,7 @@ export default function LogoSpill({
 
     const spawn = (index) => {
       const bar = originRef.current?.getBoundingClientRect();
-      const stageBox = stage.getBoundingClientRect();
+      const frameBox = readFrame();
 
       if (!bar) {
         return;
@@ -529,8 +618,8 @@ export default function LogoSpill({
       const shape = sized[index];
       /* Across the banner rather than across the screen: they come out of the
          word, so they should start under it. */
-      const x = bar.left - stageBox.left + Math.random() * bar.width;
-      const y = bar.bottom - stageBox.top + shape.inkHeight / 2;
+      const x = bar.left - frameBox.left + Math.random() * bar.width;
+      const y = bar.bottom - frameBox.top + shape.inkHeight / 2;
       const options = {
         ...MATERIAL,
         angle: (Math.random() * 2 - 1) * 0.25,
@@ -575,7 +664,7 @@ export default function LogoSpill({
     };
 
     /*
-     * Where each obstacle's element is this frame, in the stage's pixels.
+     * Where each obstacle's element is this frame, in the world's pixels.
      *
      * Read before the stepping and then moved towards in pieces, because a
      * panel driven by the scroll can cover half the screen between two frames
@@ -583,10 +672,10 @@ export default function LogoSpill({
      * on the other side of the pile, which is what it was doing before.
      */
     const readObstacles = () => {
-      const stageBox = stage.getBoundingClientRect();
+      const frameBox = readFrame();
 
-      return (obstacleRefs ?? []).map((ref) => {
-        const element = ref?.current;
+      return (obstacleRefs ?? []).map((entry) => {
+        const element = entryRef(entry)?.current;
 
         if (!element) {
           return null;
@@ -599,12 +688,65 @@ export default function LogoSpill({
         }
 
         return {
-          x: box.left - stageBox.left + box.width / 2,
-          y: box.top - stageBox.top + box.height / 2,
+          x: box.left - frameBox.left + box.width / 2,
+          y: box.top - frameBox.top + box.height / 2,
           width: box.width,
           height: box.height,
         };
       });
+    };
+
+    /*
+     * One obstacle's body, the first time its element has a size to make it
+     * from: a plain box, or the traced shape cut into triangles.
+     *
+     * The triangles are built in the element's own frame, centred on nothing
+     * in particular, and the body that comes out reports where its centre of
+     * mass landed. That is the offset handed back, and every move afterwards
+     * is made against it. Each triangle is its own convex part, because the
+     * engine resolves contacts against convex shapes only - a concave body is
+     * a bag of them, and the bag is what collides like a star.
+     */
+    const buildObstacle = (target, outline) => {
+      const options = { isStatic: true, friction: 0.4, ...DEBUG_WALL };
+
+      if (outline) {
+        const parts = [];
+
+        outline.forEach((triangle) => {
+          const points = triangle.map((point) => ({
+            x: (point.x - 0.5) * target.width,
+            y: (point.y - 0.5) * target.height,
+          }));
+          const area =
+            Math.abs(
+              (points[1].x - points[0].x) * (points[2].y - points[0].y) -
+                (points[1].y - points[0].y) * (points[2].x - points[0].x),
+            ) / 2;
+
+          if (area < MIN_PART_AREA) {
+            return;
+          }
+
+          const centreX = (points[0].x + points[1].x + points[2].x) / 3;
+          const centreY = (points[0].y + points[1].y + points[2].y) / 3;
+
+          /* Placed at its own centroid, which is where it already is: the
+             piece keeps the position the trace gave it. */
+          parts.push(Bodies.fromVertices(centreX, centreY, [points], options));
+        });
+
+        if (parts.length) {
+          const body = parts.length === 1 ? parts[0] : Body.create({ parts, ...options });
+
+          return { body, offset: { x: body.position.x, y: body.position.y } };
+        }
+      }
+
+      return {
+        body: Bodies.rectangle(target.x, target.y, target.width, target.height, options),
+        offset: { x: 0, y: 0 },
+      };
     };
 
     /*
@@ -622,20 +764,24 @@ export default function LogoSpill({
         }
 
         if (!obstacles[index]) {
-          obstacles[index] = Bodies.rectangle(target.x, target.y, target.width, target.height, {
-            isStatic: true,
-            friction: 0.4,
-            ...DEBUG_WALL,
+          const built = buildObstacle(target, outlines[index]);
+
+          obstacles[index] = built.body;
+          offsets[index] = built.offset;
+          Body.setPosition(built.body, {
+            x: target.x + built.offset.x,
+            y: target.y + built.offset.y,
           });
-          Composite.add(engine.world, obstacles[index]);
+          Composite.add(engine.world, built.body);
 
           return;
         }
 
         const obstacle = obstacles[index];
+        const offset = offsets[index];
         const from = obstacle.position;
-        const toX = from.x + (target.x - from.x) * through;
-        const toY = from.y + (target.y - from.y) * through;
+        const toX = from.x + (target.x + offset.x - from.x) * through;
+        const toY = from.y + (target.y + offset.y - from.y) * through;
 
         if (Math.abs(toX - from.x) < 0.05 && Math.abs(toY - from.y) < 0.05) {
           /*
@@ -933,7 +1079,7 @@ export default function LogoSpill({
     return retire;
     // sized is rebuilt each render; ink and scales are what actually change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runId, items, stageRef, originRef, ink, scales, obstacleRefs, roundSet]);
+  }, [runId, items, stageRef, originRef, ink, scales, obstacleRefs, outlines, roundSet]);
 
   if (!items.length) {
     return null;
