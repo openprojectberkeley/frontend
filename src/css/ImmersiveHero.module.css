@@ -424,6 +424,93 @@
 }
 
 /*
+ * The stars of scene two: tiny squares of the sheet's own white, each at an
+ * angle of its own and slowly turning, on three layers of parallax behind the
+ * bubbles.
+ *
+ * The crowd along the bottom of the screen is the point of the field, and the
+ * mask is what makes it one. Every square climbs, so a band built only out of
+ * where they were placed would climb away with them; masked, a square dims as
+ * it rises however long it has been going, and the thick of them is always
+ * against the bottom edge - which is the edge the white sheet arrives from,
+ * and what they are meant to be dissolving into.
+ *
+ * The field is timed against that sheet rather than against a mark of its own:
+ * --stars is the arrival and what is left of --sheet is the departure, so by
+ * the time the white is up the squares are at nil - and four layers under it
+ * besides.
+ */
+.starField {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: calc(var(--stars, 0) * (1 - var(--sheet, 0)));
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.22) 42%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.22) 42%, #000 100%);
+  /* The default would tile the gradient, and the tile below the field starts
+     transparent again - which is a line across the bottom of the stage for
+     arriving squares to blink over. */
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/*
+ * Anchored to the bottom of the stage and travelling up it exactly as the
+ * bubbles are - see .bubble below for what --pad and --speed mean.
+ *
+ * Deliberately no `will-change: transform`. There are seventy of these and a
+ * hint on each is seventy layers to keep; the field is a masked layer already,
+ * and what is in it is a few pixels of flat colour to repaint.
+ */
+.star {
+  position: absolute;
+  top: 100%;
+  /* Below about two pixels a square is dust that flickers as it turns rather
+     than a shape at an angle, and a vmin on a phone is not much. */
+  width: max(2px, var(--size, 0.6vmin));
+  height: max(2px, var(--size, 0.6vmin));
+  transform: translate(-50%, -50%)
+    translateY(calc(var(--pad, 20vh) - var(--rise, 0) * var(--speed, 120vh)));
+}
+
+/*
+ * The square itself, in the sheet's own #FFFDF8 rather than a plain white: the
+ * colour it blends into at the bottom of the screen is the colour it is
+ * already painted in.
+ *
+ * Its opacity is the star's own and multiplies the field's. How long the turn
+ * takes, which way round it goes and how far into it the square starts are the
+ * component's - the delay negative, so every one of them is already part way
+ * round at the moment the page loads and no two sit at the same angle.
+ */
+.starSpin {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #FFFDF8;
+  animation: starTurn 60s linear infinite;
+}
+
+@keyframes starTurn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+ * A phone does without the finest layer, which is also the most crowded of the
+ * three: thirty squares of two pixels each spread over a screen that narrow is
+ * a grain over the picture rather than a sky behind it, and it is the layer
+ * whose squares are nearest their floor size anyway.
+ */
+@media (max-width: 760px) {
+  .starFine {
+    display: none;
+  }
+}
+
+/*
  * Scene two. Every bubble is anchored to the bottom of the stage, waits --pad
  * below it, and then travels --speed upward over the course of the scene.
  *
@@ -1163,6 +1250,9 @@
   .bubbleCircle,
   .floatSlow,
   .floatSlower,
+  /* The field is not rendered at all under reduced motion; this is only so a
+     square cannot be left turning if it ever is. */
+  .starSpin,
   .drift1,
   .drift2,
   .drift3,

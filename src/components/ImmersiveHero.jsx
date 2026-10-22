@@ -73,6 +73,19 @@ const ZOOM_END = SCENES[0].end;
  */
 const BUBBLE_RISE_END = 4.2;
 
+/*
+ * Where the stars come up.
+ *
+ * Over the opening of the scene rather than at the first frame of it. The
+ * bubbles get a gate instead - a fade a fiftieth of the scene long, which is
+ * only there to stop their float lifting a cap of colour over the fold before
+ * the scene has started - because a bubble should look like it has risen into
+ * shot. The stars have not risen from anywhere by the time they are seen, so
+ * they fade in on their own account.
+ */
+const STARS_AT = ZOOM_END;
+const STARS_OVER = 0.45;
+
 /* Scene three: the arc comes back from beyond the bottom right corner, over
    half a screen of scrolling, and holds for the rest of the timeline. */
 const ARC_RETURN_AT = SCENES[1].end;
@@ -539,6 +552,86 @@ const BUBBLES = [
   { size: 7, left: 36, stagger: 30, speed: 268, colour: 'magenta', layer: 0, opacity: 0.44 },
 ];
 
+/*
+ * The stars behind them: tiny white squares, each at an angle of its own and
+ * turning slowly, riding the same --rise the bubbles do.
+ *
+ * Three layers at a fraction of the bubbles' speed, which is what puts them
+ * behind the flock rather than among it - 96vh against the slowest bubble's
+ * 212 is a backdrop, and the far layer moving least is the whole of the
+ * parallax. Which way round that goes is the opposite of the bubbles above,
+ * and deliberately: theirs is about which one carries the copy, this is about
+ * distance.
+ *
+ * `count` is how many, `size` a side in vmin, `speed` how far one travels over
+ * the scene in vh, `opacity` how much of the sheet's white is left in it and
+ * `spin` how long one turn takes.
+ */
+const STAR_LAYERS = [
+  { count: 30, size: 0.42, speed: 96, opacity: 0.24, spin: 88 },
+  { count: 24, size: 0.66, speed: 138, opacity: 0.36, spin: 67 },
+  { count: 16, size: 0.98, speed: 186, opacity: 0.48, spin: 49 },
+];
+
+/*
+ * The field is scattered rather than arranged, but it is the same scatter on
+ * every load: a linear congruential generator from a seed written down here,
+ * not Math.random.
+ *
+ * For the reason the scramble above picks its glyphs by arithmetic - everything
+ * on this timeline is a function of the playhead, and a sky that changed on
+ * every visit would be the one part of it that could not be scrolled back to
+ * or pointed at twice.
+ */
+const STAR_SEED = 20260517;
+
+function scatter(seed) {
+  let state = seed;
+
+  return () => {
+    state = (state * 1664525 + 1013904223) % 4294967296;
+
+    return state / 4294967296;
+  };
+}
+
+const STARS = STAR_LAYERS.flatMap((layer, index) => {
+  const random = scatter(STAR_SEED + index);
+
+  return Array.from({ length: layer.count }, () => {
+    const spin = layer.spin * (0.8 + random() * 0.4);
+
+    return {
+      left: random() * 100,
+      /*
+       * How far below the fold it waits, so they keep arriving through the
+       * opening of the scene instead of entering as one flock.
+       *
+       * Spread this wide and no wider: the sheet starts up at playhead 2,
+       * barely over a third of the way through the rise, and a square still
+       * below the fold by then would never be seen at all.
+       */
+      pad: random() * 78,
+      size: layer.size * (0.75 + random() * 0.5),
+      speed: layer.speed * (0.88 + random() * 0.24),
+      opacity: layer.opacity * (0.7 + random() * 0.6),
+      spin,
+      /*
+       * One number for both the angle it sits at and where it is in its turn:
+       * a square dropped part way into an eighty second rotation is a square at
+       * an angle, and no two of them agree on either.
+       */
+      delay: -random() * spin,
+      /* Half of them turning the other way, so the field has no drift of its
+         own to notice. */
+      reverse: random() < 0.5,
+      /* The finest layer is also the most crowded, and is the one a phone does
+         without. See .starFine. */
+      fine: index === 0,
+    };
+  });
+});
+
 const clamp01 = (value) => Math.min(1, Math.max(0, value));
 
 /*
@@ -1004,6 +1097,19 @@ export default function ImmersiveHero() {
      * entering, not as a flock fading up.
      */
     stage.style.setProperty('--bubble-gate', clamp01(rise / GATE_RISE).toFixed(4));
+
+    /*
+     * And the stars behind them, fading up over the opening of the scene.
+     *
+     * Only the arrival is here. Nothing takes them away again: the stylesheet
+     * multiplies this by what is left of --sheet, so the white rising over them
+     * is the one thing that ends them, and they cannot outlive it however the
+     * scene before is retimed.
+     */
+    stage.style.setProperty(
+      '--stars',
+      smoothstep(clamp01((playhead - STARS_AT) / STARS_OVER)).toFixed(4),
+    );
 
     // --- scene 3: the arc comes back ----------------------------------------
     /*
@@ -1597,6 +1703,41 @@ export default function ImmersiveHero() {
           back of the pack document order is what decides.
         */}
         {!prefersReducedMotion && <span className={styles.swirl} aria-hidden="true" />}
+
+        {/*
+          The stars, between the swirl and the bubbles. All three sit at the
+          back of the pack on z-index 0, where document order is what decides,
+          so this is a backdrop to the flock and a sky over the swirl.
+        */}
+        {!prefersReducedMotion && (
+          <div className={styles.starField} aria-hidden="true">
+            {STARS.map((star, index) => (
+              <span
+                key={index}
+                className={`${styles.star} ${star.fine ? styles.starFine : ''}`}
+                style={{
+                  left: `${star.left.toFixed(2)}%`,
+                  '--pad': `${star.pad.toFixed(1)}vh`,
+                  '--speed': `${star.speed.toFixed(1)}vh`,
+                  '--size': `${star.size.toFixed(3)}vmin`,
+                }}
+              >
+                {/* The travel is the span's; the turn is this one's. One
+                    transform each, so neither has to be written in terms of
+                    the other. */}
+                <i
+                  className={styles.starSpin}
+                  style={{
+                    opacity: star.opacity.toFixed(3),
+                    animationDuration: `${star.spin.toFixed(1)}s`,
+                    animationDelay: `${star.delay.toFixed(1)}s`,
+                    animationDirection: star.reverse ? 'reverse' : 'normal',
+                  }}
+                />
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* The light world, rising. Everything dark is behind it; everything
             that survives into the light is in front. */}
