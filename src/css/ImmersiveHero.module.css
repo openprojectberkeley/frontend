@@ -826,7 +826,13 @@
 .spill {
   position: absolute;
   inset: 0;
-  z-index: 5;
+  /*
+   * The grid's own layer, and after it in the stage, so the pile sits on the
+   * ruling rather than under it. The heading is this same layer and later
+   * still, once it has left the band, which is what keeps the logos coming
+   * out from behind the bar.
+   */
+  z-index: 6;
   pointer-events: none;
   /*
    * The pile goes with the panel in scene five.
@@ -1364,11 +1370,11 @@
  * The grid the light scenes play over, from the moment the paper arrives to
  * the end of the timeline.
  *
- * Level with the arc's holder and after it in the stage, so it paints over the
- * band - and so over the white boxes the rows are turned with, which are the
- * one place the page goes light without the paper being what you are looking
- * at. Under the panel at 7 and the moments at 8, which are things on the page
- * rather than the page itself.
+ * At 6, after the arc in the stage. The holder sits at 7 until the wipes
+ * start, so the band is a thing on the paper; the playhead then drops it to
+ * 6, and document order is what puts this over the white the rows are turned
+ * with. Under the panel at 7 and the moments at 8, which are things on the
+ * page rather than the page itself.
  *
  * Multiplied rather than laid on top, which is what lets it cross all of that
  * without being a sheet of lines over the scene: ink on white shows, ink on
@@ -1577,9 +1583,11 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  /* Over the heading, which drops out from under it - and over the sheet, which
-     is what the heading is left standing on. */
-  z-index: 6;
+  /* Over the heading, which drops out from under it - over the sheet, which is
+     what the heading is left standing on - and over the grid, so the band is
+     a thing on the paper until the wipes, when the playhead drops this to 6
+     and the grid (after it in the stage, also 6) takes the white. */
+  z-index: 7;
   /*
    * Sized by what it becomes, not by what it is. The arc is drawn portrait -
    * 453.6 units across by 583.1 down - and comes to rest on its side, so the

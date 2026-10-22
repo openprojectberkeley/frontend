@@ -39,6 +39,14 @@ const { Bodies, Body, Composite, Engine, Mouse, MouseConstraint, Query, Render, 
  */
 const SPAWN_EVERY = 50;
 /*
+ * How long a logo takes to arrive, from nothing to solid.
+ *
+ * Short, and eased: it should read as the logo appearing rather than as a
+ * thing that was already there and is being uncovered. Long enough that the
+ * one in front of it has not finished arriving when the next one starts.
+ */
+const SPAWN_FADE = 280;
+/*
  * Scrolling back up takes the floor away and lets the pile fall off the
  * bottom of the stage. Once every logo has cleared that edge, the linger is
  * how long it keeps being drawn before the fade, and the fade is how long
@@ -496,6 +504,8 @@ export default function LogoSpill({
     Composite.add(engine.world, walls);
 
     const bodies = nodes.map(() => null);
+    /* When each logo was let out, so the fade in can be read off the clock. */
+    const born = nodes.map(() => null);
     /* One static body per obstacle, made the first time its element has a
        size to measure, and moved to follow it from then on. */
     const obstacles = (obstacleRefs ?? []).map(() => null);
@@ -607,7 +617,7 @@ export default function LogoSpill({
       Render.run(render);
     }
 
-    const spawn = (index) => {
+    const spawn = (index, at) => {
       const bar = originRef.current?.getBoundingClientRect();
       const frameBox = readFrame();
 
@@ -639,7 +649,7 @@ export default function LogoSpill({
       Composite.add(engine.world, body);
 
       bodies[index] = body;
-      nodes[index].style.opacity = '1';
+      born[index] = at;
     };
 
     const draw = (index) => {
@@ -879,7 +889,7 @@ export default function LogoSpill({
 
       if (exitAt === null && spawned < nodes.length && sinceSpawn >= SPAWN_EVERY) {
         sinceSpawn = 0;
-        spawn(spawned);
+        spawn(spawned, now);
         spawned += 1;
       }
 
@@ -1015,7 +1025,13 @@ export default function LogoSpill({
        * Off the bottom, then a beat, then the fade, then the world stops.
        * The beat is what keeps the last logo from being faded while it is
        * still crossing the edge. Past the limit the fade starts anyway.
+       *
+       * Arriving is the other fade, and the two multiply: a logo that is
+       * still appearing when the floor goes takes what is left of that
+       * appearance with it on the way out.
        */
+      let leave = 0;
+
       if (exitAt !== null) {
         if (clearedAt === null) {
           const gone = bodies.every((body) => !body || body.bounds.min.y > height);
@@ -1026,22 +1042,34 @@ export default function LogoSpill({
         }
 
         if (clearedAt !== null) {
-          const fade = clamp((now - clearedAt - EXIT_LINGER) / EXIT_FADE, 0, 1);
-
-          if (fade > 0) {
-            for (let index = 0; index < bodies.length; index += 1) {
-              if (bodies[index]) {
-                nodes[index].style.opacity = (1 - fade).toFixed(3);
-              }
-            }
-          }
-
-          if (fade >= 1) {
-            retire();
-
-            return;
-          }
+          leave = clamp((now - clearedAt - EXIT_LINGER) / EXIT_FADE, 0, 1);
         }
+      }
+
+      for (let index = 0; index < bodies.length; index += 1) {
+        if (!bodies[index] || born[index] === null) {
+          continue;
+        }
+
+        const t = clamp((now - born[index]) / SPAWN_FADE, 0, 1);
+        /* Smoothstep, so it eases out of nothing and into being solid. */
+        const appear = t * t * (3 - 2 * t);
+
+        if (appear === 1 && leave === 0) {
+          if (nodes[index].style.opacity !== '1') {
+            nodes[index].style.opacity = '1';
+          }
+
+          continue;
+        }
+
+        nodes[index].style.opacity = (appear * (1 - leave)).toFixed(3);
+      }
+
+      if (leave >= 1) {
+        retire();
+
+        return;
       }
 
       frame = window.requestAnimationFrame(tick);

@@ -1423,6 +1423,42 @@ export default function ImmersiveHero() {
 
     const wiping = secondProgress > 0 || topProgress > 0;
 
+    /*
+     * The band sits on the paper until the wipes, then becomes the paper.
+     *
+     * .arcHolder is 7 and the grid is 6, so the stroke covers the ruling for
+     * the whole of the arrival. The moment a wipe has any width, the holder
+     * drops to 6: same layer as the grid, earlier in the stage, which is what
+     * puts the ruling over the white. Keyed off the wipe rather than written
+     * down, so retiming the rows cannot leave the grid on the wrong side of
+     * them.
+     */
+    if (arcHolderRef.current) {
+      const next = wiping ? '6' : '7';
+
+      if (arcHolderRef.current.style.zIndex !== next) {
+        arcHolderRef.current.style.zIndex = next;
+      }
+    }
+
+    /*
+     * The bar stays over the pile. The spill shares the grid's layer and
+     * follows it in the stage, which puts the logos on the ruling, and the
+     * heading is that same layer and later, so they still come out from
+     * behind the bar.
+     *
+     * Not until the drop has finished. Before that the heading is under the
+     * band, and lifting it would put the word in front of the stroke it is
+     * crossing.
+     */
+    if (arcTitleRef.current) {
+      const next = playhead >= TITLE_DROP_AT + TITLE_DROP_OVER ? '6' : '5';
+
+      if (arcTitleRef.current.style.zIndex !== next) {
+        arcTitleRef.current.style.zIndex = next;
+      }
+    }
+
     if (wiping) {
       wipe(secondWipeRef.current, secondProgress, 1);
       wipe(topWipeRef.current, topProgress, -1);
@@ -1896,11 +1932,10 @@ export default function ImmersiveHero() {
           The grid the light scenes play over: a second copy of the paper,
           carrying no colour.
 
-          After the arc in the stage and level with it, which is the whole
-          reason it is not simply inside the sheet - at the same z-index,
-          document order is what decides, and this way the grid runs across the
-          white boxes the rows of logos are turned with instead of stopping
-          dead at them.
+          After the arc in the stage. The holder is one layer above this until
+          a wipe starts, then drops to this same layer, which is what puts the
+          ruling over the white the rows are turned with and not over the band
+          before that.
         */}
         {!prefersReducedMotion && (
           <span className={styles.gridSheet} aria-hidden="true">
