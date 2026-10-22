@@ -559,7 +559,12 @@
 .overlayCopy,
 .arcTitle {
   opacity: 0;
-  filter: blur(7px);
+  /*
+   * Enough to read as softening rather than as a smear. The heading arrives
+   * out of this at 2.4 and goes back into it at the end, so it is the one
+   * number governing both and is better understated.
+   */
+  filter: blur(4px);
   transition: opacity 700ms ease, filter 700ms ease;
 }
 
@@ -596,19 +601,26 @@
  * It is under .arcHolder rather than over it, so the stroke hides the word for
  * the part of the drop that crosses it: the heading goes in at the band's top
  * edge and comes out below its bottom one.
+ *
+ * And then --title-raise takes it the last of the way, out of the middle of
+ * the screen and up to 30% down it. A percentage, because top's percentages
+ * are of the stage: 50% less 20% of it is 30% of it, whatever size it is.
  */
 .arcTitle {
   position: absolute;
   left: 50%;
   top: calc(
     50% + min(54.5vw, 86vh) * (-0.057 - var(--flat, 0) * 0.1002) *
-      (1 - var(--title-drop, 0))
+      (1 - var(--title-drop, 0)) - var(--title-raise, 0) * 20%
   );
   z-index: 5;
   margin: 0;
   font-size: clamp(3rem, 8vw, 6.5rem);
+  /* Three journeys on one line: what is left of the arc's rise, and then the
+     bar's own exit up and out of the top for scene four. */
   transform: translate(-50%, -50%)
-    translateY(calc(var(--arc-rise, 0px) * (1 - var(--title-drop, 0))));
+    translateY(calc(var(--arc-rise, 0px) * (1 - var(--title-drop, 0))))
+    translateY(calc(var(--banner-exit, 0) * -46vh));
   text-align: center;
   pointer-events: none;
   /*
@@ -617,7 +629,163 @@
    * with no opacity or filter transition at all - it snapped in and out
    * instead of fading, every time it was scrolled past.
    */
-  transition: color 420ms ease, opacity 700ms ease, filter 700ms ease;
+  transition: color 320ms ease, opacity 700ms ease, filter 700ms ease;
+}
+
+/*
+ * The banner the heading ends up on.
+ *
+ * The heading's own ::before rather than an element of its own, so it rides
+ * every bit of the positioning above for free instead of repeating a formula
+ * that four other things already feed into. Its height is the heading's line
+ * box and a tenth of an em either side, which is what makes it exactly as high
+ * as the text without being told how high the text is.
+ *
+ * --stage-w and not 100vw: vw counts the scrollbar, and the stage clips what
+ * overhangs, so the point on the right would be cut off the right of the
+ * screen rather than drawn at it.
+ *
+ * It slides in from the left rather than growing: the whole bar starts one
+ * width out and is carried into place, so the shape never changes - the wedge
+ * on its end arrives at the size it will keep instead of being stretched out
+ * of a sliver as it opens.
+ *
+ * And it is wider than the screen by a wedge at each end, so that when it
+ * stops, both angled ends are past the edges of the screen and what is left
+ * is a plain bar running from one side to the other. Neither wedge is meant
+ * to be seen at rest: the right one is the leading edge on the way in, and
+ * the left one only comes into view as --banner-out carries the whole bar off
+ * to the right, on the same curve, so the exit is the entrance continued
+ * rather than a fade.
+ */
+.arcTitle::before {
+  content: '';
+  position: absolute;
+  top: -0.1em;
+  bottom: -0.1em;
+  left: 50%;
+  /* The screen, plus a wedge hanging off each side of it. */
+  --wedge: 1.9em;
+  --bar-width: calc(var(--stage-w, 100vw) + var(--wedge) * 2);
+  width: var(--bar-width);
+  /* Behind the text. The heading carries a z-index of its own, so this is
+     behind the word and not behind the scene. */
+  z-index: -1;
+  background-color: #000;
+  /*
+   * Cut away at both ends, each into a right trapezoid, and the two leaning
+   * the same way so the bar reads as one stroke rather than as something
+   * tapered at both ends.
+   *
+   * The right end keeps its flat side up - the top edge runs the full width
+   * and the bottom stops short. The left end is the same wedge the other way
+   * up, flat side down: the bottom edge runs the full width and the top one
+   * starts in. At rest the right wedge is past the edge of the screen and the
+   * left one is the only one you see.
+   */
+  clip-path: polygon(var(--wedge) 0, 100% 0, calc(100% - var(--wedge)) 100%, 0 100%);
+  /*
+   * Centred, which with a wedge hanging off each side puts both of them just
+   * outside the screen; then a whole bar's width to the left for every part of
+   * the arrival still to come, and a whole bar's width to the right for the
+   * exit.
+   */
+  transform: translateX(
+    calc(
+      -50% - (1 - var(--banner, 0)) * var(--bar-width) +
+        var(--banner-out, 0) * var(--bar-width)
+    )
+  );
+}
+
+/*
+ * Cream once the bar is under it.
+ *
+ * Three classes deep, not two. The rule below paints the heading the page's
+ * black and is already two deep for its own reasons, and it comes later in the
+ * file - so at equal specificity it wins on source order and the word stays
+ * black on a black bar.
+ */
+.arcTitle.arcTitle.onBanner {
+  color: #FFFDF8;
+  /*
+   * Faded rather than switched, and on a clock rather than on the playhead:
+   * this is a transition, so it takes the same third of a second however fast
+   * the page is being scrolled through it.
+   *
+   * The same length both ways, which is the point of setting it here as well
+   * as on the rule below - the heading turns cream over a third of a second on
+   * the way down and black over the same on the way back up, instead of
+   * snapping on and easing off.
+   *
+   * It is wholly over the bar by the time this applies, so what the fade reads
+   * as is the word arriving on the black rather than passing through it.
+   *
+   * The other two are named because a transition shorthand replaces the one
+   * above outright, and without them the heading would lose its fade in.
+   */
+  transition: color 320ms ease, opacity 700ms ease, filter 700ms ease;
+}
+
+/*
+ * What tips out of the banner.
+ *
+ * The container is the stage, so the simulation can work in plain screen
+ * pixels and the stage's own overflow keeps the pile on stage. Each logo is
+ * placed at the origin and moved entirely by the transform written to it per
+ * frame, which is the one property a falling thing needs and the one the
+ * compositor can take on its own.
+ */
+.spill {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/*
+ * In their own colours.
+ *
+ * Which is a thing to know when adding to the list: these land on paper, so a
+ * logo drawn white for a dark background will be invisible here. The rows on
+ * the band above are forced black because they have to work over both; these
+ * are only ever over the page, and are better for being themselves.
+ */
+/*
+ * The engine's own picture of the world, drawn over the logos.
+ *
+ * Temporary, and off unless the page is asked for with ?hitboxes - see
+ * LogoSpill. It is matter-js's wireframe renderer rather than anything drawn
+ * here, so what it shows is not an impression of the simulation, it is the
+ * simulation: if an outline is not sitting on its logo, the body and the
+ * picture have come apart.
+ */
+.spillDebug {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.spillDebug canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.spillLogo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /*
+   * No width or height here: both are written on from the decoded ratio - see
+   * LogoSpill - so that an SVG carrying its size only in a viewBox lays out
+   * like everything else, and so that every logo covers the same area however
+   * long or square it happens to be.
+   *
+   * Nothing here is laid out, so nothing should be reflowed by it.
+   */
+  will-change: transform;
 }
 
 /*
@@ -1084,6 +1252,76 @@
   transform: translateY(calc((1 - var(--sheet, 0)) * 118%));
   will-change: transform;
   pointer-events: none;
+}
+
+/*
+ * Scene four: the community panel, which comes up from under the fold.
+ *
+ * It is a wall as much as a picture. The two pieces inside it are handed to
+ * the spill as obstacles, so the pile of logos lying on the floor is pushed up
+ * the page in front of them rather than being slid through - which is why they
+ * are two boxes and not one, and why the star keeps its own.
+ *
+ * At nil the whole panel sits just below the fold, so nothing of it shows
+ * during the scenes before it. The distance is the panel's own half-height
+ * (the 50%) plus half a screen, which is what carries a box centred on the
+ * stage down until its top edge meets the bottom of the stage - plus a short
+ * gap so a taller paragraph cannot peek back in. A fixed vh here used to be
+ * enough, and stopped being enough the moment the copy grew.
+ */
+.community {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  width: min(calc(100vw - 2 * var(--margin-from-screen)), 68rem);
+  padding: 0 var(--margin-from-screen);
+  transform: translate(-50%, -50%)
+    translateY(calc((1 - var(--community, 0)) * (50svh + 50% + 2vh)));
+  pointer-events: none;
+  will-change: transform;
+}
+
+.communityStar {
+  flex: none;
+  width: clamp(6rem, 15vw, 12.25rem);
+  height: auto;
+}
+
+.communityText {
+  /* Its own box rather than the panel's, because this is the half the logos
+     are pushed by and the star is the other. */
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.4vw, 1rem);
+}
+
+.communityTitle {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: clamp(1.75rem, 4.4vw, 3.25rem);
+  line-height: 1.1;
+  /* The star's own yellow, which is what the value is called on the about
+     page and what ties the two together. */
+  color: #F9C12C;
+}
+
+/* The same orange the page's own Community section emphasised with, kept so
+   the paragraph reads as the one that used to be below rather than a new
+   one. */
+.communityHighlight {
+  color: #FF9C03;
+}
+
+.communityBody {
+  margin: 0;
+  max-width: 62ch;
+  font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+  line-height: 1.55;
+  color: #1A1A1A;
 }
 
 /*

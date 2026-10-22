@@ -7,8 +7,11 @@ import LogoMark, { DISC_CENTRE_X, DISC_CENTRE_Y, DISC_WIDTH } from './LogoMark';
 import useScrollPlayhead from './useScrollPlayhead';
 import LogoArc, { arcMiddle, arcPath, STROKE_WIDTH } from './LogoArc';
 import ArcTicker from './ArcTicker';
+import LogoSpill from './LogoSpill';
 import { clients } from '../data/clientsData';
+import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWeWork';
 import speechbubble from '../images/speechbubbles.png';
+import star from '../images/star.png';
 import triangle from '../images/triangle.png';
 
 /* The phrases the wordmark types, holds, deletes and moves on from, forever. */
@@ -45,7 +48,11 @@ const CUE_SCROLL_MS = 1250;
 const SCENES = [
   { name: 'zoom into the mark', end: 0.51 },
   { name: 'bubbles rise', end: 2 },
-  { name: 'the arc returns', end: 4.2 },
+  /* The arc is still on its way out when the next scene starts - the two
+     overlap by design - so this is where the community takes over the frame
+     rather than where the arc has finished leaving it. */
+  { name: 'the arc returns', end: 3.2 },
+  { name: 'the community rises', end: 4.9 },
 ];
 
 const TIMELINE_END = SCENES[SCENES.length - 1].end;
@@ -55,8 +62,12 @@ const ZOOM_END = SCENES[0].end;
  * The bubbles do not stop when scene two's label does - they go on rising
  * behind scene three, which is why their span is named here rather than read
  * off the scene that introduces them.
+ *
+ * A number and not the end of the timeline: they are long gone behind the
+ * white by scene four, and tying them to it would have meant a new scene
+ * quietly slowing down an old one.
  */
-const BUBBLE_RISE_END = TIMELINE_END;
+const BUBBLE_RISE_END = 4.2;
 
 /* Scene three: the arc comes back from beyond the bottom right corner, over
    half a screen of scrolling, and holds for the rest of the timeline. */
@@ -229,6 +240,85 @@ const WIPE_FADE_OVER = 0.06;
  */
 const ARC_EXIT_AT = 2.9;
 const ARC_EXIT_OVER = 0.95;
+
+/*
+ * Scene four. The banner and its heading go up with the arc rather than after
+ * it, and what comes up from the bottom to replace them is the club's third
+ * value - the one the whole of this scene has been building towards.
+ *
+ * The two overlap on purpose: the banner is still clearing the top of the
+ * screen as the panel clears the bottom of it, so the eye is handed from one
+ * to the other instead of waiting in an empty frame.
+ *
+ * The pile stays where it is. It is on the floor, and the floor is the bottom
+ * of the screen: the panel coming up is a wall moving through that space, so
+ * it arrives underneath the logos and pushes them up the page in front of it.
+ * That is the point of it having a body at all.
+ */
+const COMMUNITY_AT = 3.18;
+const COMMUNITY_OVER = 0.55;
+/*
+ * Thrown up and settling, rather than eased evenly at both ends. A smoothstep
+ * spends its opening going nowhere, which on a panel that is meant to be
+ * arriving is just a wait - and the whole point of where it starts is that
+ * the first of the move is already on screen.
+ */
+const COMMUNITY_LEAD_IN = 1.3;
+const COMMUNITY_LEAD_OUT = 4.5;
+/*
+ * The banner goes at the same moment, so it is travelling up with the band
+ * and its logos rather than waiting for them to be gone - three things
+ * leaving by one door instead of a queue at it.
+ */
+const BANNER_EXIT_AT = 3.2;
+const BANNER_EXIT_OVER = 0.55;
+
+/*
+ * And then the bar itself leaves the way it arrived: off to the right, rigid,
+ * on the same curve - the entrance run backwards rather than a fade. The word
+ * hands its colour back and blurs away as it goes, which is the same blur it
+ * arrived out of at 2.4.
+ */
+const BANNER_OUT_AT = 3.4;
+const BANNER_OUT_OVER = 0.13;
+/*
+ * The word goes as the bar does, so the blur is something you see happen on
+ * the black rather than something you find has happened once the black has
+ * left.
+ *
+ * And it keeps its cream to the end. Turning it back to the page's black as
+ * the bar slid out meant a moment of black text on white paper, announcing
+ * itself on the way out; left cream, the bar slides from under it and the
+ * word is simply paper on paper - gone before the fade has finished the job.
+ */
+const TITLE_GONE_AT = 3.4;
+
+/*
+ * The last beat. A black banner arrives behind the heading, the heading rises
+ * out of the middle of the screen to sit near the top of it, and the logos of
+ * where our members have gone start tipping out of the bar.
+ *
+ * The banner is quick and the rise is long: the bar wants to be there before
+ * the reader has decided it is a bar, and the heading wants to look like it is
+ * being carried rather than snatched.
+ */
+const BANNER_AT = 2.95;
+const BANNER_OVER = 0.115;
+/*
+ * The word turns cream a moment after the bar sets off: not when the bar
+ * reaches it, but when it has passed it.
+ *
+ * The heading is one colour across its whole width and the bar arrives from
+ * one side, so for as long as the edge is somewhere inside the word, half of
+ * it is on black and half on paper and one of those halves is invisible
+ * whichever colour it is. The word therefore changes hands once the bar is
+ * wholly under it, which with the easing above is a little under half way
+ * through the arrival - what reads is the bar wiping the word away and handing
+ * it straight back in cream.
+ */
+const BANNER_INK_AT = 2.995;
+const TITLE_RAISE_AT = 2.95;
+const TITLE_RAISE_OVER = 0.25;
 /* How far past the top of the band to carry it before it is certainly gone. */
 const ARC_EXIT_CLEAR = 48;
 
@@ -520,11 +610,16 @@ const easeIntoScroll = (t) =>
  */
 const LEAD_IN = 1.6;
 const LEAD_OUT = 3;
-const easeLead = (t) => {
-  const away = t ** LEAD_IN;
+const easeLead = (t, lead = LEAD_IN, out = LEAD_OUT) => {
+  const away = t ** lead;
 
-  return away / (away + (1 - t) ** LEAD_OUT);
+  return away / (away + (1 - t) ** out);
 };
+
+/* The banner's own pair: away a little more readily than the wipes and a good
+   deal longer coming to rest. */
+const BANNER_LEAD_IN = 1.4;
+const BANNER_LEAD_OUT = 4.2;
 
 /*
  * Where `element` sits inside `ancestor`, in layout coordinates.
@@ -590,6 +685,11 @@ export default function ImmersiveHero() {
   const secondRowId = `clients-second-${uid}`;
   /* The heading the band carries off. */
   const arcTitleRef = useRef(null);
+  /* The two pieces of the community panel, which are also the two things the
+     fallen logos are pushed along by as it comes up. */
+  const communityStarRef = useRef(null);
+  const communityTextRef = useRef(null);
+  const communityBodies = useRef([communityStarRef, communityTextRef]);
   const readoutValueRef = useRef(null);
   const readoutSceneRef = useRef(null);
   /* Two hidden copies of the word: the club's name, which is the box the lockup
@@ -627,6 +727,9 @@ export default function ImmersiveHero() {
     clients: false,
     headerLight: false,
     ctaHidden: false,
+    bannerInk: false,
+    spill: false,
+    titleGone: false,
   };
   const revealedRef = useRef(initialFlags);
   const [revealed, setRevealed] = useState(initialFlags);
@@ -768,6 +871,12 @@ export default function ImmersiveHero() {
       /* A narrow band, because the threshold itself is close enough to nil
          that the default one would sit below zero and never let go. */
       ctaHidden: crossed(flags.ctaHidden, playhead, CTA_HIDE_AT, 0.02),
+      bannerInk: crossed(flags.bannerInk, playhead, BANNER_INK_AT, 0.02),
+      /* Back into the blur it came out of, just before the bar leaves. */
+      titleGone: crossed(flags.titleGone, playhead, TITLE_GONE_AT, 0.02),
+      /* What lets the spill go. Everything past this point is the spill's own
+         clock, which is why it is a flag and not a value. */
+      spill: crossed(flags.spill, playhead, BANNER_AT, 0.02),
     };
 
     if (Object.keys(next).some((key) => next[key] !== flags[key])) {
@@ -930,6 +1039,60 @@ export default function ImmersiveHero() {
     stage.style.setProperty(
       '--title-drop',
       smootherstep(clamp01((playhead - TITLE_DROP_AT) / TITLE_DROP_OVER)).toFixed(4),
+    );
+
+    /*
+     * The banner behind the heading, and the heading's climb out of the middle
+     * of the screen.
+     *
+     * The bar is drawn by the heading's own ::before, so it needs nothing here
+     * but how far it has opened - and the stage's width, because it has to
+     * stop exactly at the edge of the screen for its pointed end to be on it.
+     * 100vw would be the scrollbar too wide, and the stage would clip the
+     * point off.
+     */
+    stage.style.setProperty('--stage-w', `${stageWidth.toFixed(1)}px`);
+    /* Thrown in and settling, rather than eased evenly at both ends: the bar
+       should be most of the way across before it is being watched arrive. */
+    stage.style.setProperty(
+      '--banner',
+      easeLead(
+        clamp01((playhead - BANNER_AT) / BANNER_OVER),
+        BANNER_LEAD_IN,
+        BANNER_LEAD_OUT,
+      ).toFixed(4),
+    );
+    stage.style.setProperty(
+      '--title-raise',
+      smootherstep(clamp01((playhead - TITLE_RAISE_AT) / TITLE_RAISE_OVER)).toFixed(4),
+    );
+
+    /*
+     * Scene four: the banner goes up and out, and the community panel comes up
+     * behind it. Both eased to a stop, because both are arriving somewhere -
+     * one at the top of the screen and one at the middle of it.
+     */
+    stage.style.setProperty(
+      '--banner-exit',
+      smootherstep(clamp01((playhead - BANNER_EXIT_AT) / BANNER_EXIT_OVER)).toFixed(4),
+    );
+    stage.style.setProperty(
+      '--community',
+      easeLead(
+        clamp01((playhead - COMMUNITY_AT) / COMMUNITY_OVER),
+        COMMUNITY_LEAD_IN,
+        COMMUNITY_LEAD_OUT,
+      ).toFixed(4),
+    );
+    /* The bar's exit, on the curve it arrived on so the two read as one move
+       made twice. */
+    stage.style.setProperty(
+      '--banner-out',
+      easeLead(
+        clamp01((playhead - BANNER_OUT_AT) / BANNER_OUT_OVER),
+        BANNER_LEAD_IN,
+        BANNER_LEAD_OUT,
+      ).toFixed(4),
     );
 
     /*
@@ -1426,6 +1589,55 @@ export default function ImmersiveHero() {
           </span>
         )}
 
+        {/*
+          Before the heading in the stage, so the heading and the black bar it
+          carries paint over the top: the logos come out from behind the bar
+          rather than over it.
+        */}
+        {!prefersReducedMotion && (
+          <LogoSpill
+            className={styles.spill}
+            logoClassName={styles.spillLogo}
+            debugClassName={styles.spillDebug}
+            items={whereWeWork}
+            scales={whereWeWorkScale}
+            roundSet={whereWeWorkRound}
+            obstacleRefs={communityBodies.current}
+            running={revealed.spill}
+            stageRef={stageRef}
+            originRef={arcTitleRef}
+          />
+        )}
+
+        {/*
+          Scene four, waiting below the fold.
+
+          Its words are the club's own: this is the Community section that used
+          to sit further down the page, arriving at the end of the hero instead
+          of being scrolled past after it.
+
+          The star and the paragraph are handed to the spill as obstacles, so
+          the panel does not slide up through the pile of logos on the floor -
+          it gets underneath them and carries them up the page.
+        */}
+        {!prefersReducedMotion && (
+          <div className={styles.community} aria-hidden="true">
+            <img ref={communityStarRef} className={styles.communityStar} src={star} alt="" />
+            <div ref={communityTextRef} className={styles.communityText}>
+              <h2 className={styles.communityTitle}>Community</h2>
+              <p className={styles.communityBody}>
+                Project teams will be with a{' '}
+                <span className={styles.communityHighlight}>group of students (10-15)</span> to
+                encourage a tight-knit community where team members can really get to know each
+                other. Socials beyond general team meetings will vary by team such as
+                after-meeting dinners or late-night boba runs. In addition, there will be
+                multiple club-wide socials throughout the semester so you have the chance to
+                meet everyone in the club!
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Outside the arc's holder, which is being scaled: a heading inside it
             would be scaled with it. Under it in the stack, though, so the band
             covers the word as it drops past. */}
@@ -1433,8 +1645,8 @@ export default function ImmersiveHero() {
           <h2
             ref={arcTitleRef}
             className={`${styles.overlayTitle} ${styles.arcTitle} ${
-              revealed.clients ? styles.revealed : ''
-            }`}
+              revealed.clients && !revealed.titleGone ? styles.revealed : ''
+            } ${revealed.bannerInk ? styles.onBanner : ''}`}
           >
             {HEADING_FROM}
           </h2>
