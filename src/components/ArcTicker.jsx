@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 /* All in the arc's own viewBox units, so they hold whatever size it is drawn at. */
@@ -188,7 +188,9 @@ export default function ArcTicker({
     };
   }, [items]);
 
-  useEffect(() => {
+  /* A layout effect so that the first placement is in before the browser
+     paints the render that started the loop. */
+  useLayoutEffect(() => {
     const path = pathRef.current;
     const group = groupRef.current;
 
@@ -221,10 +223,17 @@ export default function ArcTicker({
      * so a read after every write would lay the whole page out once per logo.
      */
     const transforms = new Array(count).fill(null);
-    /* What each node was last told, so an unchanged opacity is not rewritten:
-       it is a presentation attribute, and every write is a style recalc. */
-    const shown = new Array(count).fill(false);
-    const twinShown = new Array(count).fill(false);
+    /*
+     * What each node was last told, so an unchanged opacity is not rewritten:
+     * it is a presentation attribute, and every write is a style recalc.
+     *
+     * Unknown to begin with rather than hidden. The nodes outlive the loop, so
+     * a logo that was showing when the scroll last went back past the start
+     * is still showing, still placed for the arc as it was then; taken for
+     * hidden, it would be left there until its turn came round again.
+     */
+    const shown = new Array(count).fill(null);
+    const twinShown = new Array(count).fill(null);
     let lastTwins = null;
 
     let frame = null;
@@ -254,10 +263,7 @@ export default function ArcTicker({
       }
     };
 
-    const tick = (now) => {
-      const elapsed = last === null ? 0 : (now - last) / 1000;
-      last = now;
-
+    const layout = (elapsed) => {
       const length = path.getTotalLength();
 
       /*
@@ -354,20 +360,41 @@ export default function ArcTicker({
          and new nodes start out hidden whatever was last written. */
       if (twins !== lastTwins) {
         lastTwins = twins;
-        twinShown.fill(false);
+        twinShown.fill(null);
       }
 
       for (let index = 0; index < count; index += 1) {
         place(nodes[index], index, transforms[index], shown);
         place(twins && twins[index], index, transforms[index], twinShown);
       }
+    };
 
+    const tick = (now) => {
+      const elapsed = last === null ? 0 : (now - last) / 1000;
+      last = now;
+      layout(elapsed);
       frame = window.requestAnimationFrame(tick);
     };
 
+    /*
+     * The scroll reshapes the arc in an animation frame of its own, and that
+     * one is asked for after this loop's, so it runs second: placed only here,
+     * the logos would spend every frame of a scroll on the arc as it was one
+     * frame before, out of line with the band and its clip. Following the
+     * path's own changes puts them back on it before that frame is painted.
+     */
+    const reshaped = new MutationObserver(() => layout(0));
+    reshaped.observe(path, { attributes: true, attributeFilter: ['d'] });
+
+    /* Placed now and not a frame from now, so the first frame painted with the
+       loop running is not one with every logo where the last run left it. */
+    layout(0);
     frame = window.requestAnimationFrame(tick);
 
-    return () => window.cancelAnimationFrame(frame);
+    return () => {
+      reshaped.disconnect();
+      window.cancelAnimationFrame(frame);
+    };
   }, [pathRef, items, running, rowOffset, direction, height, logos, growRef, overhang]);
 
   const images = (dark) =>
