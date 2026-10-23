@@ -56,7 +56,7 @@ const SCENES = [
   /* The panel is still settling when the frame starts travelling, which is the
      same overlap as above: scene five opens on scene four finishing. */
   { name: 'the community rises', end: 3.4 },
-  { name: 'the moments pass', end: 6.4 },
+  { name: 'the moments pass', end: 7 },
 ];
 
 const TIMELINE_END = SCENES[SCENES.length - 1].end;
@@ -325,16 +325,18 @@ const TITLE_GONE_AT = 3.4;
  * under the hand feels broken rather than smooth.
  */
 const PAN_AT = 3.4;
-const PAN_OVER = 2.9;
+const PAN_OVER = 3.6;
 /*
  * How far the frame travels over that, in screens.
  *
  * The tuning knob for the whole scene: it is what decides how much of the
  * strip is seen and how fast it goes past, and the moments are placed in the
  * same units - see communityMoments.js - so the two can be read against each
- * other.
+ * other. It finishes at playhead 7, where the section lets go and the page
+ * scrolls on. The distance is what the strip had already travelled by then,
+ * so ending the pan there does not speed the cards up on the way.
  */
-const PAN_TRAVEL = 3.6;
+const PAN_TRAVEL = 4.46;
 
 /*
  * The last beat. A black banner arrives behind the heading, the heading rises

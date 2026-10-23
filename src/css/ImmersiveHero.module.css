@@ -1529,13 +1529,17 @@
 /*
  * One card, and the whole of the scene's movement.
  *
- * Its own four numbers are written once by MomentStrip and never again; the
+ * Its own three numbers are written once by MomentStrip and never again; the
  * only thing that changes after that is --pan, which the stage sets from the
- * playhead. So the travel is `where it waits, plus its share of how far the
- * frame has gone`, and the compositor has everything it needs to carry all
- * eight of them without a frame of script.
+ * playhead. So the travel is `where it waits, plus its nearness times how far
+ * the frame has gone`, and the compositor has everything it needs to carry all
+ * of them without a frame of script. --z is that nearness twice: the scale,
+ * and the share of the pan, so a larger card is the one pulling ahead. The
+ * stacking order is the same nearness, written as z-index by MomentStrip:
+ * without it the cards paint in arrival order, and the first one sits under
+ * every card that follows, however much nearer it is.
  *
- * The origin is the top left corner, so zoom sizes a card without moving it
+ * The origin is the top left corner, so z sizes a card without moving it
  * out of the lane it was given: scaled about its centre, a small card would
  * drift down the screen and a large one up it, and the lanes in the data would
  * stop meaning what they say.
@@ -1546,10 +1550,19 @@
   left: 0;
   width: clamp(14rem, 26vw, 24rem);
   margin: 0;
-  transform: translate3d(calc(var(--stagger, 100vw) + var(--pan, 0px) * var(--speed, 1)), 0, 0)
-    scale(var(--zoom, 1));
+  transform: translate3d(calc(var(--stagger, 100vw) + var(--pan, 0px) * var(--z, 1)), 0, 0)
+    scale(var(--z, 1));
   transform-origin: top left;
   will-change: transform;
+}
+
+/* The floor of 14rem is wider than the gaps in the strip once the window is
+   phone-narrow, and the cards land on each other. A share of the viewport
+   keeps the same air the desktop spacing was tuned for. */
+@media (max-width: 640px) {
+  .moment {
+    width: 42vw;
+  }
 }
 
 /* Four by three, whichever of the two is in it, so the strip keeps its rhythm
@@ -1561,13 +1574,49 @@
   aspect-ratio: 4 / 3;
   border-radius: 6px;
   object-fit: cover;
+  opacity: 0;
+  filter: blur(7px);
+  transition: opacity 420ms ease-out, filter 520ms ease-out;
 }
 
 .momentCaption {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  isolation: isolate;
   margin-top: 0.7rem;
   font-size: clamp(0.8rem, 1.1vw, 1rem);
   line-height: 1.4;
   color: #1A1A1A;
+  transition: color 180ms ease 170ms;
+}
+
+/* The marker runs underneath the caption from its left edge, then hands the
+   completed line to white ink. */
+.momentCaption::before {
+  position: absolute;
+  z-index: -1;
+  inset: -0.2em -0.35em;
+  content: '';
+  background: var(--moment-accent, #5EC8FF);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 440ms cubic-bezier(0.22, 1, 0.36, 1) 80ms;
+}
+
+.momentRevealed .momentImage,
+.momentRevealed .momentBlank {
+  opacity: 1;
+  filter: blur(0);
+}
+
+.momentCaptionRevealed .momentCaption {
+  color: #FFFDF8;
+}
+
+.momentCaptionRevealed .momentCaption::before {
+  transform: scaleX(1);
 }
 
 /*
