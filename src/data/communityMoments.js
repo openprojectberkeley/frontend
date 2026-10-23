@@ -43,6 +43,7 @@ import banquet_5_5_26_2 from '../images/community/thumb/banquet_5-5-26_2.png';
 import banquet_5_5_26_3 from '../images/community/thumb/banquet_5-5-26_3.png';
 import banquet_5_5_26_4 from '../images/community/thumb/banquet_5-5-26_4.png';
 import banquet_5_5_26 from '../images/community/thumb/banquet_5-5-26.png';
+import banquet_12_8_25 from '../images/community/thumb/banquet_12-8-25.png';
 import bday_4_11_26 from '../images/community/thumb/bday_4-11-26.png';
 import big_little_3_2_26_1 from '../images/community/thumb/big_little_3-2-26_1.png';
 import big_little_3_2_26 from '../images/community/thumb/big_little_3-2-26.png';
@@ -75,6 +76,7 @@ export const communityMoments = [
   { image: banquet_5_5_26_3, caption: 'The first standup', stagger: 120, lane: 16, z: 0.86 },
   { image: banquet_5_5_26_4, caption: 'Dinner after the client review', stagger: 155, lane: 30, z: 1.04 },
   { image: banquet_5_5_26, caption: 'Hack weekend, 3am', stagger: 145, lane: 46, z: 0.76 },
+  { image: banquet_12_8_25, caption: 'Last standup of the semester', stagger: 125, lane: 20, z: 0.62 },
   { image: bday_4_11_26, caption: 'Office hours that became a party', stagger: 201, lane: 22, z: 1.08 },
   { image: big_little_3_2_26_1, caption: 'Retreat, up at Tilden', stagger: 150, lane: 62, z: 0.68 },
   { image: big_little_3_2_26, caption: 'The whiteboard, week nine', stagger: 204, lane: 9, z: 0.94 },
