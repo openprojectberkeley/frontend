@@ -1565,8 +1565,10 @@
   }
 }
 
-/* Four by three, whichever of the two is in it, so the strip keeps its rhythm
-   however the photographs that land here are cropped. */
+/* Four by three, whichever of the three is in it, so the strip keeps its
+   rhythm however the photographs and clips that land here are cropped. A video
+   element takes all of this as readily as an image does, cover and all, so the
+   clips share the class rather than needing a parallel set of rules. */
 .momentImage,
 .momentBlank {
   display: block;

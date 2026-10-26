@@ -22,3 +22,10 @@ dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# community video masters
+# The .MOV files off the camera are HEVC and 4K and run to ~170MB; the .mp4s
+# and poster frames beside them are what the site imports and what ships, so
+# the masters stay local rather than in the history.
+src/images/community/videos/*.MOV
+src/images/community/videos/*.mov

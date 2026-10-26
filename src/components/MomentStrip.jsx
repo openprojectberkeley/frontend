@@ -42,6 +42,7 @@ export default function MomentStrip() {
      first entry without a second scroll listener. The image starts as it
      enters; the caption waits until the card is farther into the frame. */
   const cardRefs = useRef(new Map());
+  const videoRefs = useRef(new Map());
   const [revealedCards, setRevealedCards] = useState(() => new Set());
   const [captionCards, setCaptionCards] = useState(() => new Set());
 
@@ -107,13 +108,53 @@ export default function MomentStrip() {
     return () => observer.disconnect();
   }, []);
 
+  /*
+   * The clips play only while their card is in shot.
+   *
+   * Separate from the observer above, which lets a card go as soon as its
+   * caption has arrived: a video has to be watched the whole way past, because
+   * the half of this that matters is the pause. They are `preload="none"`, so
+   * the first play is also the first byte fetched - until then the card is its
+   * poster - and a clip that has gone by stops decoding instead of running for
+   * the rest of the timeline behind everything else.
+   *
+   * play() rejects rather than throws when the browser declines to start one,
+   * which is routine here: it is the call arriving before the metadata, or a
+   * clip the browser will not decode at all. The card keeps its poster either
+   * way, so there is nothing to do with the rejection but swallow it.
+   */
+  useEffect(() => {
+    const videos = videoRefs.current;
+
+    if (videos.size === 0) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const started = entry.target.play();
+
+            if (started) started.catch(() => {});
+          } else {
+            entry.target.pause();
+          }
+        });
+      },
+      { threshold: 0.01 },
+    );
+
+    videos.forEach((video) => observer.observe(video));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     /* Decoration, like the rest of the hero: the club's own words about its
        community are in the section below, where a reader is handed them. */
     <div className={styles.moments} aria-hidden="true">
       {communityMoments.map((moment, index) => (
         <figure
-          key={moment.image}
+          key={moment.video || moment.image || index}
           ref={(card) => {
             if (card) cardRefs.current.set(index, card);
             else cardRefs.current.delete(index);
@@ -132,7 +173,25 @@ export default function MomentStrip() {
             zIndex: Math.round(moment.z * 100),
           }}
         >
-          {moment.image ? (
+          {moment.video ? (
+            /* Muted and inline are what make an autoplay allowed at all, and
+               a clip with a soundtrack nobody asked for would be worse than
+               one with none: the audio is stripped out of the file itself. */
+            <video
+              ref={(video) => {
+                if (video) videoRefs.current.set(index, video);
+                else videoRefs.current.delete(index);
+              }}
+              className={styles.momentImage}
+              src={moment.video}
+              poster={moment.poster}
+              preload="none"
+              muted
+              loop
+              playsInline
+              disablePictureInPicture
+            />
+          ) : moment.image ? (
             <img className={styles.momentImage} src={moment.image} alt="" />
           ) : (
             <div
