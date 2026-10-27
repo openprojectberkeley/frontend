@@ -49,9 +49,10 @@
  *   ffmpeg -ss 0.5 -i clip.MOV -frames:v 1 -vf scale=640:-2 -q:v 4 \
  *     clip-poster.jpg
  *
- * The pan is PAN_TRAVEL screens long - see ImmersiveHero - so a card finishes
- * at `stagger - 100 * PAN_TRAVEL * z` vw. The last card, at 0.84, finishes
- * near 90vw.
+ * The pan is PAN_TRAVEL screens long at playhead 7 - see ImmersiveHero - so a
+ * card is at `stagger - 100 * PAN_TRAVEL * z` vw there. The last card, at
+ * 0.84, is near 90vw. It then coasts to a stop under the about sheet, about
+ * half a screen further (times z) by the time it is covered.
  *
  * Two orders run through this file and they have nothing to do with each
  * other. The imports are sorted by the date in the filename, oldest first, so
@@ -124,19 +125,19 @@ import exec_social_5_4_26_1 from '../images/community/videos/exec_social_5-4-26_
 import exec_social_5_4_26_1_poster from '../images/community/videos/exec_social_5-4-26_1-poster.jpg';
 
 export const communityMoments = [
-  { video: big_little_3_1_26, poster: big_little_3_1_26_poster, caption: 'The big-little reveal', stagger: 112, lane: 15, z: 1.12 },
-  { image: bday_4_11_26_1, caption: 'karaoke', stagger: 105, lane: 46, z: 0.8 },
-  { image: big_little_10_17_26_3, caption: 'big little', stagger: 102, lane: 68, z: 0.68 },
-  { image: banquet_5_5_26_1, caption: 'Boba at midnight, week three', stagger: 120, lane: 16, z: 0.86 },
-  { image: banquet_5_5_26_3, caption: 'The first standup', stagger: 135, lane: 65, z: 0.86 },
-  { image: chessblitz_sf_5_4_25, caption: 'And the one after that', stagger: 155, lane: 30, z: 1.04 },
-  { image: big_little_10_17_26_2, caption: 'big little', stagger: 145, lane: 42, z: 0.76 },
-  { image: retreat_9_26_26_3, caption: 'Last standup of the semester', stagger: 128, lane: 15, z: 0.68 },
-  { image: retreat_9_27_25_1, caption: 'And the one after that', stagger: 122, lane: 69, z: 0.6 },
-  { image: bday_4_11_26, caption: 'Office hours that became a party', stagger: 201, lane: 22, z: 1.08 },
-  { image: banquet_12_8_25, caption: 'Last standup of the semester', stagger: 150, lane: 62, z: 0.68 },
-  { image: rockettes_sf_5_2_26, caption: 'Last standup of the semester', stagger: 204, lane: 9, z: 0.94 },
-  { image: chessblitz_arcade_12_11_25, caption: 'Last standup of the semester', stagger: 190, lane: 46, z: 0.8 },
+  { video: big_little_3_1_26, poster: big_little_3_1_26_poster, caption: '3-1-26: big/little reveal sp26', stagger: 112, lane: 15, z: 1.12 },
+  { image: bday_4_11_26_1, caption: '4-11-26: jaguar karaoke', stagger: 105, lane: 46, z: 0.8 },
+  { image: big_little_10_17_26_3, caption: '10-17-26: big/little reveal fa26', stagger: 102, lane: 68, z: 0.68 },
+  { image: banquet_5_5_26_1, caption: '5-5-26: banquet sp26, rockettes table', stagger: 120, lane: 16, z: 0.86 },
+  { image: banquet_5_5_26_3, caption: '5-5-26: banquet fa26, chessblitz', stagger: 135, lane: 65, z: 0.86 },
+  { image: chessblitz_sf_5_4_25, caption: '5-4-25: chessblitz sf sp25', stagger: 155, lane: 30, z: 1.04 },
+  { image: big_little_10_17_26_2, caption: '10-17-26: big/little reveal fa26', stagger: 145, lane: 42, z: 0.76 },
+  { image: retreat_9_26_26_3, caption: '9-26-26: yosemite retreat fa26', stagger: 128, lane: 15, z: 0.68 },
+  { image: retreat_9_27_25_1, caption: '9-27-25: retreat fa25, bodega bay', stagger: 122, lane: 69, z: 0.6 },
+  { image: bday_4_11_26, caption: '4-11-26: happy 22', stagger: 201, lane: 22, z: 1.08 },
+  { image: banquet_12_8_25, caption: '12-8-25: yacht banquet fa25, chessblitz', stagger: 150, lane: 62, z: 0.68 },
+  { image: rockettes_sf_5_2_26, caption: '5-2-26: rockettes sf sp26', stagger: 204, lane: 9, z: 0.94 },
+  { image: chessblitz_arcade_12_11_25, caption: '12-11-25: chessblitz dave n busters fa25', stagger: 190, lane: 46, z: 0.8 },
   { image: retreat_9_27_25_2, caption: 'Last standup of the semester', stagger: 160, lane: 69, z: 0.6 },
   { image: big_little_10_17_26, caption: 'Formal', stagger: 266, lane: 16, z: 1.14 },
   { image: banquet_5_5_26_5, caption: 'banquet', stagger: 195, lane: 20, z: 0.72 },
