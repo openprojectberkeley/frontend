@@ -2008,7 +2008,8 @@
   top: -5vh;
   bottom: 0;
   z-index: 8;
-  background-color: black;
+  background: var(--page-backdrop);
+  background-blend-mode: var(--page-backdrop-blend);
   border-radius: 50% 50% 0 0 / 4vh 4vh 0 0;
   box-shadow: 0 -1rem 2.5rem rgba(26, 18, 4, 0.16);
   transform: translateY(calc((1 - var(--about-wipe, 0)) * 100%));
@@ -2028,7 +2029,10 @@
 .about {
   position: relative;
   z-index: 9;
-  padding-top: 6vh;
+  /* Over the whole stage - which, being sticky, stacks as one - and holding
+     nothing but stars now, so it must not take the clicks meant for the
+     button in the stage under it. */
+  pointer-events: none;
 }
 
 /*
@@ -2060,10 +2064,40 @@
   transform: translate(-50%, -50%) translateY(calc(var(--about-scroll, 0px) * var(--lag, 0) * -1));
 }
 
+/* Only under reduced motion, where the call to apply is page, not stage. */
 .aboutInner {
   position: relative;
-  padding: 0 var(--margin-from-screen);
+  pointer-events: auto;
+  padding: 6vh var(--margin-from-screen) 0;
   padding-bottom: clamp(3rem, 8vh, 6rem);
+}
+
+/*
+ * Scene six's words, centred on the stage and lifted below it by --join-rise,
+ * which the playhead brings to nothing - see JOIN_AT. At 10, over the
+ * moments; the page's stars at 9 are still over it, as the stage stacks as
+ * one. Takes no clicks itself, only its button does, since the box covers the
+ * stage for the whole timeline.
+ */
+.joinStage {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--margin-from-screen);
+  pointer-events: none;
+}
+
+.joinRise {
+  width: 100%;
+  transform: translateY(var(--join-rise, 100vh));
+  will-change: transform;
+}
+
+.joinRise a {
+  pointer-events: auto;
 }
 
 /*
@@ -2098,6 +2132,38 @@
   font-size: clamp(1rem, 1.6vw, 1.3rem);
   line-height: 1.55;
   color: white;
+}
+
+/*
+ * Scene six's sentence and the button under it, in the mission's column. The
+ * button keeps .cta's blur-in and .ctaGone's blur-out, closer to the words
+ * than it sits under the wordmark, and held back on the way in until the
+ * sentence is most of the way typed - JOIN_BODY_DELAY_MS plus most of
+ * JOIN_BODY_MS. Out at once.
+ */
+.joinBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.joinCta {
+  margin-top: clamp(1.75rem, 4vh, 2.5rem);
+  transition-delay: 1300ms;
+}
+
+/*
+ * Filled at rest, unlike the one under the wordmark: the header's Open Portal
+ * yellow, so the last thing on the page reads as a button to press. The
+ * hover is .ctaButton's cream wipe, over the yellow. One class more than
+ * .ctaButton's doubled one, to win over it.
+ */
+.ctaButton.ctaButton.joinButton {
+  background-color: #cd9700;
+}
+
+.joinCta.ctaGone {
+  transition-delay: 0ms;
 }
 
 /* Holds the paragraph's full shape; the live copy is laid over it. */

@@ -166,13 +166,20 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
   const pixelRefs = useRef(new Map());
   const dissolveRef = useRef(0);
   const dissolveApplyRef = useRef(null);
+  const captionsOffRef = useRef(false);
   const [revealedCards, setRevealedCards] = useState(() => new Set());
 
   /*
-   * The hero's one call into the strip: how far through the dissolve the
-   * playhead is, 0 to 1. Written on every frame of the scroll like the rest
-   * of the hero, so it does nothing at all while there is nothing to do - the
-   * whole of scene five passes 0 and returns on the first line.
+   * The hero's calls into the strip. setDissolve is how far through the
+   * dissolve the playhead is, 0 to 1. Written on every frame of the scroll
+   * like the rest of the hero, so it does nothing at all while there is
+   * nothing to do - the whole of scene five passes 0 and returns on the first
+   * line.
+   *
+   * setCaptionsOff takes the hover label away once the call to apply is
+   * coming up over the cards: one showing goes at once rather than wiping
+   * out, and no card raises one again until the playhead is back before
+   * that point.
    */
   useImperativeHandle(
     ref,
@@ -184,6 +191,12 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
 
         dissolveRef.current = value;
         if (dissolveApplyRef.current) dissolveApplyRef.current();
+      },
+      setCaptionsOff(off) {
+        if (off === captionsOffRef.current) return;
+
+        captionsOffRef.current = off;
+        if (off) tipRef.current?.classList.remove(styles.momentTipOn, styles.momentTipOut);
       },
     }),
     [],
@@ -932,7 +945,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
     const tip = tipRef.current;
     const text = tipTextRef.current;
 
-    if (!tip || !text) return;
+    if (!tip || !text || captionsOffRef.current) return;
 
     text.textContent = caption;
     tip.style.setProperty('--moment-accent', accent);

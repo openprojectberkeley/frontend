@@ -4,7 +4,59 @@ html, body {
   font-family: 'Paper Mono', monospace;
   letter-spacing: 0;
   color: white;
-  background-color: black;
+}
+
+/* Black on the root only: a body background would paint over the backdrop
+   layer below, which sits at -1 in the root's stacking context. */
+html {
+  background-color: #000;
+}
+
+/*
+ * The page's backdrop: black, warming faintly to navy towards the bottom
+ * right, with a grain over it. Kept in variables because the home hero's
+ * scene-six wipe paints the same thing, so the about copy reads on one
+ * continuous backdrop as the stage goes.
+ *
+ * The grain is mid-grey noise laid on in overlay, which over a dark colour
+ * scales it between black (at the noise's darkest) and twice itself (at its
+ * lightest), and leaves it alone at the grey in between. So every speck is the
+ * ramp's own colour made darker or lighter by about as much either way: the
+ * texture is strong but the ramp's overall brightness and hue do not move, and
+ * the black corner stays black.
+ *
+ * Laid on twice, the second copy offset so the two do not line up, which
+ * takes the range out to between black and four times the ramp - the navy end
+ * is where that shows, since four times black is still black. Coarse noise,
+ * so each speck is a few pixels across rather than one.
+ *
+ * The ramp's own stops sit darker than the navy it reads as. The grain keeps
+ * the average sRGB value, but a screen's light rises much faster than sRGB
+ * does, so the light specks give out more than the dark ones take away and
+ * the whole reads brighter than its average. Darker stops pay that back.
+ */
+:root {
+  --page-grain: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1.4 1.4 1.4 0 -1.6 1.4 1.4 1.4 0 -1.6 1.4 1.4 1.4 0 -1.6 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --page-backdrop:
+    var(--page-grain) 0 0,
+    var(--page-grain) 113px 71px,
+    linear-gradient(330deg, #04091a 0%, #02050d 40%, #000 100%);
+  --page-backdrop-blend: overlay, overlay, normal;
+}
+
+/*
+ * Pinned to the window rather than the document, so the ramp stays put while
+ * the page scrolls over it. A fixed layer rather than background-attachment,
+ * which mobile Safari ignores.
+ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--page-backdrop);
+  background-blend-mode: var(--page-backdrop-blend);
+  pointer-events: none;
 }
 
 /* Form controls take the system UI font unless told otherwise, so they are the

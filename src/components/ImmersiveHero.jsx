@@ -9,7 +9,8 @@ import LogoArc, { arcMiddle, arcOutline, arcPath, STROKE_WIDTH } from './LogoArc
 import ArcTicker from './ArcTicker';
 import LogoSpill from './LogoSpill';
 import MomentStrip from './MomentStrip';
-import AboutScene from './AboutScene';
+import JoinScene from './JoinScene';
+import StarField, { ABOUT_STARS_REACH, STAR_LAYERS, scatter } from './StarField';
 import scramble from './scramble';
 import { clients } from '../data/clientsData';
 import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWeWork';
@@ -60,9 +61,13 @@ const SCENES = [
   { name: 'the community rises', end: 3.4 },
   /* And the frame is still coasting to a stop as the about sheet comes up:
      scene six opens on scene five finishing, like every scene before it. The
-     pan halts at 7, well into it. */
+     pan would halt at 7, after the timeline has ended, but the moments have
+     gone from the stage by then. */
   { name: 'the moments pass', end: 6.4 },
-  { name: 'about us comes up', end: 8 },
+  /* Ends the moment the call to apply comes to rest in the middle, so the
+     very next scroll lets go of it and brings the footer up - there is
+     nothing after it to wait for. See JOIN_AT. */
+  { name: 'join us comes up', end: 6.8 },
 ];
 
 const TIMELINE_END = SCENES[SCENES.length - 1].end;
@@ -363,7 +368,7 @@ function panScreens(playhead) {
 }
 
 /*
- * Scene six: the about page's opening comes up from the bottom, while the
+ * Scene six: the call to apply comes up from the bottom, while the
  * moments are still coasting to their halt.
  *
  * Two things, moving at different rates. The copy is not in the stage: it is
@@ -385,7 +390,19 @@ const ABOUT_AT = SCENES[SCENES.length - 2].end;
 const ABOUT_COPY_LEAD = 0.12;
 const ABOUT_COPY_AT = ABOUT_AT - ABOUT_COPY_LEAD;
 const ABOUT_OVERLAP = TIMELINE_END - ABOUT_COPY_AT;
-const ABOUT_WIPE_OVER = 0.55;
+const ABOUT_WIPE_OVER = 0.5;
+/*
+ * The call to apply rides the stage rather than the page, so it can outrun
+ * the scroll: it sets off from JOIN_RISE_FROM of a screen below the middle a
+ * beat after the black, comes up at several times the scroll's rate and
+ * eases out over JOIN_RISE_OVER to rest in the middle of the screen exactly
+ * as the timeline ends - so it is the last thing the stage does before it
+ * lets go. The black is quicker still to start with, so the words never come
+ * up over paper.
+ */
+const JOIN_AT = ABOUT_COPY_AT + 0.06;
+const JOIN_RISE_OVER = TIMELINE_END - JOIN_AT;
+const JOIN_RISE_FROM = 0.75;
 /*
  * And the moments rise with it: slower than the copy at first, so they read
  * as farther back as the words come up past them, then gathering pace over
@@ -408,6 +425,9 @@ const MOMENTS_LIFT_RAMP = 0.6;
  */
 const MOMENTS_DISSOLVE_AT = ABOUT_AT - 0.1;
 const MOMENTS_DISSOLVE_OVER = 0.45;
+/* And from here the cards raise no captions on hover: the call to apply is
+   well up over them, and a label would come up on top of its words. */
+const MOMENT_CAPTIONS_OFF_AT = 6.6;
 
 function momentsLift(playhead) {
   const t = Math.max(0, Math.min(playhead, TIMELINE_END) - ABOUT_AT);
@@ -426,14 +446,14 @@ function momentsLift(playhead) {
  */
 const HEADER_DARK_AT = ABOUT_COPY_AT + ABOUT_WIPE_OVER * 0.7;
 /*
- * Where the copy counts as arrived: the moment its heading row crosses the
- * bottom edge, which sits a little under the top of the copy, so the heading
- * and mission are coming in as they start up the screen rather than rising
- * blank for a stretch first. The blur-in takes long enough that most of it
- * is still watched once they are well in. Its animations run on their own
- * clock from here; see AboutScene.
+ * Where the call to apply counts as arrived: a tenth of a screen into its
+ * rise, when its heading is a little way up from the bottom edge, so the
+ * words are coming in as they start up the screen rather than rising blank
+ * for a stretch first. The blur-in takes long enough that most of it is
+ * still watched once they are well in. Its animations run on their own clock
+ * from here; see JoinScene.
  */
-const ABOUT_ARRIVED_AT = ABOUT_COPY_AT + 0.06;
+const ABOUT_ARRIVED_AT = JOIN_AT + 0.1;
 const HEADER_DARK_OVER = 0.05;
 
 /*
@@ -619,48 +639,8 @@ const BUBBLES = [
   { size: 7, left: 36, stagger: 30, speed: 268, colour: 'magenta', layer: 0, opacity: 0.44 },
 ];
 
-/*
- * The stars behind them: tiny white squares, each at an angle of its own and
- * turning slowly, riding the same --rise the bubbles do.
- *
- * Three layers at a fraction of the bubbles' speed, which is what puts them
- * behind the flock rather than among it - 96vh against the slowest bubble's
- * 212 is a backdrop, and the far layer moving least is the whole of the
- * parallax. Which way round that goes is the opposite of the bubbles above,
- * and deliberately: theirs is about which one carries the copy, this is about
- * distance.
- *
- * `count` is how many, `size` a side in vmin, `speed` how far one travels over
- * the scene in vh, `opacity` how much of the sheet's white is left in it and
- * `spin` how long one turn takes.
- */
-const STAR_LAYERS = [
-  { count: 30, size: 0.42, speed: 96, opacity: 0.24, spin: 88 },
-  { count: 24, size: 0.66, speed: 138, opacity: 0.36, spin: 67 },
-  { count: 16, size: 0.98, speed: 186, opacity: 0.48, spin: 49 },
-];
-
-/*
- * The field is scattered rather than arranged, but it is the same scatter on
- * every load: a linear congruential generator from a seed written down here,
- * not Math.random.
- *
- * For the reason the scramble above picks its glyphs by arithmetic - everything
- * on this timeline is a function of the playhead, and a sky that changed on
- * every visit would be the one part of it that could not be scrolled back to
- * or pointed at twice.
- */
+/* Scene two's scatter - see scatter in StarField. */
 const STAR_SEED = 20260517;
-
-function scatter(seed) {
-  let state = seed;
-
-  return () => {
-    state = (state * 1664525 + 1013904223) % 4294967296;
-
-    return state / 4294967296;
-  };
-}
 
 const STARS = STAR_LAYERS.flatMap((layer, index) => {
   const random = scatter(STAR_SEED + index);
@@ -695,55 +675,6 @@ const STARS = STAR_LAYERS.flatMap((layer, index) => {
       /* The finest layer is also the most crowded, and is the one a phone does
          without. See .starFine. */
       fine: index === 0,
-    };
-  });
-});
-
-/*
- * Scene six's sky: the same three layers of squares, scattered over the top
- * of the black the about copy comes up on and thinning out down it.
- *
- * They do not rise - they are page, not stage, and the scroll carries them
- * past at the reader's rate. The black does not: it is eased out, so its top
- * edge runs ahead of the copy, by as much as 57vh of it partway through the
- * wipe. So the field starts ABOUT_STARS_REACH above the copy and is clipped
- * to wherever that edge has got to - see --stars-clip - which keeps the black
- * full of stars to its edge and the paper behind it clear of them.
- *
- * How far down each one sits is a uniform draw raised to
- * ABOUT_STARS_FALLOFF, which crowds them towards the top of the field and
- * leaves only a scattering at the bottom of it.
- *
- * And they scroll at less than the page's rate, a layer at a time, for the
- * parallax scene two's three layers have: ABOUT_STARS_LAG is how much of the
- * scroll each layer gives back, the far, fine layer the most. Each is placed
- * where it would be at no lag when the copy's top is at the top of the
- * window - see --about-scroll.
- */
-const ABOUT_STARS_LAG = [0.6, 0.42, 0.24];
-const ABOUT_STARS_SEED = 20261028;
-const ABOUT_STARS_REACH = 60;
-const ABOUT_STARS_DEPTH = 230;
-const ABOUT_STARS_FALLOFF = 2;
-/* Half as many again as scene two's, for a field half as deep again. */
-const ABOUT_STARS_COUNT = 1.5;
-
-const ABOUT_STARS = STAR_LAYERS.flatMap((layer, index) => {
-  const random = scatter(ABOUT_STARS_SEED + index);
-
-  return Array.from({ length: Math.round(layer.count * ABOUT_STARS_COUNT) }, () => {
-    const spin = layer.spin * (0.8 + random() * 0.4);
-
-    return {
-      left: random() * 100,
-      top: Math.pow(random(), ABOUT_STARS_FALLOFF) * ABOUT_STARS_DEPTH,
-      size: layer.size * (0.75 + random() * 0.5),
-      opacity: layer.opacity * (0.7 + random() * 0.6),
-      spin,
-      delay: -random() * spin,
-      reverse: random() < 0.5,
-      fine: index === 0,
-      lag: ABOUT_STARS_LAG[index],
     };
   });
 });
@@ -1404,6 +1335,13 @@ function ProjectsCopy() {
 
       stage.style.setProperty('--about-wipe', aboutWipeEased.toFixed(4));
 
+      const joinRise = clamp01((playhead - JOIN_AT) / JOIN_RISE_OVER);
+
+      stage.style.setProperty(
+        '--join-rise',
+        `${((1 - joinRise) ** 3 * JOIN_RISE_FROM * stageHeight).toFixed(1)}px`,
+      );
+
       /*
        * The copy's stars, cut off at the black's top edge. Worked out from the
        * wipe's own rule rather than measured off it - .aboutWipe starts 5vh
@@ -1434,6 +1372,7 @@ function ProjectsCopy() {
       momentStripRef.current?.setDissolve(
         clamp01((playhead - MOMENTS_DISSOLVE_AT) / MOMENTS_DISSOLVE_OVER),
       );
+      momentStripRef.current?.setCaptionsOff(playhead >= MOMENT_CAPTIONS_OFF_AT);
 
       /*
        * The grid on the paper. Written here in whole device pixels so the
@@ -2173,6 +2112,19 @@ function ProjectsCopy() {
 
           {!prefersReducedMotion && <MomentStrip ref={momentStripRef} />}
 
+          {/*
+            Scene six's words, over the moments and the stars: see JOIN_AT.
+            Under reduced motion there is no rise, and they sit in the page
+            below instead.
+          */}
+          {!prefersReducedMotion && (
+            <div className={styles.joinStage}>
+              <div className={`${styles.joinRise} limitWidth`}>
+                <JoinScene arrived={revealed.aboutArrived} reducedMotion={false} />
+              </div>
+            </div>
+          )}
+
           {/* Outside the arc's holder, which is being scaled: a heading inside it
               would be scaled with it. Under it in the stack, though, so the band
               covers the word as it drops past. */}
@@ -2300,46 +2252,27 @@ function ProjectsCopy() {
       </section>
 
       {/*
-        Scene six. After the section rather than in its stage: see ABOUT_COPY_AT. The
-        words are the about page's, from the one component both pages read.
+        Scene six's stars, after the section rather than in its stage: see
+        ABOUT_COPY_AT. The words are in the stage, but for reduced motion.
       */}
       <div
         ref={aboutRef}
         className={styles.about}
-        style={{ marginTop: prefersReducedMotion ? 0 : `${-ABOUT_OVERLAP * 100}vh` }}
+        // At least as tall as it is pulled up by, so the page runs on to where
+        // the stage lets go rather than ending under it.
+        style={
+          prefersReducedMotion
+            ? undefined
+            : { marginTop: `${-ABOUT_OVERLAP * 100}vh`, minHeight: `${ABOUT_OVERLAP * 100}vh` }
+        }
       >
-        <div
-          className={styles.aboutStars}
-          style={{ '--stars-reach': `${ABOUT_STARS_REACH}vh` }}
-          aria-hidden="true"
-        >
-          {ABOUT_STARS.map((star, index) => (
-            <span
-              key={index}
-              className={`${styles.aboutStar} ${star.fine ? styles.starFine : ''}`}
-              style={{
-                left: `${star.left.toFixed(2)}%`,
-                top: `${star.top.toFixed(1)}vh`,
-                '--size': `${star.size.toFixed(3)}vmin`,
-                '--lag': star.lag,
-              }}
-            >
-              <i
-                className={styles.starSpin}
-                style={{
-                  opacity: star.opacity.toFixed(3),
-                  animationDuration: `${star.spin.toFixed(1)}s`,
-                  animationDelay: `${star.delay.toFixed(1)}s`,
-                  animationDirection: star.reverse ? 'reverse' : 'normal',
-                }}
-              />
-            </span>
-          ))}
-        </div>
+        <StarField />
 
-        <div className={`${styles.aboutInner} limitWidth`}>
-          <AboutScene arrived={revealed.aboutArrived} reducedMotion={prefersReducedMotion} />
-        </div>
+        {prefersReducedMotion && (
+          <div className={`${styles.aboutInner} limitWidth`}>
+            <JoinScene arrived reducedMotion />
+          </div>
+        )}
       </div>
     </>
   );

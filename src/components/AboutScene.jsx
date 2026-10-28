@@ -1,22 +1,24 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styles from '../css/ImmersiveHero.module.css';
 import scramble from './scramble';
+import ScrambleText from './ScrambleText';
 import { aboutValues, MISSION, MISSION_PREFIX } from '../data/aboutValues';
 
 /*
- * Scene six's copy: the about page's opening, recomposed for the end of the
- * hero.
+ * The about page's opening, first built as the end of the home page's hero
+ * and set the same way here: the hero's styles, and its stars - see
+ * StarField.
  *
  * The heading and the mission sit side by side. The heading blurs in the way
- * scene two's overlays do; the mission then scrambles in from its first letter
- * to its last. Both are set off by `arrived`, which the hero raises once the
- * copy is on screen and lowers again above it - and on their own clock from
- * there, not the scroll's, so a reader who stops scrolling still sees the
- * sentence finish.
+ * the hero's scene two overlays do; the mission then scrambles in from its
+ * first letter to its last. Both are set off by `arrived`, which the about page raises
+ * once the copy has scrolled into view and lowers again when it leaves - and
+ * on their own clock from there, not the scroll's, so a reader who stops
+ * scrolling still sees the sentence finish.
  *
  * Under it the four values are only their shapes, set out in a diamond and
- * drifting on the hero's float. What each one stands for is a box of graph paper that follows the
- * cursor over it - or, with no cursor to follow, opens under the shape that
+ * drifting on the hero's float. What each one stands for is a box of graph
+ * paper that follows the cursor over it - or, with no cursor to follow, opens under the shape that
  * was tapped or pressed.
  */
 
@@ -48,48 +50,6 @@ const CARD_BODY_DELAY_MS = 220;
 const CARD_BODY_MS = 650;
 /* The least room the card keeps from the bottom and top of the window. */
 const TIP_MARGIN = 12;
-
-/*
- * A line of text that types itself in with the scramble, once, when it
- * mounts - give it a new key to play it again.
- *
- * The full text sits invisibly underneath and holds the box's shape, so
- * nothing around it reflows as the letters arrive; the live letters are laid
- * over it.
- */
-function ScrambleText({ text, delay, duration, hold, className }) {
-  const liveRef = useRef(null);
-
-  useEffect(() => {
-    let frame = null;
-    const start = performance.now() + delay;
-
-    const step = (now) => {
-      const progress = Math.min(1, Math.max(0, (now - start) / duration));
-
-      if (liveRef.current) liveRef.current.textContent = scramble('', text, progress, hold);
-
-      frame = progress < 1 ? window.requestAnimationFrame(step) : null;
-    };
-
-    frame = window.requestAnimationFrame(step);
-
-    return () => {
-      if (frame !== null) window.cancelAnimationFrame(frame);
-    };
-  }, [text, delay, duration, hold]);
-
-  return (
-    <span className={`${styles.scrambleBox} ${className ?? ''}`}>
-      <span className={styles.scrambleSizer} aria-hidden="true">
-        {text}
-      </span>
-      <span className={styles.scrambleLive} aria-hidden="true">
-        <span ref={liveRef} />
-      </span>
-    </span>
-  );
-}
 
 /*
  * A title whose lines each get their own colour bar, one after the other, so

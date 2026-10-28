@@ -1,9 +1,9 @@
 /*
  * The club's four values, each with its shape and the colour it is called in.
  *
- * Read by the about page, which sets them out as a grid with their words under
- * them, and by the end of the home page's hero, which sets the shapes out as a
- * diamond and shows the words on hover - so the wording lives here once.
+ * Read by the about page's opening, which sets the shapes out as an orbiting
+ * diamond and shows the words on hover. Kept apart from it with the mission
+ * so the wording is easy to find and change.
  */
 import star from '../images/star.png';
 import triangle from '../images/triangle.png';

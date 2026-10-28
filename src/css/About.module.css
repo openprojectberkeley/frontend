@@ -1,7 +1,3 @@
-.marginFromScreen {
-    margin: 0 var(--margin-from-screen);
-}
-
 .aboutPics {
     margin: 0 var(--margin-from-screen);
 }
@@ -156,22 +152,28 @@
     z-index: 200;
     margin-top: -120px;
     text-align: center;
-    margin-bottom: 100px;
 }
 
-.aboutUs {
-    margin-top: 100px;
-    margin-bottom: 100px;
-    padding: 0 clamp(20px, 5vw, 100px);
+/*
+ * The about opening - see AboutScene - with its stars. Positioned for the
+ * star field, which fills it edge to edge and clips its own sides.
+ *
+ * It starts 120px up the team photo, with .aboutTopHalf pulled up over it,
+ * and the wave under the photo hangs about 18vw below the photo's edge - the
+ * lower half of a 1728 x 612 drawing that dips to 600 - so the copy is
+ * pushed down past both. The stars can start at the top: the wave is drawn
+ * over them.
+ */
+.aboutScene {
+    position: relative;
+    padding: calc(120px + 18vw + clamp(2rem, 6vh, 4rem)) 0 clamp(4rem, 10vh, 7rem);
 }
 
-/* Prose, not headings - they only carry heading tags. */
-.aboutUs h3,
-.value h3 {
-    font-weight: 400;
+.aboutSceneInner {
+    position: relative;
+    padding: 0 var(--margin-from-screen);
 }
 
-.aboutUs h1,
 .aboutPics h2 {
     font-family: var(--font-title);
     font-weight: 400;
@@ -181,247 +183,6 @@
     font-size: clamp(2.5rem, 4vw, 3rem);
 }
 
-.ourValues h1 {
-    color: #ffffff;
-    padding-bottom: 30px;
-}
-
-.values {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 50px;
-    width: 100%;
-    justify-items: center;
-    margin-bottom: 100px;
-}
-
-.value {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 500px;
-    text-align: center;
-}
-
-.value h2 {
-}
-
-.value img {
-    height: 200px;
-    user-select: none;
-}
-
-.star:hover img {
-    animation: starSpin 3s ease infinite;
-}
-
-.triangle:hover img {
-    animation: triangleLaunch 4s ease infinite;
-}
-
-.square:hover img {
-    animation: squareWiggle 4s ease-in-out infinite;
-}
-
-.circle:hover img {
-    animation: circleFloat 8s ease-in-out infinite, slowSpin 20s linear infinite;
-}
-
-.circle img {
-    --circle-translate-x: 0%;
-    --circle-translate-y: 0%;
-    --circle-rot: 0deg;
-    --circle-scale: 1;
-    --slow-rot: 0deg;
-    transform: translate(var(--circle-translate-x), var(--circle-translate-y)) rotate(calc(var(--slow-rot) + var(--circle-rot))) scale(var(--circle-scale));
-}
-
-@keyframes starSpin {
-    0% {
-        transform: rotate(0deg);
-    }
-    5% {
-        transform: rotate(-10deg);
-    }
-    50% {
-        transform: rotate(370deg);
-    }
-    60% {
-        transform: rotate(360deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes triangleLaunch {
-    0% {
-        transform: translateY(0);
-    }
-    30% {
-        transform: translateX(100px) translateY(-80px) rotate(-80deg);
-    }
-    60% {
-        transform: translateX(-100px) translateY(-80px) rotate(-200deg);
-    }
-    100% {
-        transform: translateX(0px) translateY(0px) rotate(-360deg);
-    }
-}
-
-@keyframes squareWiggle {
-    0% {
-        transform: rotate(0deg) scaleX(1);
-    }
-    3% {
-        transform: rotate(5deg) translateX(-5px) translateY(-5px) scaleX(-1);
-    }
-    6% {
-        transform: rotate(-5deg) translateX(-10px) translateY(5px) scaleX(-1);
-    }
-    9% {
-        transform: rotate(5deg) translateX(-15px) translateY(-5px) scaleX(-1);
-    }
-    12% {
-        transform: rotate(-5deg) translateX(-20px) translateY(5px) scaleX(-1);
-    }
-    15% {
-        transform: rotate(0deg) scaleX(1);
-    }
-    18% {
-        transform: rotate(5deg) translateX(-15px) translateY(-5px);
-    }
-    21% {
-        transform: rotate(-5deg) translateX(-10px) translateY(5px);
-    }
-    24% {
-        transform: rotate(5deg) translateX(-5px) translateY(-5px);
-    }
-    27% {
-        transform: rotate(-5deg) translateX(0px) translateY(5px);
-    }
-    30% {
-        transform: rotate(0deg) translateX(0px) translateY(0px);
-    }
-    33% {
-        transform: rotate(5deg) translateX(5px) translateY(-5px);
-    }
-    36% {
-        transform: rotate(-5deg) translateX(10px) translateY(5px);
-    }
-    39% {
-        transform: rotate(5deg) translateX(15px) translateY(-5px);
-    }
-    42% {
-        transform: rotate(-5deg) translateX(20px) translateY(5px);
-    }
-    45% {
-        transform: rotate(0deg) scaleX(-1);
-    }
-    48% {
-        transform: rotate(5deg) translateX(15px) translateY(-5px) scaleX(-1);
-    }
-    51% {
-        transform: rotate(-5deg) translateX(10px) translateY(5px) scaleX(-1);
-    }
-    54% {
-        transform: rotate(5deg) translateX(5px) translateY(-5px) scaleX(-1);
-    }
-    57% {
-        transform: rotate(-5deg) translateX(0px) translateY(5px) scaleX(-1);
-    }
-    60% {
-        transform: rotate(0deg) translateX(0px) translateY(0px) scaleX(1);
-    }
-    100% {
-        transform: rotate(0deg) translateX(0px) translateY(0px) scaleX(1);
-    }
-}
-
-@keyframes circleFloat {
-    0% {
-        --circle-translate-x: -2%;
-        --circle-translate-y: -1%;
-        --circle-rot: 0deg;
-        --circle-scale: 1;
-    }
-    25% {
-        --circle-translate-x: 6%;
-        --circle-translate-y: -4%;
-        --circle-rot: 2deg;
-        --circle-scale: 1.01;
-    }
-    50% {
-        --circle-translate-x: -3%;
-        --circle-translate-y: 5%;
-        --circle-rot: -1.5deg;
-        --circle-scale: 0.995;
-    }
-    75% {
-        --circle-translate-x: 4%;
-        --circle-translate-y: 3%;
-        --circle-rot: 1deg;
-        --circle-scale: 1.005;
-    }
-    100% {
-        --circle-translate-x: -2%;
-        --circle-translate-y: -1%;
-        --circle-rot: 0deg;
-        --circle-scale: 1;
-    }
-}
-
-@keyframes slowSpin {
-    0% {
-        --slow-rot: 0deg;
-    }
-    100% {
-        --slow-rot: 360deg;
-    }
-}
-
-@property --circle-translate-x {
-    syntax: '<percentage>';
-    inherits: true;
-    initial-value: 0%;
-}
-
-@property --circle-translate-y {
-    syntax: '<percentage>';
-    inherits: true;
-    initial-value: 0%;
-}
-
-@property --circle-rot {
-    syntax: '<angle>';
-    inherits: true;
-    initial-value: 0deg;
-}
-
-@property --circle-scale {
-    syntax: '<number>';
-    inherits: true;
-    initial-value: 1;
-}
-
-@property --slow-rot {
-    syntax: '<angle>';
-    inherits: true;
-    initial-value: 0deg;
-}
-
 .aboutBottomHalf {
     margin-bottom: 100px;
-}
-
-@media screen and (max-width: 600px) {
-    .values {
-        grid-template-columns: 1fr;
-        grid-gap: 30px;
-        margin-bottom: 30px;
-    }
-
-    .aboutUs {
-        margin-top: 50px;
-    }
 }
