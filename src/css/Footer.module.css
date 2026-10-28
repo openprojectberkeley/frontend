@@ -1,105 +1,66 @@
 .background {
-    background-color: #0B1633;
+    position: relative;
+    overflow: hidden;
+    /*
+     * The home hero's light paper and its graph ruling: a cell, and four
+     * smaller boxes to a side inside it at a little over half the ink.
+     */
+    --sub: 32px;
+    --cell: calc(var(--sub) * 4);
+    --line: rgba(34, 17, 79, 0.07);
+    --line-fine: rgba(34, 17, 79, 0.04);
+    background-color: #FFFDF8;
+    background-image:
+        linear-gradient(to right, var(--line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line) 1px, transparent 1px),
+        linear-gradient(to right, var(--line-fine) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line-fine) 1px, transparent 1px);
+    background-size:
+        var(--cell) var(--cell),
+        var(--cell) var(--cell),
+        var(--sub) var(--sub),
+        var(--sub) var(--sub);
+}
+
+/* The mark, inked and faint, standing taller than the footer 20vw in. */
+.watermark {
+    position: absolute;
+    left: 20vw;
+    top: -10%;
+    height: 120%;
+    filter: brightness(0);
+    opacity: 0.1;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* The hero's copy's box, a copy's height up, so the field inside lands where
+   the hero's own does. */
+.stars {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(-1 * var(--about-height, 100000px));
+    height: var(--about-height, 0px);
+    pointer-events: none;
+}
+
+.footer,
+.copyright {
+    position: relative;
 }
 
 .footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: #0B1633;
+    background-color: transparent;
     padding: 30px var(--margin-from-screen) 70px var(--margin-from-screen);
-}
-
-.footerLogo {
-    width: 200px;
-    user-select: none;
-    display: block;
-}
-
-.logoButton {
-    position: relative;
-    display: inline-block;
-    width: fit-content;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    line-height: 0;
-}
-
-/* Two color-split ghosts, hidden until the logo is hovered or focused. */
-.glitchLayer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    mix-blend-mode: screen;
-    will-change: transform, clip-path;
-}
-
-.logoButton:hover .glitchLayer,
-.logoButton:focus-visible .glitchLayer {
-    opacity: 0.55;
-}
-
-.logoButton:hover .glitchLayerOne,
-.logoButton:focus-visible .glitchLayerOne {
-    filter: sepia(1) saturate(5) hue-rotate(280deg) brightness(1.12);
-    animation: glitchOne 0.5s steps(1, end) infinite;
-}
-
-.logoButton:hover .glitchLayerTwo,
-.logoButton:focus-visible .glitchLayerTwo {
-    filter: sepia(1) saturate(5) hue-rotate(160deg) brightness(1.12);
-    animation: glitchTwo 0.4s steps(1, end) infinite;
-}
-
-.logoButton:hover .footerLogo:first-child,
-.logoButton:focus-visible .footerLogo:first-child {
-    animation: glitchBase 0.45s steps(1, end) infinite;
-}
-
-/* The base logo never tears, it only drifts, so the mark stays whole. */
-@keyframes glitchBase {
-    0%, 100% { transform: translate(0, 0); }
-    25% { transform: translate(-2px, 1px); }
-    50% { transform: translate(1px, 0); }
-    75% { transform: translate(2px, -1px); }
-}
-
-/* Each ghost shows one band at a time, sliding around the mark. */
-@keyframes glitchOne {
-    0%, 100% { transform: translate(-3px, 0); clip-path: inset(14% 0 68% 0); }
-    25% { transform: translate(3px, -1px); clip-path: inset(46% 0 36% 0); }
-    50% { transform: translate(-2px, 1px); clip-path: inset(70% 0 12% 0); }
-    75% { transform: translate(3px, 1px); clip-path: inset(30% 0 52% 0); }
-}
-
-@keyframes glitchTwo {
-    0%, 100% { transform: translate(3px, 1px); clip-path: inset(56% 0 26% 0); }
-    25% { transform: translate(-3px, 1px); clip-path: inset(22% 0 60% 0); }
-    50% { transform: translate(2px, -1px); clip-path: inset(8% 0 74% 0); }
-    75% { transform: translate(-2px, 0); clip-path: inset(38% 0 44% 0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .logoButton:hover .glitchLayer,
-    .logoButton:focus-visible .glitchLayer,
-    .logoButton:hover .footerLogo:first-child,
-    .logoButton:focus-visible .footerLogo:first-child {
-        animation: none;
-        transform: none;
-    }
-
-    .logoButton:hover .glitchLayer,
-    .logoButton:focus-visible .glitchLayer {
-        opacity: 0;
-    }
 }
 
 .title {
     font-size: 18px;
+    color: #020617;
     opacity: 0.4;
     user-select: none;
 }
@@ -112,7 +73,7 @@
 
 .links a {
     text-decoration: none;
-    color: white;
+    color: #020617;
     width: fit-content;
 }
 
@@ -134,6 +95,7 @@
 
 .socialicons {
     width: 30px;
+    filter: brightness(0) saturate(100%);
     user-select: none;
 }
 
@@ -167,7 +129,7 @@
 
 .socials a {
     text-decoration: none;
-    color: white;
+    color: #020617;
 }
 
 .rightContent {
@@ -201,7 +163,7 @@
 
 .copyright {
     text-align: center;
-    color: rgba(255,255,255,0.4);
+    color: rgba(2, 6, 23, 0.5);
     font-size: 14px;
     padding: 12px 0 30px 0;
 }

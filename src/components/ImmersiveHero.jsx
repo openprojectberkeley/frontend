@@ -1352,6 +1352,12 @@ function ProjectsCopy() {
          gives back a share of - see ABOUT_STARS_LAG. */
       if (aboutRect) {
         aboutRef.current.style.setProperty('--about-scroll', `${aboutRect.top.toFixed(1)}px`);
+
+        /* The same again on the root, with the copy's height, for the
+           footer's inked copy of the field - see FooterStars. */
+        const root = document.documentElement;
+        root.style.setProperty('--about-scroll', `${aboutRect.top.toFixed(1)}px`);
+        root.style.setProperty('--about-height', `${aboutRect.height.toFixed(1)}px`);
       }
 
       if (aboutWipeRef.current && aboutRect) {
@@ -1801,6 +1807,14 @@ function ProjectsCopy() {
     }, []);
 
     useScrollPlayhead(sectionRef, applyPlayhead, !prefersReducedMotion);
+
+    /* The copy's place on the root goes with the hero, so no other route's
+       footer lines its stars up with a page that is not there. */
+    useEffect(() => () => {
+      const root = document.documentElement;
+      root.style.removeProperty('--about-scroll');
+      root.style.removeProperty('--about-height');
+    }, []);
 
     // Solid under a typist's hands, blinking whenever they have stopped.
     /*

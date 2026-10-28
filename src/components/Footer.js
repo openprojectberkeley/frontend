@@ -1,28 +1,32 @@
 import styles from '../css/Footer.module.css';
-import footerLogo from '../images/navbarlogo.png';
 import { NavLink } from 'react-router-dom';
 import instagram from '../images/instagram.png';
 import github from '../images/github.png';
 import email from '../images/email.png';
 import linkedin from '../images/linkedin.png';
 import { NavHashLink } from 'react-router-hash-link';
+import StarField from './StarField';
 
 export default function Footer() {
     return (
       <div className={styles.background}>
+        <img
+          src={`${process.env.PUBLIC_URL}/favicon.svg`}
+          alt=""
+          aria-hidden="true"
+          className={styles.watermark}
+        />
+        {/*
+          The home hero's scene-six stars carry on down past its copy, and
+          this is where they land: the same field, inked, placed the copy's
+          height above the footer so each star lines up with its white self.
+          Off the page unless the hero has written that height.
+        */}
+        <div className={styles.stars} aria-hidden="true">
+          <StarField ink />
+        </div>
         <div className={`${styles.footer} limitWidth`}>
           <div className={styles.socials}>
-            <a
-              href="https://spypage.openprojectberkeley.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.logoButton}
-              aria-label="Open Project spy page"
-            >
-              <img src={footerLogo} alt="footer logo" className={styles.footerLogo} />
-              <img src={footerLogo} alt="" aria-hidden="true" className={`${styles.footerLogo} ${styles.glitchLayer} ${styles.glitchLayerOne}`} />
-              <img src={footerLogo} alt="" aria-hidden="true" className={`${styles.footerLogo} ${styles.glitchLayer} ${styles.glitchLayerTwo}`} />
-            </a>
             <div className={styles.socialLinks}>
               <a href="https://www.instagram.com/openprojectberkeley/" target="_blank" rel="noopener noreferrer">
                 <div className={styles.socialsgroup}>

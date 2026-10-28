@@ -2055,6 +2055,16 @@
   pointer-events: none;
 }
 
+/* The field inked for paper: whatever holds it does the clipping. */
+.starsInk {
+  overflow: visible;
+  clip-path: none;
+}
+
+.starsInk .starSpin {
+  background-color: #000;
+}
+
 /* Pushed back against the scroll by --lag of it: up while the copy is still
    coming up the window, down once it has gone past the top. */
 .aboutStar {
