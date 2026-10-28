@@ -7,8 +7,8 @@
  * past reads as a place with depth rather than a row of tiles on a conveyor.
  *
  * Each entry is where one card starts, how near it is and what it says. The
- * order of the array is the order they arrive, which is the order of the
- * staggers below rather than anything the code works out.
+ * order they arrive in is set by the staggers and z below, not by the order of
+ * the array - see the end of this note for how the two are kept in step.
  *
  * The units are the ones the scene itself is tuned in:
  *
@@ -54,15 +54,14 @@
  * 0.84, is near 90vw. It then coasts to a stop under the about sheet, about
  * half a screen further (times z) by the time it is covered.
  *
- * Two orders run through this file and they have nothing to do with each
- * other. The imports are sorted by the date in the filename, oldest first, so
- * a new photograph has one obvious place to go. The array is sorted by nothing
- * at all: which picture sits on which stagger/lane/z was shuffled, because the
- * strip reads as club life going past rather than an archive being played back
- * in order. So moving a picture from one line to another changes where it
- * appears and nothing else, and the five clips are spread one to each fifth of
- * the strip, on near slots with their lanes kept apart, rather than falling
- * where the shuffle put them.
+ * The strip plays in date order, oldest first. The pictures are listed by
+ * `date`, and the slots - stagger, lane, z - are listed by when each one comes
+ * into shot, which is `(stagger - 100) / z` (the pan it takes to bring the
+ * card's left edge to the right of the screen), smallest first. So the two
+ * halves of each line are paired up in order, and adding a picture means
+ * adding a slot too and re-pairing the lines after it, or it lands out of
+ * turn. `date` is what the badge in the card's corner shows; the caption is
+ * only the words under the cursor and carries no date of its own.
  *
  * The stagger, the lane and z are all uneven on purpose. Neighbors overlap by
  * a corner instead of sitting in a grid, the lanes wander rather than
@@ -125,51 +124,51 @@ import exec_social_5_4_26_1 from '../images/community/videos/exec_social_5-4-26_
 import exec_social_5_4_26_1_poster from '../images/community/videos/exec_social_5-4-26_1-poster.jpg';
 
 export const communityMoments = [
-  { video: big_little_3_1_26, poster: big_little_3_1_26_poster, caption: '3-1-26: big/little reveal sp26', stagger: 112, lane: 15, z: 1.12 },
-  { image: bday_4_11_26_1, caption: '4-11-26: jaguar karaoke', stagger: 105, lane: 46, z: 0.8 },
-  { image: big_little_10_17_26_3, caption: '10-17-26: big/little reveal fa26', stagger: 102, lane: 68, z: 0.68 },
-  { image: banquet_5_5_26_1, caption: '5-5-26: banquet sp26, rockettes table', stagger: 120, lane: 16, z: 0.86 },
-  { image: banquet_5_5_26_3, caption: '5-5-26: banquet fa26, chessblitz', stagger: 135, lane: 65, z: 0.86 },
-  { image: chessblitz_sf_5_4_25, caption: '5-4-25: chessblitz sf sp25', stagger: 155, lane: 30, z: 1.04 },
-  { image: big_little_10_17_26_2, caption: '10-17-26: big/little reveal fa26', stagger: 145, lane: 42, z: 0.76 },
-  { image: retreat_9_26_26_3, caption: '9-26-26: yosemite retreat fa26', stagger: 128, lane: 15, z: 0.68 },
-  { image: retreat_9_27_25_1, caption: '9-27-25: retreat fa25, bodega bay', stagger: 122, lane: 69, z: 0.6 },
-  { image: bday_4_11_26, caption: '4-11-26: happy 22', stagger: 201, lane: 22, z: 1.08 },
-  { image: banquet_12_8_25, caption: '12-8-25: yacht banquet fa25, chessblitz', stagger: 150, lane: 62, z: 0.68 },
-  { image: rockettes_sf_5_2_26, caption: '5-2-26: rockettes sf sp26', stagger: 204, lane: 9, z: 0.94 },
-  { image: chessblitz_arcade_12_11_25, caption: '12-11-25: chessblitz dave n busters fa25', stagger: 190, lane: 46, z: 0.8 },
-  { image: retreat_9_27_25_2, caption: 'Last standup of the semester', stagger: 160, lane: 69, z: 0.6 },
-  { image: big_little_10_17_26, caption: 'Formal', stagger: 266, lane: 16, z: 1.14 },
-  { image: banquet_5_5_26_5, caption: 'banquet', stagger: 195, lane: 20, z: 0.72 },
-  { image: chessblitz_taco_bell_11_9_25, caption: 'Last standup of the semester', stagger: 234, lane: 6, z: 0.82 },
-  { video: squid_game_4_17_26_2, poster: squid_game_4_17_26_2_poster, caption: 'Squid Game night', stagger: 255, lane: 55, z: 1 },
-  { image: banquet_5_5_26, caption: 'Hack weekend, 3am', stagger: 280, lane: 65, z: 0.86 },
-  { image: retreat_9_26_26_1, caption: 'Last standup of the semester', stagger: 240, lane: 42, z: 0.84 },
-  { image: retreat_9_26_26_2, caption: 'And the one after that', stagger: 190, lane: 70, z: 0.6 },
-  { image: retreat_9_26_26_4, caption: 'And the one after that', stagger: 313, lane: 12, z: 1.1 },
-  { image: retreat_9_27_25, caption: 'And the one after that', stagger: 220, lane: 58, z: 0.68 },
-  { image: retreat_9_26_26_5, caption: 'retreat fa26', stagger: 203, lane: 10, z: 0.6 },
-  { video: exec_social_3_15_26, poster: exec_social_3_15_26_poster, caption: 'Exec social, March', stagger: 292, lane: 23, z: 0.9 },
-  { image: banquet_5_5_26_4, caption: 'Dinner after the client review', stagger: 350, lane: 42, z: 1.06 },
-  { image: movie_night_4_10_26, caption: 'And the one after that', stagger: 265, lane: 5, z: 0.74 },
-  { image: big_little_3_2_26_1, caption: 'big little', stagger: 284, lane: 35, z: 0.76 },
-  { image: squid_game_4_17_26, caption: 'Last standup of the semester', stagger: 360, lane: 8, z: 0.98 },
-  { image: retreat_9_27_25_3, caption: 'retreat fa25', stagger: 300, lane: 65, z: 0.82 },
-  { video: rockettes_sf_5_2_26_1, poster: rockettes_sf_5_2_26_1_poster, caption: 'Rockettes, in the city', stagger: 430, lane: 46, z: 1.16 },
-  { image: exec_social_3_15_26_1, caption: 'exec social', stagger: 285, lane: 20, z: 0.7 },
-  { image: retreat_2_21_26_1, caption: 'retreat sp26', stagger: 353, lane: 50, z: 0.86 },
-  { image: retreat_9_27_25_4, caption: 'retreat fa25', stagger: 370, lane: 8, z: 0.9 },
-  { image: retreat_9_28_24, caption: 'retreat fa24', stagger: 432, lane: 14, z: 1.02 },
-  { image: retreat_2_21_26, caption: 'And the one after that', stagger: 340, lane: 70, z: 0.78 },
-  { image: retreat_9_26_26, caption: 'Last standup of the semester', stagger: 330, lane: 42, z: 0.74 },
-  { image: squid_game_4_17_26_1, caption: 'And the one after that', stagger: 425, lane: 68, z: 0.86 },
-  { image: banquet_5_5_26_6, caption: 'banquet', stagger: 417, lane: 28, z: 0.92 },
-  { image: big_little_10_17_26_1, caption: 'big little', stagger: 395, lane: 50, z: 0.81 },
-  { image: banquet_5_5_26_2, caption: 'Kickoff, 306 Soda', stagger: 512, lane: 10, z: 1.1 },
-  { image: big_little_3_4_26, caption: 'Demo night', stagger: 320, lane: 62, z: 0.68 },
-  { video: exec_social_5_4_26_1, poster: exec_social_5_4_26_1_poster, caption: 'Exec social, May', stagger: 475, lane: 33, z: 0.96 },
-  { image: movie_night_4_10_26_1, caption: 'Last standup of the semester', stagger: 330, lane: 8, z: 0.62 },
-  { image: big_little_3_2_26, caption: 'The whiteboard, week nine', stagger: 385, lane: 16, z: 0.7 },
-  { image: retreat_9_28_24_1, caption: 'retreat fa24', stagger: 440, lane: 52, z: 0.84 },
+  { image: retreat_9_28_24, date: '9-28-24', caption: 'yosemite retreat fa24', stagger: 102, lane: 68, z: 0.68 },
+  { image: retreat_9_28_24_1, date: '9-28-24', caption: 'yosemite retreat fa24', stagger: 105, lane: 46, z: 0.8 },
+  { image: chessblitz_sf_5_4_25, date: '5-4-25', caption: 'chessblitz sf sp25', stagger: 112, lane: 15, z: 1.12 },
+  { image: retreat_9_27_25, date: '9-27-25', caption: 'retreat fa25', stagger: 120, lane: 16, z: 0.86 },
+  { image: retreat_9_27_25_1, date: '9-27-25', caption: 'retreat fa25, bodega bay', stagger: 122, lane: 69, z: 0.6 },
+  { image: retreat_9_27_25_2, date: '9-27-25', caption: 'retreat fa25, bodega bay', stagger: 135, lane: 65, z: 0.86 },
+  { image: retreat_9_27_25_3, date: '9-27-25', caption: 'retreat fa25, bodega bay', stagger: 128, lane: 15, z: 0.68 },
+  { image: retreat_9_27_25_4, date: '9-27-25', caption: 'retreat fa25, bodega bay', stagger: 155, lane: 30, z: 1.04 },
+  { image: chessblitz_taco_bell_11_9_25, date: '11-9-25', caption: 'chessblitz taco bell pacifica', stagger: 145, lane: 42, z: 0.76 },
+  { image: banquet_12_8_25, date: '12-8-25', caption: 'yacht banquet fa25, chessblitz', stagger: 150, lane: 62, z: 0.68 },
+  { image: chessblitz_arcade_12_11_25, date: '12-11-25', caption: 'chessblitz dave n busters', stagger: 201, lane: 22, z: 1.08 },
+  { image: retreat_2_21_26, date: '2-21-26', caption: 'retreat sp26', stagger: 160, lane: 69, z: 0.6 },
+  { image: retreat_2_21_26_1, date: '2-21-26', caption: 'retreat sp26', stagger: 204, lane: 9, z: 0.94 },
+  { video: big_little_3_1_26, poster: big_little_3_1_26_poster, date: '3-1-26', caption: 'big/little reveal sp26', stagger: 190, lane: 46, z: 0.8 },
+  { image: big_little_3_2_26, date: '3-1-26', caption: 'big/little reveal sp26', stagger: 195, lane: 20, z: 0.72 },
+  { image: big_little_3_2_26_1, date: '3-1-26', caption: 'big/little reveal sp26', stagger: 266, lane: 16, z: 1.14 },
+  { image: big_little_3_4_26, date: '3-1-26', caption: 'big/little reveal sp26', stagger: 190, lane: 70, z: 0.6 },
+  { video: exec_social_3_15_26, poster: exec_social_3_15_26_poster, date: '3-15-26', caption: 'trampoline park social', stagger: 255, lane: 55, z: 1 },
+  { image: exec_social_3_15_26_1, date: '3-15-26', caption: 'trampoline park social', stagger: 234, lane: 6, z: 0.82 },
+  { image: movie_night_4_10_26, date: '4-10-26', caption: 'rio movie night', stagger: 240, lane: 42, z: 0.84 },
+  { image: movie_night_4_10_26_1, date: '4-10-26', caption: 'rio movie night', stagger: 203, lane: 10, z: 0.6 },
+  { image: bday_4_11_26, date: '4-11-26', caption: 'happy 22', stagger: 220, lane: 58, z: 0.68 },
+  { image: bday_4_11_26_1, date: '4-11-26', caption: 'jaguar karaoke', stagger: 313, lane: 12, z: 1.1 },
+  { image: squid_game_4_17_26, date: '4-17-26', caption: 'squid game social', stagger: 280, lane: 65, z: 0.86 },
+  { image: squid_game_4_17_26_1, date: '4-17-26', caption: 'squid game social', stagger: 292, lane: 23, z: 0.9 },
+  { video: squid_game_4_17_26_2, poster: squid_game_4_17_26_2_poster, date: '4-17-26', caption: 'squid game social', stagger: 265, lane: 5, z: 0.74 },
+  { image: rockettes_sf_5_2_26, date: '5-2-26', caption: 'rockettes sf scavenger hunt', stagger: 350, lane: 42, z: 1.06 },
+  { video: rockettes_sf_5_2_26_1, poster: rockettes_sf_5_2_26_1_poster, date: '5-2-26', caption: 'rockettes sf scavenger hunt', stagger: 284, lane: 35, z: 0.76 },
+  { video: exec_social_5_4_26_1, poster: exec_social_5_4_26_1_poster, date: '5-4-26', caption: 'exec social', stagger: 300, lane: 65, z: 0.82 },
+  { image: banquet_5_5_26, date: '5-5-26', caption: 'banquet sp26', stagger: 285, lane: 20, z: 0.7 },
+  { image: banquet_5_5_26_1, date: '5-5-26', caption: 'banquet sp26', stagger: 360, lane: 8, z: 0.98 },
+  { image: banquet_5_5_26_2, date: '5-5-26', caption: 'banquet sp26', stagger: 430, lane: 46, z: 1.16 },
+  { image: banquet_5_5_26_3, date: '5-5-26', caption: 'banquet fa26, chessblitz', stagger: 353, lane: 50, z: 0.86 },
+  { image: banquet_5_5_26_4, date: '5-5-26', caption: 'banquet sp26', stagger: 370, lane: 8, z: 0.9 },
+  { image: banquet_5_5_26_5, date: '5-5-26', caption: 'banquet sp26', stagger: 340, lane: 70, z: 0.78 },
+  { image: banquet_5_5_26_6, date: '5-5-26', caption: 'banquet sp26', stagger: 330, lane: 42, z: 0.74 },
+  { image: retreat_9_26_26, date: '9-26-26', caption: 'yosemite retreat fa26', stagger: 320, lane: 62, z: 0.68 },
+  { image: retreat_9_26_26_1, date: '9-26-26', caption: 'yosemite retreat fa26', stagger: 432, lane: 14, z: 1.02 },
+  { image: retreat_9_26_26_2, date: '9-26-26', caption: 'yosemite retreat fa26', stagger: 417, lane: 28, z: 0.92 },
+  { image: retreat_9_26_26_3, date: '9-26-26', caption: 'yosemite retreat fa26', stagger: 395, lane: 50, z: 0.81 },
+  { image: retreat_9_26_26_4, date: '9-26-26', caption: 'yosemite retreat fa26', stagger: 330, lane: 8, z: 0.62 },
+  { image: retreat_9_26_26_5, date: '9-26-26', caption: 'yosemite retreat fa26', stagger: 512, lane: 10, z: 1.1 },
+  { image: big_little_10_17_26, date: '10-17-26', caption: 'big/little reveal fa26', stagger: 425, lane: 68, z: 0.86 },
+  { image: big_little_10_17_26_1, date: '10-17-26', caption: 'big/little reveal fa26', stagger: 475, lane: 33, z: 0.96 },
+  { image: big_little_10_17_26_2, date: '10-17-26', caption: 'big/little reveal fa26', stagger: 440, lane: 52, z: 0.84 },
+  { image: big_little_10_17_26_3, date: '10-17-26', caption: 'big/little reveal fa26', stagger: 385, lane: 16, z: 0.7 },
 ];
 //Verity Verity Verity Verity Verity Verity Verify my verity or is it just verity, does peter bring clarity? Im unsure, the world is a dark and unusual place but then i discovered verity and it all became a little bit brighter

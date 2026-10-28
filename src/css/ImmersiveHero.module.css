@@ -644,7 +644,8 @@
  */
 .discCopy,
 .overlayCopy,
-.arcTitle {
+.arcTitle,
+.aboutTitle {
   opacity: 0;
   /*
    * Enough to read as softening rather than as a smear. The heading arrives
@@ -1563,7 +1564,9 @@
    * Where it waits, plus its nearness times how far the frame has travelled,
    * plus the pointer's pull on something that near. The drift is subtracted
    * so the strip shifts away from the cursor rather than following it, which
-   * is what reads as looking past the cards instead of dragging them.
+   * is what reads as looking past the cards instead of dragging them. Down
+   * the page there is only that pull and scene six's lift, which is the same
+   * for every card: they rise together, as the far side of the copy.
    *
    * The scale comes last and the origin is the top left corner, so it never
    * moves the point the translate put the card on and the px above stay px
@@ -1574,7 +1577,7 @@
         var(--stagger, 100vw) + var(--pan, 0px) * var(--z, 1) - var(--mx, 0) * var(--drift-x) *
           var(--z, 1)
       ),
-      calc(var(--my, 0) * var(--drift-y) * var(--z, 1) * -1),
+      calc(var(--moments-lift, 0px) + var(--my, 0) * var(--drift-y) * var(--z, 1) * -1),
       0
     )
     scale(var(--z, 1));
@@ -1616,6 +1619,75 @@
 .momentRevealed .momentBlank {
   opacity: 1;
   filter: blur(0);
+}
+
+/*
+ * The date, a fixed highlight on the bottom left corner.
+ *
+ * Hung just off both edges of the picture, so it reads as a tab stuck on the
+ * corner rather than a caption printed inside it. The same white on the
+ * card's accent as the label under the cursor, and the same type a step
+ * down; it is part of the card, so it scales with z like the rest of it.
+ */
+.momentDate {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  padding: 0.15em 0.45em;
+  font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: #FFFDF8;
+  background: var(--moment-accent, #5EC8FF);
+  transform: translate(-0.4rem, 40%);
+  opacity: 0;
+  transition: opacity 420ms ease-out;
+  pointer-events: none;
+}
+
+.momentRevealed .momentDate {
+  opacity: 1;
+}
+
+/*
+ * Scene six: the squares a card breaks into, over its picture.
+ *
+ * The picture itself is masked down to the blocks still whole - see
+ * MomentStrip, which writes the mask - and this holds the ones in between.
+ * Drawn a whole number of device pixels to the block and stretched with hard
+ * edges, so its block lines fall where the mask's do. Inside the card, so it
+ * moves and stacks with it.
+ */
+.momentPixels {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.momentImage,
+.momentBlank {
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* The date goes first, being on the bottom edge the break-up starts from, in
+   steps like the blocks. A card that has gone altogether stops being
+   hoverable, so its caption cannot come up over nothing. */
+.moment[data-dissolve] .momentDate {
+  opacity: 0;
+  transition: opacity 240ms steps(3, end);
+}
+
+.moment[data-dissolve='gone'] {
+  visibility: hidden;
 }
 
 /*
@@ -1743,20 +1815,21 @@
 }
 
 .momentTipOn::before {
-  animation: tipWipeIn 190ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: tipWipeIn 380ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* Starting before the accent has finished, so the two passes read as one
-   gesture changing colour rather than as two things happening in turn. */
+/* Starting before the white has finished, so the two passes read as one
+   gesture changing colour rather than as two things happening in turn. The
+   speeds match the value cards' titles in scene six (.titleFlash). */
 .momentTipOn::after,
 .momentTipOn .momentTipText {
-  animation: tipWipeIn 230ms cubic-bezier(0.22, 1, 0.36, 1) 110ms forwards;
+  animation: tipWipeIn 380ms cubic-bezier(0.22, 1, 0.36, 1) 200ms forwards;
 }
 
 .momentTipOut::before,
 .momentTipOut::after,
 .momentTipOut .momentTipText {
-  animation: tipWipeOut 160ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: tipWipeOut 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /*
@@ -1917,33 +1990,498 @@
 }
 
 /*
- * Scene six: the about sheet, coming up over the end of the hero.
+ * Scene six: the black the about copy comes up on.
  *
  * The site's black rather than the paper, so the copy reads in the about
  * page's own colours and the page is already dark again by the time it hands
- * over to the call to action below. Bowed at the top like the paper of scene
- * three, the same 13vh deep, so the two sheets read as one move made twice.
+ * over to the call to action below.
  *
- * At 9: over everything the stage paints, whose layers run to 8 - the stage is
- * sticky with no z-index of its own, so its children stack against this
- * directly - and under the scaffolding readout at 10.
+ * In the stage, at 8 and before the strip, so it wipes up behind the moments
+ * rather than over them. Bowed only slightly - 4vh, against the paper's 13 -
+ * and started 5vh above the stage so the corners are off the top once it is
+ * up. Its 105% of travel is that same box carried to just below the fold.
+ */
+.aboutWipe {
+  position: absolute;
+  left: -2vw;
+  right: -2vw;
+  top: -5vh;
+  bottom: 0;
+  z-index: 8;
+  background-color: black;
+  border-radius: 50% 50% 0 0 / 4vh 4vh 0 0;
+  box-shadow: 0 -1rem 2.5rem rgba(26, 18, 4, 0.16);
+  transform: translateY(calc((1 - var(--about-wipe, 0)) * 100%));
+  will-change: transform;
+  pointer-events: none;
+}
+
+/*
+ * And the copy itself, which is page rather than stage: see ABOUT_AT. No
+ * background of its own - the wipe is ahead of it on the way up, and the
+ * body's black is under it once the stage has gone.
+ *
+ * At 9: over everything the stage paints, moments included, whose layers run
+ * to 8 - the stage is sticky with no z-index of its own, so its children stack
+ * against this directly - and under the scaffolding readout at 10.
  */
 .about {
   position: relative;
   z-index: 9;
-  background-color: black;
-  border-radius: 50% 50% 0 0 / 13vh 13vh 0 0;
-  box-shadow: 0 -1.5rem 3rem rgba(26, 18, 4, 0.18);
-  /* The bow's depth, so the heading clears its corners. */
-  padding-top: 13vh;
+  padding-top: 6vh;
+}
+
+/*
+ * Scene six's stars: scene two's squares, laid on the page under the copy and
+ * crowded towards the top of it - see ABOUT_STARS. Started --stars-reach above
+ * the copy, and clipped at the top to the black's edge as it comes up,
+ * --stars-clip down from the field's top, with the same 4vh bow the black has.
+ * Until the wipe writes it the clip is the whole reach, so nothing shows above
+ * the copy. Overflow hidden as well, since a clip does not stop the stars at
+ * the edges widening the page.
+ */
+.aboutStars {
+  position: absolute;
+  top: calc(-1 * var(--stars-reach, 0px));
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  clip-path: inset(var(--stars-clip, var(--stars-reach, 0px)) 0 0 0 round 50% 50% 0 0 / 4vh 4vh 0 0);
+  pointer-events: none;
+}
+
+/* Pushed back against the scroll by --lag of it: up while the copy is still
+   coming up the window, down once it has gone past the top. */
+.aboutStar {
+  position: absolute;
+  width: max(2px, var(--size, 0.6vmin));
+  height: max(2px, var(--size, 0.6vmin));
+  transform: translate(-50%, -50%) translateY(calc(var(--about-scroll, 0px) * var(--lag, 0) * -1));
 }
 
 .aboutInner {
-  text-align: center;
+  position: relative;
+  padding: 0 var(--margin-from-screen);
+  padding-bottom: clamp(3rem, 8vh, 6rem);
 }
 
-/* The about page opens its copy a hundred pixels under a hero; here the bow
-   above is that room already. */
-.aboutInner section:first-child {
-  margin-top: 0;
+/*
+ * The heading and the mission, side by side and both set left: the heading a
+ * label for the sentence beside it rather than a title over it. Stacked on a
+ * phone, where side by side would leave the sentence a word a line.
+ */
+.aboutHead {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1.5rem, 5vw, 4.5rem);
+  max-width: 68rem;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Blurs in with scene two's overlays: see the rule shared with .arcTitle. */
+.aboutTitle {
+  flex: none;
+  margin: 0;
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 4vw, 3rem);
+  line-height: 1.1;
+  color: #FAF3E0;
+}
+
+.aboutMission {
+  position: relative;
+  margin: 0;
+  max-width: 52ch;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  line-height: 1.55;
+  color: white;
+}
+
+/* Holds the paragraph's full shape; the live copy is laid over it. */
+.missionSizer {
+  visibility: hidden;
+}
+
+.missionLive {
+  position: absolute;
+  inset: 0;
+}
+
+.missionPrefix {
+  color: #F9C12C;
+}
+
+/*
+ * The four values, as a diamond: one shape at each point, each a third of the
+ * box across and set a third out from the middle, so neighbours sit corner to
+ * corner without touching.
+ */
+.valuesDiamond {
+  position: relative;
+  width: min(90vw, 54rem);
+  aspect-ratio: 1;
+  margin: clamp(2rem, 6vh, 4rem) auto 0;
+  /*
+   * The four orbit their common centre: the whole diamond turns, and each
+   * shape turns back by the same amount so it stays upright on its way round.
+   * Both on the rotate property, which leaves the shapes' transform for their
+   * placement.
+   */
+  animation: valuesOrbit 80s linear infinite;
+}
+
+.valueShape {
+  position: absolute;
+  width: 32%;
+  height: 32%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  /* On translate rather than transform: rotate is applied after translate but
+     before transform, so this way each shape turns back about its own middle
+     instead of about a point half a shape off it. */
+  translate: -50% -50%;
+  animation: valuesOrbit 80s linear infinite reverse;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Held while a shape is under the cursor or has the focus, so its card stays
+   with it. */
+.valuesDiamond:has(.valueShape:hover),
+.valuesDiamond:has(.valueShape:hover) .valueShape,
+.valuesDiamond:focus-within,
+.valuesDiamond:focus-within .valueShape {
+  animation-play-state: paused;
+}
+
+@keyframes valuesOrbit {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/*
+ * Each shape drifts on one of two wider takes on the hero's floatOrbit, with
+ * its own period and start so the four never move in step. On the image
+ * rather than the button, which already carries a transform for its
+ * placement.
+ */
+.valueShape img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  will-change: transform;
+  transform-origin: center center;
+}
+
+.valueShape:focus-visible {
+  outline: 2px solid #FAF3E0;
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.valueShape_star {
+  left: 50%;
+  top: 18%;
+}
+
+.valueShape_star img {
+  animation: valueDrift 15s ease-in-out -4s infinite;
+}
+
+.valueShape_triangle {
+  left: 82%;
+  top: 50%;
+}
+
+.valueShape_triangle img {
+  animation: valueDriftAlt 18s ease-in-out -11s infinite;
+}
+
+.valueShape_square {
+  left: 50%;
+  top: 82%;
+}
+
+.valueShape_square img {
+  animation: valueDriftAlt 16s ease-in-out -7s infinite;
+}
+
+.valueShape_circle {
+  left: 18%;
+  top: 50%;
+}
+
+.valueShape_circle img {
+  animation: valueDrift 19s ease-in-out -13s infinite,
+    valueSpin 48s linear infinite;
+}
+
+/*
+ * floatOrbit's path at about one and a half times the reach, with more lean,
+ * and a second path that sets off the other way round, so neighbouring
+ * shapes do not trace the same loop.
+ */
+@keyframes valueDrift {
+  0% {
+    transform: translate(-3%, -2%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(8%, -6%) rotate(5deg) scale(1.03);
+  }
+  50% {
+    transform: translate(-4%, 7%) rotate(-4deg) scale(0.98);
+  }
+  75% {
+    transform: translate(6%, 4%) rotate(3deg) scale(1.02);
+  }
+  100% {
+    transform: translate(-3%, -2%) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes valueDriftAlt {
+  0% {
+    transform: translate(3%, -2%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(-7%, 5%) rotate(-5deg) scale(1.02);
+  }
+  50% {
+    transform: translate(5%, 7%) rotate(4deg) scale(0.98);
+  }
+  75% {
+    transform: translate(-5%, -6%) rotate(-3deg) scale(1.03);
+  }
+  100% {
+    transform: translate(3%, -2%) rotate(0deg) scale(1);
+  }
+}
+
+/*
+ * The astronaut's slow turn. On the separate rotate property, so it adds to
+ * the drift's transform rather than replacing it.
+ */
+@keyframes valueSpin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .valuesDiamond,
+  .valueShape,
+  .valueShape img {
+    animation: none !important;
+  }
+}
+
+/*
+ * What a value stands for, on a piece of the hero's graph paper: the paper's
+ * white and the same .grid ruled over it. Outside the stage the grid's two
+ * measures fall back to their defaults, which suit a box this size.
+ *
+ * Fixed and moved by --tip-x and --tip-y like the moments' label, down and to
+ * the right of the cursor, turned to its left past the middle of the window.
+ * Pinned, it hangs centred under the shape that was tapped instead.
+ */
+.valueTip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: min(22rem, 86vw);
+  /* --tip-lift raises the box by however much it would run past the bottom of
+     the window; see fitTip in AboutScene. */
+  transform: translate3d(calc(var(--tip-x, 0px) + 0.85rem), calc(var(--tip-y, 0px) + 1rem), 0)
+    translateX(var(--tip-flip, 0%)) translateY(calc(-1 * var(--tip-lift, 0px)));
+  opacity: 0;
+  transition: opacity 160ms ease;
+  pointer-events: none;
+}
+
+.valueTipPinned {
+  transform: translate3d(var(--tip-x, 0px), var(--tip-y, 0px), 0) translateX(-50%)
+    translateY(calc(-1 * var(--tip-lift, 0px)));
+}
+
+.valueTipOpen {
+  opacity: 1;
+}
+
+/*
+ * The card itself, wiped in from the left each time it opens: remounted per
+ * opening, so the animation plays again rather than having to be reset.
+ */
+.valueCard {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #FFFDF8;
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.35);
+  animation: valueCardWipe 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes valueCardWipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/*
+ * Text typed in by the scramble: the full text, hidden, holds the shape and
+ * the live letters are laid over it, so nothing reflows as they arrive.
+ */
+.scrambleBox {
+  position: relative;
+  display: block;
+}
+
+.scrambleSizer {
+  visibility: hidden;
+}
+
+.scrambleLive {
+  position: absolute;
+  inset: 0;
+}
+
+/*
+ * A marker sweeping in under a run of text, left to right, in the text's own
+ * colour, while the text turns to ink over it - white on the pale value
+ * colours was hard to read. --hl is that colour. Cloned at
+ * each line break, so a label that wraps is highlighted line by line.
+ */
+.highlight {
+  padding: 0 0.15em;
+  margin: 0 -0.15em;
+  background-image: linear-gradient(var(--hl), var(--hl));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    background-size 650ms cubic-bezier(0.65, 0, 0.35, 1),
+    color 450ms ease 150ms;
+}
+
+.highlightOn {
+  background-size: 100% 100%;
+  color: #1A1A1A;
+}
+
+
+.valueTipText {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem 1.15rem 1.1rem;
+  text-align: left;
+}
+
+.valueTipTitle {
+  font-family: var(--font-title);
+  font-size: 1.75rem;
+  line-height: 1.2;
+  color: var(--hl);
+}
+
+/*
+ * The title's arrival: the first pass of the moments' label, in the value's
+ * colour, wiping in left to right over nothing and straight back out the same
+ * way, left edge travelling right. What it uncovers is the title in that
+ * colour, which has been sitting underneath since the bar covered it.
+ *
+ * One bar per line (FlashTitle splits them), each a beat behind the line
+ * above, so only words are ever highlighted. Remounted with the card on every
+ * opening, so it plays again.
+ */
+.titleFlash {
+  --flash-in: 380ms;
+  --flash-out: 420ms;
+  --flash-at: calc(150ms + var(--line, 0) * 180ms);
+  /*
+   * The wipe in eases out, so its last third is the bar barely moving - read
+   * as a hold. The wipe out takes over there instead, from a bar all but
+   * whole already, and the title is let in underneath at the same moment.
+   */
+
+  position: relative;
+  display: inline-block;
+  padding: 0 0.15em;
+  margin: 0 -0.15em;
+}
+
+.titleFlash::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: '';
+  background: var(--hl);
+  clip-path: inset(0 100% 0 0);
+  animation:
+    tipWipeIn var(--flash-in) cubic-bezier(0.22, 1, 0.36, 1) var(--flash-at) both,
+    tipWipeOut var(--flash-out) cubic-bezier(0.22, 1, 0.36, 1)
+      calc(var(--flash-at) + var(--flash-in) * 0.65) forwards;
+}
+
+/* Each line on its own row, broken where the card broke the words. */
+.titleLine {
+  display: block;
+}
+
+/* The words before they are split into lines: laid out, never seen. */
+.titleMeasure {
+  visibility: hidden;
+}
+
+/*
+ * The title in its own colour, under the bar. Held back until the bar has
+ * covered it, so it is uncovered rather than seen to be there all along.
+ * The colour is pale on paper; a hairline of ink keeps it legible without
+ * changing what colour it is.
+ */
+.titleFlashBase {
+  -webkit-text-stroke: 0.35px rgba(26, 26, 26, 0.55);
+  animation: titleBaseIn 1ms linear calc(var(--flash-at) + var(--flash-in) * 0.65) both;
+}
+
+@keyframes titleBaseIn {
+  from {
+    visibility: hidden;
+  }
+
+  to {
+    visibility: visible;
+  }
+}
+
+.valueTipBody {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #1A1A1A;
+}
+
+@media (max-width: 760px) {
+  .aboutHead {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .valuesDiamond {
+    width: 92vw;
+  }
 }

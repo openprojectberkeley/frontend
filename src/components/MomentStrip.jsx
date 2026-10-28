@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../css/ImmersiveHero.module.css';
 import { communityMoments } from '../data/communityMoments';
 
@@ -78,6 +78,42 @@ const TRAIL_BLOCK = 20;
 const TRAIL_SPACING = 16;
 const TRAIL_STEPS = 4;
 const TRAIL_OUTLINE = 0.35;
+/* How unevenly the trail's blocks go out. Each block's life is cut short by
+   up to this share of it, by its own noise, so the trail breaks up into
+   scattered squares as it fades instead of every block dimming in step. */
+const TRAIL_NOISE = 0.5;
+
+/*
+ * The way the cards go at the start of scene six: broken into the trail's
+ * blocks and dropped out, bottom first, in noise.
+ *
+ * The hero hands over one number for it, 0 to 1 - see setDissolve below - and
+ * everything else is worked out here from where the cards sit.
+ *
+ *   DISSOLVE_SPREAD  how much of that the cards' starts are spread over. The
+ *                    card whose bottom edge is lowest on the screen starts at
+ *                    0, the highest at this, and each has the rest to go in
+ *   DISSOLVE_NOISE   how far a block's turn is pushed about by noise, as a
+ *                    share of the card's height. 0 would be a clean line
+ *                    rising up the picture; at 1 the rows would mean nothing
+ *   DISSOLVE_PIXEL   how long a block spends as one flat square, fading out
+ *                    in TRAIL_STEPS, between being picture and being gone,
+ *                    as a share of the card's own run
+ *   DISSOLVE_BLOCK   the size of one of its blocks on the glass, in px, the
+ *                    way TRAIL_BLOCK is the trail's. Coarser than the trail:
+ *                    it is the number of blocks that sets the cost - in the
+ *                    mask, and in squares to draw - and a card going all at
+ *                    once can take chunkier ones than a cursor's brush
+ *   DISSOLVE_STEPS   how finely each card's share of the dissolve is cut. A
+ *                    card is only rewritten when it crosses one of these, so
+ *                    this is also how many times it is rewritten on its way
+ *                    out
+ */
+const DISSOLVE_SPREAD = 0.5;
+const DISSOLVE_NOISE = 0.45;
+const DISSOLVE_PIXEL = 0.22;
+const DISSOLVE_BLOCK = 28;
+const DISSOLVE_STEPS = 24;
 
 const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
 const smoothstep = (value) => {
@@ -86,7 +122,40 @@ const smoothstep = (value) => {
   return t * t * (3 - 2 * t);
 };
 
-export default function MomentStrip() {
+/* A fixed 0-1 value for each block of each card, so the noise in both the
+   trail and the dissolve is the same pattern every time it is drawn rather
+   than a new scatter each frame. `salt` keeps the two patterns apart. */
+const blockNoise = (index, column, row, salt) => {
+  let h = Math.imul(index + 1, 374761393) ^ Math.imul(column + 1, 668265263);
+
+  h ^= Math.imul(row + 1, 2246822519) ^ Math.imul(salt + 1, 3266489917);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  h ^= h >>> 16;
+
+  return (h >>> 0) / 4294967296;
+};
+
+/* object-fit: cover, done by hand: the middle of the source at the target's
+   aspect ratio, so the blocks show the crop the picture shows. */
+const drawCover = (target, source, sourceWidth, sourceHeight, width, height) => {
+  const scale = Math.max(width / sourceWidth, height / sourceHeight);
+  const cropWidth = width / scale;
+  const cropHeight = height / scale;
+
+  target.drawImage(
+    source,
+    (sourceWidth - cropWidth) / 2,
+    (sourceHeight - cropHeight) / 2,
+    cropWidth,
+    cropHeight,
+    0,
+    0,
+    width,
+    height,
+  );
+};
+
+const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
   const rootRef = useRef(null);
   const tipRef = useRef(null);
   const tipTextRef = useRef(null);
@@ -94,7 +163,31 @@ export default function MomentStrip() {
   const cardRefs = useRef(new Map());
   const videoRefs = useRef(new Map());
   const mediaRefs = useRef(new Map());
+  const pixelRefs = useRef(new Map());
+  const dissolveRef = useRef(0);
+  const dissolveApplyRef = useRef(null);
   const [revealedCards, setRevealedCards] = useState(() => new Set());
+
+  /*
+   * The hero's one call into the strip: how far through the dissolve the
+   * playhead is, 0 to 1. Written on every frame of the scroll like the rest
+   * of the hero, so it does nothing at all while there is nothing to do - the
+   * whole of scene five passes 0 and returns on the first line.
+   */
+  useImperativeHandle(
+    ref,
+    () => ({
+      setDissolve(value) {
+        const previous = dissolveRef.current;
+
+        if (value === previous && (value <= 0 || value >= 1)) return;
+
+        dissolveRef.current = value;
+        if (dissolveApplyRef.current) dissolveApplyRef.current();
+      },
+    }),
+    [],
+  );
 
   /* The stage's CSS transform moves these cards, so the observer sees their
      first entry without a second scroll listener. A card only has to be
@@ -152,11 +245,13 @@ export default function MomentStrip() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          /* A clip breaking up stays paused: the dissolve stopped it, and
+             only the dissolve starts it again. */
+          if (entry.isIntersecting && !entry.target.closest('[data-dissolve]')) {
             const started = entry.target.play();
 
             if (started) started.catch(() => {});
-          } else {
+          } else if (!entry.isIntersecting) {
             entry.target.pause();
           }
         });
@@ -275,26 +370,6 @@ export default function MomentStrip() {
       return corners.get(index);
     };
 
-    /* object-fit: cover, done by hand: the middle of the source at the
-       picture's own aspect ratio, so the blocks show the crop it shows. */
-    const drawCover = (source, sourceWidth, sourceHeight, width, height) => {
-      const scale = Math.max(width / sourceWidth, height / sourceHeight);
-      const cropWidth = width / scale;
-      const cropHeight = height / scale;
-
-      scratchContext.drawImage(
-        source,
-        (sourceWidth - cropWidth) / 2,
-        (sourceHeight - cropHeight) / 2,
-        cropWidth,
-        cropHeight,
-        0,
-        0,
-        width,
-        height,
-      );
-    };
-
     /* Which of a picture's blocks the trail covers, each as alive as the
        freshest point that reaches it. A point counts for a block if the
        block's centre is within its reach, and always for the block it is in,
@@ -360,8 +435,9 @@ export default function MomentStrip() {
 
       /* Far ones first, so the near ones cover them where they overlap, as
          they do on the page. A card still blurred out of sight has nothing
-         to show yet, and a clip that has not decoded a frame would draw as
-         nothing anyway. */
+         to show yet, a clip that has not decoded a frame would draw as
+         nothing anyway, and a card breaking up in scene six is left to its
+         own layers - see the dissolve below. */
       const shots = [];
 
       onScreen.forEach((index) => {
@@ -369,6 +445,7 @@ export default function MomentStrip() {
         const source = media.get(index);
 
         if (!card || !source || !card.classList.contains(styles.momentRevealed)) return;
+        if (card.dataset.dissolve) return;
         if (source.tagName === 'VIDEO' && source.readyState < 2) return;
 
         const sourceWidth = source.videoWidth || source.naturalWidth;
@@ -415,16 +492,22 @@ export default function MomentStrip() {
         if (lives) {
           scratch.width = columns;
           scratch.height = rows;
-          drawCover(source, sourceWidth, sourceHeight, columns, rows);
+          drawCover(scratchContext, source, sourceWidth, sourceHeight, columns, rows);
 
           const blockWidth = width / columns;
           const blockHeight = height / rows;
 
-          lives.forEach((life, key) => {
-            if (life <= 0) return;
+          lives.forEach((trail, key) => {
+            if (trail <= 0) return;
 
             const column = key % columns;
             const row = Math.floor(key / columns);
+            const life = clamp01(
+              (trail - blockNoise(index, column, row, 0) * TRAIL_NOISE) / (1 - TRAIL_NOISE),
+            );
+
+            if (life <= 0) return;
+
             const left = x + column * blockWidth;
             const top = y + row * blockHeight;
 
@@ -448,6 +531,7 @@ export default function MomentStrip() {
           });
         }
 
+        context.globalAlpha = 1;
         context.restore();
       });
 
@@ -485,6 +569,7 @@ export default function MomentStrip() {
        its length the way a slow one does. */
     const onMove = (event) => {
       if (onScreen.size === 0) return;
+      if (dissolveRef.current >= 1) return;
 
       const now = performance.now();
       const x = event.clientX;
@@ -545,6 +630,292 @@ export default function MomentStrip() {
       window.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseleave', onLeave);
       if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  /*
+   * The break-up at the start of scene six.
+   *
+   * Nothing here draws per frame and nothing is read off the glass. Each card
+   * is cut into blocks - a grid like the trail's, coarser - and two
+   * things are written on the card itself, inside its own transform, so the
+   * compositor carries them with the card and they cannot fall a frame behind
+   * it the way a drawing on a canvas over the strip does:
+   *
+   *   - a mask on the picture, an SVG of the blocks still whole, so the
+   *     picture shows through those and nowhere else. It is vector, so its
+   *     edges stay on the block lines at any z, and a clip keeps playing
+   *     through it;
+   *   - a canvas over the picture holding the blocks in between, each one
+   *     flat square of the picture's colour there, fading out in
+   *     TRAIL_STEPS with the trail's white edge. The colours are taken once,
+   *     from the picture shrunk to one pixel per block, the first time the
+   *     card starts to go.
+   *
+   * And both are rewritten only when the card moves on a step: its share of
+   * the dissolve is rounded to DISSOLVE_STEPS, which suits squares that go
+   * in jumps anyway, and a card that has not moved on a step since the last
+   * scroll is left alone. So a scroll frame in the middle of it costs a
+   * handful of small rewrites rather than a redraw of everything in shot.
+   *
+   * Only the cards in shot, or about to be, are kept up - about ten of the
+   * forty-six. One the coast or a scroll back brings in is caught up as it
+   * comes near, a quarter of a screen out, so it does not arrive stale.
+   *
+   * A clip is paused for as long as it is breaking up. It is going to
+   * pieces in a fraction of a second, and decoding frames under a mask that
+   * is hiding most of them is the most expensive thing left in the scene.
+   */
+  useEffect(() => {
+    const cards = cardRefs.current;
+    const media = mediaRefs.current;
+    const layers = pixelRefs.current;
+    const states = new Map();
+    const near = new Set();
+    let starts = null;
+    let grids = null;
+
+    /*
+     * When each card's dissolve starts, as a share of the whole: 0 for the
+     * card whose bottom edge is lowest on the screen, 1 for the highest.
+     * Read off the layout rather than the glass - the lane and the card's
+     * own height times its z - because every card is lifted by the same
+     * amount through the scene, so the order on the glass is this order.
+     * And each card's grid, its picture's size on the glass over
+     * DISSOLVE_BLOCK. Both kept until the window changes size.
+     */
+    const measure = () => {
+      const root = rootRef.current;
+      const height = (root && root.offsetHeight) || window.innerHeight;
+      const bottoms = new Map();
+
+      grids = new Map();
+      cards.forEach((card, index) => {
+        const moment = communityMoments[index];
+        const element = media.get(index);
+
+        if (!moment) return;
+
+        bottoms.set(index, moment.lane / 100 + (card.offsetHeight * moment.z) / height);
+
+        const width = (element ? element.offsetWidth : card.offsetWidth) * moment.z;
+        const tall = (element ? element.offsetHeight : card.offsetHeight) * moment.z;
+
+        grids.set(index, {
+          columns: Math.max(1, Math.round(width / DISSOLVE_BLOCK)),
+          rows: Math.max(1, Math.round(tall / DISSOLVE_BLOCK)),
+          width,
+        });
+      });
+
+      const values = [...bottoms.values()];
+      const low = Math.max(...values);
+      const span = low - Math.min(...values) || 1;
+
+      starts = new Map();
+      bottoms.forEach((bottom, index) => starts.set(index, (low - bottom) / span));
+    };
+
+    /* The picture's colour in each block, one pixel per block, or null if
+       there is nothing to read yet - a clip with no frame and no poster in
+       yet - in which case the card just steps away without the squares. */
+    const coloursOf = (index, columns, rows) => {
+      const element = media.get(index);
+      let source = element;
+
+      if (element && element.tagName === 'VIDEO' && element.readyState < 2) {
+        source = new Image();
+        source.src = communityMoments[index]?.poster || '';
+        if (!source.complete) return null;
+      }
+
+      const sourceWidth = source && (source.videoWidth || source.naturalWidth);
+      const sourceHeight = source && (source.videoHeight || source.naturalHeight);
+
+      if (!sourceWidth || !sourceHeight) return null;
+
+      const sample = document.createElement('canvas');
+      const sampleContext = sample.getContext('2d', { willReadFrequently: true });
+
+      sample.width = columns;
+      sample.height = rows;
+      drawCover(sampleContext, source, sourceWidth, sourceHeight, columns, rows);
+
+      return sampleContext.getImageData(0, 0, columns, rows).data;
+    };
+
+    const update = (index, dissolve) => {
+      const card = cards.get(index);
+      const element = media.get(index);
+      const layer = layers.get(index);
+
+      if (!card || !element) return;
+
+      const progress =
+        dissolve <= 0
+          ? 0
+          : clamp01((dissolve - starts.get(index) * DISSOLVE_SPREAD) / (1 - DISSOLVE_SPREAD));
+      const step = progress >= 1 ? DISSOLVE_STEPS : Math.ceil(progress * DISSOLVE_STEPS);
+      const state = states.get(index) || { step: 0, colours: null };
+
+      if (state.step === step) return;
+
+      const was = state.step;
+
+      state.step = step;
+      states.set(index, state);
+
+      /* An attribute rather than a class: React owns className, and a card
+         revealed mid-dissolve would have it written back without. */
+      if (step === 0) {
+        delete card.dataset.dissolve;
+        element.style.maskImage = '';
+        element.style.webkitMaskImage = '';
+        if (layer) layer.width = 0;
+        if (element.tagName === 'VIDEO' && was > 0) {
+          const started = element.play();
+
+          if (started) started.catch(() => {});
+        }
+        return;
+      }
+
+      if (element.tagName === 'VIDEO' && !element.paused) element.pause();
+
+      if (step === DISSOLVE_STEPS) {
+        card.dataset.dissolve = 'gone';
+        return;
+      }
+
+      card.dataset.dissolve = 'going';
+
+      const { columns, rows, width } = grids.get(index);
+      const at = step / DISSOLVE_STEPS;
+
+      if (!state.colours) state.colours = coloursOf(index, columns, rows);
+
+      /* The squares' layer, drawn at a whole number of device pixels to the
+         block and stretched with the edges kept hard, so its block lines
+         land where the mask's do. */
+      let context = null;
+      let block = 0;
+
+      if (layer && state.colours) {
+        block = Math.max(2, Math.round((width / columns) * (window.devicePixelRatio || 1)));
+        if (layer.width !== columns * block) layer.width = columns * block;
+        if (layer.height !== rows * block) layer.height = rows * block;
+        context = layer.getContext('2d');
+        context.clearRect(0, 0, layer.width, layer.height);
+        context.lineWidth = Math.max(1, Math.round(block / (width / columns)));
+      }
+
+      /* How far each block is through going, past 0: below it the block is
+         still picture, from 0 to DISSOLVE_PIXEL it is a square fading out,
+         and past that it is gone. Its turn comes from its row - the bottom
+         row first - pushed about by its noise. The whole blocks are written
+         as runs along each row, which keeps the mask a short string. */
+      let path = '';
+
+      for (let row = 0; row < rows; row += 1) {
+        let run = -1;
+
+        for (let column = 0; column <= columns; column += 1) {
+          const turn =
+            ((rows - 1 - row) / rows) * (1 - DISSOLVE_NOISE) +
+            blockNoise(index, column, row, 1) * DISSOLVE_NOISE;
+          const going = column < columns ? at * (1 + DISSOLVE_PIXEL) - turn : 1;
+
+          if (going <= 0) {
+            if (run < 0) run = column;
+          } else {
+            if (run >= 0) {
+              path += `M${run} ${row}h${column - run}v1h${run - column}z`;
+              run = -1;
+            }
+
+            if (context && column < columns && going < DISSOLVE_PIXEL) {
+              const life = 1 - going / DISSOLVE_PIXEL;
+              const key = (row * columns + column) * 4;
+              const { colours } = state;
+              const strength = TRAIL_OUTLINE * Math.sin(Math.PI * life);
+
+              context.globalAlpha = Math.ceil(life * TRAIL_STEPS) / TRAIL_STEPS;
+              context.fillStyle = `rgb(${colours[key]}, ${colours[key + 1]}, ${colours[key + 2]})`;
+              context.fillRect(column * block, row * block, block, block);
+
+              if (strength >= 0.02) {
+                const inset = context.lineWidth / 2;
+
+                context.globalAlpha = 1;
+                context.strokeStyle = `rgba(255, 255, 255, ${strength.toFixed(3)})`;
+                context.strokeRect(
+                  column * block + inset,
+                  row * block + inset,
+                  block - context.lineWidth,
+                  block - context.lineWidth,
+                );
+              }
+            }
+          }
+        }
+      }
+
+      if (context) context.globalAlpha = 1;
+
+      const mask = `url("data:image/svg+xml,${encodeURIComponent(
+        `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${columns} ${rows}' ` +
+          `preserveAspectRatio='none' shape-rendering='crispEdges'><path d='${path}'/></svg>`,
+      )}")`;
+
+      element.style.maskImage = mask;
+      element.style.webkitMaskImage = mask;
+    };
+
+    const apply = () => {
+      if (!starts) measure();
+
+      const dissolve = dissolveRef.current;
+
+      near.forEach((index) => update(index, dissolve));
+    };
+
+    /* A new size means new grids: every card that is partway through is
+       redrawn on its new one. */
+    const onResize = () => {
+      measure();
+      states.forEach((state) => {
+        state.step = -1;
+        state.colours = null;
+      });
+      apply();
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = Number(entry.target.dataset.momentIndex);
+
+          if (!entry.isIntersecting) {
+            near.delete(index);
+            return;
+          }
+
+          near.add(index);
+          if (!starts) measure();
+          update(index, dissolveRef.current);
+        });
+      },
+      { rootMargin: '25%', threshold: 0 },
+    );
+
+    dissolveApplyRef.current = apply;
+    cards.forEach((card) => observer.observe(card));
+    window.addEventListener('resize', onResize);
+
+    return () => {
+      dissolveApplyRef.current = null;
+      observer.disconnect();
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
@@ -646,6 +1017,24 @@ export default function MomentStrip() {
                 style={{ backgroundColor: TINTS[index % TINTS.length] }}
               />
             )}
+
+            {/* The squares a card breaks into at the start of scene six, over
+                its picture. Empty until then - see the dissolve above. */}
+            <canvas
+              ref={(layer) => {
+                if (layer) pixelRefs.current.set(index, layer);
+                else pixelRefs.current.delete(index);
+              }}
+              className={styles.momentPixels}
+              width={0}
+              height={0}
+            />
+
+            {/* The date, always on, in the card's accent. Part of the card, so
+                it is scaled and carried with it and goes when it does. */}
+            <span className={styles.momentDate} style={{ '--moment-accent': accent }}>
+              {moment.date}
+            </span>
           </figure>
         );
       })}
@@ -659,4 +1048,6 @@ export default function MomentStrip() {
       </div>
     </div>
   );
-}
+});
+
+export default MomentStrip;

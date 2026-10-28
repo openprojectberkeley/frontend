@@ -3,14 +3,14 @@ import { useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import styles from '../css/ImmersiveHero.module.css';
 import homeStyles from '../css/HomePage.module.css';
-import aboutStyles from '../css/About.module.css';
 import LogoMark, { DISC_CENTRE_X, DISC_CENTRE_Y, DISC_WIDTH } from './LogoMark';
 import useScrollPlayhead from './useScrollPlayhead';
 import LogoArc, { arcMiddle, arcOutline, arcPath, STROKE_WIDTH } from './LogoArc';
 import ArcTicker from './ArcTicker';
 import LogoSpill from './LogoSpill';
 import MomentStrip from './MomentStrip';
-import AboutIntro from './AboutIntro';
+import AboutScene from './AboutScene';
+import scramble from './scramble';
 import { clients } from '../data/clientsData';
 import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWeWork';
 import speechbubble from '../images/speechbubbles.png';
@@ -59,8 +59,9 @@ const SCENES = [
      same overlap as above: scene five opens on scene four finishing. */
   { name: 'the community rises', end: 3.4 },
   /* And the frame is still coasting to a stop as the about sheet comes up:
-     scene six opens on scene five finishing, like every scene before it. */
-  { name: 'the moments pass', end: 7 },
+     scene six opens on scene five finishing, like every scene before it. The
+     pan halts at 7, well into it. */
+  { name: 'the moments pass', end: 6.4 },
   { name: 'about us comes up', end: 8 },
 ];
 
@@ -337,48 +338,102 @@ const PAN_OVER = 3.6;
  * The tuning knob for the whole scene: it is what decides how much of the
  * strip is seen and how fast it goes past, and the moments are placed in the
  * same units - see communityMoments.js - so the two can be read against each
- * other. The linear run finishes at playhead 7, where scene six starts coming
- * up over it. The distance is what the strip had already travelled by then,
- * so ending the run there does not speed the cards up on the way.
+ * other. It is the whole distance, coast included, so the pan comes to rest
+ * at playhead 7 with every card exactly where communityMoments.js says.
  */
 const PAN_TRAVEL = 4.46;
 /*
- * And then it coasts to a stop rather than being let go of.
+ * And it coasts to a halt at the end of its span rather than being let go of.
  *
- * Past playhead 7 the frame keeps the speed it had and sheds it evenly over
- * PAN_SETTLE, which carries it a further half of that at the old rate: the
- * velocity is continuous where the linear run hands over, so nothing jumps,
- * and it is nil by the time the about sheet is most of the way up.
+ * Linear up to PAN_SETTLE short of the end, then the speed it had is shed
+ * evenly, so it is nil exactly at PAN_AT + PAN_OVER. The coast covers half
+ * what the same stretch would have at full speed, so the rate is set to make
+ * the whole thing still come to PAN_TRAVEL; and the velocity is continuous
+ * where the run hands over, so nothing jumps.
  */
-const PAN_SETTLE = 0.8;
+const PAN_SETTLE = 1;
 
 function panScreens(playhead) {
-  const rate = PAN_TRAVEL / PAN_OVER;
-  const run = clamp01((playhead - PAN_AT) / PAN_OVER) * PAN_TRAVEL;
-  const coast = Math.min(Math.max(playhead - PAN_AT - PAN_OVER, 0), PAN_SETTLE);
+  const rate = PAN_TRAVEL / (PAN_OVER - PAN_SETTLE / 2);
+  const runOver = PAN_OVER - PAN_SETTLE;
+  const run = clamp01((playhead - PAN_AT) / runOver) * runOver * rate;
+  const coast = Math.min(Math.max(playhead - PAN_AT - runOver, 0), PAN_SETTLE);
 
   return run + rate * (coast - (coast * coast) / (2 * PAN_SETTLE));
 }
 
 /*
- * Scene six: the about page's opening comes up from the bottom on a sheet of
- * the site's own black, over the paper and the moments still drifting to a
- * halt on it.
+ * Scene six: the about page's opening comes up from the bottom, while the
+ * moments are still coasting to their halt.
  *
- * Not a thing in the stage. The sheet is the next thing on the page, pulled
- * up by ABOUT_OVERLAP screens so it starts arriving while the stage is still
- * pinned: it is moved by the scroll itself, at the reader's rate, and can be as
- * tall as the copy needs. Its crown reaches the top of the screen exactly as
- * the section lets go, so the stage unpins behind a sheet that has covered it.
+ * Two things, moving at different rates. The copy is not in the stage: it is
+ * the next thing on the page, pulled up by ABOUT_OVERLAP screens so it starts
+ * arriving while the stage is still pinned, moved by the scroll itself at the
+ * reader's rate, and as tall as it needs to be. The black it reads on is in
+ * the stage, behind the moments, and wipes up ahead of the copy - over
+ * ABOUT_WIPE_OVER of a screen, eased out, so it leads from the first frame and
+ * the copy is never white on paper.
  */
-const ABOUT_AT = PAN_AT + PAN_OVER;
-const ABOUT_OVERLAP = SCENES[SCENES.length - 1].end - ABOUT_AT;
+const ABOUT_AT = SCENES[SCENES.length - 2].end;
 /*
- * The header goes back to its dark self as the black reaches it: the crown is
- * at the top of the screen at the end of the timeline, and the header is a
- * little under a tenth of a screen deep.
+ * The copy and its black lead the rest of the scene in by this much, in
+ * screens, so the heading is already in shot at ABOUT_AT rather than still
+ * below the fold. Both together, because the copy is cream with no ground of
+ * its own and the wipe has to be ahead of it. The moments' rise and break-up
+ * stay on ABOUT_AT.
  */
-const HEADER_DARK_AT = TIMELINE_END - 0.08;
+const ABOUT_COPY_LEAD = 0.12;
+const ABOUT_COPY_AT = ABOUT_AT - ABOUT_COPY_LEAD;
+const ABOUT_OVERLAP = TIMELINE_END - ABOUT_COPY_AT;
+const ABOUT_WIPE_OVER = 0.55;
+/*
+ * And the moments rise with it: slower than the copy at first, so they read
+ * as farther back as the words come up past them, then gathering pace over
+ * MOMENTS_LIFT_RAMP until they are outrunning the scroll - MOMENTS_LIFT_TO
+ * times its rate - and clear out of the copy's way rather than being left
+ * behind under it. The speed climbs evenly, so there is no step in it.
+ * Held at the end of the timeline, where the stage lets go and the scroll
+ * takes everything at the one rate anyway.
+ */
+const MOMENTS_LIFT_FROM = 0.45;
+const MOMENTS_LIFT_TO = 1.6;
+const MOMENTS_LIFT_RAMP = 0.6;
+/*
+ * And break up as they go: each card falls apart into blocks from its bottom
+ * edge up, the lowest cards first - see MomentStrip. Starts a tenth of a
+ * screen before the copy does, while the frame is still coasting, so the cards
+ * at the top of the screen have begun to go before the lift carries them out
+ * of the top of it; over by the time the lift has taken the lowest of them
+ * past the header.
+ */
+const MOMENTS_DISSOLVE_AT = ABOUT_AT - 0.1;
+const MOMENTS_DISSOLVE_OVER = 0.45;
+
+function momentsLift(playhead) {
+  const t = Math.max(0, Math.min(playhead, TIMELINE_END) - ABOUT_AT);
+  const ramp = Math.min(t, MOMENTS_LIFT_RAMP);
+
+  return (
+    MOMENTS_LIFT_FROM * ramp +
+    ((MOMENTS_LIFT_TO - MOMENTS_LIFT_FROM) * ramp * ramp) / (2 * MOMENTS_LIFT_RAMP) +
+    MOMENTS_LIFT_TO * (t - ramp)
+  );
+}
+/*
+ * The header goes back to its dark self as the black reaches it. With the
+ * wipe's ease-out, its edge is a little under a tenth of a screen from the top
+ * - the header's depth - at seven tenths of the way through.
+ */
+const HEADER_DARK_AT = ABOUT_COPY_AT + ABOUT_WIPE_OVER * 0.7;
+/*
+ * Where the copy counts as arrived: the moment its heading row crosses the
+ * bottom edge, which sits a little under the top of the copy, so the heading
+ * and mission are coming in as they start up the screen rather than rising
+ * blank for a stretch first. The blur-in takes long enough that most of it
+ * is still watched once they are well in. Its animations run on their own
+ * clock from here; see AboutScene.
+ */
+const ABOUT_ARRIVED_AT = ABOUT_COPY_AT + 0.06;
 const HEADER_DARK_OVER = 0.05;
 
 /*
@@ -430,52 +485,8 @@ const SCRAMBLE_OVER = 0.2;
 const HEADING_FROM = 'Clients';
 const HEADING_TO = 'Where We Work';
 
-/*
- * The scramble.
- *
- * Each letter waits its turn, spends SCRAMBLE_HOLD of the run cycling through
- * glyphs, and lands on the one it is going to keep; the starts are spread left
- * to right, so the change runs across the word rather than happening to all of
- * it at once. Letters the old word did not have show nothing until their turn
- * comes, which is what makes the word grow into the longer one.
- *
- * The glyph is picked by arithmetic on the letter's index and how far through
- * its own cycle it is - not at random. Everything else on this timeline is a
- * function of the playhead and can be scrubbed backwards; a random glyph would
- * make this the one thing that cannot, and would churn on every frame of a
- * scroll that was not moving.
- */
-const SCRAMBLE_GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const SCRAMBLE_HOLD = 0.34;
-const SCRAMBLE_TICKS = 9;
-
-function scrambled(progress) {
-  if (progress <= 0) return HEADING_FROM;
-  if (progress >= 1) return HEADING_TO;
-
-  const step = (1 - SCRAMBLE_HOLD) / Math.max(1, HEADING_TO.length - 1);
-  let out = '';
-
-  for (let index = 0; index < HEADING_TO.length; index += 1) {
-    const letter = HEADING_TO[index];
-    const local = (progress - index * step) / SCRAMBLE_HOLD;
-
-    if (local >= 1) {
-      out += letter;
-    } else if (local <= 0) {
-      // Still whatever the old word had here, and nothing at all past its end.
-      out += HEADING_FROM[index] ?? '';
-    } else if (letter === ' ') {
-      // Spaces stay spaces: scrambling them only makes the word jitter sideways.
-      out += ' ';
-    } else {
-      const tick = Math.floor(local * SCRAMBLE_TICKS);
-      out += SCRAMBLE_GLYPHS[(index * 7 + tick * 11) % SCRAMBLE_GLYPHS.length];
-    }
-  }
-
-  return out;
-}
+/* The heading's change, on the scramble in scramble.js. */
+const scrambled = (progress) => scramble(HEADING_FROM, HEADING_TO, progress);
 
 /*
  * Two rows of client logos inside the stroke, running against each other.
@@ -688,6 +699,55 @@ const STARS = STAR_LAYERS.flatMap((layer, index) => {
   });
 });
 
+/*
+ * Scene six's sky: the same three layers of squares, scattered over the top
+ * of the black the about copy comes up on and thinning out down it.
+ *
+ * They do not rise - they are page, not stage, and the scroll carries them
+ * past at the reader's rate. The black does not: it is eased out, so its top
+ * edge runs ahead of the copy, by as much as 57vh of it partway through the
+ * wipe. So the field starts ABOUT_STARS_REACH above the copy and is clipped
+ * to wherever that edge has got to - see --stars-clip - which keeps the black
+ * full of stars to its edge and the paper behind it clear of them.
+ *
+ * How far down each one sits is a uniform draw raised to
+ * ABOUT_STARS_FALLOFF, which crowds them towards the top of the field and
+ * leaves only a scattering at the bottom of it.
+ *
+ * And they scroll at less than the page's rate, a layer at a time, for the
+ * parallax scene two's three layers have: ABOUT_STARS_LAG is how much of the
+ * scroll each layer gives back, the far, fine layer the most. Each is placed
+ * where it would be at no lag when the copy's top is at the top of the
+ * window - see --about-scroll.
+ */
+const ABOUT_STARS_LAG = [0.6, 0.42, 0.24];
+const ABOUT_STARS_SEED = 20261028;
+const ABOUT_STARS_REACH = 60;
+const ABOUT_STARS_DEPTH = 230;
+const ABOUT_STARS_FALLOFF = 2;
+/* Half as many again as scene two's, for a field half as deep again. */
+const ABOUT_STARS_COUNT = 1.5;
+
+const ABOUT_STARS = STAR_LAYERS.flatMap((layer, index) => {
+  const random = scatter(ABOUT_STARS_SEED + index);
+
+  return Array.from({ length: Math.round(layer.count * ABOUT_STARS_COUNT) }, () => {
+    const spin = layer.spin * (0.8 + random() * 0.4);
+
+    return {
+      left: random() * 100,
+      top: Math.pow(random(), ABOUT_STARS_FALLOFF) * ABOUT_STARS_DEPTH,
+      size: layer.size * (0.75 + random() * 0.5),
+      opacity: layer.opacity * (0.7 + random() * 0.6),
+      spin,
+      delay: -random() * spin,
+      reverse: random() < 0.5,
+      fine: index === 0,
+      lag: ABOUT_STARS_LAG[index],
+    };
+  });
+});
+
 const clamp01 = (value) => Math.min(1, Math.max(0, value));
 
 /*
@@ -851,6 +911,8 @@ function ProjectsCopy() {
 
     const sectionRef = useRef(null);
     const stageRef = useRef(null);
+    const aboutRef = useRef(null);
+    const aboutWipeRef = useRef(null);
     const lockupRef = useRef(null);
     const markBoxRef = useRef(null);
     const cueRef = useRef(null);
@@ -904,6 +966,7 @@ function ProjectsCopy() {
       communityTitleRef,
       communityBodyRef,
     ]);
+    const momentStripRef = useRef(null);
     const readoutValueRef = useRef(null);
     const readoutSceneRef = useRef(null);
     /* Two hidden copies of the word: the club's name, which is the box the lockup
@@ -941,6 +1004,7 @@ function ProjectsCopy() {
       clients: false,
       headerLight: false,
       headerDark: false,
+    aboutArrived: false,
       ctaHidden: false,
       bannerInk: false,
       spill: false,
@@ -1033,6 +1097,10 @@ function ProjectsCopy() {
       /* Up here with the other reads: after the writes below it would make the
          browser recalculate the whole stage's style mid-frame to answer it. */
       const holderWidth = arcHolderRef.current?.offsetWidth ?? 0;
+      /* Where the copy and the stage are on the screen, for its stars' clip.
+         Neither moves with anything written below, only with the scroll. */
+      const aboutRect = aboutRef.current?.getBoundingClientRect();
+      const stageTop = stage.getBoundingClientRect().top;
 
       // The disc's centre, as a pivot inside the lockup and as a point on the
       // stage: it is both what the zoom turns about and what has to land on the
@@ -1089,6 +1157,7 @@ function ProjectsCopy() {
         /* Scene six's black at the top of the screen, which hands the header
            back its dark self. */
         headerDark: crossed(flags.headerDark, playhead, HEADER_DARK_AT, 0.02),
+        aboutArrived: crossed(flags.aboutArrived, playhead, ABOUT_ARRIVED_AT, 0.02),
         /* A narrow band, because the threshold itself is close enough to nil
            that the default one would sit below zero and never let go. */
         ctaHidden: crossed(flags.ctaHidden, playhead, CTA_HIDE_AT, 0.02),
@@ -1328,6 +1397,43 @@ function ProjectsCopy() {
       const panPx = -panScreens(playhead) * stageWidth;
 
       stage.style.setProperty('--pan', `${panPx.toFixed(1)}px`);
+
+      /* Scene six: the black behind the moments, and the moments lifting. */
+      const aboutWipe = clamp01((playhead - ABOUT_COPY_AT) / ABOUT_WIPE_OVER);
+      const aboutWipeEased = 1 - (1 - aboutWipe) * (1 - aboutWipe);
+
+      stage.style.setProperty('--about-wipe', aboutWipeEased.toFixed(4));
+
+      /*
+       * The copy's stars, cut off at the black's top edge. Worked out from the
+       * wipe's own rule rather than measured off it - .aboutWipe starts 5vh
+       * above the stage and travels its own height - against where the field
+       * starts, ABOUT_STARS_REACH above the copy.
+       */
+      /* How far the copy's top is down the window, which the stars' parallax
+         gives back a share of - see ABOUT_STARS_LAG. */
+      if (aboutRect) {
+        aboutRef.current.style.setProperty('--about-scroll', `${aboutRect.top.toFixed(1)}px`);
+      }
+
+      if (aboutWipeRef.current && aboutRect) {
+        const vh = window.innerHeight / 100;
+        const wipeTop =
+          stageTop - 5 * vh + (1 - aboutWipeEased) * (stageHeight + 5 * vh);
+        const fieldTop = aboutRect.top - ABOUT_STARS_REACH * vh;
+
+        aboutRef.current.style.setProperty(
+          '--stars-clip',
+          `${Math.max(0, wipeTop - fieldTop).toFixed(1)}px`,
+        );
+      }
+      stage.style.setProperty(
+        '--moments-lift',
+        `${(-momentsLift(playhead) * stageHeight).toFixed(1)}px`,
+      );
+      momentStripRef.current?.setDissolve(
+        clamp01((playhead - MOMENTS_DISSOLVE_AT) / MOMENTS_DISSOLVE_OVER),
+      );
 
       /*
        * The grid on the paper. Written here in whole device pixels so the
@@ -2059,7 +2165,13 @@ function ProjectsCopy() {
             how big it is are communityMoments.js, and the one thing this scene
             needs from the playhead is --pan itself.
           */}
-          {!prefersReducedMotion && <MomentStrip />}
+          {/*
+            Scene six's black. Before the strip at the same z-index, so the
+            moments stay on top of it as it wipes up behind them.
+          */}
+          {!prefersReducedMotion && <span ref={aboutWipeRef} className={styles.aboutWipe} aria-hidden="true" />}
+
+          {!prefersReducedMotion && <MomentStrip ref={momentStripRef} />}
 
           {/* Outside the arc's holder, which is being scaled: a heading inside it
               would be scaled with it. Under it in the stack, though, so the band
@@ -2188,17 +2300,45 @@ function ProjectsCopy() {
       </section>
 
       {/*
-        Scene six. After the section rather than in its stage: see ABOUT_AT. The
+        Scene six. After the section rather than in its stage: see ABOUT_COPY_AT. The
         words are the about page's, from the one component both pages read.
       */}
       <div
+        ref={aboutRef}
         className={styles.about}
         style={{ marginTop: prefersReducedMotion ? 0 : `${-ABOUT_OVERLAP * 100}vh` }}
       >
+        <div
+          className={styles.aboutStars}
+          style={{ '--stars-reach': `${ABOUT_STARS_REACH}vh` }}
+          aria-hidden="true"
+        >
+          {ABOUT_STARS.map((star, index) => (
+            <span
+              key={index}
+              className={`${styles.aboutStar} ${star.fine ? styles.starFine : ''}`}
+              style={{
+                left: `${star.left.toFixed(2)}%`,
+                top: `${star.top.toFixed(1)}vh`,
+                '--size': `${star.size.toFixed(3)}vmin`,
+                '--lag': star.lag,
+              }}
+            >
+              <i
+                className={styles.starSpin}
+                style={{
+                  opacity: star.opacity.toFixed(3),
+                  animationDuration: `${star.spin.toFixed(1)}s`,
+                  animationDelay: `${star.delay.toFixed(1)}s`,
+                  animationDirection: star.reverse ? 'reverse' : 'normal',
+                }}
+              />
+            </span>
+          ))}
+        </div>
+
         <div className={`${styles.aboutInner} limitWidth`}>
-          <div className={aboutStyles.marginFromScreen}>
-            <AboutIntro />
-          </div>
+          <AboutScene arrived={revealed.aboutArrived} reducedMotion={prefersReducedMotion} />
         </div>
       </div>
     </>
