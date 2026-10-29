@@ -231,6 +231,47 @@
  * top of the screen. A root class rather than a prop, because the header is a
  * sibling of that section and knows nothing about it.
  */
+/*
+ * The black mark for the dark text, laid exactly over the coloured one and
+ * faded on the links' own 420ms, so the mark turns with the words. Both are
+ * always loaded, so the fade never waits on one.
+ *
+ * Only the black one fades. A crossfade would leave the two at half each
+ * midway, and two half-opaque copies of one shape cover less than one whole
+ * one, so the mark would thin out as it turned. Instead the coloured one
+ * stays whole underneath for as long as the black is anything short of
+ * solid: it snaps back the moment the page goes dark, before the black
+ * starts to fade off it, and on the way to light it waits the full 420ms -
+ * until the black has finished covering it - before dropping out.
+ */
+.logo {
+    transition: opacity 0s linear 0s;
+}
+
+.logoInk {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 420ms ease;
+}
+
+:global(html.op-light) .logo {
+    opacity: 0;
+    transition-delay: 420ms;
+}
+
+:global(html.op-light) .logoInk {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo,
+    .logoInk {
+        transition: none;
+    }
+}
+
 :global(html.op-light) .links a,
 :global(html.op-light) .linksActive a {
     color: #22114F;

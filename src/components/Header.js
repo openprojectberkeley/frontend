@@ -1,5 +1,6 @@
 import styles from '../css/Header.module.css';
 import logo from '../images/navbarlogo.png';
+import logoInk from '../images/navbarlogo_black.png';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
@@ -98,7 +99,10 @@ export default function Header() {
         />
       )}
       <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`} id="header">
-        <NavLink to="/"><img src={logo} alt="logo" /></NavLink>
+        <NavLink to="/">
+          <img src={logo} alt="logo" className={styles.logo} />
+          <img src={logoInk} alt="" aria-hidden="true" className={styles.logoInk} />
+        </NavLink>
         <div className={active ? `${styles.linksActive}` : `${styles.links}`} onClick={deActivate}>
           <NavLink to="/about/" className={activeLink('/about')}>about</NavLink>
           <NavLink to="/board/" className={activeLink('/board')}>board</NavLink>

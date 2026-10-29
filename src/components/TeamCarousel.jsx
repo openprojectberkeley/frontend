@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import styles from "../css/About.module.css";
 import scramble from './scramble';
@@ -36,12 +36,18 @@ const Chevron = ({ direction }) => (
 /*
  * The semester's name under the photo. When it changes, the old name
  * scrambles into the new one; the real name is what screen readers get.
+ *
+ * The visible letters are written only from here, never rendered by React, so
+ * the new name can't paint for a frame before the scramble starts - and the
+ * work runs in a layout effect, so the first frame is already the old name.
+ * The new name is padded out to the old one's length, so a longer old name
+ * gives up its last letters in turn rather than losing them all at once.
  */
 function ScrambleCaption({ text, reducedMotion }) {
   const liveRef = useRef(null);
   const shownRef = useRef(text);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const from = shownRef.current;
     const setShown = (value) => {
       shownRef.current = value;
@@ -56,9 +62,12 @@ function ScrambleCaption({ text, reducedMotion }) {
     let frame = null;
     const start = performance.now();
 
+    const target = text.padEnd(from.length);
+    setShown(from);
+
     const step = (now) => {
       const progress = Math.min(1, (now - start) / CAPTION_SCRAMBLE_MS);
-      setShown(scramble(from, text, progress));
+      setShown(progress < 1 ? scramble(from, target, progress) : text);
       frame = progress < 1 ? window.requestAnimationFrame(step) : null;
     };
 
@@ -72,7 +81,7 @@ function ScrambleCaption({ text, reducedMotion }) {
   return (
     <span className={styles.carouselLabel}>
       <span className={styles.visuallyHidden} aria-live="polite">{text}</span>
-      <span ref={liveRef} aria-hidden="true">{text}</span>
+      <span ref={liveRef} aria-hidden="true" />
     </span>
   );
 }
