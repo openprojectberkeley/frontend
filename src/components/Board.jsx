@@ -7,7 +7,7 @@ import useScrollCue from './useScrollCue';
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
-import { board, projectLeads } from '../data/boardMembers';
+import { board, projectLeads, alumni } from '../data/boardMembers';
 import { projects } from '../data/projectsData';
 
 // Canonical project order, matching how projects render on the /projects page
@@ -173,6 +173,10 @@ export default function Board() {
         <h2>Project Managers</h2>
         <div className={styles.people}>
           {renderPeople(orderedProjectLeads, 'pm-')}
+        </div>
+        <h2>OP Alumni</h2>
+        <div className={styles.people}>
+          {renderPeople(alumni)}
         </div>
       </div>
     </section>

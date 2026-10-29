@@ -1,0 +1,101 @@
+<!-- The Open Project mark as pixel art: LogoMark's disc, bar and arc (no
+     paper shadow) on an 18x21 grid over its 896x1024 frame. A cell is filled
+     if the shapes cover at least half of it, and is otherwise empty - no
+     part-transparent edges. Layered as in LogoMark: a cell takes the colour
+     of the topmost shape covering half of it - arc, then bar, then disc - so
+     the disc sits behind the other two; failing that, of whichever covers
+     most. Stretched to LogoMark's box, it sits where LogoMark does. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 21" shape-rendering="crispEdges" preserveAspectRatio="none">
+<rect x="4" y="0" width="1" height="1" fill="#6e28c2"/>
+<rect x="5" y="0" width="3" height="1" fill="#6d26c2"/>
+<rect x="8" y="0" width="1" height="1" fill="#6d28c2"/>
+<rect x="2" y="1" width="1" height="1" fill="#6d37c2"/>
+<rect x="3" y="1" width="2" height="1" fill="#6d35c2"/>
+<rect x="5" y="1" width="5" height="1" fill="#6d34c2"/>
+<rect x="10" y="1" width="1" height="1" fill="#6d37c2"/>
+<rect x="1" y="2" width="1" height="1" fill="#6d46c3"/>
+<rect x="2" y="2" width="3" height="1" fill="#6d44c3"/>
+<rect x="5" y="2" width="5" height="1" fill="#6d44c2"/>
+<rect x="10" y="2" width="1" height="1" fill="#6d44c3"/>
+<rect x="11" y="2" width="1" height="1" fill="#6d46c3"/>
+<rect x="1" y="3" width="11" height="1" fill="#6c52c2"/>
+<rect x="0" y="4" width="1" height="1" fill="#6c61c2"/>
+<rect x="1" y="4" width="4" height="1" fill="#6c61c3"/>
+<rect x="5" y="4" width="5" height="1" fill="#6c61c2"/>
+<rect x="10" y="4" width="2" height="1" fill="#6c61c3"/>
+<rect x="12" y="4" width="1" height="1" fill="#6c62c3"/>
+<rect x="0" y="5" width="13" height="1" fill="#6c70c3"/>
+<rect x="0" y="6" width="9" height="1" fill="#6b7ec2"/>
+<rect x="9" y="6" width="1" height="1" fill="#ee5a8a"/>
+<rect x="10" y="6" width="1" height="1" fill="#ed5694"/>
+<rect x="11" y="6" width="1" height="1" fill="#eb529d"/>
+<rect x="12" y="6" width="2" height="1" fill="#eb50a1"/>
+<rect x="0" y="7" width="8" height="1" fill="#6b8dc3"/>
+<rect x="8" y="7" width="1" height="1" fill="#f16573"/>
+<rect x="9" y="7" width="1" height="1" fill="#f0617b"/>
+<rect x="10" y="7" width="1" height="1" fill="#ef5d84"/>
+<rect x="11" y="7" width="1" height="1" fill="#ee598e"/>
+<rect x="12" y="7" width="1" height="1" fill="#ed5597"/>
+<rect x="13" y="7" width="1" height="1" fill="#ec519f"/>
+<rect x="14" y="7" width="2" height="1" fill="#eb50a1"/>
+<rect x="0" y="8" width="1" height="1" fill="#6a9ac2"/>
+<rect x="1" y="8" width="4" height="1" fill="#6a9bc3"/>
+<rect x="5" y="8" width="4" height="1" fill="#6a9bc2"/>
+<rect x="9" y="8" width="1" height="1" fill="#f2666d"/>
+<rect x="10" y="8" width="3" height="1" fill="#6a9bc3"/>
+<rect x="13" y="8" width="1" height="1" fill="#ed5791"/>
+<rect x="14" y="8" width="1" height="1" fill="#ec539a"/>
+<rect x="15" y="8" width="1" height="1" fill="#eb50a0"/>
+<rect x="1" y="9" width="4" height="1" fill="#6aaac3"/>
+<rect x="5" y="9" width="5" height="1" fill="#69aac2"/>
+<rect x="10" y="9" width="2" height="1" fill="#6aaac3"/>
+<rect x="14" y="9" width="1" height="1" fill="#ee5a8a"/>
+<rect x="15" y="9" width="1" height="1" fill="#ec5693"/>
+<rect x="16" y="9" width="1" height="1" fill="#eb529b"/>
+<rect x="1" y="10" width="1" height="1" fill="#6ab8c3"/>
+<rect x="2" y="10" width="3" height="1" fill="#6ab9c3"/>
+<rect x="5" y="10" width="1" height="1" fill="#f4d95e"/>
+<rect x="6" y="10" width="2" height="1" fill="#f5d95e"/>
+<rect x="8" y="10" width="2" height="1" fill="#69b9c3"/>
+<rect x="10" y="10" width="1" height="1" fill="#6ab9c3"/>
+<rect x="11" y="10" width="1" height="1" fill="#6ab8c3"/>
+<rect x="14" y="10" width="1" height="1" fill="#f0607d"/>
+<rect x="15" y="10" width="1" height="1" fill="#ef5d83"/>
+<rect x="16" y="10" width="1" height="1" fill="#ee598d"/>
+<rect x="2" y="11" width="1" height="1" fill="#69c6c3"/>
+<rect x="3" y="11" width="2" height="1" fill="#69c7c3"/>
+<rect x="5" y="11" width="3" height="1" fill="#e9da60"/>
+<rect x="8" y="11" width="2" height="1" fill="#68c7c2"/>
+<rect x="10" y="11" width="1" height="1" fill="#69c6c3"/>
+<rect x="15" y="11" width="1" height="1" fill="#f16472"/>
+<rect x="16" y="11" width="1" height="1" fill="#f0607c"/>
+<rect x="3" y="12" width="1" height="1" fill="#69d3c3"/>
+<rect x="4" y="12" width="1" height="1" fill="#69d6c3"/>
+<rect x="5" y="12" width="3" height="1" fill="#dddc63"/>
+<rect x="8" y="12" width="1" height="1" fill="#69d6c3"/>
+<rect x="9" y="12" width="1" height="1" fill="#69d3c3"/>
+<rect x="15" y="12" width="1" height="1" fill="#f46c63"/>
+<rect x="16" y="12" width="1" height="1" fill="#f2676d"/>
+<rect x="5" y="13" width="3" height="1" fill="#d0dd65"/>
+<rect x="14" y="13" width="1" height="1" fill="#f77749"/>
+<rect x="15" y="13" width="1" height="1" fill="#f67353"/>
+<rect x="16" y="13" width="1" height="1" fill="#f46f5c"/>
+<rect x="5" y="14" width="3" height="1" fill="#c2de67"/>
+<rect x="14" y="14" width="1" height="1" fill="#f97e38"/>
+<rect x="15" y="14" width="1" height="1" fill="#f87a42"/>
+<rect x="16" y="14" width="1" height="1" fill="#f6764b"/>
+<rect x="5" y="15" width="3" height="1" fill="#b6e06a"/>
+<rect x="12" y="15" width="1" height="1" fill="#fe8e15"/>
+<rect x="13" y="15" width="1" height="1" fill="#fd8a1f"/>
+<rect x="14" y="15" width="1" height="1" fill="#fc8628"/>
+<rect x="15" y="15" width="1" height="1" fill="#fa8132"/>
+<rect x="5" y="16" width="3" height="1" fill="#a8e16c"/>
+<rect x="12" y="16" width="1" height="1" fill="#ff910e"/>
+<rect x="13" y="16" width="1" height="1" fill="#ff9011"/>
+<rect x="14" y="16" width="1" height="1" fill="#fd8c18"/>
+<rect x="5" y="17" width="3" height="1" fill="#9be36f"/>
+<rect x="13" y="17" width="1" height="1" fill="#ff910e"/>
+<rect x="5" y="18" width="3" height="1" fill="#8fe572"/>
+<rect x="5" y="19" width="3" height="1" fill="#81e674"/>
+<rect x="5" y="20" width="3" height="1" fill="#75e877"/>
+</svg>

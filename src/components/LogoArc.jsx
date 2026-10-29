@@ -208,13 +208,11 @@ export function arcMiddle(flat = 0) {
 export default function LogoArc({
   className,
   pathRef,
-  darkPathRef,
   maskPathRef,
   /* The band's outline, which the caller rewrites per frame with arcOutline
      alongside the paths above. */
   clipPathRef,
   inkRef,
-  darkClassName,
   inkClassName,
   /*
    * Everything that is only there to get the logos onto the page: the band
@@ -245,7 +243,6 @@ export default function LogoArc({
   // but invalid in a CSS selector, so drop the colons before they spread.
   const uid = useId().replace(/:/g, '');
   const arcFill = `la-arc-${uid}`;
-  const arcDarkFill = `la-arc-dark-${uid}`;
   const arcMask = `la-arc-mask-${uid}`;
   const arcClip = `la-arc-clip-${uid}`;
   const wipeClip = (index) => `la-arc-wipe-${uid}-${index}`;
@@ -272,16 +269,10 @@ export default function LogoArc({
     >
       <defs>
         <linearGradient id={arcFill} x1="702.708" y1="382.883" x2="511.802" y2="713.629" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#FACA15" />
+          <stop stopColor="#EB50A1" />
           <stop offset="1" stopColor="#FF910E" />
         </linearGradient>
 
-        {/* What the arc becomes once the page has turned light: the same sweep
-            in the footer's indigo, so it still reads against white. */}
-        <linearGradient id={arcDarkFill} x1="702.708" y1="382.883" x2="511.802" y2="713.629" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#4B3A86" />
-          <stop offset="1" stopColor="#22114F" />
-        </linearGradient>
         {/*
           The shape itself, painted white, used as a mask for the black that
           fills the band.
@@ -350,18 +341,6 @@ export default function LogoArc({
           ref={pathRef}
           d={d}
           stroke={`url(#${arcFill})`}
-          strokeWidth={STROKE_WIDTH}
-          strokeLinecap="round"
-        />
-
-        {/* The dark version, laid over the light one and faded up rather than
-            swapped in, so the arc changes colour as the sheet passes it rather
-            than at a single frame. */}
-        <path
-          ref={darkPathRef}
-          className={darkClassName}
-          d={d}
-          stroke={`url(#${arcDarkFill})`}
           strokeWidth={STROKE_WIDTH}
           strokeLinecap="round"
         />

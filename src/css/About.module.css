@@ -1,188 +1,192 @@
-.aboutPics {
-    margin: 0 var(--margin-from-screen);
+/*
+ * The team photo at the top: one per semester, newest first, stepped through
+ * by hand - the arrows either side, the dots, the arrow keys, or dragging the
+ * photo itself. The slides sit side by side on a track that slides along; the
+ * frame keeps one shape so the page doesn't jump between photos of different
+ * proportions.
+ */
+.teamCarousel {
+    --arrow-col: clamp(40px, 5vw, 72px);
+    width: min(100%, calc(80vw + 2 * var(--arrow-col)));
+    margin: 100px auto 0;
+    padding: 0 max(0px, calc(var(--margin-from-screen) - var(--arrow-col) / 2));
+    box-sizing: border-box;
+    outline: none;
 }
 
-.aboutBottomHalf h2 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    text-align: center;
+.carouselStage {
+    display: grid;
+    grid-template-columns: var(--arrow-col) minmax(0, 1fr) var(--arrow-col);
+    align-items: stretch;
 }
 
-.aboutBottomHalf img {
+.carouselFrame {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    max-height: 75vh;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+    cursor: grab;
+    touch-action: pan-y;
     user-select: none;
 }
 
-.icon {
-    object-fit: contain;
+.carouselDragging {
+    cursor: grabbing;
 }
 
-.people {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 50px;
-    margin-top: 20px;
-    margin-bottom: 40px;
+.teamCarousel:focus-visible .carouselFrame {
+    outline: 2px solid #FAF3E0;
+    outline-offset: 4px;
 }
 
-.person {
+.carouselTrack {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 20px;
+    height: 100%;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
 }
 
-.gridImage {
-    width: 250px;
-    height: 250px;
+.carouselSlide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    object-position: 50% 30%;
-    border-radius: 50%;
+    object-position: center;
+    pointer-events: none;
 }
 
-.name {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    padding-top: 10px;
+/* No fill: the whole column beside the photo is the hit area. */
+.carouselArrow {
+    border: none;
+    background: none;
+    padding: 0;
+    color: #FAF3E0;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
 }
 
-.name img {
-    width: 20px;
-    height: 20px;
-}
-
-.name a {
-    height: 20px;
-}
-
-.name h3 {
-    margin: 0;
-}
-
-.title {
-    margin: 0;
-    font-style: italic;
+.carouselChevron {
+    width: clamp(22px, 2.4vw, 32px);
+    height: clamp(22px, 2.4vw, 32px);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
     opacity: 0.7;
-    color: white;
-    text-decoration: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-@media screen and (max-width: 1200px) {
-    .people {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
+.carouselArrow:hover .carouselChevron,
+.carouselArrow:focus-visible .carouselChevron {
+    opacity: 1;
 }
 
-@media screen and (max-width: 900px) {
-    .people {
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 30px;
-    }
+.carouselPrev:hover .carouselChevron {
+    transform: translateX(-5px);
+}
+
+.carouselNext:hover .carouselChevron {
+    transform: translateX(5px);
+}
+
+.carouselArrow:focus-visible {
+    outline: 2px solid #FAF3E0;
+    outline-offset: -2px;
+    border-radius: 12px;
+}
+
+.carouselFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 12px var(--arrow-col) 0;
+}
+
+.carouselLabel {
+    font-family: 'Paper Mono', monospace;
+    color: #FAF3E0;
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    white-space: pre;
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.carouselDots {
+    display: flex;
+    gap: 4px;
+}
+
+.carouselDot {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+}
+
+.carouselDot::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(250, 243, 224, 0.35);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.carouselDot:hover::after {
+    background: rgba(250, 243, 224, 0.7);
+}
+
+.carouselDotActive::after {
+    background: #FAF3E0;
+    transform: scale(1.25);
 }
 
 @media screen and (max-width: 600px) {
-    .people {
-        grid-template-columns: 1fr;
+    .carouselDots {
+        gap: 0;
     }
 }
 
-.topHeaderCurve {
-    position: absolute;
-    width: 100%;
-    height: 6rem;
-    filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5));
-    bottom: calc(100% - 6rem);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    user-select: none;
-}
-
-.topHeaderCurve img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 70%;
-    overflow: visible;
-}
-
-.teamHero {
-    margin-top: 40px;
-    width: 100%;
-    height: clamp(50vh, 60vw, 90vh);
-    z-index: 1;
-    overflow: hidden;
-}
-
-.teamHero img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-    display: block;
-    user-select: none;
-}
-
-.bottomHeaderCurve {
-    position: absolute;
-    width: 100%;
-    margin: 0px;
-    transform: translateY(-50%);
-    padding: 0px;
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
-    user-select: none;
-}
-
-.bottomHeaderCurve img {
-    width: 100%;
-    height: 100%;
-    min-width: 50vh;
-    object-fit: cover;
-    object-position: center center;
-    display: block;
+@media (prefers-reduced-motion: reduce) {
+    .carouselTrack,
+    .carouselChevron {
+        transition: none;
+    }
 }
 
 .aboutTopHalf {
     position: relative;
     z-index: 200;
-    margin-top: -120px;
     text-align: center;
 }
 
 /*
  * The about opening - see AboutScene - with its stars. Positioned for the
  * star field, which fills it edge to edge and clips its own sides.
- *
- * It starts 120px up the team photo, with .aboutTopHalf pulled up over it,
- * and the wave under the photo hangs about 18vw below the photo's edge - the
- * lower half of a 1728 x 612 drawing that dips to 600 - so the copy is
- * pushed down past both. The stars can start at the top: the wave is drawn
- * over them.
  */
 .aboutScene {
     position: relative;
-    padding: calc(120px + 18vw + clamp(2rem, 6vh, 4rem)) 0 clamp(4rem, 10vh, 7rem);
+    padding: clamp(2rem, 6vh, 4rem) 0 clamp(4rem, 10vh, 7rem);
 }
 
 .aboutSceneInner {
     position: relative;
     padding: 0 var(--margin-from-screen);
-}
-
-.aboutPics h2 {
-    font-family: var(--font-title);
-    font-weight: 400;
-    letter-spacing: normal;
-    text-align: center;
-    color: #FAF3E0;
-    font-size: clamp(2.5rem, 4vw, 3rem);
-}
-
-.aboutBottomHalf {
-    margin-bottom: 100px;
 }

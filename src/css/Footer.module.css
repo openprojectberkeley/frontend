@@ -59,7 +59,7 @@
 }
 
 .title {
-    font-size: 18px;
+    font-size: 16px;
     color: #020617;
     opacity: 0.4;
     user-select: none;
@@ -68,6 +68,8 @@
 .links {
     display: flex;
     flex-direction: column;
+    gap: 6px;
+    font-size: 16px;
     user-select: none;
 }
 
@@ -77,7 +79,7 @@
     width: fit-content;
 }
 
-.links a:hover, .socialsgroup:hover > p {
+.links a:hover {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift 0.5s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23F9C12C' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E");
     background-position: 0 100%;
     background-size: auto 6px;
@@ -90,7 +92,24 @@
 .socials {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 24px;
+}
+
+.footerLogo {
+    width: 160px;
+    user-select: none;
+}
+
+.logoLink {
+    display: block;
+    width: fit-content;
+    line-height: 0;
+    transition: opacity 0.15s ease;
+}
+
+.logoLink:hover,
+.logoLink:focus-visible {
+    opacity: 0.7;
 }
 
 .socialicons {
@@ -99,37 +118,42 @@
     user-select: none;
 }
 
-.socialsgroup {
+/* In a row now the handles have moved onto the cursor, on the copyright's line. */
+.socialLinks {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    height: 30px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    gap: 16px;
+}
+
+.socialLinks a {
+    display: block;
+    line-height: 0;
+    transition: transform 0.15s ease;
+}
+
+.socialLinks a:hover,
+.socialLinks a:focus-visible {
+    transform: translateY(-2px);
 }
 
 /*
- * Stacked rather than in a row. Set in mono, the four handles come to ~1090px
- * on their own, and the footer's content box tops out at 1200px, so a row can
- * no longer sit beside the link columns at any window width.
+ * The hovered icon's handle, riding just below and right of the cursor.
+ * Fixed, so the footer's clipping does not cut it off at the edge.
  */
-.socialLinks {
-    padding-left: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-}
-
-.socialsgroup p {
-    margin: 0;
-}
-
-.socials a {
-    text-decoration: none;
-    color: #020617;
+.cursorLabel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    margin: 18px 0 0 14px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #020617;
+    color: #FFFDF8;
+    font-size: 13px;
+    white-space: nowrap;
+    pointer-events: none;
 }
 
 .rightContent {
@@ -151,9 +175,9 @@
         justify-content: center;
     }
 
-    .socialLinks {
-        align-items: center;
-        justify-content: center;
+    .copyright {
+        flex-direction: column;
+        text-align: center;
     }
 
     .links {
@@ -162,8 +186,14 @@
 }
 
 .copyright {
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    text-align: right;
     color: rgba(2, 6, 23, 0.5);
     font-size: 14px;
-    padding: 12px 0 30px 0;
+    /* The footer's own side margins, so this ends under the link columns. */
+    padding: 12px var(--margin-from-screen) 30px;
 }

@@ -5,12 +5,7 @@ import homeStyles from "../css/HomePage.module.css";
 import useScrollCue from './useScrollCue';
 import AboutScene from './AboutScene';
 import StarField, { useStarParallax } from './StarField';
-import linkedinicon from "../images/about/linkedin_blue.png";
-import websiteicon from "../images/about/web.png";
-import topHeaderCurve from "../images/about/topHeaderCurve.svg";
-import bottomHeaderCurve from "../images/about/bottomHeaderCurve.svg";
-import teamCover from "../images/about/spring2026/board.jpg";
-import { alumni } from '../data/boardMembers';
+import TeamCarousel from './TeamCarousel';
 
 export default function About() {
   const nextSectionRef = useRef(null);
@@ -40,48 +35,9 @@ export default function About() {
     return () => observer.disconnect();
   }, []);
 
-  const renderPeople = (people) => {
-    return people.map((person) => (
-      <div className={styles.person} key={person.name}>
-        <div className={styles.imageWrapper}>
-          <img
-            className={styles.gridImage}
-            src={person.image}
-            alt={person.name}
-          />
-        </div>
-        <div className={styles.name}>
-          <h3>{person.name}</h3>
-          {person.link && (
-            <a
-              href={person.link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src={person.link.includes("linkedin") ? linkedinicon : websiteicon}
-                className={styles.icon}
-                alt={`${person.name}'s profile link`}
-              />
-            </a>
-          )}
-        </div>
-        {person.title && <p className={styles.title}>{person.title}</p>}
-      </div>
-    ));
-  };
-
   return (
     <>
-      <div className={styles.topHeaderCurve}>
-        <img src={topHeaderCurve} alt="Top header curve decoration" />
-      </div>
-      <section className={styles.teamHero}>
-        <img src={teamCover} alt="Open Project Berkeley Team" />
-      </section>
-      <div className={styles.bottomHeaderCurve}>
-        <img src={bottomHeaderCurve} alt="Bottom header curve decoration" />
-      </div>
+      <TeamCarousel />
 
       <div className={`${styles.aboutTopHalf} limitWidth`}>
         <button
@@ -103,15 +59,6 @@ export default function About() {
         <StarField />
         <div className={`${styles.aboutSceneInner} limitWidth`}>
           <AboutScene arrived={arrived} reducedMotion={reducedMotion} />
-        </div>
-      </section>
-
-      <section className={`${styles.aboutBottomHalf} limitWidth`}>
-        <div className={styles.aboutPics}>
-          <h2>OP Alumni</h2>
-          <div className={styles.people}>
-            {renderPeople(alumni)}
-          </div>
         </div>
       </section>
     </>

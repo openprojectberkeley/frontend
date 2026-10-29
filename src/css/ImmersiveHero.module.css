@@ -289,10 +289,15 @@
     rotate(calc(var(--fly, 0) * 48deg));
 }
 
+/* The typed phrase, and only that, in its own face. Set here rather than on
+   the typed span alone so the hidden copies measured for the centring are in
+   the same face as what is shown. */
 .wordmark {
   position: relative;
   display: inline-block;
-  font-style: italic;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
   opacity: var(--word-opacity, 1);
 }
 
@@ -317,38 +322,124 @@
 }
 
 /*
- * Overlaid at the sizer's full width rather than sized by the letters typed so
- * far: the gradient then resolves against the finished word from the first
- * frame, so each letter arrives in the colour it will keep instead of the whole
- * word resweeping on every keystroke.
+ * Overlaid on the sizer and as wide as the whole phrase rather than the letters
+ * typed so far - the untyped rest is in here too, hidden - so the gradient
+ * resolves against the finished phrase from the first frame and each letter
+ * arrives in the colour it will keep, instead of the whole phrase resweeping on
+ * every keystroke. Out of flow, so it costs no layout: the lockup is still
+ * centred on the club's name, and a longer phrase still runs past its end.
  */
 .wordmarkTyped {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
-  /*
-   * Twice the width of the box it is anchored to, and out of flow, so this
-   * costs no layout: the lockup is still centred on the club's name, and a
-   * longer phrase still runs past the name's right-hand end.
-   *
-   * The width matters because of background-clip: text. The gradient is only
-   * painted across this element's own box, so a glyph sitting outside it has no
-   * background to show through and, with transparent text, renders as nothing -
-   * which is why the longer phrases used to stop dead at the name's width.
-   * Doubling the box puts every phrase inside the painted area.
-   */
-  right: -100%;
   white-space: pre;
-  /*
-   * The stops are halved to suit: 17% and 34% of a double-width box land in the
-   * same places 34% and 68% did on a single one, so the sweep still finishes
-   * on "Project" and anything past it carries the blue it ends on.
-   */
-  background-image: linear-gradient(90deg, #FBEAA0 0%, #A9D9D1 17%, #5EC8FF 34%);
+  /* navbarlogo.png's wordmark gradient, top left to bottom right. */
+  background-image: linear-gradient(to bottom right, #ABB1FF 0%, #FFFFFF 32%, #FFFFFF 68%, #FFDDB4 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Hidden glyphs are not painted, so background-clip: text shows nothing
+   through them: they hold the width and nothing more. */
+.wordmarkRest {
+  visibility: hidden;
+}
+
+/*
+ * The title in pixels, shown only where the pointer has been - see
+ * useTitlePixels, which places it and writes its mask. Hidden rather than
+ * out of the tree, so the mark's float is running in step with the real
+ * mark's the moment it is seen.
+ *
+ * The real mark and phrase take the opposite mask while it shows, a
+ * luminance one - white everywhere but the blocks - and are let paint past
+ * their own boxes under it, since the float carries the mark a little out of
+ * its box and a phrase runs past the box it is centred on.
+ */
+.lockupPixel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  pointer-events: none;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.lockupPixel[data-showing] {
+  visibility: visible;
+}
+
+.markBox,
+.wordmarkTyped {
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-mode: luminance;
+  mask-clip: no-clip;
+  -webkit-mask-clip: no-clip;
+}
+
+.markPixelBox {
+  position: absolute;
+  display: block;
+}
+
+/* Stretched to the mark's box like LogoMark, with no smoothing between its
+   cells. */
+.markPixel {
+  width: 100%;
+  image-rendering: pixelated;
+}
+
+.wordmarkPixel {
+  position: absolute;
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-style: normal;
+}
+
+/*
+ * One letter of the pixel phrase, set by useTitlePixels over the middle of
+ * the same letter in Montserrat, at the size that gives it the same cap
+ * height. Each carries the phrase's gradient sized and placed as the whole
+ * phrase's, so the colour still runs across the word rather than restarting
+ * in every letter.
+ */
+.pixelGlyph {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  line-height: 1;
+  white-space: pre;
+  background-image: linear-gradient(to bottom right, #ABB1FF 0%, #FFFFFF 32%, #FFFFFF 68%, #FFDDB4 100%);
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pixelCaret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 0;
+}
+
+/* The static the trail leaves on the backdrop in scene one. Screened over
+   what is under it, so it only ever brightens. */
+.titleStatic {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  image-rendering: pixelated;
 }
 
 .caret {
@@ -359,7 +450,7 @@
   vertical-align: -0.12em;
   border-radius: 999px;
   /* The colour the wordmark's gradient settles on. */
-  background-color: #5EC8FF;
+  background-color: #FFDDB4;
 }
 
 /* Solid while the letters are still landing, blinking once the line is done —
@@ -912,12 +1003,6 @@
  */
 .arcTitle.arcTitle {
   color: #000;
-}
-
-/* Faded up by the sheet rather than switched, so the arc changes colour as the
-   white passes it. */
-.arcDark {
-  opacity: var(--sheet, 0);
 }
 
 /* The black that fills the band. The page's own, so what the band becomes is
@@ -1615,10 +1700,14 @@
   pointer-events: auto;
 }
 
+/* None rather than blur(0), which looks the same but is still a filter to the
+   browser, and a filter under the break-up's mask in scene six makes every
+   change of the mask dearer. The blur still eases off: none counts as no
+   blur when it is transitioned to. */
 .momentRevealed .momentImage,
 .momentRevealed .momentBlank {
   opacity: 1;
-  filter: blur(0);
+  filter: none;
 }
 
 /*
@@ -1656,9 +1745,9 @@
  *
  * The picture itself is masked down to the blocks still whole - see
  * MomentStrip, which writes the mask - and this holds the ones in between.
- * Drawn a whole number of device pixels to the block and stretched with hard
- * edges, so its block lines fall where the mask's do. Inside the card, so it
- * moves and stacks with it.
+ * One canvas pixel to the block, stretched with hard edges, so its block
+ * lines fall where the mask's do. Inside the card, so it moves and stacks
+ * with it.
  */
 .momentPixels {
   position: absolute;
@@ -1893,11 +1982,8 @@
      */
     translateX(calc(min(54.5vw, 86vh) * -0.0432));
   /*
-   * The paper shadow darkens with the arc above it, from the warm brown that
-   * sits under orange to an indigo that sits under purple. Interpolated per
-   * channel off --sheet, because a filter's colour cannot be transitioned
-   * through a variable any other way - and a hard swap would leave a brown rim
-   * under a purple arc for as long as it took to notice.
+   * The paper shadow: a warm brown that sits under the arc's own gradient,
+   * kept as it is while the sheet rises, since the arc keeps its colours too.
    *
    * It draws back in and fades out as --ink fills the band. The shadow is what
    * makes the band read as a sheet lying a little off the page, and a band
@@ -1907,10 +1993,7 @@
    */
   filter: drop-shadow(
     0 calc(3.2vmin * (1 - var(--ink, 0))) 0
-      rgb(
-        calc(122 - var(--sheet, 0) * 101) calc(68 - var(--sheet, 0) * 58)
-          calc(6 + var(--sheet, 0) * 45) / calc(1 - var(--ink, 0))
-      )
+      rgb(122 68 6 / calc(1 - var(--ink, 0)))
   );
   pointer-events: none;
   will-change: transform;

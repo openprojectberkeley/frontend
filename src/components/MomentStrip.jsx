@@ -1,6 +1,14 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../css/ImmersiveHero.module.css';
 import { communityMoments } from '../data/communityMoments';
+import {
+  TRAIL_BLOCK,
+  blockLife,
+  blockNoise,
+  clamp01,
+  createPixelTrail,
+  stepped,
+} from './pixelTrail';
 
 /*
  * The strip of club life that comes past at the end of the hero.
@@ -42,46 +50,10 @@ const HIGHLIGHT_TINTS = ['#4D5F9A', '#3D7659', '#805B0B', '#71377A', '#27686A', 
    this point a label laid out rightwards would run off the screen. */
 const TIP_FLIP_MARGIN = 260;
 
-/*
- * The trail the pointer leaves, which pixelates the pictures it crosses.
- *
- *   TRAIL_LIFE        how long a point of it lasts, in ms
- *   TRAIL_MIN_RADIUS  how far a point reaches when the pointer has barely
- *                     moved, in px - about one block, so a nudge leaves a
- *                     square or two rather than a full blot
- *   TRAIL_RADIUS      how far it reaches at full stride, in px; every point
- *                     shrinks towards a third of its own reach as it ages
- *   TRAIL_FULL_SPEED  the pointer speed that earns the full reach, in px/ms
- *   TRAIL_RAMP        how long a stroke has to keep going before it can
- *                     reach that far, in ms, so even a flick starts thin
- *   TRAIL_PAUSE       a gap between mouse events longer than this, in ms,
- *                     ends the stroke and the next one starts thin again
- *   TRAIL_BLOCK       the size of one pixel of it, in px - roughly, since
- *                     each picture rounds it to whatever divides it into
- *                     whole blocks
- *   TRAIL_SPACING     the most distance a fast stroke leaves between two
- *                     points before the gap is filled in, in px
- *   TRAIL_STEPS       how many levels of opacity it fades out through - a
- *                     few, so it goes out in steps like the blocks it is
- *                     made of
- *   TRAIL_OUTLINE     the strongest the white edge round each block gets; it
- *                     rises from nothing and falls back over the block's
- *                     life, peaking halfway
- */
-const TRAIL_LIFE = 700;
-const TRAIL_MIN_RADIUS = 14;
-const TRAIL_RADIUS = 80;
-const TRAIL_FULL_SPEED = 1.4;
-const TRAIL_RAMP = 450;
-const TRAIL_PAUSE = 150;
-const TRAIL_BLOCK = 20;
-const TRAIL_SPACING = 16;
-const TRAIL_STEPS = 4;
+/* The strongest the white edge round each of the trail's blocks gets; it
+   rises from nothing and falls back over the block's life, peaking halfway.
+   The rest of the trail is pixelTrail.js, shared with the title. */
 const TRAIL_OUTLINE = 0.35;
-/* How unevenly the trail's blocks go out. Each block's life is cut short by
-   up to this share of it, by its own noise, so the trail breaks up into
-   scattered squares as it fades instead of every block dimming in step. */
-const TRAIL_NOISE = 0.5;
 
 /*
  * The way the cards go at the start of scene six: broken into the trail's
@@ -114,26 +86,6 @@ const DISSOLVE_NOISE = 0.45;
 const DISSOLVE_PIXEL = 0.22;
 const DISSOLVE_BLOCK = 28;
 const DISSOLVE_STEPS = 24;
-
-const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
-const smoothstep = (value) => {
-  const t = clamp01(value);
-
-  return t * t * (3 - 2 * t);
-};
-
-/* A fixed 0-1 value for each block of each card, so the noise in both the
-   trail and the dissolve is the same pattern every time it is drawn rather
-   than a new scatter each frame. `salt` keeps the two patterns apart. */
-const blockNoise = (index, column, row, salt) => {
-  let h = Math.imul(index + 1, 374761393) ^ Math.imul(column + 1, 668265263);
-
-  h ^= Math.imul(row + 1, 2246822519) ^ Math.imul(salt + 1, 3266489917);
-  h = Math.imul(h ^ (h >>> 13), 1274126177);
-  h ^= h >>> 16;
-
-  return (h >>> 0) / 4294967296;
-};
 
 /* object-fit: cover, done by hand: the middle of the source at the target's
    aspect ratio, so the blocks show the crop the picture shows. */
@@ -359,10 +311,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
     const media = mediaRefs.current;
     const corners = new Map();
     const onScreen = new Set();
-    const points = [];
-    let last = null;
-    let strokeStart = 0;
-    let speed = 0;
+    const trail = createPixelTrail();
     let frame = 0;
 
     const resize = () => {
@@ -383,65 +332,14 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
       return corners.get(index);
     };
 
-    /* Which of a picture's blocks the trail covers, each as alive as the
-       freshest point that reaches it. A point counts for a block if the
-       block's centre is within its reach, and always for the block it is in,
-       or a point narrower than a block would fall between centres and leave
-       nothing. Points that cannot reach the picture are passed over. */
-    const coverage = (rect, columns, rows, now) => {
-      const blockWidth = rect.width / columns;
-      const blockHeight = rect.height / rows;
-      const lives = new Float32Array(columns * rows);
-      let any = false;
-
-      points.forEach(({ x, y, t, reach: radius }) => {
-        const life = 1 - (now - t) / TRAIL_LIFE;
-        const reach = radius * (0.35 + 0.65 * life);
-        const localX = x - rect.left;
-        const localY = y - rect.top;
-
-        if (localX < -reach || localY < -reach) return;
-        if (localX > rect.width + reach || localY > rect.height + reach) return;
-
-        const homeColumn = Math.floor(localX / blockWidth);
-        const homeRow = Math.floor(localY / blockHeight);
-        const top = Math.max(0, Math.floor((localY - reach) / blockHeight));
-        const bottom = Math.min(rows - 1, Math.floor((localY + reach) / blockHeight));
-        const left = Math.max(0, Math.floor((localX - reach) / blockWidth));
-        const right = Math.min(columns - 1, Math.floor((localX + reach) / blockWidth));
-
-        for (let row = top; row <= bottom; row += 1) {
-          for (let column = left; column <= right; column += 1) {
-            const home = row === homeRow && column === homeColumn;
-            const centreX = (column + 0.5) * blockWidth;
-            const centreY = (row + 0.5) * blockHeight;
-
-            if (!home && Math.hypot(centreX - localX, centreY - localY) > reach) continue;
-
-            const key = row * columns + column;
-
-            if (lives[key] < life) {
-              lives[key] = life;
-              any = true;
-            }
-          }
-        }
-      });
-
-      return any ? lives : null;
-    };
-
     const tick = (now) => {
       frame = 0;
 
-      while (points.length && now - points[0].t > TRAIL_LIFE) points.shift();
+      const alive = trail.prune(now);
 
       context.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (points.length === 0) {
-        last = null;
-        return;
-      }
+      if (!alive) return;
 
       const origin = canvas.getBoundingClientRect();
       const ratio = canvas.width / origin.width;
@@ -500,7 +398,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
 
         const columns = Math.max(1, Math.round(rect.width / TRAIL_BLOCK));
         const rows = Math.max(1, Math.round(rect.height / TRAIL_BLOCK));
-        const lives = coverage(rect, columns, rows, now);
+        const lives = trail.coverage(rect, columns, rows, now);
 
         if (lives) {
           scratch.width = columns;
@@ -510,21 +408,17 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
           const blockWidth = width / columns;
           const blockHeight = height / rows;
 
-          lives.forEach((trail, key) => {
-            if (trail <= 0) return;
-
+          lives.forEach((covered, key) => {
             const column = key % columns;
             const row = Math.floor(key / columns);
-            const life = clamp01(
-              (trail - blockNoise(index, column, row, 0) * TRAIL_NOISE) / (1 - TRAIL_NOISE),
-            );
+            const life = blockLife(covered, index, column, row);
 
             if (life <= 0) return;
 
             const left = x + column * blockWidth;
             const top = y + row * blockHeight;
 
-            context.globalAlpha = Math.ceil(life * TRAIL_STEPS) / TRAIL_STEPS;
+            context.globalAlpha = stepped(life);
             context.drawImage(scratch, column, row, 1, 1, left, top, blockWidth, blockHeight);
 
             /* A thin white edge round the block, rising from nothing and
@@ -551,72 +445,18 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
       frame = requestAnimationFrame(tick);
     };
 
-    /*
-     * How far a new point reaches comes from the stroke so far, not from the
-     * one event: the pointer's speed, smoothed so one jittery report cannot
-     * throw out a blot, times how long the stroke has been going. Either one
-     * alone gets it wrong - speed alone makes a flick fat from its first
-     * pixel, and time alone makes a slow drift as wide as a sweep.
-     */
-    const reachFor = (now, distance, elapsed) => {
-      if (!last || elapsed > TRAIL_PAUSE) {
-        strokeStart = now;
-        speed = 0;
-      } else if (elapsed > 0) {
-        const settle = 1 - Math.exp(-elapsed / 80);
-
-        speed += (distance / elapsed - speed) * settle;
-      }
-
-      /* The root lifts the low end: an easy drift should widen a little, not
-         sit at the minimum until the pointer is nearly at full speed. */
-      const stride = smoothstep(Math.sqrt(speed / TRAIL_FULL_SPEED));
-      const ramp = smoothstep((now - strokeStart) / TRAIL_RAMP);
-
-      return TRAIL_MIN_RADIUS + (TRAIL_RADIUS - TRAIL_MIN_RADIUS) * stride * ramp;
-    };
-
-    /* A fast stroke reports points far apart, and drawn as they come the
-       trail would be a row of separate dots. The gap is filled with points
-       of the ages and reaches they would have had, so the stroke tapers along
-       its length the way a slow one does. */
     const onMove = (event) => {
       if (onScreen.size === 0) return;
       if (dissolveRef.current >= 1) return;
 
-      const now = performance.now();
-      const x = event.clientX;
-      const y = event.clientY;
-      const distance = last ? Math.hypot(x - last.x, y - last.y) : 0;
-      const elapsed = last ? now - last.t : Infinity;
-      const reach = reachFor(now, distance, elapsed);
-
-      if (last && elapsed <= TRAIL_PAUSE) {
-        const steps = Math.floor(distance / TRAIL_SPACING);
-
-        for (let step = 1; step < steps; step += 1) {
-          const k = step / steps;
-
-          points.push({
-            x: last.x + (x - last.x) * k,
-            y: last.y + (y - last.y) * k,
-            t: last.t + (now - last.t) * k,
-            reach: last.reach + (reach - last.reach) * k,
-          });
-        }
-      }
-
-      points.push({ x, y, t: now, reach });
-      last = { x, y, t: now, reach };
+      trail.add(event.clientX, event.clientY, performance.now());
 
       if (!frame) frame = requestAnimationFrame(tick);
     };
 
     /* Coming back in somewhere else should not draw a streak across the
        strip from where the pointer went out. */
-    const onLeave = () => {
-      last = null;
-    };
+    const onLeave = () => trail.lift();
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -661,15 +501,20 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
    *     through it;
    *   - a canvas over the picture holding the blocks in between, each one
    *     flat square of the picture's colour there, fading out in
-   *     TRAIL_STEPS with the trail's white edge. The colours are taken once,
-   *     from the picture shrunk to one pixel per block, the first time the
-   *     card starts to go.
+   *     TRAIL_STEPS. One canvas pixel to the block, stretched up with hard
+   *     edges, so it is a few hundred bytes to send to the screen each step
+   *     instead of a card-sized picture; the trail's white edge round each
+   *     square is the price, since there is no room inside a pixel to draw
+   *     one. The colours are taken once, from the picture shrunk to one
+   *     pixel per block, the first time the card starts to go.
    *
    * And both are rewritten only when the card moves on a step: its share of
    * the dissolve is rounded to DISSOLVE_STEPS, which suits squares that go
    * in jumps anyway, and a card that has not moved on a step since the last
    * scroll is left alone. So a scroll frame in the middle of it costs a
    * handful of small rewrites rather than a redraw of everything in shot.
+   * And the masks are shared: cards of the same size at the same step get
+   * the very same mask, built once, which the browser decodes once.
    *
    * Only the cards in shot, or about to be, are kept up - about ten of the
    * forty-six. One the coast or a scroll back brings in is caught up as it
@@ -685,6 +530,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
     const layers = pixelRefs.current;
     const states = new Map();
     const near = new Set();
+    const frames = new Map();
     let starts = null;
     let grids = null;
 
@@ -717,7 +563,6 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
         grids.set(index, {
           columns: Math.max(1, Math.round(width / DISSOLVE_BLOCK)),
           rows: Math.max(1, Math.round(tall / DISSOLVE_BLOCK)),
-          width,
         });
       });
 
@@ -755,6 +600,68 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
       drawCover(sampleContext, source, sourceWidth, sourceHeight, columns, rows);
 
       return sampleContext.getImageData(0, 0, columns, rows).data;
+    };
+
+    /* What a grid looks like at a step: the mask of the blocks still whole,
+       and how strong each block's square is. It depends on nothing but the
+       grid and the step - the noise is seeded by the grid, not the card - so
+       every card of a size shares one, and a mask is built once per step
+       per size however many cards pass through it. Cards of a size are far
+       enough apart on the strip, and far enough apart in their turn, that
+       the shared pattern does not show.
+
+       How far each block is through going, past 0: below it the block is
+       still picture, from 0 to DISSOLVE_PIXEL it is a square fading out,
+       and past that it is gone. Its turn comes from its row - the bottom
+       row first - pushed about by its noise. The whole blocks are written
+       as runs along each row, which keeps the mask a short string. */
+    const frameOf = (columns, rows, step) => {
+      const key = `${columns}x${rows}@${step}`;
+      let frame = frames.get(key);
+
+      if (frame) return frame;
+
+      const seed = columns * 1009 + rows;
+      const at = step / DISSOLVE_STEPS;
+      const alphas = new Uint8ClampedArray(columns * rows);
+      let path = '';
+
+      for (let row = 0; row < rows; row += 1) {
+        let run = -1;
+
+        for (let column = 0; column <= columns; column += 1) {
+          const turn =
+            ((rows - 1 - row) / rows) * (1 - DISSOLVE_NOISE) +
+            blockNoise(seed, column, row, 1) * DISSOLVE_NOISE;
+          const going = column < columns ? at * (1 + DISSOLVE_PIXEL) - turn : 1;
+
+          if (going <= 0) {
+            if (run < 0) run = column;
+          } else {
+            if (run >= 0) {
+              path += `M${run} ${row}h${column - run}v1h${run - column}z`;
+              run = -1;
+            }
+
+            if (column < columns && going < DISSOLVE_PIXEL) {
+              const life = 1 - going / DISSOLVE_PIXEL;
+
+              alphas[row * columns + column] = stepped(life) * 255;
+            }
+          }
+        }
+      }
+
+      frame = {
+        alphas,
+        mask: `url("data:image/svg+xml,${encodeURIComponent(
+          `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${columns} ${rows}' ` +
+            `preserveAspectRatio='none' shape-rendering='crispEdges'><path d='${path}'/></svg>`,
+        )}")`,
+      };
+      frames.set(key, frame);
+
+      return frame;
     };
 
     const update = (index, dissolve) => {
@@ -802,83 +709,41 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
 
       card.dataset.dissolve = 'going';
 
-      const { columns, rows, width } = grids.get(index);
-      const at = step / DISSOLVE_STEPS;
+      const { columns, rows } = grids.get(index);
 
       if (!state.colours) state.colours = coloursOf(index, columns, rows);
 
-      /* The squares' layer, drawn at a whole number of device pixels to the
-         block and stretched with the edges kept hard, so its block lines
-         land where the mask's do. */
-      let context = null;
-      let block = 0;
+      const frame = frameOf(columns, rows, step);
 
+      /* The squares' layer is one pixel to the block, stretched over the
+         picture with the edges kept hard, so its block lines land where the
+         mask's do. The whole of it is written in one go: a few hundred
+         bytes, rather than a square drawn at a time onto a canvas the size
+         of the card. The frame says how strong each square is; the card's
+         own colours fill it in. */
       if (layer && state.colours) {
-        block = Math.max(2, Math.round((width / columns) * (window.devicePixelRatio || 1)));
-        if (layer.width !== columns * block) layer.width = columns * block;
-        if (layer.height !== rows * block) layer.height = rows * block;
-        context = layer.getContext('2d');
-        context.clearRect(0, 0, layer.width, layer.height);
-        context.lineWidth = Math.max(1, Math.round(block / (width / columns)));
-      }
+        if (layer.width !== columns) layer.width = columns;
+        if (layer.height !== rows) layer.height = rows;
+        if (!state.squares) state.squares = new ImageData(columns, rows);
 
-      /* How far each block is through going, past 0: below it the block is
-         still picture, from 0 to DISSOLVE_PIXEL it is a square fading out,
-         and past that it is gone. Its turn comes from its row - the bottom
-         row first - pushed about by its noise. The whole blocks are written
-         as runs along each row, which keeps the mask a short string. */
-      let path = '';
+        const squares = state.squares.data;
+        const { colours } = state;
 
-      for (let row = 0; row < rows; row += 1) {
-        let run = -1;
+        for (let block = 0, key = 0; block < frame.alphas.length; block += 1, key += 4) {
+          const alpha = frame.alphas[block];
 
-        for (let column = 0; column <= columns; column += 1) {
-          const turn =
-            ((rows - 1 - row) / rows) * (1 - DISSOLVE_NOISE) +
-            blockNoise(index, column, row, 1) * DISSOLVE_NOISE;
-          const going = column < columns ? at * (1 + DISSOLVE_PIXEL) - turn : 1;
-
-          if (going <= 0) {
-            if (run < 0) run = column;
-          } else {
-            if (run >= 0) {
-              path += `M${run} ${row}h${column - run}v1h${run - column}z`;
-              run = -1;
-            }
-
-            if (context && column < columns && going < DISSOLVE_PIXEL) {
-              const life = 1 - going / DISSOLVE_PIXEL;
-              const key = (row * columns + column) * 4;
-              const { colours } = state;
-              const strength = TRAIL_OUTLINE * Math.sin(Math.PI * life);
-
-              context.globalAlpha = Math.ceil(life * TRAIL_STEPS) / TRAIL_STEPS;
-              context.fillStyle = `rgb(${colours[key]}, ${colours[key + 1]}, ${colours[key + 2]})`;
-              context.fillRect(column * block, row * block, block, block);
-
-              if (strength >= 0.02) {
-                const inset = context.lineWidth / 2;
-
-                context.globalAlpha = 1;
-                context.strokeStyle = `rgba(255, 255, 255, ${strength.toFixed(3)})`;
-                context.strokeRect(
-                  column * block + inset,
-                  row * block + inset,
-                  block - context.lineWidth,
-                  block - context.lineWidth,
-                );
-              }
-            }
+          squares[key + 3] = alpha;
+          if (alpha) {
+            squares[key] = colours[key];
+            squares[key + 1] = colours[key + 1];
+            squares[key + 2] = colours[key + 2];
           }
         }
+
+        layer.getContext('2d').putImageData(state.squares, 0, 0);
       }
 
-      if (context) context.globalAlpha = 1;
-
-      const mask = `url("data:image/svg+xml,${encodeURIComponent(
-        `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${columns} ${rows}' ` +
-          `preserveAspectRatio='none' shape-rendering='crispEdges'><path d='${path}'/></svg>`,
-      )}")`;
+      const { mask } = frame;
 
       element.style.maskImage = mask;
       element.style.webkitMaskImage = mask;
@@ -896,9 +761,11 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
        redrawn on its new one. */
     const onResize = () => {
       measure();
+      frames.clear();
       states.forEach((state) => {
         state.step = -1;
         state.colours = null;
+        state.squares = null;
       });
       apply();
     };

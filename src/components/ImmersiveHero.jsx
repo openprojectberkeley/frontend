@@ -9,6 +9,7 @@ import LogoArc, { arcMiddle, arcOutline, arcPath, STROKE_WIDTH } from './LogoArc
 import ArcTicker from './ArcTicker';
 import LogoSpill from './LogoSpill';
 import MomentStrip from './MomentStrip';
+import useTitlePixels from './useTitlePixels';
 import JoinScene from './JoinScene';
 import StarField, { ABOUT_STARS_REACH, STAR_LAYERS, scatter } from './StarField';
 import scramble from './scramble';
@@ -17,6 +18,7 @@ import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWe
 import speechbubble from '../images/speechbubbles.png';
 import star from '../images/star.png';
 import triangle from '../images/triangle.png';
+import pixelMark from '../images/logo-pixel.svg';
 
 /* The phrases the wordmark types, holds, deletes and moves on from, forever. */
 const PHRASES = ['Open Project', 'Fall Semester 2026', 'Experience For All.'];
@@ -593,9 +595,9 @@ const crossed = (isOn, value, at, band = 0.04) => (isOn ? value >= at - band : v
  * takes its ink from here too.
  */
 const BUBBLE_COLOURS = {
-  violet: { from: '#8A7BFF', to: '#5EC8FF', ink: '#23314D' },
-  green: { from: '#9CEF81', to: '#228F8D', ink: '#1D3929' },
-  amber: { from: '#FACA15', to: '#FF910E', ink: '#4C3405' },
+  violet: { from: '#6E1FC2', to: '#68E2C3', ink: '#242B41' },
+  green: { from: '#F9D85D', to: '#6EE978', ink: '#2D381B' },
+  amber: { from: '#EB50A1', to: '#FF910E', ink: '#52261D' },
   magenta: { from: '#C24BCF', to: '#7B4BCF', ink: '#30173E' },
   teal: { from: '#4DB6AC', to: '#2F7F8C', ink: '#132E2F' },
   sky: { from: '#83B8E0', to: '#5EC8FF', ink: '#223743' },
@@ -846,12 +848,18 @@ function ProjectsCopy() {
     const aboutWipeRef = useRef(null);
     const lockupRef = useRef(null);
     const markBoxRef = useRef(null);
+    /* The title's pixel face, and the real one's typed phrase it is laid
+       over - see useTitlePixels. */
+    const typedRef = useRef(null);
+    const pixelLayerRef = useRef(null);
+    const pixelMarkRef = useRef(null);
+    const pixelTextRef = useRef(null);
+    const pixelStaticRef = useRef(null);
     const cueRef = useRef(null);
     /* The frame id of the cue's scroll tween, so a second click replaces the
        first rather than fighting it. */
     const cueScrollRef = useRef(null);
     const arcPathRef = useRef(null);
-    const arcDarkPathRef = useRef(null);
     const arcMaskPathRef = useRef(null);
     const arcClipPathRef = useRef(null);
     /* How far the arc has straightened, for the ticker to size its logos by.
@@ -1454,7 +1462,7 @@ function ProjectsCopy() {
        * still saves the write, which is the point: rewriting d invalidates the
        * path's cached length, and the ticker asks for that on every frame.
        */
-      [arcPathRef, arcDarkPathRef, arcMaskPathRef].forEach((ref) => {
+      [arcPathRef, arcMaskPathRef].forEach((ref) => {
         if (ref.current && ref.current.getAttribute('d') !== shape) {
           ref.current.setAttribute('d', shape);
         }
@@ -1590,7 +1598,7 @@ function ProjectsCopy() {
 
       /*
        * The sheet that turns the page light. Everything that has to change with
-       * it - how far it has risen, how dark the arc has gone, how far the client
+       * it - how far it has risen, how far the client
        * logos have faded up - reads this one number, so they cannot drift apart.
        */
       stage.style.setProperty(
@@ -1649,6 +1657,17 @@ function ProjectsCopy() {
             : `scene ${index + 1}/${SCENES.length} · ${SCENES[index].name}`;
       }
     }, []);
+
+    useTitlePixels({
+      playheadRef,
+      lockupRef,
+      markBoxRef,
+      typedRef,
+      overlayRef: pixelLayerRef,
+      pixelMarkRef,
+      pixelTextRef,
+      staticRef: pixelStaticRef,
+    });
 
     const applyPlayhead = useCallback(
       (playhead) => {
@@ -1939,6 +1958,13 @@ function ProjectsCopy() {
             </div>
           )}
 
+          {/* The cursor's trail over the backdrop in scene one: static, in the
+              trail's blocks - see useTitlePixels. Over the stars and under
+              everything else, by document order at z-index 0. */}
+          {!prefersReducedMotion && (
+            <canvas ref={pixelStaticRef} className={styles.titleStatic} aria-hidden="true" />
+          )}
+
           {/* The light world, rising. Everything dark is behind it; everything
               that survives into the light is in front. */}
           {!prefersReducedMotion && <div className={styles.sheet} aria-hidden="true" />}
@@ -1998,11 +2024,9 @@ function ProjectsCopy() {
               <LogoArc
                 className={styles.arcSpin}
                 pathRef={arcPathRef}
-                darkPathRef={arcDarkPathRef}
                 maskPathRef={arcMaskPathRef}
                 clipPathRef={arcClipPathRef}
                 inkRef={arcInkRef}
-                darkClassName={styles.arcDark}
                 inkClassName={styles.arcInk}
                 fadeClassName={styles.bandFade}
                 wipeClassName={styles.rowWipe}
@@ -2213,9 +2237,38 @@ function ProjectsCopy() {
                   <span className={styles.caret} />
                 </span>
 
-                <span className={styles.wordmarkTyped}>
+                <span ref={typedRef} className={styles.wordmarkTyped}>
                   {phrase.slice(0, charCount)}
                   <span className={`${styles.caret} ${caretResting ? styles.caretResting : ''}`} />
+                  {/* The rest of the phrase, there but unpainted, so the box -
+                      and the gradient across it - is the finished phrase's. */}
+                  <span className={styles.wordmarkRest}>{phrase.slice(charCount)}</span>
+                </span>
+              </span>
+
+              {/* The same lockup in pixels, shown only through the pointer's
+                  trail; useTitlePixels places it and masks it. Always here
+                  rather than added on a hover, so the mark's float keeps time
+                  with the real one's. */}
+              <span ref={pixelLayerRef} className={styles.lockupPixel} aria-hidden="true">
+                <span ref={pixelMarkRef} className={styles.markPixelBox}>
+                  <img
+                    src={pixelMark}
+                    alt=""
+                    className={`${styles.mark} ${styles.markPixel} ${revealed.markFloat ? styles.markFloating : ''}`}
+                  />
+                </span>
+                {/* A letter to a span, each set over its Montserrat twin by
+                    useTitlePixels, since the two faces' widths differ. */}
+                <span ref={pixelTextRef} className={styles.wordmarkPixel}>
+                  {[...phrase.slice(0, charCount)].map((letter, index) => (
+                    <span key={index} className={styles.pixelGlyph}>
+                      {letter}
+                    </span>
+                  ))}
+                  <span
+                    className={`${styles.caret} ${styles.pixelCaret} ${caretResting ? styles.caretResting : ''}`}
+                  />
                 </span>
               </span>
             </h1>

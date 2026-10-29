@@ -44,15 +44,15 @@ export default function LogoMark({ className, discClassName, shadowClassName, ba
     >
       <defs>
         <linearGradient id={discFill} x1="324.473" y1="0" x2="324.473" y2="648.772" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#8A7BFF" />
-          <stop offset="1" stopColor="#5EC8FF" />
+          <stop stopColor="#6E1FC2" />
+          <stop offset="1" stopColor="#68E2C3" />
         </linearGradient>
         <linearGradient id={barFill} x1="324.455" y1="502.556" x2="324.455" y2="1022.98" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#9CEF81" />
-          <stop offset="1" stopColor="#228F8D" />
+          <stop stopColor="#F9D85D" />
+          <stop offset="1" stopColor="#6EE978" />
         </linearGradient>
         <linearGradient id={arcFill} x1="702.708" y1="382.883" x2="511.802" y2="713.629" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#FACA15" />
+          <stop stopColor="#EB50A1" />
           <stop offset="1" stopColor="#FF910E" />
         </linearGradient>
 
@@ -62,8 +62,8 @@ export default function LogoMark({ className, discClassName, shadowClassName, ba
           as a second sheet of paper underneath rather than as a glow.
         */}
         <linearGradient id={discShadow} x1="324.473" y1="0" x2="324.473" y2="648.772" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#453E80" />
-          <stop offset="1" stopColor="#2F6480" />
+          <stop stopColor="#37105F" />
+          <stop offset="1" stopColor="#347161" />
         </linearGradient>
       </defs>
 
