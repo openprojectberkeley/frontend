@@ -43,7 +43,7 @@ const TINTS = ['#A9D9D1', '#FBEAA0', '#5EC8FF', '#F9C12C'];
 /* Brighter, still high-contrast versions of the violet, green, amber,
    magenta, teal and sky circles from scenes one and two. Every color keeps at
    least 5.3:1 contrast against the caption's white text. */
-const HIGHLIGHT_TINTS = ['#4D5F9A', '#3D7659', '#805B0B', '#71377A', '#27686A', '#38617D'];
+export const HIGHLIGHT_TINTS = ['#4D5F9A', '#3D7659', '#805B0B', '#71377A', '#27686A', '#38617D'];
 
 /* How close to the right edge the label flips to the other side of the
    cursor. Roughly the width of the longest caption plus its padding: past

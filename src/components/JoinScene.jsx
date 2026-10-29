@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from '../css/ImmersiveHero.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import scramble from './scramble';
+import { applicationDeadline } from '../data/recruitmentTimeline';
 
 /*
  * Scene six's copy: the call to apply, set the way the about page sets its
@@ -17,14 +18,15 @@ import scramble from './scramble';
  *
  * The sentence is in runs so the date and the time can each be marked: as the
  * last letter of either lands, a highlight in a colour of its own sweeps in
- * under it, as the mission's label does on the about page.
+ * under it, as the mission's label does on the about page. The date and time
+ * are applicationDeadline in data/recruitmentTimeline.js.
  */
 
 const JOIN_RUNS = [
   { text: 'Application deadline is ' },
-  { text: 'Thursday, January 30th', colour: '#4DB6AC' },
+  { text: applicationDeadline.day, colour: '#4DB6AC' },
   { text: ' at ' },
-  { text: '11:59 pm', colour: '#AB8FF3' },
+  { text: applicationDeadline.time, colour: '#AB8FF3' },
   { text: '. Click the button to learn more!' },
 ];
 const JOIN_BODY = JOIN_RUNS.map((run) => run.text).join('');

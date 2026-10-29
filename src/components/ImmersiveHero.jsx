@@ -15,13 +15,14 @@ import StarField, { ABOUT_STARS_REACH, STAR_LAYERS, scatter } from './StarField'
 import scramble from './scramble';
 import { clients } from '../data/clientsData';
 import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWeWork';
+import { CURRENT_SEASON, CURRENT_YEAR } from '../data/site';
 import speechbubble from '../images/speechbubbles.png';
 import star from '../images/star.png';
 import triangle from '../images/triangle.png';
 import pixelMark from '../images/logo-pixel.svg';
 
 /* The phrases the wordmark types, holds, deletes and moves on from, forever. */
-const PHRASES = ['Open Project', 'Fall Semester 2026', 'Experience For All.'];
+const PHRASES = ['Open Project', `${CURRENT_SEASON} Semester ${CURRENT_YEAR}`, 'Experience For All.'];
 const TYPE_MS = 95;
 const DELETE_MS = 45;
 const HOLD_MS = 1900;

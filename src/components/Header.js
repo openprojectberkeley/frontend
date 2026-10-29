@@ -1,6 +1,7 @@
 import styles from '../css/Header.module.css';
 import logo from '../images/navbarlogo.png';
 import logoInk from '../images/navbarlogo_black.png';
+import { PORTAL_URL } from '../data/site';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
@@ -111,7 +112,7 @@ export default function Header() {
           <NavLink to="/contact/" className={activeLink('/contact')}>contact</NavLink>
           <a
             className={styles.openportalLink}
-            href="https://portal.openprojectberkeley.com"
+            href={PORTAL_URL}
             target="_blank"
             rel="noopener noreferrer"
           >

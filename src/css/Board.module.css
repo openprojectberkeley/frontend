@@ -8,16 +8,17 @@
     letter-spacing: normal;
     text-align: center;
     color: #FAF3E0;
-    font-size: clamp(2.5rem, 4vw, 3rem);
+    font-size: clamp(2.75rem, 5vw, 3.75rem);
 }
 
-.contentSection h2,
-.bottomSection h2 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    text-align: center;
+.boardPics h2 {
+    font-family: var(--font-title);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    text-align: left;
 }
 
-.bottomSection img {
+.boardPics img {
     user-select: none;
 }
 
@@ -25,27 +26,27 @@
     object-fit: contain;
 }
 
-.people {
+.columns {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 50px;
+    grid-template-columns: repeat(var(--columns, 4), minmax(0, 1fr));
+    column-gap: 50px;
+    align-items: start;
     margin-top: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 100px;
 }
 
-.coPresidentsRow {
+.column {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     gap: 50px;
-    margin-top: 20px;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
+    will-change: transform;
 }
 
 .person {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    text-align: left;
     border-radius: 20px;
 }
 
@@ -57,17 +58,41 @@
     animation: flashTile 2s ease;
 }
 
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+/* Barely taller than wide, with softened corners. */
 .gridImage {
-    width: 250px;
-    height: 250px;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1.06;
     object-fit: cover;
     object-position: 50% 30%;
-    border-radius: 50%;
+    border-radius: 14px;
+    opacity: 0;
+    filter: blur(14px);
+    transform: scale(1.03);
+    transition:
+        opacity 900ms ease,
+        filter 900ms ease,
+        transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.inView .gridImage {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
 }
 
 .name {
     display: flex;
     flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
     gap: 10px;
     padding-top: 10px;
@@ -87,8 +112,7 @@
 }
 
 .title {
-    margin: 0;
-    font-style: italic;
+    margin: 6px 0 0;
     opacity: 0.7;
     color: white;
     text-decoration: none;
@@ -99,22 +123,13 @@
     opacity: 1;
 }
 
-@media screen and (max-width: 1200px) {
-    .people {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-}
-
 @media screen and (max-width: 900px) {
-    .people {
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 30px;
+    .columns {
+        column-gap: 30px;
     }
-}
 
-@media screen and (max-width: 600px) {
-    .people {
-        grid-template-columns: 1fr;
+    .column {
+        gap: 30px;
     }
 }
 
@@ -122,11 +137,77 @@
     position: relative;
     z-index: 200;
     margin-top: 150px;
-    text-align: center;
+    text-align: left;
 }
 
-.bottomSection {
-    margin-bottom: 100px;
+/*
+ * The paper the whole window turns to for the project managers: fixed, above
+ * the stars and under the content, and moved and sized by useLightSheet as it
+ * wipes up in and the dark wipes up after it. Its top edge is bowed up and its
+ * bottom edge down by the 4vh of the home page's sheet.
+ *
+ * Every heading, name and role is the dark page's colour until the paper is
+ * behind it (.onPaper), then ink.
+ */
+.sheet {
+    position: fixed;
+    top: 100vh;
+    left: 0;
+    width: 100%;
+    height: 0;
+    z-index: 1;
+    overflow: hidden;
+    visibility: hidden;
+    background-color: #FFFDF8;
+    border-radius: 50% 50% 50% 50% / 4vh 4vh 4vh 4vh;
+    pointer-events: none;
+}
+
+.lightSection {
+    position: relative;
+    z-index: 200;
+    text-align: left;
+}
+
+.boardPics h1,
+.boardPics h2,
+.boardPics h3,
+.title {
+    transition: color 150ms ease;
+}
+
+.boardPics h1.onPaper,
+.boardPics h2.onPaper,
+.name.onPaper h3,
+.title.onPaper,
+.title.onPaper .title {
+    color: #22114F;
+}
+
+.lightInner {
+    position: relative;
+    padding-top: 100px;
+    padding-bottom: 60px;
+}
+
+/* The alumni, back under the stars. */
+.darkTail {
+    position: relative;
+    z-index: 200;
+    padding-top: 80px;
+    padding-bottom: 60px;
+    text-align: left;
+}
+
+/* The web and coffee chat marks are white; ink them on the paper. */
+.name img[src*="web"],
+.name img[src*="coffeechat"] {
+    transition: filter 150ms ease;
+}
+
+.name.onPaper img[src*="web"],
+.name.onPaper img[src*="coffeechat"] {
+    filter: brightness(0);
 }
 
 @keyframes flashTile {
@@ -146,5 +227,243 @@
     100% {
         background-color: transparent;
         filter: brightness(1);
+    }
+}
+
+/*
+ * The board's sky, fixed behind the page. Each layer is two windows tall -
+ * the same scatter twice - and slid up and wrapped by BoardStars.
+ */
+.stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.starLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200vh;
+    will-change: transform;
+}
+
+.star {
+    position: absolute;
+    width: max(2px, var(--size, 0.6vmin));
+    height: max(2px, var(--size, 0.6vmin));
+    transform: translate(-50%, -50%);
+}
+
+/*
+ * The labels' arrival, as the about page's value card titles do it: a bar in
+ * the card's colour (--hl) wipes in left to right over nothing and straight
+ * back out the same way, uncovering the text underneath. The name goes first,
+ * the role or project a beat behind it.
+ */
+.flash {
+    --flash-in: 380ms;
+    --flash-out: 420ms;
+    --flash-at: 250ms;
+
+    position: relative;
+    display: inline-block;
+    padding: 0 0.15em;
+    margin: 0 -0.15em;
+    visibility: hidden;
+}
+
+.flashLater {
+    --flash-at: 450ms;
+}
+
+.flash::before {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    content: '';
+    background: var(--hl, #F9C12C);
+    clip-path: inset(0 100% 0 0);
+    visibility: visible;
+}
+
+.inView .flash {
+    animation: flashTextIn 1ms linear calc(var(--flash-at) + var(--flash-in) * 0.65) both;
+}
+
+.inView .flash::before {
+    animation:
+        flashWipeIn var(--flash-in) cubic-bezier(0.22, 1, 0.36, 1) var(--flash-at) both,
+        flashWipeOut var(--flash-out) cubic-bezier(0.22, 1, 0.36, 1)
+            calc(var(--flash-at) + var(--flash-in) * 0.65) forwards;
+}
+
+/* The link icons beside the name come in as the name is uncovered. */
+.name a {
+    opacity: 0;
+    transition: opacity 400ms ease 500ms;
+}
+
+.inView .name a {
+    opacity: 1;
+}
+
+@keyframes flashWipeIn {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes flashWipeOut {
+    from {
+        clip-path: inset(0 0 0 0);
+    }
+
+    to {
+        clip-path: inset(0 0 0 100%);
+    }
+}
+
+@keyframes flashTextIn {
+    from {
+        visibility: hidden;
+    }
+
+    to {
+        visibility: visible;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gridImage,
+    .name a {
+        opacity: 1;
+        filter: none;
+        transform: none;
+        transition: none;
+    }
+
+    .flash {
+        visibility: visible;
+    }
+
+    .flash::before {
+        display: none;
+    }
+}
+
+/*
+ * The hover: a band of the card's colour, its leading edge bowed, comes down
+ * over the photo and carries on off the bottom, leaving the second photo -
+ * the person's hoverImage in boardMembers.js - where the first was. On the
+ * way out the same band comes down again and leaves the first photo. The
+ * trailing edge is cut to the same bow, so the band reads as one curved
+ * stroke. .hoverIn and .hoverOut are set by hoverCard in Board, for mice
+ * only; on touch the card stays as it is.
+ */
+.altImage {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    opacity: 0;
+}
+
+.wipe {
+    --bow: 28px;
+
+    position: absolute;
+    top: calc(-1 * var(--bow));
+    left: 0;
+    width: 100%;
+    height: calc(100% + 2 * var(--bow));
+    background-color: var(--hl, #F9C12C);
+    border-radius: 0 0 50% 50% / 0 0 var(--bow) var(--bow);
+    -webkit-mask-image: radial-gradient(50% var(--bow) at 50% 0, transparent 99%, #000 100%);
+    mask-image: radial-gradient(50% var(--bow) at 50% 0, transparent 99%, #000 100%);
+    transform: translateY(-100%);
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .hoverIn .wipe {
+        animation:
+            cardWipeIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both,
+            cardWipeOut 480ms cubic-bezier(0.65, 0, 0.35, 1) 360ms forwards;
+    }
+
+    /* The same wipe under other names, so swapping classes restarts it. */
+    .hoverOut .wipe {
+        animation:
+            cardWipeBackIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both,
+            cardWipeBackOut 480ms cubic-bezier(0.65, 0, 0.35, 1) 360ms forwards;
+    }
+
+    /* Swapped under the band once it has covered the photo, either way. */
+    .hoverIn .altImage {
+        opacity: 1;
+        transition: opacity 0s linear 360ms;
+    }
+
+    .hoverOut .altImage {
+        opacity: 0;
+        transition: opacity 0s linear 360ms;
+    }
+}
+
+@keyframes cardWipeIn {
+    from {
+        transform: translateY(-100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardWipeOut {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes cardWipeBackIn {
+    from {
+        transform: translateY(-100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardWipeBackOut {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(100%);
+    }
+}
+
+/* The caption is the home page's .momentTip; it only needs hiding on touch. */
+@media (hover: none) {
+    .cursorTip {
+        display: none;
     }
 }

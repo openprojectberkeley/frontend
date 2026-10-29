@@ -1,4 +1,4 @@
-// Fall 2026 Projects Data
+// Projects Data - the semester in the heading is CURRENT_SEMESTER in site.js
 
 // Project logos - enabled logos
 import tinyvillageLogo from '../images/projects/tinyvillage.png';
@@ -183,3 +183,13 @@ export const projects = {
   ],
   competitive: []
 };
+
+// The sections in the order the projects page shows them.
+export const sectionOrder = ['client', 'passion', 'competitive'];
+
+// Projects with a logo come first within a section, otherwise in listed order.
+export const logosFirst = (list) => [...list].sort((a, b) => (b.logo ? 1 : 0) - (a.logo ? 1 : 0));
+
+// Every project, in the order the projects page shows them. The board page
+// groups its project managers by this.
+export const orderedProjects = sectionOrder.flatMap((category) => logosFirst(projects[category] || []));

@@ -64,9 +64,9 @@
  * TeamCarousel), -1 to 1 across it; --depth runs from the background's share
  * up to 1 for the front layer, which travels --parallax-reach from centre,
  * times the slide's --parallax-strength. --shift-x moves the whole photo
- * sideways, as a share of its width. Every layer is scaled up a little - and
- * a little more for a shifted photo - so the background never pulls its edge
- * into view.
+ * sideways, as a share of its width, and --zoom enlarges it. Every layer is
+ * scaled up a little - and a little more for a shifted photo - so the
+ * background never pulls its edge into view.
  */
 .carouselLayer {
     --parallax-reach-x: 28px;
@@ -83,7 +83,7 @@
             calc(var(--parallax-y, 0) * var(--depth) * var(--parallax-strength, 1) * -1 * var(--parallax-reach-y)),
             0
         )
-        scale(calc(1.06 + 2 * max(var(--shift-x, 0), -1 * var(--shift-x, 0))));
+        scale(calc((1.06 + 2 * max(var(--shift-x, 0), -1 * var(--shift-x, 0))) * var(--zoom, 1)));
     will-change: transform;
 }
 

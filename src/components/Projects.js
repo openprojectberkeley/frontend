@@ -4,7 +4,8 @@ import { NavHashLink } from 'react-router-hash-link';
 import styles from '../css/Projects.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import useScrollCue from './useScrollCue';
-import { projects, sectionInfo, projectTypes } from '../data/projectsData';
+import { projects, sectionInfo, projectTypes, sectionOrder, logosFirst } from '../data/projectsData';
+import { CURRENT_SEMESTER } from '../data/site';
 import coffeeCupIcon from '../images/projects/coffee-cup.svg';
 
 export default function Projects() {
@@ -132,9 +133,7 @@ export default function Projects() {
           <p className={styles.sectionDescription}>{info.description}</p>
         </div>
         <div className={styles.projectsGrid}>
-          {[...categoryProjects]
-            .sort((a, b) => (b.logo ? 1 : 0) - (a.logo ? 1 : 0))
-            .map((project) => renderProjectCard(project, category))}
+          {logosFirst(categoryProjects).map((project) => renderProjectCard(project, category))}
         </div>
       </section>
     );
@@ -157,7 +156,7 @@ export default function Projects() {
 
         {/* Page Header */}
         <header className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Fall 2026 Projects</h1>
+          <h1 className={styles.pageTitle}>{CURRENT_SEMESTER} Projects</h1>
           <ul className={styles.projectTypesList}>
             {projectTypes.map((type, index) => (
               <li key={index}>{type}</li>
@@ -167,10 +166,9 @@ export default function Projects() {
 
         {/* Project Sections */}
         <div ref={nextSectionRef}>
-          {renderSection('client')}
+          {renderSection(sectionOrder[0])}
         </div>
-        {renderSection('passion')}
-        {renderSection('competitive')}
+        {sectionOrder.slice(1).map(renderSection)}
       </div>
     </div>
   );

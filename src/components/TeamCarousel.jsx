@@ -2,12 +2,14 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import styles from "../css/About.module.css";
 import scramble from './scramble';
+import { carouselSemesters } from '../data/teamCarousel';
 
 /*
  * Each semester's photo comes as a stack of parallax layers - layer1 the
  * background, each higher layer a cut-out that sits in front of the one
  * before - in images/about/<semester>/carousel_<code>/. The pages load the
- * WebP copies; the PNGs beside them are the sources.
+ * WebP copies; the PNGs beside them are the sources. The semesters, and how
+ * each one's photo sits, are in data/teamCarousel.js.
  */
 const layerFiles = require.context('../images/about', true, /carousel_\w+\/layer\d+\.webp$/);
 const layersFor = (semester) => layerFiles
@@ -16,18 +18,11 @@ const layersFor = (semester) => layerFiles
   .sort((x, y) => Number(x.match(/layer(\d+)/)[1]) - Number(y.match(/layer(\d+)/)[1]))
   .map((key) => layerFiles(key));
 
-// Newest first: the carousel opens on the current team. `parallax` scales
-// how far that semester's layers travel (1 when left out); `shiftX` moves the
-// photo sideways, as a share of the frame's width (negative is left).
-const semesters = [
-  { label: 'Spring 2026', layers: layersFor('spring2026'), parallax: 0.6 },
-  { label: 'Fall 2025', layers: layersFor('fall2025'), parallax: 0.6, shiftX: -0.03 },
-  { label: 'Spring 2025', layers: layersFor('spring2025') },
-  { label: 'Fall 2024', layers: layersFor('fall2024') },
-  { label: 'Spring 2024', layers: layersFor('spring2024') },
-  { label: 'Fall 2023', layers: layersFor('fall2023') },
-  { label: 'Spring 2023', layers: layersFor('spring2023'), parallax: 0.6 },
-];
+// "Spring 2026" -> images/about/spring2026/.
+const semesters = carouselSemesters.map((semester) => ({
+  ...semester,
+  layers: layersFor(semester.label.toLowerCase().replace(/\s+/g, '')),
+}));
 
 // How far a drag has to travel, as a share of the frame's width, to turn the
 // page - or how fast it has to be flicked, in px/ms, if it is shorter.
@@ -269,6 +264,7 @@ export default function TeamCarousel() {
                 style={{
                   '--parallax-strength': semester.parallax ?? 1,
                   '--shift-x': semester.shiftX ?? 0,
+                  '--zoom': semester.zoom ?? 1,
                 }}
               >
                 {loaded.has(i) && semester.layers.map((layer, depth) => (

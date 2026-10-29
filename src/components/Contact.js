@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import emailjs from 'emailjs-com';
 import styles from '../css/Contact.module.css';
 import homepageShapes from '../images/contact/shapes.svg';
+import { CONTACT_EMAIL } from '../data/site';
 
 export default function Contact() {
   const form = useRef();
@@ -50,7 +51,7 @@ export default function Contact() {
               </div>
               <input type="submit" value="Send Message" className={styles.submit}/>
               {sent === "success" && <p className={styles.message}>Email sent! We'll get back to you soon!</p>}
-              {sent === "error" && <p className={styles.message}>Email failed to send. Please reach us at openprojectberkeley@gmail.com!</p>}
+              {sent === "error" && <p className={styles.message}>Email failed to send. Please reach us at {CONTACT_EMAIL}!</p>}
           </form>
         </div>
       </div>

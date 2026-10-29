@@ -75,351 +75,425 @@ import kitty from "../images/about/spring2024/kitty.thumb.jpg";
 import rohan from "../images/about/spring2024/rohan.thumb.jpg";
 import zee from "../images/about/fall2023/zee.thumb.jpg";
 
-export const board = [
-    {
-        name: "Mia Salinas",
-        title: "Co-President",
-        image: mia,
-    },
-    {
-        name: "Jenny Liang",
-        title: "Co-President",
-        image: jenny,
-    },
-    {
-        name: "Anupriya Islam",
-        title: "VP of Projects",
-        image: placeholder,
-    },
-    {
-        name: "Chad Park",
-        title: "VP of Projects",
-        image: chad,
-    },
-    {
-        name: "Christopher Chang",
-        title: "VP of Projects",
-        image: chris,
-    },
-    {
-        name: "Ganesh Karayi",
-        title: "VP of Projects",
-        image: ganesh,
-    },
-    {
-        name: "Ashley Li",
-        title: "VP of Marketing",
-        image: ashleyl,
-    },
-    {
-        name: "Annie Lin",
-        title: "VP of Marketing",
-        image: annie,
-    },
-    {
-        name: "Ashley Iattoni",
-        title: "VP of Design",
-        image: ashleyi,
-    },
-    {
-        name: "Helena Zhang",
-        title: "VP of Internals",
-        image: helena,
-    },
-    {
-        name: "Ryan Lin",
-        title: "VP of Internals",
-        image: ryan,
-    },
-    {
-        name: "Jonathan Tran",
-        title: "VP of Professional Development",
-        image: jonathan,
-    },
-    {
-        name: "Megan Nguyen",
-        title: "VP of Professional Development",
-        image: megan,
-    },
-    {
-        name: "Arnav Mahadev",
-        title: "VP of Professional Development",
-        image: arnav,
-    },
-    {
-        name: "Ashwika Gampa",
-        title: "VP of Client",
-        image: ashwika,
-    },
-    {
-        name: "Benjamin Huang",
-        title: "VP of Client",
-        image: benh,
-    },
-    {
-        name: "Nicole Ta",
-        title: "VP of Externals",
-        image: placeholder,
-    },
-    {
-        name: "Sriya Bandarupalli",
-        title: "VP of Externals",
-        image: placeholder,
-    },
-    {
-        name: "Diego Llamas",
-        title: "VP of Finance",
-        image: diego,
-    },
-    {
-        name: "Felicia Ye",
-        title: "VP of Finance",
-        image: felicia,
-    },
-    {
-        name: "Peter Lourenco",
-        title: "VP of Tech",
-        image: peter,
-    },
-    {
-        name: "Yashom Kapoor",
-        title: "VP of Tech",
-        image: yashom,
-    },
-];
+import { orderedProjects } from "./projectsData";
 
-export const projectLeads = [
-    {
-        name: "James Apuyan",
+/*
+ * Everyone on the board page this semester, once each - someone on the
+ * executive team who also manages a project is still one entry here, so their
+ * photo, major and year are only ever typed in one place.
+ *
+ *   image        the photo on the card
+ *   hoverImage   the photo the hover wipe uncovers (placeholder until there is one)
+ *   major        shown with year in the label that follows the cursor
+ *   year         e.g. "Class of 2027"
+ *   link         optional: a LinkedIn or personal site, shown as an icon
+ *   coffee_chat  optional: a Calendly or other booking link, shown as an icon
+ *
+ * The key is the person's name exactly as it is written in `board` below and
+ * in each project's `pms` in projectsData.js.
+ */
+export const people = {
+    // Executive team
+    "Mia Salinas": {
+        image: mia,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Jenny Liang": {
+        image: jenny,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Anupriya Islam": {
         image: placeholder,
-        project: "CalConnect",
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
     },
-    {
-        name: "Turner Osswald",
-        image: placeholder,
-        project: "Get to the Surface",
-    },
-    {
-        name: "Jamil Shirinov",
-        image: placeholder,
-        project: "CalConnect",
-    },
-    {
-        name: "Leo Li",
-        image: placeholder,
-        project: "CalConnect",
-    },
-    {
-        name: "Janice Lin",
-        image: placeholder,
-        project: "TrailFinder",
-    },
-    {
-        name: "Melody Shane",
-        image: placeholder,
-        project: "TrailFinder",
-    },
-    {
-        name: "Miles Petrick",
-        image: placeholder,
-        project: "TrailFinder",
-    },
-    {
-        name: "Johanna Flores",
-        image: placeholder,
-        project: "Trinket",
-    },
-    {
-        name: "Keira Tan",
-        image: placeholder,
-        project: "Trinket",
-    },
-    {
-        name: "Joseph Ong",
-        image: placeholder,
-        project: "Property Damage",
-    },
-    {
-        name: "Zander Rosenzweig",
-        image: placeholder,
-        project: "Property Damage",
-    },
-    {
-        name: "Harshini Pulivarthi",
-        image: harshini,
-        project: "CurbIQ",
-    },
-    {
-        name: "Sneha Atmakur",
-        image: placeholder,
-        project: "CurbIQ",
-    },
-    {
-        name: "Ayah Elzein",
-        image: placeholder,
-        project: "NothingButNet",
-    },
-    {
-        name: "Navya Lella",
-        image: placeholder,
-        project: "NothingButNet",
-    },
-    {
-        name: "Nishaad Sovani",
-        image: nishaad,
-        project: "NeoQuest",
-    },
-    {
-        name: "Siddharth Garimella",
-        image: placeholder,
-        project: "NeoQuest",
-    },
-    {
-        name: "Arnav Sharma",
-        image: placeholder,
-        project: "Sortify",
-    },
-    {
-        name: "Caden Luu",
-        image: placeholder,
-        project: "Sortify",
-    },
-    {
-        name: "Austin Tenbrink",
-        image: placeholder,
-        project: "SightLine",
-    },
-    {
-        name: "Chad Park",
+    "Chad Park": {
         image: chad,
-        project: "SightLine",
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
     },
-    {
-        name: "Ryan Lin",
-        image: ryan,
-        project: "SightLine",
-    },
-    {
-        name: "Ashley Iattoni",
-        image: ashleyi,
-        project: "TCP (Traffic Control Patterns), ChessBlitz",
-    },
-    {
-        name: "Benjamin Huang",
-        image: benh,
-        project: "TCP (Traffic Control Patterns)",
-    },
-    {
-        name: "Dayton Phan",
-        image: placeholder,
-        project: "TCP (Traffic Control Patterns)",
-    },
-    {
-        name: "Matthew Rodrigues",
-        image: placeholder,
-        project: "ChessBlitz",
-    },
-    {
-        name: "Peter Lourenco",
-        image: peter,
-        project: "ChessBlitz",
-    },
-    {
-        name: "Yashom Kapoor",
-        image: yashom,
-        project: "ChessBlitz",
-    },
-    {
-        name: "Cindy Wang",
-        image: placeholder,
-        project: "Atlas",
-    },
-    {
-        name: "Ojasvi Shrivastava",
-        image: placeholder,
-        project: "Atlas",
-    },
-    {
-        name: "Chester Duan",
-        image: placeholder,
-        project: "Atlas",
-    },
-    {
-        name: "Avaneesh Joshi",
-        image: placeholder,
-        project: "Atlas",
-    },
-    {
-        name: "Benjamin Wang",
-        image: placeholder,
-        project: "Mechanistic Transfer During Fine-Tuning",
-    },
-    {
-        name: "Haaziq Kazi",
-        image: placeholder,
-        project: "Mechanistic Transfer During Fine-Tuning",
-    },
-    {
-        name: "Leo Park",
-        image: leo,
-        project: "Mechanistic Transfer During Fine-Tuning",
-    },
-    {
-        name: "Arnav Mahadev",
-        image: arnav,
-        project: "Nexus",
-    },
-    {
-        name: "Ganesh Karayi",
-        image: ganesh,
-        project: "Nexus",
-    },
-    {
-        name: "Felicia Ye",
-        image: felicia,
-        project: "Village Hub",
-    },
-    {
-        name: "Helena Zhang",
-        image: helena,
-        project: "Village Hub",
-    },
-    {
-        name: "Emmanuel Elizalde-Ocampo",
-        image: placeholder,
-        project: "Village Hub",
-    },
-    {
-        name: "Justin Le",
-        image: justin,
-        project: "Smpler",
-    },
-    {
-        name: "Sainik Ghosh",
-        image: sainik,
-        project: "Smpler",
-    },
-    {
-        name: "Christopher Chang",
+    "Christopher Chang": {
         image: chris,
-        project: "Cabal",
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
     },
-    {
-        name: "Karthik Subramanian",
+    "Ganesh Karayi": {
+        image: ganesh,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Ashley Li": {
+        image: ashleyl,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Annie Lin": {
+        image: annie,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Ashley Iattoni": {
+        image: ashleyi,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Helena Zhang": {
+        image: helena,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Ryan Lin": {
+        image: ryan,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Jonathan Tran": {
+        image: jonathan,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Megan Nguyen": {
+        image: megan,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Arnav Mahadev": {
+        image: arnav,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Ashwika Gampa": {
+        image: ashwika,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Benjamin Huang": {
+        image: benh,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Nicole Ta": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Sriya Bandarupalli": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Diego Llamas": {
+        image: diego,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Felicia Ye": {
+        image: felicia,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Peter Lourenco": {
+        image: peter,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Yashom Kapoor": {
+        image: yashom,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+
+    // Project managers not on the executive team
+    "James Apuyan": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Turner Osswald": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Jamil Shirinov": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Leo Li": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Janice Lin": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Melody Shane": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Miles Petrick": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Johanna Flores": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Keira Tan": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Joseph Ong": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Zander Rosenzweig": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Harshini Pulivarthi": {
+        image: harshini,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Sneha Atmakur": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Ayah Elzein": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Navya Lella": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Nishaad Sovani": {
+        image: nishaad,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Siddharth Garimella": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Arnav Sharma": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Caden Luu": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Austin Tenbrink": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Dayton Phan": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Matthew Rodrigues": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Cindy Wang": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Ojasvi Shrivastava": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Chester Duan": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Avaneesh Joshi": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Benjamin Wang": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Haaziq Kazi": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Leo Park": {
+        image: leo,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Emmanuel Elizalde-Ocampo": {
+        image: placeholder,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Justin Le": {
+        image: justin,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Sainik Ghosh": {
+        image: sainik,
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
+    },
+    "Karthik Subramanian": {
         image: karthik,
-        project: "Cabal",
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
     },
-    {
-        name: "Jason Shorey",
+    "Jason Shorey": {
         image: placeholder,
-        project: "DevPad",
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
     },
-    {
-        name: "Yuchan Chang",
+    "Yuchan Chang": {
         image: placeholder,
-        project: "DevPad",
+        hoverImage: placeholder,
+        major: "Major",
+        year: "Class of 20XX",
     },
-];
+};
+
+const person = (name) => {
+    if (!people[name]) {
+        console.warn(`boardMembers: "${name}" has no entry in people`);
+        return { name, image: placeholder, hoverImage: placeholder };
+    }
+
+    return { name, ...people[name] };
+};
+
+// The executive team, in the order the cards are dealt.
+export const board = [
+    { name: "Mia Salinas", title: "Co-President" },
+    { name: "Jenny Liang", title: "Co-President" },
+    { name: "Anupriya Islam", title: "VP of Projects" },
+    { name: "Chad Park", title: "VP of Projects" },
+    { name: "Christopher Chang", title: "VP of Projects" },
+    { name: "Ganesh Karayi", title: "VP of Projects" },
+    { name: "Ashley Li", title: "VP of Marketing" },
+    { name: "Annie Lin", title: "VP of Marketing" },
+    { name: "Ashley Iattoni", title: "VP of Design" },
+    { name: "Helena Zhang", title: "VP of Internals" },
+    { name: "Ryan Lin", title: "VP of Internals" },
+    { name: "Jonathan Tran", title: "VP of Professional Development" },
+    { name: "Megan Nguyen", title: "VP of Professional Development" },
+    { name: "Arnav Mahadev", title: "VP of Professional Development" },
+    { name: "Ashwika Gampa", title: "VP of Client" },
+    { name: "Benjamin Huang", title: "VP of Client" },
+    { name: "Nicole Ta", title: "VP of Externals" },
+    { name: "Sriya Bandarupalli", title: "VP of Externals" },
+    { name: "Diego Llamas", title: "VP of Finance" },
+    { name: "Felicia Ye", title: "VP of Finance" },
+    { name: "Peter Lourenco", title: "VP of Tech" },
+    { name: "Yashom Kapoor", title: "VP of Tech" },
+].map(({ name, title }) => ({ ...person(name), title }));
+
+/*
+ * The project managers, worked out from each project's `pms` in
+ * projectsData.js rather than listed here, so a PM is added, moved or removed
+ * by editing the project. They come grouped by project in the order the
+ * projects page shows them, and someone on more than one project is one card
+ * listing them all, at the first.
+ */
+export const projectLeads = (() => {
+    const leads = new Map();
+
+    orderedProjects.forEach((project) => {
+        project.pms.forEach((name) => {
+            if (!leads.has(name)) leads.set(name, { ...person(name), projects: [] });
+            leads.get(name).projects.push(project.name);
+        });
+    });
+
+    return [...leads.values()].map(({ projects: names, ...lead }) => ({ ...lead, project: names.join(", ") }));
+})();
 
 export const alumni = [
     {
@@ -427,65 +501,76 @@ export const alumni = [
         link: "https://ethanikegami.com/",
         title: "Co-Founder",
         image: ethan,
+        hoverImage: placeholder,
     },
     {
         name: "Nick Litvinov",
         link: "https://www.linkedin.com/in/nick-litvinov-ab04981b5/",
         title: "Co-Founder",
         image: nick,
+        hoverImage: placeholder,
     },
     {
         name: "Colin FitzGerald",
         link: "https://www.linkedin.com/in/colinfitzgerald328/",
         title: "Co-Founder",
         image: colin,
+        hoverImage: placeholder,
     },
     {
         name: "Uyen Phan",
         link: "https://uyentphan.com/",
         title: "Co-Founder",
         image: uyen,
+        hoverImage: placeholder,
     },
     {
         name: "Nhu Vu",
         link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
         title: "Co-Founder",
         image: nhu,
+        hoverImage: placeholder,
     },
     {
         name: "Joel Jaison",
         link: "https://www.linkedin.com/in/joel-jaison/",
         title: "Co-Founder",
         image: joel,
+        hoverImage: placeholder,
     },
     {
         name: "Jessica Lee",
         link: "https://www.linkedin.com/in/jessica-lee-5370b71b4",
         title: "",
         image: jess,
+        hoverImage: placeholder,
     },
     {
         name: "Christopher Bannon",
         link: "https://cbannon.com/",
         title: "",
         image: christopher,
+        hoverImage: placeholder,
     },
     {
         name: "Kitty Ng",
         link: "https://www.linkedin.com/in/kitty-ng-443678246/",
         title: "",
         image: kitty,
+        hoverImage: placeholder,
     },
     {
         name: "Rohan Agarwal",
         link: "https://www.linkedin.com/in/rohan-agarwal-2908321a1",
         title: "",
         image: rohan,
+        hoverImage: placeholder,
     },
     {
         name: "Zee Babar",
         link: "https://www.linkedin.com/in/moebabar",
         title: "",
         image: zee,
+        hoverImage: placeholder,
     },
 ];

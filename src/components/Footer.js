@@ -1,19 +1,9 @@
 import styles from '../css/Footer.module.css';
 import { NavLink } from 'react-router-dom';
-import instagram from '../images/instagram.png';
-import github from '../images/github.png';
-import email from '../images/email.png';
-import linkedin from '../images/linkedin.png';
 import footerLogo from '../images/footerlogo.png';
 import { NavHashLink } from 'react-router-hash-link';
 import { useState } from 'react';
-
-const SOCIALS = [
-  { href: 'https://www.instagram.com/openprojectberkeley/', icon: instagram, name: 'Instagram', handle: '@openprojectberkeley' },
-  { href: 'https://linkedin.com/company/openprojectberkeley', icon: linkedin, name: 'LinkedIn', handle: 'openprojectberkeley' },
-  { href: 'https://github.com/openprojectberkeley', icon: github, name: 'GitHub', handle: 'openprojectberkeley' },
-  { href: 'mailto:openprojectberkeley@gmail.com', icon: email, name: 'Email', handle: 'openprojectberkeley@gmail.com' },
-];
+import { socials } from '../data/site';
 
 export default function Footer() {
     // The handle of whichever icon is under the cursor, and where the cursor is.
@@ -58,7 +48,7 @@ export default function Footer() {
         </div>
         <div className={`${styles.copyright} limitWidth`}>
           <div className={styles.socialLinks}>
-            {SOCIALS.map(({ href, icon, name, handle }) => (
+            {socials.map(({ href, icon, name, handle }) => (
               <a
                 key={name}
                 href={href}
