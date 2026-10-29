@@ -7,7 +7,6 @@ import linkedin from '../images/linkedin.png';
 import footerLogo from '../images/footerlogo.png';
 import { NavHashLink } from 'react-router-hash-link';
 import { useState } from 'react';
-import StarField from './StarField';
 
 const SOCIALS = [
   { href: 'https://www.instagram.com/openprojectberkeley/', icon: instagram, name: 'Instagram', handle: '@openprojectberkeley' },
@@ -31,15 +30,6 @@ export default function Footer() {
           aria-hidden="true"
           className={styles.watermark}
         />
-        {/*
-          The home hero's scene-six stars carry on down past its copy, and
-          this is where they land: the same field, inked, placed the copy's
-          height above the footer so each star lines up with its white self.
-          Off the page unless the hero has written that height.
-        */}
-        <div className={styles.stars} aria-hidden="true">
-          <StarField ink />
-        </div>
         <div className={`${styles.footer} limitWidth`}>
           <div className={styles.socials}>
             <NavLink to="/" className={styles.logoLink}>

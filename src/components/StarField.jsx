@@ -108,14 +108,11 @@ const ABOUT_STARS = STAR_LAYERS.flatMap((layer, index) => {
  *
  * Whoever lays it down writes --about-scroll for the parallax - the hero
  * from its own frame, anywhere else useStarParallax.
- *
- * `ink` draws the same field in black and unclipped, for laying over paper -
- * the footer's copy of the hero's field, where its stars fall past the copy.
  */
-export default function StarField({ ink = false }) {
+export default function StarField() {
   return (
     <div
-      className={`${styles.aboutStars} ${ink ? styles.starsInk : ''}`}
+      className={styles.aboutStars}
       style={{ '--stars-reach': `${ABOUT_STARS_REACH}vh` }}
       aria-hidden="true"
     >

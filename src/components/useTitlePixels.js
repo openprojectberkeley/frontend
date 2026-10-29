@@ -16,8 +16,10 @@ const TITLE_PIXELS_SALT = 997;
  * The static the trail leaves on the backdrop.
  *
  *   STATIC_GRAIN   the size of one grain of it, in px
- *   STATIC_COLOURS what a grain can be: the mark's six colours, so the
- *                  static is the logo's, broken up
+ *   STATIC_COLOURS what a grain can be: the navy of the page's own grain
+ *                  towards the bottom right (see --page-backdrop), taken
+ *                  up through brighter blues, so the static reads as that
+ *                  grain lit up rather than as a grey fizz
  *   STATIC_LOW     the dimmest a grain gets, as a share of its colour; a
  *                  spread of brightness is what keeps it from reading as
  *                  confetti
@@ -29,15 +31,14 @@ const TITLE_PIXELS_SALT = 997;
  */
 const STATIC_GRAIN = 2;
 const STATIC_COLOURS = [
-  [0x6e, 0x1f, 0xc2],
-  [0x68, 0xe2, 0xc3],
-  [0xf9, 0xd8, 0x5d],
-  [0x6e, 0xe9, 0x78],
-  [0xeb, 0x50, 0xa1],
-  [0xff, 0x91, 0x0e],
+  [0x10, 0x24, 0x68],
+  [0x1c, 0x3c, 0xb4],
+  [0x2e, 0x5c, 0xf0],
+  [0x4a, 0x7c, 0xff],
+  [0x86, 0xa8, 0xff],
 ];
-const STATIC_LOW = 0.25;
-const STATIC_ALPHA = 0.32;
+const STATIC_LOW = 0.35;
+const STATIC_ALPHA = 0.5;
 const STATIC_TILES = 4;
 const STATIC_TILE = 128;
 

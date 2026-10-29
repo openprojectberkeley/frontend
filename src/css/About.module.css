@@ -50,12 +50,41 @@
 }
 
 .carouselSlide {
+    position: relative;
     flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/*
+ * One parallax layer. All of a slide's layers share the photo's size, so they
+ * line up when still. --parallax-x / --parallax-y come from the frame (see
+ * TeamCarousel), -1 to 1 across it; --depth runs from the background's share
+ * up to 1 for the front layer, which travels --parallax-reach from centre,
+ * times the slide's --parallax-strength. --shift-x moves the whole photo
+ * sideways, as a share of its width. Every layer is scaled up a little - and
+ * a little more for a shifted photo - so the background never pulls its edge
+ * into view.
+ */
+.carouselLayer {
+    --parallax-reach-x: 28px;
+    --parallax-reach-y: 14px;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    pointer-events: none;
+    transform:
+        translate3d(
+            calc(var(--shift-x, 0) * 100% + var(--parallax-x, 0) * var(--depth) * var(--parallax-strength, 1) * -1 * var(--parallax-reach-x)),
+            calc(var(--parallax-y, 0) * var(--depth) * var(--parallax-strength, 1) * -1 * var(--parallax-reach-y)),
+            0
+        )
+        scale(calc(1.06 + 2 * max(var(--shift-x, 0), -1 * var(--shift-x, 0))));
+    will-change: transform;
 }
 
 /* No fill: the whole column beside the photo is the hit area. */

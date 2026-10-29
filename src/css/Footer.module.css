@@ -34,17 +34,6 @@
     user-select: none;
 }
 
-/* The hero's copy's box, a copy's height up, so the field inside lands where
-   the hero's own does. */
-.stars {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(-1 * var(--about-height, 100000px));
-    height: var(--about-height, 0px);
-    pointer-events: none;
-}
-
 .footer,
 .copyright {
     position: relative;

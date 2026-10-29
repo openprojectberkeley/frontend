@@ -1,24 +1,32 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import styles from "../css/About.module.css";
 import scramble from './scramble';
-import spring2026 from "../images/about/spring2026/carousel.jpg";
-import fall2025 from "../images/about/fall2025/carousel.jpg";
-import spring2025 from "../images/about/spring2025/carousel.jpg";
-import fall2024 from "../images/about/fall2024/carousel.jpg";
-import spring2024 from "../images/about/spring2024/carousel.jpg";
-import fall2023 from "../images/about/fall2023/carousel.jpg";
-import spring2023 from "../images/about/spring2023/carousel.jpg";
 
-// Newest first: the carousel opens on the current team.
+/*
+ * Each semester's photo comes as a stack of parallax layers - layer1 the
+ * background, each higher layer a cut-out that sits in front of the one
+ * before - in images/about/<semester>/carousel_<code>/. The pages load the
+ * WebP copies; the PNGs beside them are the sources.
+ */
+const layerFiles = require.context('../images/about', true, /carousel_\w+\/layer\d+\.webp$/);
+const layersFor = (semester) => layerFiles
+  .keys()
+  .filter((key) => key.startsWith(`./${semester}/`))
+  .sort((x, y) => Number(x.match(/layer(\d+)/)[1]) - Number(y.match(/layer(\d+)/)[1]))
+  .map((key) => layerFiles(key));
+
+// Newest first: the carousel opens on the current team. `parallax` scales
+// how far that semester's layers travel (1 when left out); `shiftX` moves the
+// photo sideways, as a share of the frame's width (negative is left).
 const semesters = [
-  { label: 'Spring 2026', image: spring2026 },
-  { label: 'Fall 2025', image: fall2025 },
-  { label: 'Spring 2025', image: spring2025 },
-  { label: 'Fall 2024', image: fall2024 },
-  { label: 'Spring 2024', image: spring2024 },
-  { label: 'Fall 2023', image: fall2023 },
-  { label: 'Spring 2023', image: spring2023 },
+  { label: 'Spring 2026', layers: layersFor('spring2026'), parallax: 0.6 },
+  { label: 'Fall 2025', layers: layersFor('fall2025'), parallax: 0.6, shiftX: -0.03 },
+  { label: 'Spring 2025', layers: layersFor('spring2025') },
+  { label: 'Fall 2024', layers: layersFor('fall2024') },
+  { label: 'Spring 2024', layers: layersFor('spring2024') },
+  { label: 'Fall 2023', layers: layersFor('fall2023') },
+  { label: 'Spring 2023', layers: layersFor('spring2023'), parallax: 0.6 },
 ];
 
 // How far a drag has to travel, as a share of the frame's width, to turn the
@@ -26,6 +34,12 @@ const semesters = [
 const SWIPE_DISTANCE = 0.18;
 const SWIPE_VELOCITY = 0.5;
 const CAPTION_SCRAMBLE_MS = 450;
+
+// How far the back layer moves, as a share of the front one's travel (set in
+// .carouselLayer); the layers between spread evenly. PARALLAX_EASE is how much
+// of the way to the cursor the layers close each frame.
+const PARALLAX_BACK = 0.15;
+const PARALLAX_EASE = 0.08;
 
 const Chevron = ({ direction }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.carouselChevron}>
@@ -86,6 +100,63 @@ function ScrambleCaption({ text, reducedMotion }) {
   );
 }
 
+/*
+ * Follows the mouse over the frame and eases the layers toward it, writing
+ * the offset to the frame as --parallax-x / --parallax-y (-1 to 1) so the
+ * slides move without re-rendering. Leaving the frame eases them home. Touch
+ * and reduced motion get the still photo.
+ */
+function useParallax(frameRef, disabled) {
+  const target = useRef({ x: 0, y: 0 });
+  const current = useRef({ x: 0, y: 0 });
+  const frame = useRef(null);
+
+  useEffect(() => () => {
+    if (frame.current !== null) window.cancelAnimationFrame(frame.current);
+  }, []);
+
+  const tick = () => {
+    const el = frameRef.current;
+    const c = current.current;
+    const t = target.current;
+
+    c.x += (t.x - c.x) * PARALLAX_EASE;
+    c.y += (t.y - c.y) * PARALLAX_EASE;
+
+    const settled = Math.abs(t.x - c.x) < 0.001 && Math.abs(t.y - c.y) < 0.001;
+    if (settled) {
+      c.x = t.x;
+      c.y = t.y;
+    }
+
+    if (el) {
+      el.style.setProperty('--parallax-x', c.x.toFixed(4));
+      el.style.setProperty('--parallax-y', c.y.toFixed(4));
+    }
+
+    frame.current = settled ? null : window.requestAnimationFrame(tick);
+  };
+
+  const aim = (x, y) => {
+    target.current = { x, y };
+    if (frame.current === null) frame.current = window.requestAnimationFrame(tick);
+  };
+
+  const onPointerMove = (event) => {
+    if (disabled || event.pointerType !== 'mouse') return;
+    const rect = frameRef.current.getBoundingClientRect();
+    const clamp = (value) => Math.max(-1, Math.min(1, value));
+    aim(
+      clamp(((event.clientX - rect.left) / rect.width) * 2 - 1),
+      clamp(((event.clientY - rect.top) / rect.height) * 2 - 1),
+    );
+  };
+
+  const onPointerLeave = () => aim(0, 0);
+
+  return { onPointerMove, onPointerLeave };
+}
+
 export default function TeamCarousel() {
   const [index, setIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
@@ -93,7 +164,21 @@ export default function TeamCarousel() {
   const dragRef = useRef(null);
   const frameRef = useRef(null);
   const reducedMotion = useReducedMotion();
+  const parallax = useParallax(frameRef, reducedMotion);
   const count = semesters.length;
+  /*
+   * Slides load their layers once they are the current one or next to it,
+   * and keep them after, so the first visit doesn't fetch every semester.
+   */
+  const [loaded, setLoaded] = useState(() => new Set([0, 1, count - 1]));
+
+  useEffect(() => {
+    setLoaded((previous) => {
+      const near = [index - 1, index, index + 1].map((i) => (i + count) % count);
+      if (near.every((i) => previous.has(i))) return previous;
+      return new Set([...previous, ...near]);
+    });
+  }, [index, count]);
 
   const go = (step) => setIndex((current) => (current + step + count) % count);
 
@@ -110,6 +195,7 @@ export default function TeamCarousel() {
   };
 
   const onPointerMove = (event) => {
+    parallax.onPointerMove(event);
     const drag = dragRef.current;
     if (!drag || drag.id !== event.pointerId) return;
 
@@ -164,6 +250,7 @@ export default function TeamCarousel() {
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
+          onPointerLeave={parallax.onPointerLeave}
         >
           <div
             className={styles.carouselTrack}
@@ -173,15 +260,32 @@ export default function TeamCarousel() {
             }}
           >
             {semesters.map((semester, i) => (
-              <img
+              <div
                 key={semester.label}
-                src={semester.image}
-                alt={`Open Project team, ${semester.label}`}
                 className={styles.carouselSlide}
+                role="img"
+                aria-label={`Open Project team, ${semester.label}`}
                 aria-hidden={i !== index}
-                draggable={false}
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
+                style={{
+                  '--parallax-strength': semester.parallax ?? 1,
+                  '--shift-x': semester.shiftX ?? 0,
+                }}
+              >
+                {loaded.has(i) && semester.layers.map((layer, depth) => (
+                  <img
+                    key={layer}
+                    src={layer}
+                    alt=""
+                    className={styles.carouselLayer}
+                    style={{
+                      '--depth': semester.layers.length > 1
+                        ? PARALLAX_BACK + (1 - PARALLAX_BACK) * (depth / (semester.layers.length - 1))
+                        : 0,
+                    }}
+                    draggable={false}
+                  />
+                ))}
+              </div>
             ))}
           </div>
         </div>
