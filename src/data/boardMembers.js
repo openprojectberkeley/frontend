@@ -1,66 +1,64 @@
-// Exec
-import mia from "../images/about/spring2025/mia.thumb.jpg"; // President
-import jenny from "../images/about/spring2026/jenny.thumb.jpg";
-// import anupriya from "../images/about/spring2026/anupriyaalt.thumb.jpg"; // VPP — using placeholder for now
-import ashwika from "../images/about/spring2026/ashwika.thumb.jpg";
-import yashom from "../images/about/spring2025/yashom.thumb.jpg";
-import jonathan from "../images/about/spring2026/jonathan.thumb.jpg"; // VPPD
-import benh from "../images/about/spring2026/benh.thumb.jpg";
-import diego from "../images/about/spring2026/diego.thumb.jpg"; // VP Finance
-// import sophie from "../images/about/spring2026/sophie.thumb.jpg"; // no longer VP Finance
-import felicia from "../images/about/spring2026/felicia.thumb.jpg";
-import ashleyl from "../images/about/spring2026/ashleyl.thumb.jpg"; // VP Marketing
-// import ava from "../images/about/spring2025/ava.thumb.jpg"; // no longer VP Marketing
-import ashleyi from "../images/about/spring2026/ashleyi.thumb.jpg"; // VP Design
-// import devah from "../images/about/spring2026/devah.thumb.jpg"; // no longer VP Tech
-import peter from "../images/about/spring2026/peter.thumb.jpg";
-import helena from "../images/about/spring2026/helena.thumb.jpg"; // VP Internals
-import karthik from "../images/about/spring2026/karthik.thumb.jpg";
-import ryan from "../images/about/spring2026/ryan.thumb.jpg";
-// import benr from "../images/about/spring2026/benr.thumb.jpg"; // no longer a project manager
-// import yon from "../images/about/spring2026/yon.thumb.jpg"; // no longer VP Client
-// import anupriya from "../images/about/spring2026/anupriya.thumb.jpg";
-// import jonathan from "../images/about/spring2026/jonathan.thumb.jpg";
-// import ashleyi from "../images/about/spring2026/ashleyi.thumb.jpg"; // VP Community
-import placeholder from "../images/about/person-placeholder.svg"; // TODO: replace with real photos once available
+import placeholder from "../images/about/person-placeholder.svg";
 
-// Project Managers (Fall 2026) — project assignments TBD, using placeholder photos until real ones are provided
-// import karthikeya from "../images/about/spring2026/karthikeya.thumb.jpg"; // CoPatible
-// import zehra from "../images/about/spring2026/zehra.thumb.jpg"; // no longer a project manager
-// import charmi from "../images/about/spring2026/charmi.thumb.jpg"; // no longer a project manager
-import harshini from "../images/about/spring2026/harshini.thumb.jpg";
-import sainik from "../images/about/spring2026/sainik.thumb.jpg";
-import justin from "../images/about/spring2026/justin.thumb.jpg";
-// import anupriya from "../images/about/spring2026/anupriya.thumb.jpg"; // Atlas
-// import andre from "../images/about/fall2025/andre.thumb.jpg"; // no longer a project manager
-// import erin from "../images/about/spring2026/erin.thumb.jpg"; // no longer a project manager
-// import andrew from "../images/about/spring2026/andrew.thumb.jpg"; // not a project manager
-import ganesh from "../images/about/spring2026/ganesh.thumb.jpg";
-// import jaydens from "../images/about/spring2026/jaydens.thumb.jpg"; // no longer a project manager
-import arnav from "../images/about/spring2026/arnav.thumb.jpg";
-import chris from "../images/about/spring2026/chris.thumb.jpg";
-// import jaydenl from "../images/about/spring2026/jaydenl.thumb.jpg"; // no longer a project manager
-import leo from "../images/about/spring2026/leo.thumb.jpg";
-// import jonathan from "../images/about/spring2026/jonathan.thumb.jpg"; // IBM
-// import diego from "../images/about/spring2026/diego.thumb.jpg";
-// import benh from "../images/about/spring2026/benh.thumb.jpg";
-// import jenny from "../images/about/spring2026/jenny.thumb.jpg"; // BM
-// import mia from "../images/about/spring2026/mia.thumb.jpg";
-import annie from "../images/about/spring2026/annie.thumb.jpg";
-// import parsa from "../images/about/spring2026/parsa.thumb.jpg"; // no longer a project manager
-// import jessica from "../images/about/spring2026/jessica.thumb.jpg"; // no longer a project manager
+// Exec
+import mia from "../images/about/fall2026/mia.thumb.jpg";
+import jenny from "../images/about/fall2026/jenny.thumb.jpg";
+import anupriya from "../images/about/spring2025/anupriya.thumb.jpg";
+import chad from "../images/about/fall2026/chad.thumb.jpg";
+import christopher from "../images/about/fall2026/christopher.thumb.jpg";
+import ganesh from "../images/about/fall2026/ganesh.thumb.jpg";
+import ashleyl from "../images/about/spring2026/ashleyl.thumb.jpg";
+import annie from "../images/about/fall2026/annie.thumb.jpg";
+import ashleyi from "../images/about/fall2026/ashleyi.thumb.jpg";
+import helena from "../images/about/fall2026/helena.thumb.jpg";
+import ryan from "../images/about/fall2026/ryan.thumb.jpg";
+import jonathan from "../images/about/fall2026/jonathan.thumb.jpg";
 import megan from "../images/about/spring2026/megan.thumb.jpg";
-import nishaad from "../images/about/spring2026/nishaad.thumb.jpg";
-// import emily from "../images/about/spring2026/emily.thumb.jpg"; // no longer a project manager
-// import david from "../images/about/spring2026/david.thumb.jpg"; // no longer a project manager
-// import yashom from "../images/about/spring2026/yashom.thumb.jpg"; // ChessBlitz
-// import peter from "../images/about/spring2026/peter.thumb.jpg";
-// import noor from "../images/about/spring2026/noor.thumb.jpg"; // no longer a project manager
-// import surabhi from "../images/about/spring2026/surabhi.thumb.jpg"; // no longer a project manager
-import chad from "../images/about/spring2026/chad.thumb.jpg";
-// import ryan from "../images/about/spring2026/ryan.thumb.jpg";
-// import felicia from "../images/about/spring2026/felicia.thumb.jpg"; // Syncrate
-// import helena from "../images/about/spring2026/helena.thumb.jpg";
+import arnav from "../images/about/spring2026/arnav.thumb.jpg";
+import ashwika from "../images/about/fall2026/ashwika.thumb.jpg";
+import benh from "../images/about/fall2026/benh.thumb.jpg";
+import nicole from "../images/about/fall2026/nicole.thumb.jpg";
+import sriya from "../images/about/fall2026/sriya.thumb.jpg";
+import diego from "../images/about/fall2026/diego.thumb.jpg";
+import felicia from "../images/about/fall2026/felicia.thumb.jpg";
+import peter from "../images/about/fall2026/peter.thumb.jpg";
+import yashom from "../images/about/spring2025/yashom.thumb.jpg";
+
+// Project Managers
+import chester from "../images/about/fall2026/chester.thumb.jpg";
+import ojasvi from "../images/about/fall2026/ojasvi.thumb.jpg";
+import cindy from "../images/about/fall2026/cindy.thumb.jpg";
+// import emmanuel from "../images/about/fall2026/emmanuel.thumb.jpg"; // (placeholder for now)
+import sainik from "../images/about/fall2026/sainik.thumb.jpg";
+import leol from "../images/about/fall2026/leol.thumb.jpg";
+import dayton from "../images/about/fall2026/dayton.thumb.jpg";
+import james from "../images/about/fall2026/james.thumb.jpg";
+import justin from "../images/about/spring2026/justin.thumb.jpg";
+import jamil from "../images/about/fall2026/jamil.thumb.jpg";
+import karthik from "../images/about/fall2026/karthik.thumb.jpg";
+import navya from "../images/about/fall2026/navya.thumb.jpg";
+import austin from "../images/about/fall2026/austin.thumb.jpg";
+import keira from "../images/about/fall2026/keira.thumb.jpg";
+import nishaad from "../images/about/fall2026/nishaad.thumb.jpg";
+// import emily from "../images/about/fall2026/emily.thumb.jpg"; // (placeholder for now)
+import ayah from "../images/about/fall2026/ayah.thumb.jpg";
+import sneha from "../images/about/fall2026/sneha.thumb.jpg";
+import janice from "../images/about/fall2026/janice.thumb.jpg";
+import miles from "../images/about/fall2026/miles.thumb.jpg";
+import matthew from "../images/about/fall2026/matthew.thumb.jpg";
+import turner from "../images/about/fall2026/turner.thumb.jpg";
+import joseph from "../images/about/fall2026/joseph.thumb.jpg";
+import johanna from "../images/about/fall2026/johanna.thumb.jpg";
+import siddharth from "../images/about/fall2026/siddharth.thumb.jpg";
+import leop from "../images/about/fall2026/leop.thumb.jpg";
+import harshini from "../images/about/fall2026/harshini.thumb.jpg";
+import zander from "../images/about/fall2026/zander.thumb.jpg";
+import caden from "../images/about/fall2026/caden.thumb.jpg";
+import benw from "../images/about/fall2026/benw.thumb.jpg";
+import melody from "../images/about/fall2026/melody.thumb.jpg";
+import haaziq from "../images/about/fall2026/haaziq.thumb.jpg";
+// import yuchan from "../images/about/fall2026/yuchan.thumb.jpg"; // (placeholder for now)
+// import jason from "../images/about/fall2026/jason.thumb.jpg"; // (placeholder for now)
 
 // Alumni
 import ethan from "../images/about/fall2023/ethan.thumb.jpg";
@@ -70,7 +68,7 @@ import uyen from "../images/about/fall2023/uyen.thumb.jpg";
 import joel from "../images/about/fall2023/joel.thumb.jpg";
 import nhu from "../images/about/fall2023/nhu.thumb.jpg";
 import jess from "../images/about/spring2024/jess.thumb.jpg";
-import christopher from "../images/about/spring2024/chris.thumb.jpg";
+import christopher_alumni from "../images/about/spring2024/chris.thumb.jpg";
 import kitty from "../images/about/spring2024/kitty.thumb.jpg";
 import rohan from "../images/about/spring2024/rohan.thumb.jpg";
 import zee from "../images/about/fall2023/zee.thumb.jpg";
@@ -97,340 +95,340 @@ export const people = {
     "Mia Salinas": {
         image: mia,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Cognitive Science, Media Studies",
+        year: "Senior",
     },
     "Jenny Liang": {
         image: jenny,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science, Statistics",
+        year: "Senior",
     },
     "Anupriya Islam": {
-        image: placeholder,
+        image: anupriya,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Stats",
+        year: "Senior",
     },
     "Chad Park": {
         image: chad,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science, Industrial Engineering & Operations Research",
+        year: "Senior",
     },
     "Christopher Chang": {
-        image: chris,
+        image: christopher,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science & Economics",
+        year: "Sophomore",
     },
     "Ganesh Karayi": {
         image: ganesh,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Applied Math, Data Science",
+        year: "Junior",
     },
     "Ashley Li": {
         image: ashleyl,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Analytics",
+        year: "Senior",
     },
     "Annie Lin": {
         image: annie,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Cognitive Science, Data Science",
+        year: "Sophomore",
     },
     "Ashley Iattoni": {
         image: ashleyi,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Cognitive Science, Data Science",
+        year: "Junior",
     },
     "Helena Zhang": {
         image: helena,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Math + Data Science",
+        year: "Senior",
     },
     "Ryan Lin": {
         image: ryan,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Jonathan Tran": {
         image: jonathan,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Computer Science, Data Science",
+        year: "Senior",
     },
     "Megan Nguyen": {
         image: megan,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science + Integrative Biology",
+        year: "Sophomore",
     },
     "Arnav Mahadev": {
         image: arnav,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "EECS",
+        year: "Junior",
     },
     "Ashwika Gampa": {
         image: ashwika,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "EECS",
+        year: "Senior",
     },
     "Benjamin Huang": {
         image: benh,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "ECE + Physics",
+        year: "Junior",
     },
     "Nicole Ta": {
-        image: placeholder,
+        image: nicole,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Business Administration",
+        year: "Junior",
     },
     "Sriya Bandarupalli": {
-        image: placeholder,
+        image: sriya,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Applied Mathematics",
+        year: "Sophomore",
     },
     "Diego Llamas": {
         image: diego,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Business Administration, Data Science, & Economics",
+        year: "Senior",
     },
     "Felicia Ye": {
         image: felicia,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Applied Math, Computer Science",
+        year: "Junior",
     },
     "Peter Lourenco": {
         image: peter,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "EECS",
+        year: "Junior",
     },
     "Yashom Kapoor": {
         image: yashom,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
 
     // Project managers not on the executive team
     "James Apuyan": {
-        image: placeholder,
+        image: james,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science & Economics",
+        year: "Sophomore",
     },
     "Turner Osswald": {
-        image: placeholder,
+        image: turner,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Astrophysics, Physics",
+        year: "Junior",
     },
     "Jamil Shirinov": {
-        image: placeholder,
+        image: jamil,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Computer Science",
+        year: "Sophomore",
     },
     "Leo Li": {
-        image: placeholder,
+        image: leol,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Janice Lin": {
-        image: placeholder,
+        image: janice,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Applied Math, Data Science",
+        year: "Senior",
     },
     "Melody Shane": {
-        image: placeholder,
+        image: melody,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Senior",
     },
     "Miles Petrick": {
-        image: placeholder,
+        image: miles,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Johanna Flores": {
-        image: placeholder,
+        image: johanna,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Computer Science",
+        year: "Junior",
     },
     "Keira Tan": {
-        image: placeholder,
+        image: keira,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "EECS",
+        year: "Sophomore",
     },
     "Joseph Ong": {
-        image: placeholder,
+        image: joseph,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Applied Math and Computer Science",
+        year: "Sophomore",
     },
     "Zander Rosenzweig": {
-        image: placeholder,
+        image: zander,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Cognitive Science & Data Science",
+        year: "Sophomore",
     },
     "Harshini Pulivarthi": {
         image: harshini,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Sneha Atmakur": {
-        image: placeholder,
+        image: sneha,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Ayah Elzein": {
-        image: placeholder,
+        image: ayah,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Senior",
     },
     "Navya Lella": {
-        image: placeholder,
+        image: navya,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "IEOR",
+        year: "Sophomore",
     },
     "Nishaad Sovani": {
         image: nishaad,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Statistics + Economics",
+        year: "Junior",
     },
     "Siddharth Garimella": {
-        image: placeholder,
+        image: siddharth,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Applied Math + Data Science",
+        year: "Sophomore",
     },
     "Emily Yue": {
         image: placeholder,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Caden Luu": {
-        image: placeholder,
+        image: caden,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Sophomore",
     },
     "Austin Tenbrink": {
-        image: placeholder,
+        image: austin,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Senior",
     },
     "Dayton Phan": {
-        image: placeholder,
+        image: dayton,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science, CS",
+        year: "Junior",
     },
     "Matthew Rodrigues": {
-        image: placeholder,
+        image: matthew,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Computer Science + Business",
+        year: "Junior",
     },
     "Cindy Wang": {
-        image: placeholder,
+        image: cindy,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Economics + Cognitive Science",
+        year: "Junior",
     },
     "Ojasvi Shrivastava": {
-        image: placeholder,
+        image: ojasvi,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Senior",
     },
     "Chester Duan": {
-        image: placeholder,
+        image: chester,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "EECS",
+        year: "Senior",
     },
     "Benjamin Wang": {
-        image: placeholder,
+        image: benw,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Haaziq Kazi": {
-        image: placeholder,
+        image: haaziq,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Leo Park": {
-        image: leo,
+        image: leop,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Sophomore",
     },
     "Emmanuel Elizalde-Ocampo": {
         image: placeholder,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Junior",
     },
     "Justin Le": {
         image: justin,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Justin Le",
     },
     "Sainik Ghosh": {
         image: sainik,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Statistics and Economics",
+        year: "Junior",
     },
     "Karthik Subramanian": {
         image: karthik,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "EECS",
+        year: "Sophomore",
     },
     "Jason Shorey": {
         image: placeholder,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Sophomore",
     },
-    "Yuchan Chang": {
+    "Yuchan Chung": {
         image: placeholder,
         hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
+        major: "Data Science",
+        year: "Sophomore",
     },
 };
 
@@ -543,7 +541,7 @@ export const alumni = [
         name: "Christopher Bannon",
         link: "https://cbannon.com/",
         title: "",
-        image: christopher,
+        image: christopher_alumni,
         hoverImage: placeholder,
     },
     {

@@ -191,6 +191,10 @@ const columnSizes = (n, count, k, slowFirst) => {
   }
 
   const slowSizes = slow.map((column) => sizes[column]);
+
+  // One column: nothing to balance and nothing faster.
+  if (!fast.length) return { sizes, speed: 1, imbalance: 0 };
+
   const fastSizes = fast.map((column) => sizes[column]);
   const longestSlow = Math.max(...slowSizes);
   const shortestFast = Math.min(...fastSizes);
@@ -218,7 +222,11 @@ const dealColumns = (people, count) => {
     .sort((a, b) =>
       a.imbalance - b.imbalance || Math.abs(a.speed - FAST_SPEED) - Math.abs(b.speed - FAST_SPEED))[0];
 
-  const sizes = best ? best.sizes : Array.from({ length: count }, (_, column) => (column < n ? 1 : 0));
+  // Failing that, an even deal - the sizes must add up to n, or the fill below
+  // would never place everyone.
+  const sizes = best
+    ? best.sizes
+    : Array.from({ length: count }, (_, column) => Math.floor(n / count) + (column < n % count ? 1 : 0));
   const columns = sizes.map(() => []);
   let next = 0;
 
@@ -404,7 +412,7 @@ function useCursorTip() {
   // re-runs moving straight from one card to the next.
   const show = (event, person, accent) => {
     const tip = tipRef.current;
-    const text = [person.major, person.year].filter(Boolean).join(' · ');
+    const text = [person.year, person.major].filter(Boolean).join(' · ');
 
     if (event.pointerType !== 'mouse' || !tip || !text) return;
 
@@ -618,21 +626,23 @@ export default function Board() {
 
   const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-  const renderPerson = (idPrefix = '', { caption = true } = {}) => (person, index) => (
+  // hover: the wipe to their second photo and the major/year caption. The
+  // alumni have no second photos, so they go without.
+  const renderPerson = (idPrefix = '', { hover = true } = {}) => (person, index) => (
       <div
         className={`${styles.person} ${idPrefix ? styles.anchorTarget : ''} ${flashTargetId === `${idPrefix}${toAnchorId(person.name)}` ? styles.flashTarget : ''}`}
         key={person.name}
         id={idPrefix ? `${idPrefix}${toAnchorId(person.name)}` : undefined}
         style={{ '--hl': HIGHLIGHTS[index % HIGHLIGHTS.length] }}
-        onPointerEnter={(event) => {
+        onPointerEnter={hover ? (event) => {
           hoverCard(event, true);
-          if (caption) cursorTip.show(event, person, HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length]);
-        }}
-        onPointerMove={caption ? cursorTip.move : undefined}
-        onPointerLeave={(event) => {
+          cursorTip.show(event, person, HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length]);
+        } : undefined}
+        onPointerMove={hover ? cursorTip.move : undefined}
+        onPointerLeave={hover ? (event) => {
           hoverCard(event, false);
           cursorTip.hide();
-        }}
+        } : undefined}
       >
         <div className={styles.imageWrapper}>
           <img
@@ -642,9 +652,12 @@ export default function Board() {
           />
           {/* What the hover wipe uncovers: the person's hoverImage in
               boardMembers.js, or the first photo again if they have none. */}
-          <img className={styles.altImage} src={person.hoverImage || person.image} alt="" aria-hidden="true" />
-
-          <span className={styles.wipe} aria-hidden="true" />
+          {hover && (
+            <>
+              <img className={styles.altImage} src={person.hoverImage || person.image} alt="" aria-hidden="true" />
+              <span className={styles.wipe} aria-hidden="true" />
+            </>
+          )}
         </div>
         <div className={styles.name}>
           <h3><span className={styles.flash}>{person.name}</span></h3>
@@ -737,7 +750,7 @@ export default function Board() {
 
       <div className={styles.boardPics} id="team" ref={nextSectionRef}>
         <h1 className={heroStyles.drift1}>{CURRENT_SEMESTER} Board</h1>
-        <h2>Executive Team</h2>
+        <h2 id="exec">Executive Team</h2>
         <ParallaxColumns people={board} renderPerson={renderPerson()} />
       </div>
     </section>
@@ -746,7 +759,7 @@ export default function Board() {
     <section ref={lightRef} className={styles.lightSection}>
       <div className={`${styles.lightInner} limitWidth`}>
         <div className={styles.boardPics}>
-          <h2>Project Managers</h2>
+          <h2 id="pms">Project Managers</h2>
           <ParallaxColumns people={projectLeads} renderPerson={renderPerson('pm-')} />
         </div>
       </div>
@@ -755,8 +768,8 @@ export default function Board() {
     {/* And back to the dark for the alumni. */}
     <section className={`${styles.darkTail} limitWidth`}>
       <div className={styles.boardPics}>
-        <h2>OP Alumni</h2>
-        <ParallaxColumns people={alumni} renderPerson={renderPerson('', { caption: false })} />
+        <h2 id="alumni">OP Alumni</h2>
+        <ParallaxColumns people={alumni} renderPerson={renderPerson('', { hover: false })} />
       </div>
     </section>
 

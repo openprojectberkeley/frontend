@@ -4,6 +4,7 @@ const path = require('path');
 const sharp = require('sharp');
 
 const ABOUT_DIRS = [
+  'src/images/about/fall2026',
   'src/images/about/spring2026',
   'src/images/about/spring2025',
   'src/images/about/fall2025',

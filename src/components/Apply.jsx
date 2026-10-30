@@ -59,8 +59,6 @@ export default function Apply() {
     let allFaqs = [];
     
     for (let index in faqList) {
-      let brKey = `faq-br-${index}`;
-
       allFaqs.push(renderFaqBox(index));
     }
 

@@ -2,10 +2,32 @@ import styles from '../css/Header.module.css';
 import logo from '../images/navbarlogo.png';
 import logoInk from '../images/navbarlogo_black.png';
 import { PORTAL_URL } from '../data/site';
-import { HOME_SECTIONS } from '../data/homeSections';
-import { HIGHLIGHT_TINTS } from './MomentStrip';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import ScrambleText from './ScrambleText';
+import { NavLink, useLocation } from 'react-router-dom';
+import { HashLink } from 'react-router-hash-link';
 import { useEffect, useRef, useState } from 'react';
+
+/*
+ * The board page's sections, for the menu under "board". Each id is set on
+ * its section in Board.jsx.
+ */
+const BOARD_SECTIONS = [
+  { id: 'exec', label: 'exec' },
+  { id: 'pms', label: 'PMs' },
+  { id: 'alumni', label: 'alumni' },
+];
+
+/* The menu's rows type in one after another, each this far behind the last. */
+const MENU_LINE_STAGGER_MS = 70;
+const MENU_LINE_MS = 280;
+
+/* Clear of the fixed header, so a section's heading isn't landed under it. */
+const SECTION_SCROLL_OFFSET = 100;
+
+function scrollToSection(el) {
+  const top = el.getBoundingClientRect().top + window.scrollY - SECTION_SCROLL_OFFSET;
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
 
 function normalizePath(pathname) {
   if (pathname.length > 1 && pathname.endsWith('/')) {
@@ -24,7 +46,7 @@ export default function Header() {
   const [renderBackdrop, setRenderBackdrop] = useState(false);
   const [backdropOpen, setBackdropOpen] = useState(false);
   const backdropOpenRef = useRef(false);
-  /* Bumped each time the home menu opens, to key the rows so their highlight replays. */
+  /* Bumped each time the board menu opens, to key the rows so they replay. */
   const [menuPlay, setMenuPlay] = useState(0);
   const menuOpenRef = useRef(false);
 
@@ -136,34 +158,33 @@ export default function Header() {
           <img src={logoInk} alt="" aria-hidden="true" className={styles.logoInk} />
         </NavLink>
         <div className={active ? `${styles.linksActive}` : `${styles.links}`} onClick={deActivate}>
+          <NavLink to="/about/" className={activeLink('/about')}>about</NavLink>
           <div
-            className={styles.homeItem}
+            className={styles.menuItem}
             onMouseEnter={openMenu}
             onFocus={openMenu}
             onMouseLeave={closeMenu}
             onBlur={closeMenu}
           >
-            <NavLink to="/" className={activeLink('/')}>home</NavLink>
+            <NavLink to="/board/" className={activeLink('/board')}>board</NavLink>
             <div className={styles.dropdown}>
-              {HOME_SECTIONS.map((section, index) => (
-                <Link
+              {BOARD_SECTIONS.map((section, index) => (
+                <HashLink
                   key={section.id}
-                  to={`/#${section.id}`}
-                  style={{
-                    '--row-accent': HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length],
-                    '--row-index': index,
-                  }}
+                  to={`/board/#${section.id}`}
+                  scroll={scrollToSection}
+                  aria-label={section.label}
                 >
-                  {/* Keyed so each opening remounts the mark and replays its wipe. */}
-                  <span key={menuPlay} className={styles.rowMark}>
-                    <span className={styles.rowText}>{section.label}</span>
-                  </span>
-                </Link>
+                  <ScrambleText
+                    key={menuPlay}
+                    text={section.label}
+                    delay={index * MENU_LINE_STAGGER_MS}
+                    duration={MENU_LINE_MS}
+                  />
+                </HashLink>
               ))}
             </div>
           </div>
-          <NavLink to="/about/" className={activeLink('/about')}>about</NavLink>
-          <NavLink to="/board/" className={activeLink('/board')}>board</NavLink>
           <NavLink to="/apply/" className={activeLink('/apply')}>apply</NavLink>
           <NavLink to="/projects/" className={activeLink('/projects')}>projects</NavLink>
           <NavLink to="/contact/" className={activeLink('/contact')}>contact</NavLink>

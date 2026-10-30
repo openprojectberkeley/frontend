@@ -30,12 +30,6 @@ export default function Projects() {
     return () => window.clearTimeout(flashTimer);
   }, [location.hash, location.pathname]);
 
-  const formatPMs = (pms) => {
-    if (pms.length === 1) return pms[0];
-    if (pms.length === 2) return `${pms[0]} and ${pms[1]}`;
-    return `${pms.slice(0, -1).join(', ')}, and ${pms[pms.length - 1]}`;
-  };
-
   const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
   const renderPMs = (pms) => pms.map((pm, index) => {
