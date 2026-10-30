@@ -35,6 +35,16 @@
     margin-bottom: 100px;
 }
 
+/* Under reduced motion, the same columns as one ordinary grid. */
+.plainGrid {
+    display: grid;
+    grid-template-columns: repeat(var(--columns, 4), minmax(0, 1fr));
+    gap: 50px;
+    align-items: start;
+    margin-top: 20px;
+    margin-bottom: 100px;
+}
+
 .column {
     display: flex;
     flex-direction: column;
@@ -126,6 +136,10 @@
 @media screen and (max-width: 900px) {
     .columns {
         column-gap: 30px;
+    }
+
+    .plainGrid {
+        gap: 30px;
     }
 
     .column {

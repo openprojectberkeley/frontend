@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styles from '../css/ImmersiveHero.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import LogoMark, { DISC_CENTRE_X, DISC_CENTRE_Y, DISC_WIDTH } from './LogoMark';
@@ -16,6 +16,7 @@ import scramble from './scramble';
 import { clients } from '../data/clientsData';
 import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWeWork';
 import { CURRENT_SEASON, CURRENT_YEAR } from '../data/site';
+import { HOME_SECTIONS } from '../data/homeSections';
 import speechbubble from '../images/speechbubbles.png';
 import star from '../images/star.png';
 import triangle from '../images/triangle.png';
@@ -842,6 +843,7 @@ function ProjectsCopy() {
 
   export default function ImmersiveHero() {
     const prefersReducedMotion = useReducedMotion();
+    const location = useLocation();
 
     const sectionRef = useRef(null);
     const stageRef = useRef(null);
@@ -1846,7 +1848,7 @@ function ProjectsCopy() {
      * Under reduced motion the section is one screen tall and this lands on the
      * next section, which is what the cue used to do and still should.
      */
-    const scrollToPlayheadOne = useCallback(() => {
+    const scrollToPlayhead = useCallback((playhead) => {
       const section = sectionRef.current;
 
       if (!section) {
@@ -1854,7 +1856,7 @@ function ProjectsCopy() {
       }
 
       const from = window.scrollY;
-      const to = from + section.getBoundingClientRect().top + window.innerHeight;
+      const to = from + section.getBoundingClientRect().top + playhead * window.innerHeight;
 
       if (prefersReducedMotion) {
         window.scrollTo(0, to);
@@ -1871,16 +1873,44 @@ function ProjectsCopy() {
         window.cancelAnimationFrame(cueScrollRef.current);
       }
 
+      /*
+       * A screen takes CUE_SCROLL_MS; longer trips grow with the square root of
+       * the distance, so a jump from the top to the call to apply still lets
+       * the scenes play past without taking several seconds to get there.
+       */
+      const screens = Math.abs(to - from) / window.innerHeight;
+      const duration = CUE_SCROLL_MS * Math.max(1, Math.sqrt(screens));
       const start = performance.now();
 
       const step = (now) => {
-        const t = clamp01((now - start) / CUE_SCROLL_MS);
+        const t = clamp01((now - start) / duration);
         window.scrollTo(0, from + (to - from) * smoothstep(t));
         cueScrollRef.current = t < 1 ? window.requestAnimationFrame(step) : null;
       };
 
       cueScrollRef.current = window.requestAnimationFrame(step);
     }, [prefersReducedMotion]);
+
+    const scrollToPlayheadOne = useCallback(() => scrollToPlayhead(1), [scrollToPlayhead]);
+
+    /*
+     * The header's home menu links to /#clients and the like. Keyed on the
+     * location's key as well as its hash, so picking the section you are
+     * already at still takes you back to it. Deferred a frame so that, coming
+     * from another page, the route container has grown to this page's height
+     * before there is anywhere to scroll to.
+     */
+    useEffect(() => {
+      const target = HOME_SECTIONS.find((s) => `#${s.id}` === location.hash);
+
+      if (!target) {
+        return undefined;
+      }
+
+      const frameId = window.requestAnimationFrame(() => scrollToPlayhead(target.playhead));
+
+      return () => window.cancelAnimationFrame(frameId);
+    }, [location.key, location.hash, scrollToPlayhead]);
 
     /* A tween still running when the route changes would scroll the next page. */
     useEffect(

@@ -54,13 +54,13 @@ export const projects = {
       id: 1,
       name: "Atlas",
       logo: atlasLogo,
-      pms: ["Chester Duan", "Avaneesh Joshi", "Ojasvi Shrivastava", "Cindy Wang"],
+      pms: ["Chester Duan", "Ojasvi Shrivastava", "Cindy Wang"],
       description: "An internal knowledge and project intelligence platform for LG NOVA that brings scattered project data, documents, and updates into one searchable workspace. Build dashboards, data integrations, and AI-powered discovery tools that help teams quickly find what they need and understand what's happening across the organization.",
       clientName: "LG NOVA"
     },
     {
       id: 2,
-      name: "TCP (Traffic Control Patterns)",
+      name: "CloudTCP",
       pms: ["Ashley Iattoni", "Benjamin Huang", "Dayton Phan"],
       description: "An AI-powered platform that turns the time-consuming process of drafting Traffic Control Plans into an automated workflow. Build tools that combine image analysis with official traffic-control standards to generate accurate engineering drawings for construction permits in minutes instead of hours.",
       clientName: "Traffic Patterns, LLC"
@@ -69,12 +69,10 @@ export const projects = {
       id: 5,
       name: "Nexus",
       logo: nexusLogo,
-      pms: ["Ganesh Karayi", "Arnav Mahadev"],
+      pms: ["Ganesh Karayi", "Arnav Mahadev", "Jonathan Tran", "Diego Llamas"],
       description: "AI-powered investment platform, utilizing real-time financial data and live news events to create a hub of information so that investors can make the most informed finance decisions possible.",
       clientName: "iPick.ai"
-    }
-  ],
-  passion: [
+    },
     {
       id: 3,
       name: "Smpler",
@@ -89,7 +87,9 @@ export const projects = {
       pms: ["Felicia Ye", "Helena Zhang", "Emmanuel Elizalde-Ocampo"],
       description: "A community platform for clients Tiny Village Spirit and Hope Solutions that connects residents with support resources, meetings, and each other in one place. Work directly with staff and residents to design and build AI-powered tools, shared calendars, and community organizing features that address real community needs.",
       clientName: "Tiny Village Spirit & Hope Solutions"
-    },
+    }
+  ],
+  passion: [
     {
       id: 6,
       name: "Get to the Surface",
@@ -119,7 +119,7 @@ export const projects = {
     {
       id: 10,
       name: "NeoQuest",
-      pms: ["Nishaad Sovani", "Siddharth Garimella"],
+      pms: ["Nishaad Sovani", "Siddharth Garimella", "Emily Yue"],
       description: "A local discovery app that turns \"there's nothing to do\" into your next side quest. Find spontaneous hangouts and unconventional activities based on your group's budget, interests, transportation, and location, then explore them through an interactive map or contribute side quests of your own."
     },
     {
@@ -138,7 +138,7 @@ export const projects = {
     {
       id: 13,
       name: "Sortify",
-      pms: ["Caden Luu", "Arnav Sharma"],
+      pms: ["Caden Luu"],
       description: "A camera-powered waste sorting tool that takes the guesswork out of deciding what goes in recycling, compost, or landfill. Identify an item with AI, combine it with local disposal rules, and gamify sustainable habits through sorting history, points, and streaks."
     },
     {
@@ -162,7 +162,7 @@ export const projects = {
     },
     {
       id: 17,
-      name: "Mechanistic Transfer During Fine-Tuning",
+      name: "Induction",
       pms: ["Leo Park", "Haaziq Kazi", "Benjamin Wang"],
       description: "We study how fine-tuning on one reasoning task changes a model’s internal mechanisms and whether those same mechanisms are reused on related, unseen tasks. By tracking behavior and causal circuit changes across fine-tuning checkpoints, we test whether mechanistic transfer emerges before, alongside, or after behavioral generalization."
     },

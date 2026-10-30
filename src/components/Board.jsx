@@ -139,31 +139,91 @@ function useColumnCount() {
 }
 
 /*
- * Deals people into columns. The 2nd and 4th columns (every odd index) scroll
- * faster and start lower, so whatever doesn't divide evenly goes to the
- * columns either side of them first, and any card left after that to a fast
- * one. Filled row by row in reading order, so the first row is still the
- * first people listed.
+ * The 2nd and 4th columns (every odd index) scroll faster than the others -
+ * FAST_SPEED times the page, while their grid is coming up the window - and
+ * a column that travels further than its neighbours over the same scroll has
+ * to be longer than them by that much, or it would run out early. So they are
+ * dealt more cards.
+ *
+ * With n people over c columns, f of them fast, slow columns of a cards and
+ * fast columns of a + k: the grid scrolls a cards' height while it comes up
+ * the window, a fast column travels k cards further in that time, so
+ * FAST_SPEED = 1 + k / a. With n = c·a + f·k, that is
+ *
+ *     k = (FAST_SPEED - 1) · n / (c + (FAST_SPEED - 1) · f)
+ *
+ * in cards, whatever their height. That is only a starting point - k has to
+ * be whole, and what is left over after dealing has to go somewhere - so a
+ * few ks either side are tried, with the leftovers given to the slow columns
+ * first and to the fast ones first, and the layout kept is the one that:
+ *
+ *   1. is balanced - every slow column the same length, and no fast column
+ *      shorter than them, so nothing is left with a gap beside it;
+ *   2. then runs closest to FAST_SPEED, under FAST_SPEED_MAX. A short grid
+ *      (the alumni) can only make the fast columns longer a whole card at a
+ *      time, over very few rows, which would run them far faster than the
+ *      rest of the page - so past the cap it gets no extra cards at all, and
+ *      its fast columns keep only their half-card stagger.
+ *
+ * Filled row by row in reading order, so the first row is still the first
+ * people listed.
  */
+const FAST_SPEED = 1.2;
+const FAST_SPEED_MAX = 1.35;
+
 const isFast = (column, count) => count > 1 && column % 2 === 1;
 
-const dealColumns = (people, count) => {
-  const sizes = Array.from({ length: count }, () => Math.floor(people.length / count));
-  const slow = sizes.map((_, column) => column).filter((column) => !isFast(column, count));
-  const fast = sizes.map((_, column) => column).filter((column) => isFast(column, count));
-  let remainder = people.length % count;
+const columnSizes = (n, count, k, slowFirst) => {
+  const indices = Array.from({ length: count }, (_, column) => column);
+  const fast = indices.filter((column) => isFast(column, count));
+  const slow = indices.filter((column) => !isFast(column, count));
+  const base = Math.floor((n - fast.length * k) / count);
 
-  for (const column of [...slow, ...fast]) {
+  if (base < 1) return null;
+
+  const sizes = indices.map((column) => base + (isFast(column, count) ? k : 0));
+  let remainder = n - sizes.reduce((sum, size) => sum + size, 0);
+
+  for (const column of slowFirst ? [...slow, ...fast] : [...fast, ...slow]) {
     if (remainder === 0) break;
     sizes[column] += 1;
     remainder -= 1;
   }
 
+  const slowSizes = slow.map((column) => sizes[column]);
+  const fastSizes = fast.map((column) => sizes[column]);
+  const longestSlow = Math.max(...slowSizes);
+  const shortestFast = Math.min(...fastSizes);
+  // How many cards out of true it is: slow columns of different lengths, or
+  // a fast column shorter than the slow ones.
+  const imbalance =
+    longestSlow - Math.min(...slowSizes) + Math.max(0, longestSlow - shortestFast);
+  // What it actually comes to: the shortest fast column rises by what it has
+  // over the shortest slow one, over the longest slow one's height - see
+  // useColumnDrift.
+  const speed = 1 + Math.max(0, shortestFast - Math.min(...slowSizes)) / longestSlow;
+
+  return { sizes, speed, imbalance };
+};
+
+const dealColumns = (people, count) => {
+  const n = people.length;
+  const f = Array.from({ length: count }, (_, column) => column).filter((column) => isFast(column, count)).length;
+  const ideal = f ? ((FAST_SPEED - 1) * n) / (count + (FAST_SPEED - 1) * f) : 0;
+  const ks = Array.from({ length: Math.ceil(ideal) + 2 }, (_, k) => k);
+
+  const best = ks
+    .flatMap((k) => [columnSizes(n, count, k, true), columnSizes(n, count, k, false)])
+    .filter((option) => option && option.speed <= FAST_SPEED_MAX)
+    .sort((a, b) =>
+      a.imbalance - b.imbalance || Math.abs(a.speed - FAST_SPEED) - Math.abs(b.speed - FAST_SPEED))[0];
+
+  const sizes = best ? best.sizes : Array.from({ length: count }, (_, column) => (column < n ? 1 : 0));
   const columns = sizes.map(() => []);
   let next = 0;
 
-  for (let row = 0; next < people.length; row += 1) {
-    for (let column = 0; column < count && next < people.length; column += 1) {
+  for (let row = 0; next < n; row += 1) {
+    for (let column = 0; column < count && next < n; column += 1) {
       if (row < sizes[column]) columns[column].push(people[next++]);
     }
   }
@@ -173,12 +233,21 @@ const dealColumns = (people, count) => {
 
 /*
  * The fast columns' drift. Every column keeps the same gap between cards, and
- * a fast column sits half a card lower than its neighbours - then is pushed
- * down by DRIFT_PX more while the grid is low in the window and pulled up by
- * as much once it has gone past, so it travels a little further than the
- * page does.
+ * a fast column starts half a card lower than its neighbours. Then, over the
+ * grid's own height of scrolling from when its top reaches RISE_FROM of the
+ * way down the window, it rises by however much longer than the shortest slow
+ * column it is - measured, so it is right whatever the photos come to - and
+ * holds there. Where the slow columns are all one length that is simply its
+ * extra length; where one is a card short (the alumni), the fast columns
+ * still have that card to rise by, and finish between the two. So it runs at FAST_SPEED (or near it; see dealColumns), starts
+ * and ends with the same half-card stagger, and its last card never runs out
+ * before the others'.
+ *
+ * Starting from halfway rather than from the bottom of the window keeps the
+ * column from having climbed past the grid's top, over the section heading,
+ * while that heading is still on screen.
  */
-const DRIFT_PX = 36;
+const RISE_FROM = 0.5;
 
 function useColumnDrift(gridRef, enabled, layoutKey) {
   useLayoutEffect(() => {
@@ -190,9 +259,16 @@ function useColumnDrift(gridRef, enabled, layoutKey) {
     const fast = columns.filter((column) => column.dataset.fast);
     const slow = columns.filter((column) => !column.dataset.fast);
 
-    if (!enabled || !fast.length) {
-      fast.forEach((column) => { column.style.transform = ''; });
+    const reset = () => {
+      fast.forEach((column) => {
+        column.style.transform = '';
+        column.style.marginBottom = '';
+      });
       grid.style.paddingBottom = '';
+    };
+
+    if (!enabled || !fast.length) {
+      reset();
       return undefined;
     }
 
@@ -203,19 +279,39 @@ function useColumnDrift(gridRef, enabled, layoutKey) {
 
       const rect = grid.getBoundingClientRect();
       const viewport = window.innerHeight;
-      const progress = Math.min(1, Math.max(0, (viewport - rect.top) / (rect.height + viewport)));
       const tallestSlow = Math.max(0, ...slow.map((column) => column.offsetHeight));
+      const shortestSlow = Math.min(tallestSlow, ...slow.map((column) => column.offsetHeight));
+      const start = viewport * RISE_FROM;
+      const progress = tallestSlow ? Math.min(1, Math.max(0, (start - rect.top) / tallestSlow)) : 0;
+      const margin = parseFloat(window.getComputedStyle(grid).marginBottom) || 0;
       let overhang = 0;
 
       fast.forEach((column) => {
         const card = column.firstElementChild;
         const gap = parseFloat(window.getComputedStyle(column).rowGap) || 0;
         const half = card ? (card.offsetHeight + gap) / 2 : 0;
-        const offset = half + DRIFT_PX * (1 - 2 * progress);
+        const extra = Math.max(0, column.offsetHeight - shortestSlow);
+        const offset = half - extra * progress;
 
         column.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`;
-        // How far below the grid it can reach at its lowest.
-        overhang = Math.max(overhang, half + DRIFT_PX + column.offsetHeight - tallestSlow);
+        // The rise moves it but leaves its full length in the layout, which
+        // would leave that much empty space under the grid; take it back out.
+        const pull = `${(-extra).toFixed(1)}px`;
+
+        if (column.style.marginBottom !== pull) column.style.marginBottom = pull;
+        // How far below the slow columns it hangs when its bottom first comes
+        // up into the window - after that it rises faster than the page, so
+        // the hang only shrinks. Solved for the grid top t at which the
+        // column's bottom (t + its height + half - extra·progress) meets the
+        // window's bottom, less what the grid's own margin already leaves.
+        const H = tallestSlow;
+        const t = H
+          ? (viewport - column.offsetHeight - half + (extra * start) / H) / (1 + extra / H)
+          : 0;
+        const seen = H ? Math.min(1, Math.max(0, (start - t) / H)) : 1;
+        const rest = half + column.offsetHeight - extra - tallestSlow;
+
+        overhang = Math.max(overhang, rest, rest + extra * (1 - seen) - margin);
       });
 
       // Room under the grid for a fast column hanging past the others.
@@ -242,8 +338,7 @@ function useColumnDrift(gridRef, enabled, layoutKey) {
       observer.disconnect();
 
       if (frameId !== null) window.cancelAnimationFrame(frameId);
-      fast.forEach((column) => { column.style.transform = ''; });
-      grid.style.paddingBottom = '';
+      reset();
     };
   }, [gridRef, enabled, layoutKey]);
 }
@@ -463,10 +558,19 @@ function ParallaxColumns({ people, renderPerson }) {
   const gridRef = useRef(null);
   const count = useColumnCount();
   const reducedMotion = useReducedMotion();
-  const columns = dealColumns(people, count);
+  const columns = reducedMotion ? [] : dealColumns(people, count);
 
   useColumnDrift(gridRef, count > 1 && !reducedMotion, `${count}:${people.length}`);
   useRevealOnce(gridRef);
+
+  // Under reduced motion, no columns of different speeds: a plain grid, in order.
+  if (reducedMotion) {
+    return (
+      <div ref={gridRef} className={styles.plainGrid} style={{ '--columns': count }}>
+        {people.map((person, index) => renderPerson(person, index))}
+      </div>
+    );
+  }
 
   return (
     <div ref={gridRef} className={styles.columns} style={{ '--columns': count }}>

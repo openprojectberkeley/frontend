@@ -330,7 +330,7 @@ export const people = {
         major: "Major",
         year: "Class of 20XX",
     },
-    "Arnav Sharma": {
+    "Emily Yue": {
         image: placeholder,
         hoverImage: placeholder,
         major: "Major",
@@ -373,12 +373,6 @@ export const people = {
         year: "Class of 20XX",
     },
     "Chester Duan": {
-        image: placeholder,
-        hoverImage: placeholder,
-        major: "Major",
-        year: "Class of 20XX",
-    },
-    "Avaneesh Joshi": {
         image: placeholder,
         hoverImage: placeholder,
         major: "Major",

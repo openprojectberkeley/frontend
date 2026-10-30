@@ -91,6 +91,181 @@
     text-decoration: none;
 }
 
+/*
+ * Home and the menu of the home page's sections under it. The item takes the
+ * gap the other links get from their own margin, so the menu can sit flush
+ * with the word above it.
+ */
+.homeItem {
+    position: relative;
+    display: inline-block;
+    margin-left: 25px;
+}
+
+.links .homeItem > a {
+    margin-left: 0;
+}
+
+/*
+ * Hung below by padding rather than by an offset, so the gap between the word
+ * and the panel is still part of the item and the pointer can cross it
+ * without the menu closing under it.
+ */
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: max-content;
+    padding-top: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition:
+        opacity 160ms ease,
+        transform 160ms ease,
+        visibility 0s linear 160ms;
+}
+
+/* Keyboard focus only: a click leaves focus on the link, and the menu should
+   not stay up after the pointer has gone. */
+.homeItem:hover .dropdown,
+.homeItem:has(:focus-visible) .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+        opacity 160ms ease,
+        transform 160ms ease,
+        visibility 0s;
+}
+
+/* Fixed padding, so the squiggle's hover padding doesn't jog the rows; none,
+   so each row's highlight meets the next with no gap between. */
+.links .dropdown a,
+.links .dropdown a:hover {
+    display: block;
+    background-image: none;
+    width: max-content;
+    margin: 0;
+    padding: 0;
+    height: auto;
+    white-space: nowrap;
+}
+
+/*
+ * Each row arrives in two passes, both travelling left to right, the gesture
+ * the community captions use (.momentTip in ImmersiveHero.module.css) turned
+ * the other way about: the row's accent goes across first, over the words,
+ * and as its trailing edge follows it off, the words come in behind it on a
+ * solid block of the header's own ground - black on the dark header, white on
+ * the light one - which is what the row is left as.
+ *
+ * Pulled left by its own padding, so the words line up under "home".
+ */
+.rowMark {
+    position: relative;
+    display: inline-block;
+    margin-left: -0.4em;
+    padding: 0.25em 0.4em;
+    vertical-align: top;
+    --row-delay: calc(var(--row-index, 0) * 70ms);
+}
+
+.rowMark::before,
+.rowMark::after {
+    position: absolute;
+    /* A pixel past the bottom, under the next row: the rows land on fractional
+       pixels, and two edges that only meet leave an antialiased seam. */
+    inset: 0 0 -1px;
+    content: '';
+    clip-path: inset(0 100% 0 0);
+}
+
+.rowMark::before {
+    z-index: 0;
+    background: #000;
+    transition: background 420ms ease;
+}
+
+.rowMark::after {
+    z-index: 2;
+    background: var(--row-accent, #F9C12C);
+}
+
+/* Faint until pointed at; the wash under it stays as it is. */
+.rowText {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    opacity: 0.6;
+    clip-path: inset(0 100% 0 0);
+    transition: opacity 140ms ease;
+}
+
+.links .dropdown a:hover .rowText,
+.links .dropdown a:focus-visible .rowText {
+    opacity: 1;
+}
+
+@keyframes rowWipeIn {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* In from the left, then off to the right: one movement in one direction. */
+@keyframes rowAccentPass {
+    0% {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    50% {
+        clip-path: inset(0 0 0 0);
+    }
+
+    100% {
+        clip-path: inset(0 0 0 100%);
+    }
+}
+
+.rowMark::after {
+    animation: rowAccentPass 640ms cubic-bezier(0.65, 0, 0.35, 1) var(--row-delay) forwards;
+}
+
+/* Behind the accent's trailing edge: starting as it finishes covering the row,
+   over the same stretch it takes to leave. */
+.rowMark::before,
+.rowText {
+    animation: rowWipeIn 320ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--row-delay) + 320ms) forwards;
+}
+
+:global(html.op-light) .rowMark::before {
+    background: #FFFDF8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dropdown,
+    .homeItem:hover .dropdown,
+    .homeItem:has(:focus-visible) .dropdown {
+        transform: none;
+        transition: none;
+    }
+
+    .rowMark::before,
+    .rowText {
+        animation: none;
+        clip-path: none;
+    }
+
+    .rowMark::after {
+        display: none;
+    }
+}
+
 .openportalLink {
     margin-left: 25px;
     color: white;
@@ -213,6 +388,15 @@
     .openportalLink {
         margin-left: 0;
         height: auto;
+    }
+
+    /* No hover on a phone; the menu is a desktop shortcut. */
+    .homeItem {
+        margin-left: 0;
+    }
+
+    .dropdown {
+        display: none;
     }
 
     .links a:hover, .activeLink {
