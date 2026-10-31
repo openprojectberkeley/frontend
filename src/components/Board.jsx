@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useReducedMotion } from 'framer-motion';
 import styles from "../css/Board.module.css";
 import heroStyles from "../css/ImmersiveHero.module.css";
-import { STAR_LAYERS, scatter } from './StarField';
+import { FixedStarField } from './StarField';
 import { aboutValues } from '../data/aboutValues';
 import { HIGHLIGHT_TINTS } from './MomentStrip';
 import { NavHashLink } from 'react-router-hash-link';
@@ -16,105 +16,6 @@ import coffeechaticon from "../images/about/coffeechat.png";
 // boardMembers.js.
 import { board, projectLeads, alumni } from '../data/boardMembers';
 import { CURRENT_SEMESTER } from '../data/site';
-
-/*
- * The board's sky: the hero's three layers of squares, scattered over one
- * window's height and fixed behind the page. Each layer is two copies of that
- * tile stacked, slid up by BOARD_STARS_LAG of the scroll and wrapped a tile at
- * a time, so the field never runs out however long the page gets - and, being
- * fixed, moves at only that fraction of the page's rate, the far, fine layer
- * least.
- */
-const BOARD_STARS_LAG = [0.06, 0.12, 0.2];
-const BOARD_STARS_SEED = 20261029;
-
-const BOARD_STARS = STAR_LAYERS.map((layer, index) => {
-  const random = scatter(BOARD_STARS_SEED + index);
-
-  return Array.from({ length: layer.count }, () => {
-    const spin = layer.spin * (0.8 + random() * 0.4);
-
-    return {
-      left: random() * 100,
-      top: random() * 100,
-      size: layer.size * (0.75 + random() * 0.5),
-      opacity: layer.opacity * (0.7 + random() * 0.6),
-      spin,
-      delay: -random() * spin,
-      reverse: random() < 0.5,
-    };
-  });
-});
-
-function BoardStars() {
-  const layerRefs = useRef([]);
-
-  useEffect(() => {
-    let frameId = null;
-
-    const measure = () => {
-      frameId = null;
-
-      layerRefs.current.forEach((layer, index) => {
-        if (!layer) return;
-
-        const tile = layer.offsetHeight / 2;
-        const shift = tile ? (window.scrollY * BOARD_STARS_LAG[index]) % tile : 0;
-
-        layer.style.transform = `translate3d(0, ${(-shift).toFixed(1)}px, 0)`;
-      });
-    };
-
-    const schedule = () => {
-      if (frameId === null) frameId = window.requestAnimationFrame(measure);
-    };
-
-    measure();
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
-
-    return () => {
-      window.removeEventListener('scroll', schedule);
-      window.removeEventListener('resize', schedule);
-
-      if (frameId !== null) window.cancelAnimationFrame(frameId);
-    };
-  }, []);
-
-  return (
-    <div className={styles.stars} aria-hidden="true">
-      {BOARD_STARS.map((stars, layerIndex) => (
-        <div
-          key={layerIndex}
-          ref={(node) => { layerRefs.current[layerIndex] = node; }}
-          className={styles.starLayer}
-        >
-          {[0, 1].map((copy) => stars.map((star, index) => (
-            <span
-              key={`${copy}-${index}`}
-              className={`${styles.star} ${layerIndex === 0 ? heroStyles.starFine : ''}`}
-              style={{
-                left: `${star.left.toFixed(2)}%`,
-                top: `${(star.top / 2 + copy * 50).toFixed(2)}%`,
-                '--size': `${star.size.toFixed(3)}vmin`,
-              }}
-            >
-              <i
-                className={heroStyles.starSpin}
-                style={{
-                  opacity: star.opacity.toFixed(3),
-                  animationDuration: `${star.spin.toFixed(1)}s`,
-                  animationDelay: `${star.delay.toFixed(1)}s`,
-                  animationDirection: star.reverse ? 'reverse' : 'normal',
-                }}
-              />
-            </span>
-          )))}
-        </div>
-      ))}
-    </div>
-  );
-}
 
 /* As many columns as the old grid had at each width - see .columns. */
 const columnCountFor = (width) => {
@@ -729,7 +630,7 @@ export default function Board() {
 
   return (
     <div ref={pageRef}>
-    <BoardStars />
+    <FixedStarField />
     {/* The paper the page turns to for the project managers - see
         useLightSheet. Fixed, under everything but the stars. */}
     <div ref={sheetRef} className={styles.sheet} aria-hidden="true">

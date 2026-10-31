@@ -2,9 +2,8 @@ import React, {useState, useRef} from 'react';
 import styles from '../css/Apply.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import useScrollCue from './useScrollCue';
+import { FixedStarField } from './StarField';
 import faqPlus from "../images/apply/faqPlus.png";
-import headerCurve from "../images/apply/headerCurve.svg";
-import faqCurve from "../images/apply/faqCurve.svg";
 import { faqList } from '../data/faqList';
 import { recruitmentTimeline, applySteps } from '../data/recruitmentTimeline';
 import { CURRENT_SEMESTER, PORTAL_URL } from '../data/site';
@@ -100,6 +99,7 @@ export default function Apply() {
 
   return (
     <>
+      <FixedStarField />
       <div className={styles.applyWrapper}>
         <button
           type="button"
@@ -140,8 +140,6 @@ export default function Apply() {
             ))}
           </div>
         </div>
-        <img src={headerCurve} className={styles.headerCurve} alt="Header curve decoration" />
-        
         <div className="limitWidth">
           <div className={styles.timeline}>
             <div className={styles.timelineWidth} id="timeline" ref={nextSectionRef}>
@@ -171,11 +169,6 @@ export default function Apply() {
           </div>
         </div>
       </div>
-      <img 
-        src={faqCurve} 
-        className={styles.faqCurve}
-        alt="FAQ curve decoration"  
-      />
       {renderAllFaqs()}
     </>
   );

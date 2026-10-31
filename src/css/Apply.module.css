@@ -1,3 +1,9 @@
+/* Lifted above the stars - see FixedStarField. */
+.applyWrapper,
+.allFaqs {
+  position: relative;
+}
+
 /* TIMELINE */
 
 .applyHeader {
@@ -82,14 +88,6 @@
   font-size: 14px;
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.85);
-}
-
-.headerCurve {
-  padding: 2% 0%;
-  width: 100%;
-  margin-top: -100px;
-  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.2));
-  user-select: none;
 }
 
 .applyHeader h1 {
@@ -393,12 +391,6 @@
 
 .allFaqs {
   padding: 10px var(--margin-from-screen);
-}
-
-.faqCurve {
-  width: 100%;
-  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.2));
-  user-select: none;
 }
 
 .faqQuestion {

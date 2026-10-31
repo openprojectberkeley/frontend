@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styles from '../css/ImmersiveHero.module.css';
 
 /*
@@ -137,6 +137,105 @@ export default function StarField() {
             }}
           />
         </span>
+      ))}
+    </div>
+  );
+}
+
+/*
+ * The board's and the apply page's sky: the hero's three layers of squares,
+ * scattered over one window's height and fixed behind the page. Each layer is two copies of that
+ * tile stacked, slid up by FIXED_STARS_LAG of the scroll and wrapped a tile at
+ * a time, so the field never runs out however long the page gets - and, being
+ * fixed, moves at only that fraction of the page's rate, the far, fine layer
+ * least.
+ */
+const FIXED_STARS_LAG = [0.06, 0.12, 0.2];
+const FIXED_STARS_SEED = 20261029;
+
+const FIXED_STARS = STAR_LAYERS.map((layer, index) => {
+  const random = scatter(FIXED_STARS_SEED + index);
+
+  return Array.from({ length: layer.count }, () => {
+    const spin = layer.spin * (0.8 + random() * 0.4);
+
+    return {
+      left: random() * 100,
+      top: random() * 100,
+      size: layer.size * (0.75 + random() * 0.5),
+      opacity: layer.opacity * (0.7 + random() * 0.6),
+      spin,
+      delay: -random() * spin,
+      reverse: random() < 0.5,
+    };
+  });
+});
+
+export function FixedStarField() {
+  const layerRefs = useRef([]);
+
+  useEffect(() => {
+    let frameId = null;
+
+    const measure = () => {
+      frameId = null;
+
+      layerRefs.current.forEach((layer, index) => {
+        if (!layer) return;
+
+        const tile = layer.offsetHeight / 2;
+        const shift = tile ? (window.scrollY * FIXED_STARS_LAG[index]) % tile : 0;
+
+        layer.style.transform = `translate3d(0, ${(-shift).toFixed(1)}px, 0)`;
+      });
+    };
+
+    const schedule = () => {
+      if (frameId === null) frameId = window.requestAnimationFrame(measure);
+    };
+
+    measure();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
+  }, []);
+
+  return (
+    <div className={styles.fixedStars} aria-hidden="true">
+      {FIXED_STARS.map((stars, layerIndex) => (
+        <div
+          key={layerIndex}
+          ref={(node) => { layerRefs.current[layerIndex] = node; }}
+          className={styles.fixedStarLayer}
+        >
+          {[0, 1].map((copy) => stars.map((star, index) => (
+            <span
+              key={`${copy}-${index}`}
+              className={`${styles.fixedStar} ${layerIndex === 0 ? styles.starFine : ''}`}
+              style={{
+                left: `${star.left.toFixed(2)}%`,
+                top: `${(star.top / 2 + copy * 50).toFixed(2)}%`,
+                '--size': `${star.size.toFixed(3)}vmin`,
+              }}
+            >
+              <i
+                className={styles.starSpin}
+                style={{
+                  opacity: star.opacity.toFixed(3),
+                  animationDuration: `${star.spin.toFixed(1)}s`,
+                  animationDelay: `${star.delay.toFixed(1)}s`,
+                  animationDirection: star.reverse ? 'reverse' : 'normal',
+                }}
+              />
+            </span>
+          )))}
+        </div>
       ))}
     </div>
   );

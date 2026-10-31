@@ -2138,6 +2138,32 @@
   pointer-events: none;
 }
 
+/* FixedStarField's: fixed behind the page, a layer of two stacked tiles slid
+   up by its share of the scroll. */
+.fixedStars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fixedStarLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200vh;
+  will-change: transform;
+}
+
+.fixedStar {
+  position: absolute;
+  width: max(2px, var(--size, 0.6vmin));
+  height: max(2px, var(--size, 0.6vmin));
+  transform: translate(-50%, -50%);
+}
+
 /* Pushed back against the scroll by --lag of it: up while the copy is still
    coming up the window, down once it has gone past the top. */
 .aboutStar {
