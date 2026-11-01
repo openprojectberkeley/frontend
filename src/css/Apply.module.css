@@ -1,76 +1,226 @@
-/* Lifted above the stars - see FixedStarField. */
-.applyWrapper,
-.allFaqs {
+/* Lifted above the stars - see FixedStarField. Clipped at the sides for the
+   astronaut, which runs off the right edge; clip rather than hidden, so the
+   FAQ title can still stick. */
+.applyWrapper {
   position: relative;
+  overflow-x: clip;
 }
 
-/* TIMELINE */
+/* HEADING */
 
+/*
+ * The home page's scene six, set at the top of the page: the heading and the
+ * sentence side by side and the button under the sentence, laid out and
+ * played in by JoinScene.
+ */
 .applyHeader {
-  margin: 140px var(--margin-from-screen) 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 20px;
-  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+  padding: 140px var(--margin-from-screen) 0;
 }
 
-.applyButton {
-  background-color: #cd9700;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: box-shadow 0.3s ease, color 0.3s ease;
-  min-width: 200px;
-  font-size: 25px;
-  margin-top: 20px;
-  height: fit-content;
-  text-wrap: nowrap;
-  user-select: none;
-}
+/* STEPS AND TIMELINE */
 
-.applyButton:hover {
-  box-shadow: 200px 0px 0px white inset;
-  color: #2D2B2B;
-}
-
-.headerBlock {
-  display: flex;
-  flex-direction: column;
+/*
+ * The steps down the left and the timeline down the right, with the lines
+ * from each step to the events it is done at drawn across the gap between -
+ * see measureLinks. The steps spread down the timeline's height, so each sits
+ * near the events it points to. One column on anything narrower, the steps
+ * over the timeline, with no lines.
+ */
+.process {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(3rem, 9vw, 8rem) minmax(0, 1.15fr);
+  margin-top: clamp(5rem, 12vh, 8rem);
+  padding: 0 var(--margin-from-screen);
 }
 
 .applySteps {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 28px;
-  margin: 40px var(--margin-from-screen) 110px;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .stepItem {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  flex: 1 1 260px;
-  max-width: 360px;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.stepCircle {
-  width: 52px;
-  height: 52px;
-  flex-shrink: 0;
+/* The lines: each drawn in its step's colour as the page is scrolled - see
+   useScrollDrawing - with a dot where it arrives, once it has. */
+.links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.links path {
+  fill: none;
+  stroke: var(--hl);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.85;
+}
+
+.links circle {
+  fill: var(--hl);
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.linkDone circle {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .process {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .applySteps {
+    gap: 2rem;
+  }
+
+  .links {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .stepItem {
+    gap: 1.1rem;
+  }
+
+  /* Smaller, so the words beside them keep a column worth reading. */
+  .stepFigure.stepFigure {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+
+  .stepNumber.stepNumber {
+    font-size: 3.5rem;
+  }
+}
+
+/*
+ * Each number with its shape behind it, blurring in as its step is reached,
+ * a beat before its title, and staying.
+ */
+.stepFigure {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(7rem, 11vw, 10rem);
+  height: clamp(7rem, 11vw, 10rem);
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 700ms ease, filter 700ms ease;
+}
+
+.inView .stepFigure {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/*
+ * The shapes, in favicon.svg's own gradients - the circle's violet to mint,
+ * the arc's pink to orange, the stem's yellow to green. The circle sits still; the square
+ * rocks hard back and forth, and the triangle turns slowly about its middle,
+ * forever.
+ */
+.stepShape {
+  position: absolute;
+  inset: 0.4rem;
+}
+
+.shapeCircle {
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 24px;
-  color: #fff;
-  background: linear-gradient(135deg, #F9C12C 0%, #cd9700 100%);
-  box-shadow: 0 6px 14px rgba(205, 151, 0, 0.45),
-              0 0 0 4px rgba(249, 193, 44, 0.18),
-              inset 0 2px 3px rgba(255, 255, 255, 0.35);
+  background-image: linear-gradient(180deg, #6E1FC2, #68E2C3);
+}
+
+.shapeSquare {
+  background-image: linear-gradient(160deg, #EB50A1, #FF910E);
+  animation: shapeRock 1.9s ease-in-out infinite alternate;
+}
+
+.shapeTriangle {
+  inset: 0;
+  background-image: linear-gradient(180deg, #F9D85D, #6EE978);
+  clip-path: polygon(50% 0, 100% 86.6%, 0 86.6%);
+  /* The triangle's centre, two thirds of the way down to its base. */
+  transform-origin: 50% 57.7%;
+  animation: shapeSpin 18s linear infinite;
+}
+
+@keyframes shapeRock {
+  from {
+    transform: rotate(-22deg);
+  }
+
+  to {
+    transform: rotate(22deg);
+  }
+}
+
+@keyframes shapeSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shapeSquare,
+  .shapeTriangle {
+    animation: none;
+  }
+}
+
+/*
+ * Each number, large, in a near-white tint of its shape's gradient - see
+ * STEP_NUMBERS - over the shape's top right corner rather than its middle.
+ */
+.stepNumber {
+  position: absolute;
+  top: 0;
+  right: 4%;
+  /* The gradient is clipped to the box, so the box has to hold the whole
+     glyph: the pixel face draws past a tight line box at the top. */
+  padding: 0.12em 0.08em 0.04em;
+  font-family: var(--font-title);
+  font-size: clamp(3.5rem, 5.5vw, 4.75rem);
+  line-height: 1.1;
+  text-align: center;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.numberViolet {
+  background-image: linear-gradient(180deg, #F3EAFF, #E4FFF8);
+}
+
+.numberCoral {
+  background-image: linear-gradient(180deg, #FFEAF5, #FFF2E0);
+}
+
+.numberLime {
+  background-image: linear-gradient(180deg, #FFFCE8, #EAFFEC);
 }
 
 .stepBody {
@@ -79,43 +229,165 @@
 
 .stepTitle {
   font-weight: bold;
-  margin: 0 0 4px;
-  color: #F9C12C;
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+  margin: 0 0 8px;
+  color: #FAF3E0;
 }
 
 .stepText {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.85);
+  max-width: 40rem;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.applyHeader h1 {
+/*
+ * The board's highlight arrival, for the labels - the steps' titles, the
+ * events' dates and titles; the text under them is typed in instead. A bar in
+ * --hl wipes in left to right over nothing and straight back out the same
+ * way, and the words are there once it has covered them. Inline, and cloned
+ * at each line break, so a label that wraps gets a bar per line rather than
+ * one block. A label goes at --flash-at (250ms unless the row says), the one
+ * under it a beat later.
+ *
+ * Played once: .inView is raised the first time and never taken off.
+ *
+ * The words are held back with the fill rather than with visibility, which
+ * would take the bar with them, and on everything inside too, as a link keeps
+ * its own colour.
+ */
+.flash {
+  --flash-in: 380ms;
+  --flash-out: 420ms;
+  --flash-delay: var(--flash-at, 250ms);
+
+  padding: 0 0.15em;
+  margin: 0 -0.15em;
+  background-image: linear-gradient(var(--hl, #F9C12C), var(--hl, #F9C12C));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.flash,
+.flash * {
+  -webkit-text-fill-color: transparent;
+}
+
+.flashLater {
+  --flash-delay: calc(var(--flash-at, 250ms) + 150ms);
+}
+
+
+/*
+ * The words stay held back by the rule above until the bar has covered them,
+ * then are shown for good. Shown by an animation that only ever adds them, at
+ * its delay - not hidden by one until then - so that there is no frame, before
+ * the animations have started, in which they are there to see.
+ */
+.inView .flash {
+  animation:
+    flashWipeIn var(--flash-in) cubic-bezier(0.22, 1, 0.36, 1) var(--flash-delay) both,
+    flashWipeOut var(--flash-out) cubic-bezier(0.22, 1, 0.36, 1)
+      calc(var(--flash-delay) + var(--flash-in) * 0.65) forwards,
+    flashInk 1ms step-start calc(var(--flash-delay) + var(--flash-in) * 0.65) forwards;
+}
+
+.inView .flash * {
+  animation: flashInk 1ms step-start calc(var(--flash-delay) + var(--flash-in) * 0.65) forwards;
+}
+
+@keyframes flashWipeIn {
+  from {
+    background-position: left center;
+    background-size: 0% 100%;
+  }
+
+  to {
+    background-position: left center;
+    background-size: 100% 100%;
+  }
+}
+
+@keyframes flashWipeOut {
+  from {
+    background-position: right center;
+    background-size: 100% 100%;
+  }
+
+  to {
+    background-position: right center;
+    background-size: 0% 100%;
+  }
+}
+
+@keyframes flashInk {
+  to {
+    -webkit-text-fill-color: currentcolor;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inView .flash,
+  .inView .flash * {
+    animation: none;
+    -webkit-text-fill-color: currentcolor;
+  }
+}
+
+/* Both sections' titles, in the titles' pixel face. */
+.sectionTitle {
+  margin: 0;
   font-family: var(--font-title);
   font-weight: 400;
   letter-spacing: normal;
-  font-size: 40px;
-  margin: 0;
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  line-height: 1.1;
 }
 
-.applyHeader p {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 20px;
+/* TIMELINE */
+
+.timeline {
+  position: relative;
+  z-index: 1;
+  grid-column: 3;
 }
 
+.timeline .sectionTitle {
+  color: #63BEFF;
+}
+
+@media (max-width: 900px) {
+  .timeline {
+    grid-column: 1;
+    margin-top: clamp(4rem, 10vh, 6rem);
+  }
+}
+
+/*
+ * The astronaut, large and taking no room: on the right beside the heading,
+ * running down behind the steps and the timeline and partly off the right
+ * edge. Under everything else on the page - the heading and the steps and
+ * timeline are lifted over it. Dimmed, so the white of the helmet does not
+ * take the white words over it.
+ */
 .circle {
-  flex: 0 1 auto;
-  width: clamp(340px, 25vw, 500px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  z-index: 0;
+  top: clamp(4rem, 6vw, 6.5rem);
+  right: clamp(-9rem, -8vw, -3rem);
+  width: clamp(300px, 40vw, 600px);
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .circle img {
+  display: block;
   width: 100%;
-  height: fit-content;
-  object-fit: contain;
+  height: auto;
   user-select: none;
 
   /* animation */
@@ -148,105 +420,138 @@
   }
 }
 
-.timeline {
-  padding-bottom: 2%;
-  margin-left: var(--margin-from-screen);
-  margin-right: var(--margin-from-screen);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+/*
+ * The events down a line: each a row of the number, set right, the dot on
+ * the line, and the rest, set left. The line runs from the first dot to the
+ * last - placed by useScrollDrawing, which draws it down as the page is
+ * scrolled - and each event comes in as the line reaches its dot: the dot
+ * fades in, the number blurs in, the date and title are highlighted and the
+ * text typed.
+ */
+.eventsColumn {
+  --number: 3.25rem;
+  --track: 2rem;
+
+  position: relative;
+  margin-top: clamp(2rem, 5vh, 3rem);
 }
 
-@media screen and (max-width: 1200px) {
-  .timeline {
-    flex-direction: column;
+.spine {
+  position: absolute;
+  left: calc(var(--number) + var(--track) / 2 - 1.5px);
+  width: 3px;
+  border-radius: 2px;
+  background-color: #63BEFF;
+  transform: scaleY(0);
+  transform-origin: center top;
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event {
+  display: grid;
+  grid-template-columns: var(--number) var(--track) minmax(0, 1fr);
+  align-items: start;
+}
+
+.eventNumber {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 1.75rem;
+  line-height: 1.1;
+  text-align: right;
+  color: #FAF3E0;
+  opacity: 0;
+}
+
+/* Blurs in as the event comes in, as the steps' numbers do. */
+.inView .eventNumber {
+  animation: numberIn 600ms ease var(--flash-at) both;
+}
+
+@keyframes numberIn {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
   }
 }
 
-.timelineWidth {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-}
-
-.timelineWidth h1 {
-  padding-bottom: 20px;
-}
-
-.timeline a {
-  margin: auto;
-}
-
-.timeline h1 {
-  color: #63BEFF;
-  padding: 0;
-}
-
-.blue {
-  color: #63BEFF;
-}
-
-.outer {
-  border-left: 7px solid #63BEFF;
-}
-
-.card {
+/* On the line, level with the number. */
+.eventDot {
   position: relative;
-  margin: 0 0 0 20px;
-  padding: 10px;
-  color: white;
-  border-radius: 8px;
-}
-
-.info {
-  display: flex;
-  flex-direction: row;
-  gap: 30px;
-}
-
-.title {
-  font-family: var(--font-title);
-  font-weight: 400;
-  letter-spacing: normal;
-  position: relative;
-  font-size: 50px;
-  margin: 0;
-  padding: 0;
-  width: 70px;
-  flex-shrink: 0;
-  font-style: italic;
-}
-
-.title::before {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #63BEFF;
+  z-index: 1;
+  justify-self: center;
+  width: 14px;
+  height: 14px;
+  margin-top: 0.55rem;
   border-radius: 50%;
-  left: -43.5px;
-  top: 30px;
-  border: 5px solid #63BEFF;
+  background-color: #63BEFF;
+  box-shadow: 0 0 0 5px rgba(99, 190, 255, 0.22);
+  opacity: 0;
 }
 
-.content {
-  margin-top: 10px;
+.inView .eventDot {
+  animation: dotIn 320ms ease both;
+}
+
+@keyframes dotIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* All there at once under reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .inView .eventDot,
+  .inView .eventNumber {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.eventBody {
+  text-align: left;
+  color: white;
 }
 
 .date {
   color: #F9C12C;
   font-size: 14px;
-  margin: 0;
+  margin: 0.2rem 0 0;
 }
 
 .subtitle {
-  margin: 0;
+  margin: 0.15rem 0 0.35rem;
+  font-size: 1.05rem;
 }
 
 .information {
   margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.blue {
+  color: #63BEFF;
 }
 
 .information a.blue {
@@ -254,145 +559,136 @@
   cursor: pointer;
 }
 
-.stackContent {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.timelineContent {
-  padding: 20px 0;
-}
-
-.importantNote {
-  border: 3px solid #F9C12C;
-  padding: 10px 20px;
-  background-color: #F9C12C;
-  color: #2D2B2B;
-  width: fit-content;
-}
-
-@media screen and (max-width: 1000px) {}
-
-@media screen and (max-width: 550px) {
-  .timeline {
-    padding-bottom: 30px;
-  }
-
-  .applyHeader {
-    flex-direction: column;
-  }
-  .applyHeader p {
-    font-size: 18px;
-  }
-  .applySteps {
-    margin-bottom: 180px;
-  }
-}
-
-@media screen and (max-width: 400px) {
-  .headerBlock {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .applyHeader h1 {
-    text-align: center;
-  }
-
-  .headerBlock p {
-    width: 100%;
-    text-align: center;
-  }
-}
-
 /* FAQ */
 
-.faqBox {
-  background: #FFEFCD;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  padding: 20px;
-  cursor: pointer;
-  transition: 0.2s;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  margin: 15px 0;
-}
-
-.faqBox:hover {
-  filter: brightness(95%);
-  transition: 0.2s;
-  border-bottom-left-radius: 20px;
-}
-
-.faqHeader {
-  width: 100%;
+/*
+ * The title in a column of its own, held in view while the questions go by,
+ * and the questions as a ruled list rather than cards: each one a row that
+ * opens downward on its answer.
+ */
+.faqs {
   display: grid;
-  grid-template-columns: 90fr 10fr;
-  color: black;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: start;
+  padding: clamp(5rem, 12vh, 8rem) var(--margin-from-screen) clamp(4rem, 10vh, 6rem);
 }
 
-.faqImageContainer {
-  position: relative;
-}
-
-.faqQuestion {
-  font-weight: bold;
-  font-size: x-large;
-}
-
-@media screen and (max-width: 870px) {
-  .faqQuestion {
-    font-weight: bold;
-    font-size: large;
-  }
-}
-
-.faqAnswer,
-.faqAnswerInvisible {
-  white-space: pre-wrap;
-  overflow: hidden;
-  max-height: 500px;
-  transition: 0.3s;
-}
-
-.faqAnswerInvisible {
-  margin: 0;
-  max-height: 0;
-}
-
-.faqPlus,
-.faqPlusRotate {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto;
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s;
-  user-select: none;
-}
-
-.faqPlusRotate {
-  transform: rotate(-45deg);
-}
-
-.faqAnswerContainer {
-  width: 100%;
-  color: rgb(50, 49, 49);
-}
-
-.faqTitle {
+.faqs .sectionTitle {
+  position: sticky;
+  top: 120px;
   color: #F9C12C;
-  margin-top: 0;
 }
 
-.allFaqs {
-  padding: 10px var(--margin-from-screen);
+.faqList {
+  border-top: 1px solid rgba(255, 253, 248, 0.18);
+}
+
+.faqItem {
+  border-bottom: 1px solid rgba(255, 253, 248, 0.18);
+  opacity: 0;
+  filter: blur(6px);
+  transition: opacity 500ms ease, filter 500ms ease;
+}
+
+/* Each row a beat after the one above it - its delay is set on it. */
+.inView .faqItem {
+  opacity: 1;
+  filter: blur(0);
 }
 
 .faqQuestion {
-  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  padding: 1.4rem 0;
+  border: 0;
+  background: none;
+  color: #FAF3E0;
+  font: inherit;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.faqQuestion:hover,
+.faqOpen .faqQuestion {
+  color: #F9C12C;
+}
+
+.faqQuestion:focus-visible {
+  outline: 2px solid #F9C12C;
+  outline-offset: 4px;
+}
+
+/* A plus drawn in the question's colour, turned to a cross when open. */
+.faqToggle {
+  position: relative;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  transition: transform 300ms ease;
+}
+
+.faqToggle::before,
+.faqToggle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  margin-top: -1px;
+  background-color: currentColor;
+}
+
+.faqToggle::after {
+  transform: rotate(90deg);
+}
+
+.faqOpen .faqToggle {
+  transform: rotate(45deg);
+}
+
+/* Opened by its row's height, from nothing to the answer's own. */
+.faqAnswer {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 350ms ease, visibility 350ms;
+}
+
+.faqOpen .faqAnswer {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+
+/* Clipped by the row; the answer's own gap below it is inside, so the row's
+   height is the only thing that moves. */
+.faqAnswerInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.faqAnswer p {
+  margin: 0 2.5rem 1.5rem 0;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+@media screen and (max-width: 760px) {
+  .faqs {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .faqs .sectionTitle {
+    position: static;
+  }
 }

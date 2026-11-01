@@ -13,6 +13,9 @@ import linkedin from '../images/linkedin.png';
 export const CURRENT_SEASON = 'Fall';
 export const CURRENT_YEAR = 2026;
 export const CURRENT_SEMESTER = `${CURRENT_SEASON} ${CURRENT_YEAR}`;
+// The one after it, which the apply page points to while applications are closed.
+export const NEXT_SEMESTER =
+  CURRENT_SEASON === 'Fall' ? `Spring ${CURRENT_YEAR + 1}` : `Fall ${CURRENT_YEAR}`;
 
 export const PORTAL_URL = 'https://portal.openprojectberkeley.com';
 export const CONTACT_EMAIL = 'openprojectberkeley@gmail.com';

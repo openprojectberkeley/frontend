@@ -43,3 +43,104 @@ export default function ScrambleText({ text, delay, duration, hold, className })
     </span>
   );
 }
+
+/*
+ * A sentence in runs, typed in as one with the scramble - each run in an
+ * element of its own, a link or a mark, so the typing runs on across them
+ * rather than around them. A run is `text`, with `href` for a link and
+ * `className` for how it is set.
+ *
+ * Empty until `play` is first raised, then typed in after `delay` over
+ * `duration`, and from then on left as it is: it has no way out, so it is
+ * never typed in again. `instant` sets it all at once instead, for reduced
+ * motion.
+ *
+ * Unlike ScrambleText the live copy is the real one, so its links can be
+ * followed; the full sentence under it, holding the shape, is hidden from
+ * everything.
+ */
+export function ScrambleRuns({ runs, play, delay = 0, duration, hold, instant, className }) {
+  const nodeRefs = useRef([]);
+  const playedRef = useRef(false);
+  // Read in the effect by ref, so a new array of the same runs on a render
+  // does not start the typing over.
+  const runsRef = useRef(runs);
+  const text = runs.map((run) => run.text).join('');
+
+  runsRef.current = runs;
+
+  useEffect(() => {
+    const write = (typed) => {
+      let start = 0;
+
+      runsRef.current.forEach((run, index) => {
+        const node = nodeRefs.current[index];
+
+        if (node) node.textContent = typed.slice(start, start + run.text.length);
+        start += run.text.length;
+      });
+    };
+
+    if (instant || playedRef.current) {
+      write(text);
+      return undefined;
+    }
+
+    if (!play) {
+      write('');
+      return undefined;
+    }
+
+    let frame = null;
+    const start = performance.now() + delay;
+
+    const step = (now) => {
+      const progress = Math.min(1, Math.max(0, (now - start) / duration));
+
+      write(scramble('', text, progress, hold));
+      if (progress >= 1) playedRef.current = true;
+      frame = progress < 1 ? window.requestAnimationFrame(step) : null;
+    };
+
+    frame = window.requestAnimationFrame(step);
+
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
+  }, [text, play, delay, duration, hold, instant]);
+
+  return (
+    <span className={`${styles.scrambleBox} ${className ?? ''}`}>
+      <span className={styles.scrambleSizer} aria-hidden="true">
+        {runs.map((run, index) => (
+          <span key={index} className={run.className}>
+            {run.text}
+          </span>
+        ))}
+      </span>
+      <span className={styles.scrambleLive}>
+        {runs.map((run, index) => {
+          const ref = (node) => {
+            nodeRefs.current[index] = node;
+          };
+
+          return run.href ? (
+            // Named by its full text, which its own content is only once typed.
+            <a
+              key={index}
+              className={run.className}
+              href={run.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={run.text}
+            >
+              <span ref={ref} />
+            </a>
+          ) : (
+            <span key={index} ref={ref} className={run.className} />
+          );
+        })}
+      </span>
+    </span>
+  );
+}

@@ -15,19 +15,26 @@ export const applicationDeadline = {
   time: "12:00 PM (noon)",
 };
 
-// The three steps under the apply page's heading.
+/*
+ * The three steps on the apply page, beside the timeline. `events` are the
+ * ids of the timeline entries each one is done at, which the page draws a
+ * line to from the step - keep them in step with recruitmentTimeline below.
+ */
 export const applySteps = [
   {
     title: "Book a coffee chat",
     text: "Schedule a coffee chat with a board member through Open Portal.",
+    events: ["02"],
   },
   {
     title: "Attend an infosession",
     text: "Attend one of our two infosessions and enter the unique code a board member gives you in Open Portal.",
+    events: ["04", "05"],
   },
   {
     title: "Rank projects & apply",
     text: "Rank the projects by interest and apply to the ones that excite you most.",
+    events: ["06"],
   },
 ];
 

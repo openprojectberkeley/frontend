@@ -105,6 +105,9 @@ function FlashTitle({ text }) {
 export default function AboutScene({ arrived, reducedMotion }) {
   const prefixRef = useRef(null);
   const restRef = useRef(null);
+  /* Whether the mission has been typed all the way in: it has no way out, so
+     from then on it stays, and only the heading blurs out and in again. */
+  const typedRef = useRef(false);
 
   // --- the mission ---------------------------------------------------------
   useEffect(() => {
@@ -115,13 +118,13 @@ export default function AboutScene({ arrived, reducedMotion }) {
 
     const highlight = (on) => prefixRef.current?.classList.toggle(styles.highlightOn, on);
 
-    if (reducedMotion) {
+    if (reducedMotion || typedRef.current) {
       write(MISSION_FULL);
       highlight(true);
       return undefined;
     }
 
-    // Above the copy it is empty, so coming back down plays it again.
+    // Empty until it is first reached.
     if (!arrived) {
       write('');
       highlight(false);
@@ -137,6 +140,7 @@ export default function AboutScene({ arrived, reducedMotion }) {
       write(scramble('', MISSION_FULL, progress, MISSION_HOLD));
       // Once the label is all there, the highlight sweeps in under it.
       if (progress >= MISSION_PREFIX_DONE) highlight(true);
+      if (progress >= 1) typedRef.current = true;
       frame = progress < 1 ? window.requestAnimationFrame(step) : null;
     };
 

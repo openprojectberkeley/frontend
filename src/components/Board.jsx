@@ -9,6 +9,7 @@ import { HIGHLIGHT_TINTS } from './MomentStrip';
 import { NavHashLink } from 'react-router-hash-link';
 import homeStyles from "../css/HomePage.module.css";
 import useScrollCue from './useScrollCue';
+import useCursorTip from './useCursorTip';
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
@@ -285,66 +286,6 @@ function useRevealOnce(gridRef) {
 const HIGHLIGHTS = aboutValues.map((value) => value.colour);
 
 /*
- * The label that follows the cursor over a card with the person's major and
- * year: the home page's community caption, white pass then colour - see
- * MomentStrip, whose classes and tints it borrows. Written straight to the
- * element, as there: a render per pointer move would be the whole board.
- */
-const TIP_FLIP_MARGIN = 260;
-
-function useCursorTip() {
-  const tipRef = useRef(null);
-  const textRef = useRef(null);
-
-  const move = (event) => {
-    const tip = tipRef.current;
-
-    if (!tip) return;
-
-    tip.style.setProperty('--tip-x', `${event.clientX}px`);
-    tip.style.setProperty('--tip-y', `${event.clientY}px`);
-    tip.style.setProperty(
-      '--tip-flip',
-      event.clientX > window.innerWidth - TIP_FLIP_MARGIN ? 'calc(-100% - 1.7rem)' : '0%',
-    );
-  };
-
-  // Taken off and put back with a layout read between, so the animation
-  // re-runs moving straight from one card to the next.
-  const show = (event, person, accent) => {
-    const tip = tipRef.current;
-    const text = [person.year, person.major].filter(Boolean).join(' · ');
-
-    if (event.pointerType !== 'mouse' || !tip || !text) return;
-
-    textRef.current.textContent = text;
-    tip.style.setProperty('--moment-accent', accent);
-    move(event);
-    tip.classList.remove(heroStyles.momentTipOn, heroStyles.momentTipOut);
-    tip.getBoundingClientRect();
-    tip.classList.add(heroStyles.momentTipOn);
-  };
-
-  const hide = () => {
-    const tip = tipRef.current;
-
-    if (!tip || !tip.classList.contains(heroStyles.momentTipOn)) return;
-
-    tip.classList.remove(heroStyles.momentTipOn);
-    tip.getBoundingClientRect();
-    tip.classList.add(heroStyles.momentTipOut);
-  };
-
-  const tip = (
-    <div ref={tipRef} className={`${heroStyles.momentTip} ${styles.cursorTip}`} aria-hidden="true">
-      <span ref={textRef} className={heroStyles.momentTipText} />
-    </div>
-  );
-
-  return { tip, show, move, hide };
-}
-
-/*
  * The card's own hover: .hoverIn plays the wipe down to the second photo,
  * .hoverOut plays the same wipe again back to the first. Two classes with
  * animations of their own names, so swapping one for the other restarts it.
@@ -503,7 +444,7 @@ export default function Board() {
   const lightRef = useRef(null);
   const sheetRef = useRef(null);
   const reducedMotion = useReducedMotion();
-  const cursorTip = useCursorTip();
+  const cursorTip = useCursorTip(styles.cursorTip);
   const [flashTargetId, setFlashTargetId] = useState('');
   const showScrollCue = useScrollCue();
 
@@ -537,7 +478,11 @@ export default function Board() {
         style={{ '--hl': HIGHLIGHTS[index % HIGHLIGHTS.length] }}
         onPointerEnter={hover ? (event) => {
           hoverCard(event, true);
-          cursorTip.show(event, person, HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length]);
+          cursorTip.show(
+            event,
+            [person.year, person.major].filter(Boolean).join(' · '),
+            HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length],
+          );
         } : undefined}
         onPointerMove={hover ? cursorTip.move : undefined}
         onPointerLeave={hover ? (event) => {

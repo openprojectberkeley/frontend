@@ -35,9 +35,10 @@ export default function scramble(from, to, progress, hold = SCRAMBLE_HOLD) {
     } else if (local <= 0) {
       // Still whatever the old word had here, and nothing at all past its end.
       out += from[index] ?? '';
-    } else if (letter === ' ') {
-      // Spaces stay spaces: scrambling them only makes the word jitter sideways.
-      out += ' ';
+    } else if (/\s/.test(letter)) {
+      // Spaces stay spaces, and line breaks line breaks: scrambling them only
+      // makes the words jitter sideways, or a paragraph jump.
+      out += letter;
     } else {
       const tick = Math.floor(local * SCRAMBLE_TICKS);
       out += SCRAMBLE_GLYPHS[(index * 7 + tick * 11) % SCRAMBLE_GLYPHS.length];

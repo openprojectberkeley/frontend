@@ -2275,6 +2275,23 @@
   transition-delay: 0ms;
 }
 
+/* The apply page's, while applications are closed: there, but grey, and with
+   no wipe to answer the hover - the label that follows the cursor over it
+   does that, saying why. */
+.ctaButton.ctaButton.joinButton:disabled {
+  background-color: #4A4A50;
+  color: rgba(255, 253, 248, 0.5);
+  box-shadow: none;
+  cursor: default;
+}
+
+/* That label is .momentTip; it only needs hiding on touch. */
+@media (hover: none) {
+  .joinTip {
+    display: none;
+  }
+}
+
 /* Holds the paragraph's full shape; the live copy is laid over it. */
 .missionSizer {
   visibility: hidden;

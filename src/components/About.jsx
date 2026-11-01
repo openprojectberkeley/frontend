@@ -14,7 +14,8 @@ export default function About() {
   /*
    * Whether the opening is on screen, which plays its heading and mission in:
    * raised once its top is a quarter of the way up the window, lowered when it
-   * has gone out of view altogether, so coming back to it plays them again.
+   * has gone out of view altogether, so coming back to it blurs the heading
+   * back in. The mission, once typed, stays - see AboutScene.
    */
   const [arrived, setArrived] = useState(false);
 

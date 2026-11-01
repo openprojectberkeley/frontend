@@ -1,8 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../css/ImmersiveHero.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import scramble from './scramble';
+import useCursorTip from './useCursorTip';
+import { HIGHLIGHT_TINTS } from './MomentStrip';
 import { applicationDeadline } from '../data/recruitmentTimeline';
 
 /*
@@ -12,14 +14,20 @@ import { applicationDeadline } from '../data/recruitmentTimeline';
  *
  * All three are set off by `arrived`, which the hero raises once the copy is
  * coming up the screen and lowers again above it, and run on their own clock
- * from there, so coming back down plays them again. The button waits for most
- * of the sentence, then blurs in the way the one at the top of the hero blurs
- * out.
+ * from there. The heading and the button blur back out above it and so blur
+ * in again coming back down; the sentence has no way out, so once it is typed
+ * it stays typed. The button waits for most of the sentence, then blurs in the
+ * way the one at the top of the hero blurs out.
  *
  * The sentence is in runs so the date and the time can each be marked: as the
  * last letter of either lands, a highlight in a colour of its own sweeps in
  * under it, as the mission's label does on the about page. The date and time
  * are applicationDeadline in data/recruitmentTimeline.js.
+ *
+ * The apply page sets its own heading the same way: `runs` for a sentence of
+ * its own, `button` for its own label and where it goes - or `disabled`, for
+ * a button that is there but greyed out, with `note` to say why in a label
+ * that follows the cursor over it.
  */
 
 const JOIN_RUNS = [
@@ -29,7 +37,7 @@ const JOIN_RUNS = [
   { text: applicationDeadline.time, colour: '#AB8FF3' },
   { text: '. Click the button to learn more!' },
 ];
-const JOIN_BODY = JOIN_RUNS.map((run) => run.text).join('');
+const JOIN_BUTTON = { label: 'Get Involved', to: '/apply' };
 /* A beat after the heading has started to clear, then the sentence. */
 const JOIN_BODY_DELAY_MS = 250;
 const JOIN_BODY_MS = 1400;
@@ -40,22 +48,35 @@ const JOIN_BODY_HOLD = 0.08;
  * letter lands - letter i starts i steps in and holds for JOIN_BODY_HOLD -
  * which is when its highlight sets off.
  */
-const JOIN_SPANS = JOIN_RUNS.reduce((spans, run) => {
-  const start = spans.length ? spans[spans.length - 1].end : 0;
-  const end = start + run.text.length;
-  const done =
-    ((end - 1) * (1 - JOIN_BODY_HOLD)) / (JOIN_BODY.length - 1) + JOIN_BODY_HOLD;
+function spansOf(runs) {
+  const length = runs.reduce((total, run) => total + run.text.length, 0);
 
-  return [...spans, { ...run, start, end, done }];
-}, []);
+  return runs.reduce((spans, run) => {
+    const start = spans.length ? spans[spans.length - 1].end : 0;
+    const end = start + run.text.length;
+    const done = ((end - 1) * (1 - JOIN_BODY_HOLD)) / (length - 1) + JOIN_BODY_HOLD;
 
-export default function JoinScene({ arrived, reducedMotion }) {
+    return [...spans, { ...run, start, end, done }];
+  }, []);
+}
+
+export default function JoinScene({
+  arrived,
+  reducedMotion,
+  runs = JOIN_RUNS,
+  button = JOIN_BUTTON,
+}) {
   const shown = arrived || reducedMotion;
   const runRefs = useRef([]);
+  /* Whether the sentence has been typed all the way in - see above. */
+  const typedRef = useRef(false);
+  const cursorTip = useCursorTip(styles.joinTip);
+  const body = useMemo(() => runs.map((run) => run.text).join(''), [runs]);
+  const spans = useMemo(() => spansOf(runs), [runs]);
 
   useEffect(() => {
     const write = (text, progress) => {
-      JOIN_SPANS.forEach((span, index) => {
+      spans.forEach((span, index) => {
         const node = runRefs.current[index];
 
         if (!node) return;
@@ -65,12 +86,12 @@ export default function JoinScene({ arrived, reducedMotion }) {
       });
     };
 
-    if (reducedMotion) {
-      write(JOIN_BODY, 1);
+    if (reducedMotion || typedRef.current) {
+      write(body, 1);
       return undefined;
     }
 
-    // Above the copy it is empty, so coming back down plays it again.
+    // Empty until it is first reached.
     if (!arrived) {
       write('', 0);
       return undefined;
@@ -82,7 +103,8 @@ export default function JoinScene({ arrived, reducedMotion }) {
     const step = (now) => {
       const progress = Math.min(1, Math.max(0, (now - start) / JOIN_BODY_MS));
 
-      write(scramble('', JOIN_BODY, progress, JOIN_BODY_HOLD), progress);
+      write(scramble('', body, progress, JOIN_BODY_HOLD), progress);
+      if (progress >= 1) typedRef.current = true;
       frame = progress < 1 ? window.requestAnimationFrame(step) : null;
     };
 
@@ -91,7 +113,7 @@ export default function JoinScene({ arrived, reducedMotion }) {
     return () => {
       if (frame !== null) window.cancelAnimationFrame(frame);
     };
-  }, [arrived, reducedMotion]);
+  }, [arrived, reducedMotion, body, spans]);
 
   return (
     <div className={styles.aboutHead}>
@@ -99,19 +121,19 @@ export default function JoinScene({ arrived, reducedMotion }) {
 
       <div className={styles.joinBody}>
         <p className={styles.aboutMission}>
-          <span className={styles.srOnly}>{JOIN_BODY}</span>
+          <span className={styles.srOnly}>{body}</span>
           {/* The full sentence, invisible and with its marked runs padded as
               the live ones are, holds the paragraph's shape so the lines do
               not reflow as the letters arrive over it. */}
           <span className={styles.missionSizer} aria-hidden="true">
-            {JOIN_SPANS.map((span, index) => (
+            {spans.map((span, index) => (
               <span key={index} className={span.colour ? styles.highlight : undefined}>
                 {span.text}
               </span>
             ))}
           </span>
           <span className={styles.missionLive} aria-hidden="true">
-            {JOIN_SPANS.map((span, index) => (
+            {spans.map((span, index) => (
               <span
                 key={index}
                 ref={(node) => {
@@ -124,17 +146,39 @@ export default function JoinScene({ arrived, reducedMotion }) {
           </span>
         </p>
 
-        <Link
-          to="/apply"
-          className={`${styles.cta} ${styles.joinCta} ${shown ? '' : styles.ctaGone}`}
-          tabIndex={shown ? undefined : -1}
-        >
-          <button className={`${homeStyles.getInvolvedButton} ${styles.ctaButton} ${styles.joinButton}`}>
-            Get Involved
-            <span className={styles.ctaArrow} aria-hidden="true">→</span>
-          </button>
-        </Link>
+        {button.disabled ? (
+          // The handlers are on the box, as a disabled button gets no pointer
+          // events of its own.
+          <div
+            className={`${styles.cta} ${styles.joinCta} ${shown ? '' : styles.ctaGone}`}
+            onPointerEnter={button.note ? (event) => cursorTip.show(event, button.note, HIGHLIGHT_TINTS[0]) : undefined}
+            onPointerMove={button.note ? cursorTip.move : undefined}
+            onPointerLeave={button.note ? cursorTip.hide : undefined}
+          >
+            <button
+              type="button"
+              disabled
+              className={`${homeStyles.getInvolvedButton} ${styles.ctaButton} ${styles.joinButton}`}
+            >
+              {button.label}
+              <span className={styles.ctaArrow} aria-hidden="true">→</span>
+            </button>
+          </div>
+        ) : (
+          <Link
+            to={button.to}
+            className={`${styles.cta} ${styles.joinCta} ${shown ? '' : styles.ctaGone}`}
+            tabIndex={shown ? undefined : -1}
+          >
+            <button className={`${homeStyles.getInvolvedButton} ${styles.ctaButton} ${styles.joinButton}`}>
+              {button.label}
+              <span className={styles.ctaArrow} aria-hidden="true">→</span>
+            </button>
+          </Link>
+        )}
       </div>
+
+      {button.note && cursorTip.tip}
     </div>
   );
 }
