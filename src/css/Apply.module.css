@@ -140,7 +140,8 @@
 
 /*
  * The shapes, in favicon.svg's own gradients - the circle's violet to mint,
- * the arc's pink to orange, the stem's yellow to green. The circle sits still; the square
+ * the arc's pink to orange, and the stem's yellow to green a shade darker,
+ * so the white number holds on it. The circle sits still; the square
  * rocks hard back and forth, and the triangle turns slowly about its middle,
  * forever.
  */
@@ -161,7 +162,7 @@
 
 .shapeTriangle {
   inset: 0;
-  background-image: linear-gradient(180deg, #F9D85D, #6EE978);
+  background-image: linear-gradient(180deg, #D9B12F, #3DB84A);
   clip-path: polygon(50% 0, 100% 86.6%, 0 86.6%);
   /* The triangle's centre, two thirds of the way down to its base. */
   transform-origin: 50% 57.7%;
@@ -192,35 +193,19 @@
 }
 
 /*
- * Each number, large, in a near-white tint of its shape's gradient - see
- * STEP_NUMBERS - over the shape's top right corner rather than its middle.
+ * Each number, large and white, over its shape's top right corner rather
+ * than its middle.
  */
 .stepNumber {
   position: absolute;
   top: 0;
   right: 4%;
-  /* The gradient is clipped to the box, so the box has to hold the whole
-     glyph: the pixel face draws past a tight line box at the top. */
   padding: 0.12em 0.08em 0.04em;
   font-family: var(--font-title);
   font-size: clamp(3.5rem, 5.5vw, 4.75rem);
   line-height: 1.1;
   text-align: center;
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.numberViolet {
-  background-image: linear-gradient(180deg, #F3EAFF, #E4FFF8);
-}
-
-.numberCoral {
-  background-image: linear-gradient(180deg, #FFEAF5, #FFF2E0);
-}
-
-.numberLime {
-  background-image: linear-gradient(180deg, #FFFCE8, #EAFFEC);
+  color: #FFFFFF;
 }
 
 .stepBody {

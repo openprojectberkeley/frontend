@@ -31,15 +31,14 @@ const CLOSED_BUTTON = {
 };
 
 /*
- * Each step's number is set in a near-white tint of one of the favicon's
- * gradients - see .numberViolet - on a shape in that gradient itself, and its
- * title highlighted, and its lines to the timeline drawn, in the gradient's
- * last colour.
+ * Each step's number sits in white on a shape in one of the favicon's
+ * gradients - see .shapeCircle - and its title is highlighted, and its lines
+ * to the timeline drawn, in the gradient's last colour.
  */
 const STEP_NUMBERS = [
-  { tone: 'numberViolet', shape: 'shapeCircle', colour: '#68E2C3' },
-  { tone: 'numberCoral', shape: 'shapeSquare', colour: '#FF910E' },
-  { tone: 'numberLime', shape: 'shapeTriangle', colour: '#6EE978' },
+  { shape: 'shapeCircle', colour: '#68E2C3' },
+  { shape: 'shapeSquare', colour: '#FF910E' },
+  { shape: 'shapeTriangle', colour: '#6EE978' },
 ];
 
 /*
@@ -412,7 +411,7 @@ export default function Apply() {
                 >
                   <div className={`${styles.stepFigure} ${heroStyles[STEP_DRIFTS[index][0]]}`} aria-hidden="true">
                     <span className={`${styles.stepShape} ${styles[STEP_NUMBERS[index].shape]}`} />
-                    <span className={`${styles.stepNumber} ${styles[STEP_NUMBERS[index].tone]}`}>
+                    <span className={styles.stepNumber}>
                       {index + 1}
                     </span>
                   </div>
