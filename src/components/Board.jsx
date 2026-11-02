@@ -1,5 +1,4 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useReducedMotion } from 'framer-motion';
 import styles from "../css/Board.module.css";
 import heroStyles from "../css/ImmersiveHero.module.css";
@@ -10,13 +9,16 @@ import { NavHashLink } from 'react-router-hash-link';
 import homeStyles from "../css/HomePage.module.css";
 import useScrollCue from './useScrollCue';
 import useCursorTip from './useCursorTip';
-import scrollToCentre from './scrollToCentre';
+import useCursorIcon from './useCursorIcon';
+import arriveAt from './arriveAt';
+import OpensElsewhere from './OpensElsewhere';
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
 // projectLeads arrives grouped by project in the projects page's order - see
 // boardMembers.js.
 import { board, projectLeads, alumni } from '../data/boardMembers';
+import { orderedProjects } from '../data/projectsData';
 import { CURRENT_SEMESTER } from '../data/site';
 
 /* As many columns as the old grid had at each width - see .columns. */
@@ -291,13 +293,35 @@ const HIGHLIGHTS = aboutValues.map((value) => value.colour);
  * .hoverOut plays the same wipe again back to the first. Two classes with
  * animations of their own names, so swapping one for the other restarts it.
  */
+/*
+ * A card's hover wipe runs to its end whatever the cursor does, and only then does
+ * the card catch up with it, wiping straight back if the cursor has left. So the
+ * card is told where the cursor is, and goes there whenever no wipe is running.
+ */
+const cursorOnCard = new WeakMap();
+
+const settleCard = (card) => {
+  const wiping = card.querySelector(`.${styles.wipe}`)
+    ?.getAnimations()
+    .some(({ playState }) => playState === 'running');
+
+  if (wiping) return;
+
+  const on = Boolean(cursorOnCard.get(card));
+
+  if (on === card.classList.contains(styles.hoverIn)) return;
+
+  // While a link is arriving at the card its hover is held back - see
+  // .person[data-arriving] - and with nothing shown, there is nothing to undo.
+  card.classList.toggle(styles.hoverIn, on);
+  card.classList.toggle(styles.hoverOut, !on && !('arriving' in card.dataset));
+};
+
 const hoverCard = (event, on) => {
   if (event.pointerType !== 'mouse') return;
 
-  const card = event.currentTarget;
-
-  card.classList.toggle(styles.hoverIn, on);
-  card.classList.toggle(styles.hoverOut, !on);
+  cursorOnCard.set(event.currentTarget, on);
+  settleCard(event.currentTarget);
 };
 
 /*
@@ -439,59 +463,46 @@ function ParallaxColumns({ people, renderPerson }) {
 }
 
 export default function Board() {
-  const location = useLocation();
   const nextSectionRef = useRef(null);
   const pageRef = useRef(null);
   const lightRef = useRef(null);
   const sheetRef = useRef(null);
   const reducedMotion = useReducedMotion();
   const cursorTip = useCursorTip(styles.cursorTip);
-  const [flashTargetId, setFlashTargetId] = useState('');
+  const cursorIcon = useCursorIcon();
   const showScrollCue = useScrollCue();
 
   useLightSheet(pageRef, lightRef, sheetRef, !reducedMotion);
-
-  useEffect(() => {
-    const hashId = location.hash.replace('#', '');
-
-    if (!hashId) {
-      setFlashTargetId('');
-      return undefined;
-    }
-
-    const flashTimer = window.setTimeout(() => {
-      setFlashTargetId(hashId);
-      window.setTimeout(() => setFlashTargetId(''), 5000);
-    }, 50);
-
-    return () => window.clearTimeout(flashTimer);
-  }, [location.hash, location.pathname]);
 
   const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
   // hover: the wipe to their second photo and the major/year caption. The
   // alumni have no second photos, so they go without.
-  const renderPerson = (idPrefix = '', { hover = true } = {}) => (person, index) => (
+  const renderPerson = (idPrefix = '', { hover = true } = {}) => (person, index) => {
+    const showCaption = (event) => cursorTip.show(
+      event,
+      [person.year, person.major].filter(Boolean).join(' · '),
+      HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length],
+    );
+
+    return (
       <div
-        className={`${styles.person} ${idPrefix ? styles.anchorTarget : ''} ${flashTargetId === `${idPrefix}${toAnchorId(person.name)}` ? styles.flashTarget : ''}`}
+        className={`${styles.person} ${idPrefix ? styles.anchorTarget : ''}`}
         key={person.name}
         id={idPrefix ? `${idPrefix}${toAnchorId(person.name)}` : undefined}
         style={{ '--hl': HIGHLIGHTS[index % HIGHLIGHTS.length] }}
         onPointerEnter={hover ? (event) => {
           hoverCard(event, true);
-          cursorTip.show(
-            event,
-            [person.year, person.major].filter(Boolean).join(' · '),
-            HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length],
-          );
+          showCaption(event);
         } : undefined}
+        onAnimationEnd={hover ? (event) => settleCard(event.currentTarget) : undefined}
         onPointerMove={hover ? cursorTip.move : undefined}
         onPointerLeave={hover ? (event) => {
           hoverCard(event, false);
           cursorTip.hide();
         } : undefined}
       >
-        <div className={styles.imageWrapper}>
+        <div className={styles.imageWrapper} data-arrival-box>
           <img
             className={styles.gridImage}
             src={person.image}
@@ -555,9 +566,20 @@ export default function Board() {
                     <NavHashLink
                       to={`/projects/#project-${toAnchorId(project)}`}
                       className={`${styles.title} ${styles.projectLink}`}
-                      scroll={scrollToCentre}
+                      scroll={arriveAt}
+                      onPointerEnter={(event) => {
+                        // The project's icon, in place of the person's caption.
+                        cursorTip.hide();
+                        cursorIcon.show(event, orderedProjects.find(({ name }) => name === project));
+                      }}
+                      onPointerMove={cursorIcon.move}
+                      onPointerLeave={(event) => {
+                        cursorIcon.hide();
+                        if (hover) showCaption(event);
+                      }}
                     >
                       {project}
+                      <OpensElsewhere />
                     </NavHashLink>
                     {index < projects.length - 1 ? ', ' : ''}
                   </React.Fragment>
@@ -566,7 +588,8 @@ export default function Board() {
               </p>
             ))}
       </div>
-  );
+    );
+  };
 
   return (
     <div ref={pageRef}>
@@ -615,6 +638,7 @@ export default function Board() {
     </section>
 
     {cursorTip.tip}
+    {cursorIcon.icon}
     </div>
   );
 }

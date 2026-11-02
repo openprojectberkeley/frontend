@@ -1,97 +1,65 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useReducedMotion } from 'framer-motion';
 import styles from '../css/Projects.module.css';
 import homeStyles from '../css/HomePage.module.css';
+import applyStyles from '../css/Apply.module.css';
+import rocket from '../images/triangle.png';
 import useScrollCue from './useScrollCue';
 import useInViewOnce from './useInViewOnce';
 import scrollToCentre from './scrollToCentre';
+import accentInk from './accentInk';
 import { FixedStarField } from './StarField';
-import ProjectHighlights, { CoffeeChatBadge, ProjectDifficulty, ProjectPMs, toAnchorId } from './ProjectHighlights';
-import { projects, sectionInfo, projectTypes, sectionOrder, logosFirst, orderedProjects } from '../data/projectsData';
+import ProjectDetail, { CoffeeChatBadge, ProjectDifficulty, ProjectPMs, ScrambleSwap, toAnchorId } from './ProjectDetail';
+import ProjectFilters, { NO_FILTERS, matchesFilters } from './ProjectFilters';
+import { ScrambleRuns } from './ScrambleText';
+import { projectsBySemester, sectionInfo, projectTypes, sectionOrder, logosFirst, orderedProjects, inPageOrder } from '../data/projectsData';
 import { CURRENT_SEMESTER } from '../data/site';
 
-/*
- * White or near-black, whichever reads better on a filled tile, all along the
- * white sheen over its accent that the words sit on - see .cardWipe: from the
- * bare accent to the sheen as strong as it gets beside the words.
- */
-const DARK_INK = '#14151E';
-const SHEEN_AT_WORDS = 0.31;
-const toChannels = (hex) => [1, 3, 5].map((start) => parseInt(hex.slice(start, start + 2), 16) / 255);
-const luminance = (channels) => {
-  const [r, g, b] = channels.map((channel) => (
-    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
-  ));
+/* Rows that come into view together start a beat apart. */
+const ROW_GAP_MS = 60;
+const NAME_SCRAMBLE_MS = 500;
+// Where the things held in place beside each other sit under the fixed header.
+const HEADER_CLEARANCE = 96;
 
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-};
-const contrast = (x, y) => {
-  const [lighter, darker] = [luminance(x), luminance(y)].sort((p, q) => q - p);
-
-  return (lighter + 0.05) / (darker + 0.05);
-};
-const accentInk = (accent) => {
-  const bare = toChannels(accent);
-  const sheened = bare.map((channel) => channel + (1 - channel) * SHEEN_AT_WORDS);
-  const worstOn = (ink) => Math.min(contrast(toChannels(ink), bare), contrast(toChannels(ink), sheened));
-
-  return worstOn('#FFFFFF') >= worstOn(DARK_INK) ? '#FFFFFF' : DARK_INK;
-};
-
-/* The tiles blur in a beat apart. */
-const TILE_GAP_MS = 60;
-
-// The slide a link from the board names, by its #project-<name>, if any.
-const slideInHash = (hash) => orderedProjects.findIndex(
+// The project a link from the board names, by its #project-<name>, if any. The
+// board is always the current semester's.
+const projectInHash = (hash) => orderedProjects.findIndex(
   ({ name }) => `#project-${toAnchorId(name)}` === hash,
 );
 
-/* A section's tiles, which come in once, the first time the section is in view. */
-function ProjectsGrid({ reducedMotion, children }) {
-  const gridRef = useRef(null);
-  const inView = useInViewOnce(gridRef);
+/*
+ * A project in the list: its icon, and beside it the name, client, project
+ * managers and difficulty. Comes in once, the first time it is in view, its name
+ * and difficulty typed in with the scramble as its client and project managers
+ * are highlighted in - see .flash. Each row asks when it arrives, as a long list
+ * would otherwise play out of sight below the fold.
+ *
+ * The whole row brings up the project beside the list. Filtered out, or in
+ * another semester than the one showing, it is hidden rather than dropped, so that
+ * coming back it has already come in.
+ *
+ * `anchorId` is what a link from the board arrives at it by.
+ */
+function ProjectRow({ project, anchorId, current, hidden, filterKey, reducedMotion, takeTurn, onShow }) {
+  const rowRef = useRef(null);
+  const inView = useInViewOnce(rowRef, undefined, filterKey);
+  const delayRef = useRef(null);
+
+  if (inView && delayRef.current === null) delayRef.current = takeTurn();
+
+  const delay = delayRef.current ?? 0;
 
   return (
-    <div ref={gridRef} className={`${styles.projectsGrid} ${inView || reducedMotion ? styles.inView : ''}`}>
-      {children}
-    </div>
-  );
-}
-
-export default function Projects() {
-  const location = useLocation();
-  const highlightsRef = useRef(null);
-  const showScrollCue = useScrollCue();
-  const reducedMotion = useReducedMotion();
-  // A page arrived at by a link starts on that slide, rather than sweeping to it.
-  const [slide, setSlide] = useState(() => Math.max(0, slideInHash(location.hash)));
-
-  useEffect(() => {
-    const linked = slideInHash(location.hash);
-
-    if (linked !== -1) setSlide(linked);
-  }, [location.hash]);
-
-  /*
-   * Back to the carousel first, then across, so the slide is seen to arrive.
-   * Moving the focus with it puts the keyboard where the reader now is.
-   */
-  const showProject = (project) => {
-    scrollToCentre(highlightsRef.current, () => {
-      setSlide(orderedProjects.indexOf(project));
-      highlightsRef.current?.focus({ preventScroll: true });
-    });
-  };
-
-  const renderProjectCard = (project, index) => (
-    <div
-      key={project.id}
-      className={styles.projectCard}
+    <li
+      ref={rowRef}
+      id={anchorId}
+      hidden={hidden}
+      className={`${styles.projectRow} ${current ? styles.projectRowCurrent : ''} ${inView || reducedMotion ? styles.inView : ''}`}
       style={{
         '--accent': project.accent,
         '--on-accent': accentInk(project.accent),
-        '--reveal-delay': `${index * TILE_GAP_MS}ms`,
+        '--reveal-delay': `${delay}ms`,
       }}
     >
       <span className={styles.cardWipe} aria-hidden="true" />
@@ -105,44 +73,160 @@ export default function Projects() {
       </div>
 
       <div className={styles.cardText}>
-        {/* The name is the tile's control, stretched over all of it - see
+        {/* The name is the row's control, stretched over all of it - see
             .projectName - with the links to the board lifted above it. */}
         <div className={styles.projectTitle}>
           <h3 className={styles.projectName}>
-            <button type="button" onClick={() => showProject(project)}>
-              {project.name}
+            <button
+              type="button"
+              aria-label={project.name}
+              aria-current={current ? 'true' : undefined}
+              onClick={() => onShow(project)}
+            >
+              <ScrambleRuns
+                runs={[{ text: project.name }]}
+                play={inView}
+                delay={delay}
+                duration={NAME_SCRAMBLE_MS}
+                instant={reducedMotion}
+              />
             </button>
           </h3>
 
-          {project.clientName && <p className={styles.projectClient}>{project.clientName}</p>}
+          {project.clientName && (
+            <p className={styles.projectClient}>
+              <span className={styles.flash}>{project.clientName}</span>
+            </p>
+          )}
         </div>
 
         <ProjectPMs pms={project.pms} />
 
-        {project.difficulty && <ProjectDifficulty difficulty={project.difficulty} />}
-
-        {project.coffeeChatRequired && <CoffeeChatBadge />}
+        {(project.difficulty || project.coffeeChatRequired) && (
+          <div className={styles.rowMeta}>
+            {project.difficulty && (
+              <ProjectDifficulty
+                difficulty={project.difficulty}
+                play={inView}
+                delay={delay}
+                instant={reducedMotion}
+              />
+            )}
+            {project.coffeeChatRequired && <CoffeeChatBadge />}
+          </div>
+        )}
       </div>
-    </div>
+    </li>
+  );
+}
+
+export default function Projects() {
+  const location = useLocation();
+  const detailRef = useRef(null);
+  const listRef = useRef(null);
+  const nextTurnRef = useRef(0);
+  const showScrollCue = useScrollCue();
+  const reducedMotion = useReducedMotion();
+  // A page arrived at by a link starts on that project.
+  const [selected, setSelected] = useState(() => Math.max(0, projectInHash(location.hash)));
+  const [semester, setSemester] = useState(CURRENT_SEMESTER);
+  const [filters, setFilters] = useState(NO_FILTERS);
+  const semesterProjects = projectsBySemester[semester];
+  const shownProjects = useMemo(() => inPageOrder(semesterProjects), [semesterProjects]);
+  const selectedProject = shownProjects[selected];
+  const trimmedFilters = { ...filters, query: filters.query.trim() };
+  const filterKey = JSON.stringify({ semester, ...trimmedFilters });
+  const isShown = (project, category) => matchesFilters(project, category, trimmedFilters);
+  const shownCount = sectionOrder.reduce(
+    (count, category) => count + (semesterProjects[category] || []).filter((project) => isShown(project, category)).length,
+    0,
   );
 
-  const renderSection = (category) => {
+  useEffect(() => {
+    const linked = projectInHash(location.hash);
+
+    if (linked === -1) return;
+
+    setSemester(CURRENT_SEMESTER);
+    setSelected(linked);
+  }, [location.hash]);
+
+  // Filtering from far down the list goes back up to the top of what is left.
+  useLayoutEffect(() => {
+    const { top } = listRef.current.getBoundingClientRect();
+
+    if (top < HEADER_CLEARANCE) window.scrollBy(0, top - HEADER_CLEARANCE);
+  }, [filterKey]);
+
+  /*
+   * Beside the list the project is always in view, and the keyboard stays on the
+   * list. Stacked above it, back up to the project first, so the change is seen,
+   * and the focus goes along to where the reader now is.
+   */
+  const showProject = (project) => {
+    const detail = detailRef.current;
+    const select = () => setSelected(shownProjects.indexOf(project));
+
+    if (detail && window.getComputedStyle(detail).position === 'sticky') {
+      select();
+      return;
+    }
+
+    scrollToCentre(detail, () => {
+      select();
+      detail?.focus({ preventScroll: true });
+    });
+  };
+
+  // How long a row just come into view has to wait for its turn.
+  const takeTurn = () => {
+    const now = performance.now();
+    const turn = Math.max(now, nextTurnRef.current);
+
+    nextTurnRef.current = turn + ROW_GAP_MS;
+
+    return turn - now;
+  };
+
+  const changeSemester = (next) => {
+    setSemester(next);
+    setSelected(0);
+  };
+
+  const renderSection = (rowsSemester, category) => {
     const info = sectionInfo[category];
-    const categoryProjects = projects[category];
+    const categoryProjects = projectsBySemester[rowsSemester][category];
+    const rowShown = (project) => rowsSemester === semester && isShown(project, category);
 
     if (!categoryProjects || categoryProjects.length === 0) return null;
 
     return (
-      <section className={styles.section} key={category}>
+      <section
+        className={styles.section}
+        key={`${rowsSemester} ${category}`}
+        hidden={!categoryProjects.some(rowShown)}
+      >
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle} style={{ color: info.color }}>
             {info.title}
           </h2>
           <p className={styles.sectionDescription}>{info.description}</p>
         </div>
-        <ProjectsGrid reducedMotion={reducedMotion}>
-          {logosFirst(categoryProjects).map((project, index) => renderProjectCard(project, index))}
-        </ProjectsGrid>
+        <ul className={styles.projectRows}>
+          {logosFirst(categoryProjects).map((project) => (
+            <ProjectRow
+              key={project.id}
+              project={project}
+              anchorId={rowsSemester === CURRENT_SEMESTER ? `project-${toAnchorId(project.name)}` : undefined}
+              current={selectedProject === project}
+              hidden={!rowShown(project)}
+              filterKey={filterKey}
+              reducedMotion={reducedMotion}
+              takeTurn={takeTurn}
+              onShow={showProject}
+            />
+          ))}
+        </ul>
       </section>
     );
   };
@@ -150,12 +234,19 @@ export default function Projects() {
   return (
     <div className={styles.pageContainer}>
       <FixedStarField />
+
+      {/* Under everything from the heading down, taking no room - the apply
+          page's astronaut, see its .circle. */}
+      <div className={applyStyles.circle} aria-hidden="true">
+        <img src={rocket} alt="" />
+      </div>
+
       <div className={styles.content}>
         <button
           type="button"
           className={homeStyles.scrollCue}
           aria-label="Scroll down"
-          onClick={() => scrollToCentre(highlightsRef.current)}
+          onClick={() => scrollToCentre(detailRef.current)}
           style={{ opacity: showScrollCue ? 1 : 0, pointerEvents: showScrollCue ? 'auto' : 'none' }}
         >
           <span className={homeStyles.scrollCueMain}>⌄</span>
@@ -165,7 +256,9 @@ export default function Projects() {
 
         {/* Page Header */}
         <header className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>{CURRENT_SEMESTER} Projects</h1>
+          <h1 className={styles.pageTitle}>
+            <ScrambleSwap text={`${semester} Projects`} instant={reducedMotion} />
+          </h1>
           <ul className={styles.projectTypesList}>
             {projectTypes.map((type, index) => (
               <li key={index}>{type}</li>
@@ -174,11 +267,32 @@ export default function Projects() {
         </header>
       </div>
 
-      <ProjectHighlights index={slide} onSelect={setSlide} sectionRef={highlightsRef} />
+      <div className={`${styles.content} ${styles.projectsLayout}`}>
+        <div ref={listRef}>
+          <ProjectFilters
+            filters={filters}
+            onChange={setFilters}
+            semester={semester}
+            onSemesterChange={changeSemester}
+            shown={shownCount}
+            total={shownProjects.length}
+          />
 
-      <div className={styles.content}>
-        {/* Project Sections */}
-        {sectionOrder.map(renderSection)}
+          {shownCount === 0 && (
+            <p className={styles.noMatches}>
+              {shownProjects.length === 0 ? `No projects listed for ${semester} yet.` : 'No projects match that.'}
+            </p>
+          )}
+
+          {/* Project Sections */}
+          {Object.keys(projectsBySemester).flatMap((rowsSemester) => (
+            sectionOrder.map((category) => renderSection(rowsSemester, category))
+          ))}
+        </div>
+
+        {selectedProject && (
+          <ProjectDetail project={selectedProject} projects={shownProjects} sectionRef={detailRef} />
+        )}
       </div>
     </div>
   );

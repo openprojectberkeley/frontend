@@ -1,6 +1,9 @@
 /* Projects Page Styles */
 
+/* Clipped at the sides for the rocket, as the apply page is for its astronaut. */
 .pageContainer {
+  position: relative;
+  overflow-x: clip;
   min-height: 100vh;
   padding-bottom: 80px;
   padding-top: 80px;
@@ -16,7 +19,6 @@
 
 /* Page Header */
 .pageHeader {
-  text-align: center;
   padding: 60px 0 40px;
 }
 
@@ -36,7 +38,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .projectTypesList li {
@@ -53,53 +55,267 @@
   color: white;
 }
 
+/* The list on the left and, staying in view beside it as it scrolls, the project
+   picked on the right, half each. Too narrow for that, the project goes above. */
+.projectsLayout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 32px;
+}
+
+/* Search and filters, over the list and scrolling away with it. Lifted over the
+   rows for the lists it opens. */
+.filters {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 36px;
+  color-scheme: dark;
+}
+
+.searchField input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: none;
+  color: white;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.searchField input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.searchField input:focus-visible,
+.filterChip:focus-visible,
+.filterClear:focus-visible {
+  outline: 2px solid #FAF3E0;
+  outline-offset: 2px;
+}
+
+.filterChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filterChip {
+  --chip: #FAF3E0;
+
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: none;
+  color: rgba(255, 255, 255, 0.85);
+  font: inherit;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.filterChip:hover {
+  border-color: var(--chip);
+  color: white;
+}
+
+.filterChip[aria-pressed="true"] {
+  border-color: var(--chip);
+  background: var(--chip);
+  color: #14151E;
+}
+
+/* A chip that opens a list, its arrow turning over as it does. */
+.filterSelect {
+  position: relative;
+}
+
+.filterSelectButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterSelectButton::after {
+  content: "";
+  width: 10px;
+  height: 6px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='black' stroke-width='1.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: rotate 150ms ease;
+}
+
+.filterSelectButton[aria-expanded="true"] {
+  border-color: var(--chip);
+  color: white;
+}
+
+.filterSelectButton[aria-expanded="true"]::after {
+  rotate: 180deg;
+}
+
+/* Solid, as it opens over the rows. */
+.filterSelectList {
+  position: absolute;
+  z-index: 3;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: max(100%, 170px);
+  margin: 0;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: #0B0D18;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+  list-style: none;
+  outline: none;
+  animation: filterSelectOpen 120ms ease-out;
+}
+
+@keyframes filterSelectOpen {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filterOptionActive {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.filterSelectList:focus-visible .filterOptionActive {
+  outline: 1px solid #FAF3E0;
+  outline-offset: -1px;
+}
+
+.filterOptionLabel {
+  text-transform: capitalize;
+}
+
+/* A tick where it is picked, in a box where any number can be. */
+.filterOptionMark {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+}
+
+.filterOptionBox {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 3px;
+}
+
+.filterOption[aria-selected="true"] .filterOptionBox {
+  border-color: #FAF3E0;
+  background: #FAF3E0;
+}
+
+.filterOption[aria-selected="true"] .filterOptionMark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #FAF3E0;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7.5l2.7 2.7L11 4.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.filterOption[aria-selected="true"] .filterOptionBox::after {
+  background: #14151E;
+}
+
+.filterStatus {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 1.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.filterClear {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: white;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.noMatches {
+  margin: 0;
+  padding: 24px 12px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
 /* Section Styles */
 .section {
-  margin-bottom: 60px;
+  margin-bottom: 48px;
 }
 
 .sectionHeader {
-  /* Mirror the projects grid's column tracks so the title and description
-     line up with the left edge of the first card column at every width. */
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
-  column-gap: 16px;
-  margin-bottom: 24px;
-}
-
-.sectionHeader > * {
-  grid-column: 1 / -1;
+  /* In line with the words of the rows under it. */
+  margin-bottom: 16px;
+  padding: 0 12px;
 }
 
 .sectionTitle {
   font-family: var(--font-title);
   font-weight: 400;
   letter-spacing: normal;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.5rem, 2.4vw, 1.9rem);
   margin: 0 0 8px;
 }
 
 .sectionDescription {
-  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-size: 0.875rem;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.75);
   margin: 0;
-  max-width: 90%;
 }
 
-/* The tiles, as many columns as fit. */
-.projectsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
-  gap: 16px;
+.projectRows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 /*
- * A project: its icon, and beside it the name, client and project managers,
- * all tiles one size. It rests on a faint gradient of its accent, desaturated
- * towards the page's dark, and solid - no stars through it. The whole tile
- * brings up its slide in the carousel.
+ * A project, on the stars. The one picked rests on a faint
+ * gradient of its accent, desaturated towards the page's dark, as do the
+ * collage's empty frames.
  */
-.projectCard,
+.projectRowCurrent,
 .collageFrame {
   --rest-from: color-mix(in oklab, var(--accent) 34%, #24252E);
   --rest-to: color-mix(in oklab, var(--accent) 16%, #1A1B23);
@@ -107,42 +323,131 @@
   background-image: linear-gradient(135deg, var(--rest-from), var(--rest-to));
 }
 
-.projectCard {
+.projectRow[hidden] {
+  display: none;
+}
+
+.projectRow {
+  --hl: color-mix(in oklab, var(--accent) 70%, white);
+
   position: relative;
   isolation: isolate;
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  height: 10.5rem;
+  gap: 12px;
   box-sizing: border-box;
-  padding: 16px;
-  border-radius: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
   color: white;
+  transition: color 300ms ease;
+}
+
+/* On the fill, the text takes whichever of white and dark reads on it. */
+.projectRow:hover,
+.projectRow:has(:focus-visible) {
+  color: var(--on-accent);
+}
+
+/* What has no words to type or highlight just blurs in with them. */
+.projectIcon,
+.projectRow .difficultyPips,
+.projectRow .coffeeChatBadge {
   opacity: 0;
   filter: blur(6px);
   transition:
     opacity 500ms ease var(--reveal-delay, 0ms),
-    filter 500ms ease var(--reveal-delay, 0ms),
-    color 300ms ease;
+    filter 500ms ease var(--reveal-delay, 0ms);
 }
 
-/* On the fill, the text takes whichever of white and dark reads on it. */
-.projectCard:hover,
-.projectCard:focus-within {
-  color: var(--on-accent);
-}
-
-.inView .projectCard {
+.inView .projectIcon,
+.inView .difficultyPips,
+.inView .coffeeChatBadge {
   opacity: 1;
   filter: blur(0);
 }
 
 /*
- * What fills the tile: a sheet of its accent, bigger than the tile, with a very
+ * The board's highlight arrival, for the client and project managers. A bar wipes
+ * in left to right over nothing and straight back out the same way, and the words
+ * are there once it has covered them. Inline, and cloned at each line break, so
+ * a line that wraps gets a bar per line rather than one block.
+ *
+ * Played once: .inView is raised the first time and never taken off. The words
+ * are held back with the fill rather than with visibility, which would take the
+ * bar with them, and on everything inside too, for the links.
+ */
+.flash {
+  --flash-in: 380ms;
+  --flash-out: 420ms;
+  --flash-delay: calc(var(--reveal-delay, 0ms) + 100ms);
+
+  padding: 0 0.15em;
+  margin: 0 -0.15em;
+  background-image: linear-gradient(var(--hl), var(--hl));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.flash,
+.flash * {
+  -webkit-text-fill-color: transparent;
+}
+
+.flashLater {
+  --flash-delay: calc(var(--reveal-delay, 0ms) + 250ms);
+}
+
+.inView .flash {
+  animation:
+    flashWipeIn var(--flash-in) cubic-bezier(0.22, 1, 0.36, 1) var(--flash-delay) both,
+    flashWipeOut var(--flash-out) cubic-bezier(0.22, 1, 0.36, 1)
+      calc(var(--flash-delay) + var(--flash-in) * 0.65) forwards,
+    flashInk 1ms step-start calc(var(--flash-delay) + var(--flash-in) * 0.65) forwards;
+}
+
+.inView .flash * {
+  animation: flashInk 1ms step-start calc(var(--flash-delay) + var(--flash-in) * 0.65) forwards;
+}
+
+@keyframes flashWipeIn {
+  from {
+    background-position: left center;
+    background-size: 0% 100%;
+  }
+
+  to {
+    background-position: left center;
+    background-size: 100% 100%;
+  }
+}
+
+@keyframes flashWipeOut {
+  from {
+    background-position: right center;
+    background-size: 100% 100%;
+  }
+
+  to {
+    background-position: right center;
+    background-size: 0% 100%;
+  }
+}
+
+@keyframes flashInk {
+  to {
+    -webkit-text-fill-color: currentcolor;
+  }
+}
+
+/*
+ * What fills the row: a sheet of its accent, bigger than the row, with a very
  * slightly bowed leading edge, that sweeps straight across from the left. On it
- * is a white sheen, sized and placed to be exactly the tile once the sheet has
- * stopped: the sheet is 150% of the tile's width and 160% of its height, from
- * 30% past its top and left. Under the tile's words, in the stack .projectCard's
+ * is a white sheen, sized and placed to be exactly the row once the sheet has
+ * stopped: the sheet is 150% of the row's width and 160% of its height, from
+ * 30% past its top and left. Under the row's words, in the stack .projectRow's
  * isolation starts.
  */
 .cardWipe {
@@ -171,8 +476,8 @@
   transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.projectCard:hover .cardWipe::before,
-.projectCard:focus-within .cardWipe::before {
+.projectRow:hover .cardWipe::before,
+.projectRow:has(:focus-visible) .cardWipe::before {
   transform: translateX(0);
 }
 
@@ -183,10 +488,10 @@
   grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
   flex: none;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   font-family: var(--font-title);
-  font-size: 2.6rem;
+  font-size: 2rem;
   line-height: 1;
   user-select: none;
 }
@@ -215,7 +520,7 @@
 
 .projectName {
   margin: 0;
-  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-size: 1.05rem;
   line-height: 1.25;
   color: inherit;
 }
@@ -231,7 +536,7 @@
   cursor: pointer;
 }
 
-/* The name's button, stretched over the tile, so all of it is one control
+/* The name's button, stretched over the row, so all of it is one control
    without a button having to hold the links to the board. */
 .projectName button::after {
   content: "";
@@ -245,7 +550,7 @@
 }
 
 .projectName button:focus-visible::after {
-  border-radius: 12px;
+  border-radius: 10px;
   outline: 2px solid currentColor;
   outline-offset: -5px;
 }
@@ -262,6 +567,19 @@
   font-size: 0.875rem;
   line-height: 1.45;
   opacity: 0.88;
+}
+
+/* A row's difficulty and coffee chat, on one line while they fit. */
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 6px;
+}
+
+.rowMeta > * {
+  margin: 0;
 }
 
 /* How hard the project is: three pips, as many filled as its level. */
@@ -292,7 +610,7 @@
 }
 
 /* Over the name's stretched button, so they go to the board rather than
-   opening the tile. */
+   bringing up the project. */
 .projectManagerLink {
   position: relative;
   z-index: 1;
@@ -325,69 +643,49 @@
 }
 
 /*
- * The carousel under the page's heading, which has its arrows, dots and track
- * from the about page's - see ProjectHighlights. Doubled where it goes against
- * those rules. No background: the slides are on the stars. Side by side, the
- * words on the left and the collage on the right; too narrow for that, they
- * stack and the frame takes their height, which the collage makes up to the
- * tallest slide's.
+ * The project picked, on the stars: its words, then its images under them, which
+ * take what height is left. Held under the fixed header as the list goes by, and
+ * no taller than the window has room for; words that need more than that scroll.
  */
-.highlights.highlights {
-  position: relative;
-  margin-top: 0;
-  margin-bottom: 60px;
-}
-
-.highlightFrame.highlightFrame {
-  grid-column: 2;
-  min-height: 460px;
-  background: none;
-  border-radius: 0;
-  cursor: default;
-}
-
-.highlightFooter.highlightFooter {
-  justify-content: center;
-}
-
-.highlightSlide {
+.detail {
+  position: sticky;
+  top: 96px;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr);
-  gap: 24px;
+  grid-template-rows: minmax(0, auto) minmax(160px, 1fr);
+  gap: 20px;
   box-sizing: border-box;
-  height: 100%;
-  padding: 0 12px;
+  height: clamp(460px, calc(100vh - 112px), 760px);
+  min-width: 0;
   color: white;
+  outline: none;
 }
 
-.highlightText {
+.detailText {
   display: grid;
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: thin;
 }
 
-.highlightLive,
-.highlightSizer {
+.detailLive,
+.detailSizer {
   grid-area: 1 / 1;
   min-width: 0;
 }
 
-/* Only called on when stacked up - see SlideTextSizer. */
-.highlightSizer {
-  display: none;
+/* See DetailTextSizer. */
+.detailSizer {
   visibility: hidden;
 }
 
-.highlightHeading {
+.detailHeading {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 12px;
 }
 
-.highlightIcon {
+.detailIcon {
   flex: none;
   width: 4.5rem;
   height: 4.5rem;
@@ -397,7 +695,7 @@
   user-select: none;
 }
 
-.highlightName {
+.detailName {
   margin: 0 0 4px;
   font-family: var(--font-title);
   font-weight: 400;
@@ -410,7 +708,7 @@
 
 /* The difficulty and the coffee chat, in one row that is always there, even with
    nothing to show in it. */
-.highlightMeta {
+.detailMeta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -419,7 +717,7 @@
   margin-top: 6px;
 }
 
-.highlightMeta > * {
+.detailMeta > * {
   margin: 0;
   transition: opacity 250ms ease;
 }
@@ -432,21 +730,19 @@
   transition: background-color 250ms ease;
 }
 
-.highlightDescription {
+.detailDescription {
   margin: 16px 0 0;
   font-size: 0.95rem;
   line-height: 1.6;
   /* Some descriptions run to several paragraphs. */
   white-space: pre-wrap;
-  cursor: text;
-  user-select: text;
 }
 
-/* One large frame and three small, until there are photos for them. */
+/* One large frame and two small, until there are photos for them. */
 .collage {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-template-rows: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 8px;
   min-height: 0;
 }
@@ -485,59 +781,52 @@
   pointer-events: none;
 }
 
-/* Nineteen of them wrap on a phone. */
-.highlightDots {
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-@media screen and (max-width: 1199px) {
-  .highlightFrame.highlightFrame {
-    aspect-ratio: auto;
-    max-height: none;
-    min-height: 0;
-  }
-
-  .highlightSlide {
+/* The project above the list, scrolling away with the page, and as tall as the
+   longest project's words and the images under them. The filters stay with the
+   list, which has the window to itself. */
+@media screen and (max-width: 999px) {
+  .projectsLayout {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(220px, 1fr);
+    gap: 48px;
   }
 
-  .highlightText {
+  .detail {
+    position: relative;
+    top: auto;
+    order: -1;
+    grid-template-rows: auto 220px;
+    height: auto;
+  }
+
+  .detailText {
     overflow-y: visible;
-  }
-
-  .highlightSizer {
-    display: block;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .projectCard,
+  .filterSelectList {
+    animation: none;
+  }
+
+  .filterChip,
+  .filterSelectButton::after,
+  .projectRow,
+  .projectIcon,
+  .projectRow .difficultyPips,
+  .projectRow .coffeeChatBadge,
   .cardWipe::before {
     transition: none;
+  }
+
+  .inView .flash,
+  .inView .flash * {
+    animation: none;
+    -webkit-text-fill-color: currentcolor;
   }
 }
 
 /* Responsive adjustments */
-@media screen and (max-width: 600px) {
-  /* The slides are swiped, and need the arrows' width for their words. */
-  .highlights.highlights {
-    --arrow-col: 0px;
-    width: 100%;
-  }
-
-  .highlights button[aria-label$=" project"] {
-    display: none;
-  }
-}
-
 @media screen and (max-width: 550px) {
-  /* Narrower, so the names wrap further; still one size for all of them. */
-  .projectCard {
-    height: 12.75rem;
-  }
-
   .pageHeader {
     padding: 40px 0 30px;
   }

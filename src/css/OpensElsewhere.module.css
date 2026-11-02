@@ -1,0 +1,26 @@
+/* Takes no room until its link is hovered, then pushes along what comes after. */
+.opensElsewhere {
+  display: inline-block;
+  width: 0;
+  height: 0.8em;
+  margin-left: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  opacity: 0;
+  vertical-align: -0.05em;
+  transition: width 120ms ease, margin-left 120ms ease, opacity 120ms ease;
+}
+
+a:hover > .opensElsewhere,
+a:focus-visible > .opensElsewhere {
+  width: 0.8em;
+  margin-left: 0.3em;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opensElsewhere {
+    transition: none;
+  }
+}

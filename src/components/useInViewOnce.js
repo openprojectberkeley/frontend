@@ -13,8 +13,11 @@ const ROUTE_SETTLE_MS = 400;
  * page, may give an observer no change to report, and there the reader cannot
  * scroll down to give it one. First asked on the next task, not here, so that
  * ScrollToTop has moved the window off wherever the last page left it.
+ *
+ * Asked again whenever `layoutKey` changes, for when what is around the element
+ * can bring it on screen with no scrolling at all.
  */
-export default function useInViewOnce(ref, bottomShare = 0.1) {
+export default function useInViewOnce(ref, bottomShare = 0.1, layoutKey = null) {
   const [seen, setSeen] = useState(false);
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function useInViewOnce(ref, bottomShare = 0.1) {
       window.removeEventListener('scroll', check);
       window.removeEventListener('resize', check);
     };
-  }, [ref, bottomShare, seen]);
+  }, [ref, bottomShare, seen, layoutKey]);
 
   return seen;
 }

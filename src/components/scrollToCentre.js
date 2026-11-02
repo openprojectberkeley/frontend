@@ -1,6 +1,6 @@
 /*
  * Scrolls the window, easing in, for the links between the board and the
- * projects and for a project's tile going back up to its slide.
+ * projects and for a project's row going back up to it.
  *
  * Where it is going is measured again on every frame rather than once at the
  * start, as the target will not hold still: a fast column on the board moves

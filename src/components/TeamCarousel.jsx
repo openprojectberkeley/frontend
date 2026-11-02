@@ -36,7 +36,7 @@ const CAPTION_SCRAMBLE_MS = 450;
 const PARALLAX_BACK = 0.15;
 const PARALLAX_EASE = 0.08;
 
-export const Chevron = ({ direction }) => (
+const Chevron = ({ direction }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.carouselChevron}>
     <path d={direction === 'prev' ? 'M15 4 7 12l8 8' : 'M9 4l8 8-8 8'} />
   </svg>

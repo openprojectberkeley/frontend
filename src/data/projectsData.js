@@ -1,4 +1,6 @@
-// Projects Data - the semester in the heading is CURRENT_SEMESTER in site.js
+// Projects Data - `projects` is the current semester's, CURRENT_SEMESTER in
+// site.js, and the semesters before it are in projectsBySemester below.
+import { CURRENT_SEMESTER } from './site';
 
 // Project logos - enabled logos
 import tinyvillageLogo from '../images/projects/tinyvillage.png';
@@ -52,7 +54,7 @@ export const projectTypes = [
  * Each project's `accent` is the colour of its tile on the projects page: the
  * tile rests on a faint, desaturated gradient of it and fills with it on hover,
  * with its text turning dark on an accent too light for white - see accentInk
- * in Projects.js. `difficulty`, where known, is beginner, intermediate or
+ * in accentInk.js. `difficulty`, where known, is beginner, intermediate or
  * advanced.
  */
 export const projects = {
@@ -230,6 +232,26 @@ export const sectionOrder = ['client', 'passion', 'competitive'];
 // Projects with a logo come first within a section, otherwise in listed order.
 export const logosFirst = (list) => [...list].sort((a, b) => (b.logo ? 1 : 0) - (a.logo ? 1 : 0));
 
-// Every project, in the order the projects page shows them. The board page
-// groups its project managers by this.
-export const orderedProjects = sectionOrder.flatMap((category) => logosFirst(projects[category] || []));
+// A semester's projects, in the order the projects page shows them.
+export const inPageOrder = (semesterProjects) => sectionOrder.flatMap(
+  (category) => logosFirst(semesterProjects[category] || []),
+);
+
+// The current semester's, in that order. The board page groups its project
+// managers by this.
+export const orderedProjects = inPageOrder(projects);
+
+const NO_PROJECTS = { client: [], passion: [], competitive: [] };
+
+// The semesters the projects page can show, newest first. Fill one in with the
+// same shape as `projects`.
+export const projectsBySemester = {
+  [CURRENT_SEMESTER]: projects,
+  'Spring 2026': NO_PROJECTS,
+  'Fall 2025': NO_PROJECTS,
+  'Spring 2025': NO_PROJECTS,
+  'Fall 2024': NO_PROJECTS,
+  'Spring 2024': NO_PROJECTS,
+  'Fall 2023': NO_PROJECTS,
+  'Spring 2023': NO_PROJECTS,
+};
