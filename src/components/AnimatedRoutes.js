@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HomePage from './HomePage';
 import About from './About';
 import Contact from './Contact';
@@ -55,7 +55,7 @@ export default function AnimatedRoutes() {
   const prevPathRef = useRef(normalizePath(location.pathname));
   const directionRef = useRef(1);
   const touchStartRef = useRef({ x: 0, y: 0 });
-  const pageRef = useRef(null);
+  const pageObserverRef = useRef(null);
   const [containerHeight, setContainerHeight] = useState(undefined);
 
   const currentPath = normalizePath(location.pathname);
@@ -103,24 +103,34 @@ export default function AnimatedRoutes() {
     ? { duration: 0 }
     : { type: 'tween', duration: 0.35, ease: [0.32, 0.72, 0, 1] };
 
-  useLayoutEffect(() => {
-    const page = pageRef.current;
-
+  /*
+   * The container takes the height of the newest page, followed from the
+   * moment that page mounts. By a ref rather than an effect on the path, as
+   * AnimatePresence can mount the new page a render after the path changes: an
+   * effect could find the outgoing page still there, follow it, and collapse
+   * to nothing when it left, clipping the new page away. Only the attaching is
+   * of interest - the outgoing page detaching says nothing about the new one.
+   */
+  const trackPage = useCallback((page) => {
     if (!page) {
-      return undefined;
+      return;
     }
 
-    const updateHeight = () => {
-      setContainerHeight(page.offsetHeight);
-    };
+    pageObserverRef.current?.disconnect();
+    setContainerHeight(page.offsetHeight);
 
-    updateHeight();
+    // On the next frame, as resizing the container from inside the observer's own
+    // callback, while a page is animating its height, is a ResizeObserver loop.
+    let frameId = null;
 
-    const observer = new ResizeObserver(updateHeight);
-    observer.observe(page);
+    pageObserverRef.current = new ResizeObserver(() => {
+      window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(() => setContainerHeight(page.offsetHeight));
+    });
+    pageObserverRef.current.observe(page);
+  }, []);
 
-    return () => observer.disconnect();
-  }, [location.pathname]);
+  useEffect(() => () => pageObserverRef.current?.disconnect(), []);
 
   return (
     <div
@@ -132,7 +142,7 @@ export default function AnimatedRoutes() {
       <AnimatePresence initial={false} custom={directionRef.current}>
         <motion.div
           key={currentPath}
-          ref={pageRef}
+          ref={trackPage}
           custom={directionRef.current}
           variants={slideVariants}
           initial={prefersReducedMotion ? false : 'enter'}

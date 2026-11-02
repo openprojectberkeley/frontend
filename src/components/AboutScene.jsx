@@ -11,9 +11,9 @@ import { aboutValues, MISSION, MISSION_PREFIX } from '../data/aboutValues';
  *
  * The heading and the mission sit side by side. The heading blurs in the way
  * the hero's scene two overlays do; the mission then scrambles in from its
- * first letter to its last. Both are set off by `arrived`, which the about page raises
- * once the copy has scrolled into view and lowers again when it leaves - and
- * on their own clock from there, not the scroll's, so a reader who stops
+ * first letter to its last. Both are set off by `arrived`, which the about
+ * page raises once the copy has scrolled into view and leaves raised - and
+ * play on their own clock from there, not the scroll's, so a reader who stops
  * scrolling still sees the sentence finish.
  *
  * Under it the four values are only their shapes, set out in a diamond and

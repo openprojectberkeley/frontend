@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import styles from '../css/ImmersiveHero.module.css';
 import scramble from './scramble';
 
@@ -143,4 +143,55 @@ export function ScrambleRuns({ runs, play, delay = 0, duration, hold, instant, c
       </span>
     </span>
   );
+}
+
+/*
+ * Keeps some text scrambling from whatever it last showed into `text`, each
+ * time that changes, by handing `write` every string along the way: it can go
+ * anywhere, in one element or across several. A change partway through carries
+ * on from what is showing. The new text is padded out to the old one's length,
+ * so a longer old one gives up its last letters in turn rather than losing them
+ * all at once.
+ *
+ * `write` is called from here and nothing else writes that text, so the new
+ * text can't paint for a frame before the scramble starts - and the work runs
+ * in a layout effect, so the first frame is already the old text.
+ */
+export function useScrambleSwap(text, write, { duration, hold, instant }) {
+  const shownRef = useRef(text);
+  const writeRef = useRef(write);
+
+  writeRef.current = write;
+
+  useLayoutEffect(() => {
+    const from = shownRef.current;
+    const setShown = (value) => {
+      shownRef.current = value;
+      writeRef.current(value);
+    };
+
+    if (instant || from === text) {
+      setShown(text);
+      return undefined;
+    }
+
+    let frame = null;
+    const start = performance.now();
+    const target = text.padEnd(from.length);
+
+    setShown(from);
+
+    const step = (now) => {
+      const progress = Math.min(1, (now - start) / duration);
+
+      setShown(progress < 1 ? scramble(from, target, progress, hold) : text);
+      frame = progress < 1 ? window.requestAnimationFrame(step) : null;
+    };
+
+    frame = window.requestAnimationFrame(step);
+
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
+  }, [text, duration, hold, instant]);
 }

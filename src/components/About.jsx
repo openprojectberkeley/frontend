@@ -12,10 +12,9 @@ export default function About() {
   const showScrollCue = useScrollCue();
   const reducedMotion = useReducedMotion();
   /*
-   * Whether the opening is on screen, which plays its heading and mission in:
-   * raised once its top is a quarter of the way up the window, lowered when it
-   * has gone out of view altogether, so coming back to it blurs the heading
-   * back in. The mission, once typed, stays - see AboutScene.
+   * Whether the opening has been reached, which plays its heading and mission
+   * in: raised once its top is a quarter of the way up the window, and left
+   * raised, so scrolling away and back finds them as they were.
    */
   const [arrived, setArrived] = useState(false);
 
@@ -27,7 +26,11 @@ export default function About() {
     if (!section) return undefined;
 
     const observer = new IntersectionObserver(
-      ([entry]) => setArrived(entry.isIntersecting),
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setArrived(true);
+        observer.disconnect();
+      },
       { rootMargin: '0px 0px -25% 0px' },
     );
 

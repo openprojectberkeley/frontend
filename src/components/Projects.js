@@ -1,113 +1,127 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { NavHashLink } from 'react-router-hash-link';
+import { useReducedMotion } from 'framer-motion';
 import styles from '../css/Projects.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import useScrollCue from './useScrollCue';
-import { projects, sectionInfo, projectTypes, sectionOrder, logosFirst } from '../data/projectsData';
+import useInViewOnce from './useInViewOnce';
+import scrollToCentre from './scrollToCentre';
+import { FixedStarField } from './StarField';
+import ProjectHighlights, { CoffeeChatBadge, ProjectDifficulty, ProjectPMs, toAnchorId } from './ProjectHighlights';
+import { projects, sectionInfo, projectTypes, sectionOrder, logosFirst, orderedProjects } from '../data/projectsData';
 import { CURRENT_SEMESTER } from '../data/site';
-import coffeeCupIcon from '../images/projects/coffee-cup.svg';
+
+/*
+ * White or near-black, whichever reads better on a filled tile, all along the
+ * white sheen over its accent that the words sit on - see .cardWipe: from the
+ * bare accent to the sheen as strong as it gets beside the words.
+ */
+const DARK_INK = '#14151E';
+const SHEEN_AT_WORDS = 0.31;
+const toChannels = (hex) => [1, 3, 5].map((start) => parseInt(hex.slice(start, start + 2), 16) / 255);
+const luminance = (channels) => {
+  const [r, g, b] = channels.map((channel) => (
+    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+  ));
+
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (x, y) => {
+  const [lighter, darker] = [luminance(x), luminance(y)].sort((p, q) => q - p);
+
+  return (lighter + 0.05) / (darker + 0.05);
+};
+const accentInk = (accent) => {
+  const bare = toChannels(accent);
+  const sheened = bare.map((channel) => channel + (1 - channel) * SHEEN_AT_WORDS);
+  const worstOn = (ink) => Math.min(contrast(toChannels(ink), bare), contrast(toChannels(ink), sheened));
+
+  return worstOn('#FFFFFF') >= worstOn(DARK_INK) ? '#FFFFFF' : DARK_INK;
+};
+
+/* The tiles blur in a beat apart. */
+const TILE_GAP_MS = 60;
+
+// The slide a link from the board names, by its #project-<name>, if any.
+const slideInHash = (hash) => orderedProjects.findIndex(
+  ({ name }) => `#project-${toAnchorId(name)}` === hash,
+);
+
+/* A section's tiles, which come in once, the first time the section is in view. */
+function ProjectsGrid({ reducedMotion, children }) {
+  const gridRef = useRef(null);
+  const inView = useInViewOnce(gridRef);
+
+  return (
+    <div ref={gridRef} className={`${styles.projectsGrid} ${inView || reducedMotion ? styles.inView : ''}`}>
+      {children}
+    </div>
+  );
+}
 
 export default function Projects() {
   const location = useLocation();
-  const nextSectionRef = useRef(null);
-  const [flashTargetId, setFlashTargetId] = useState('');
+  const highlightsRef = useRef(null);
   const showScrollCue = useScrollCue();
+  const reducedMotion = useReducedMotion();
+  // A page arrived at by a link starts on that slide, rather than sweeping to it.
+  const [slide, setSlide] = useState(() => Math.max(0, slideInHash(location.hash)));
 
   useEffect(() => {
-    const hashId = location.hash.replace('#', '');
+    const linked = slideInHash(location.hash);
 
-    if (!hashId) {
-      setFlashTargetId('');
-      return undefined;
-    }
+    if (linked !== -1) setSlide(linked);
+  }, [location.hash]);
 
-    const flashTimer = window.setTimeout(() => {
-      setFlashTargetId(hashId);
-      window.setTimeout(() => setFlashTargetId(''), 2000);
-    }, 50);
+  /*
+   * Back to the carousel first, then across, so the slide is seen to arrive.
+   * Moving the focus with it puts the keyboard where the reader now is.
+   */
+  const showProject = (project) => {
+    scrollToCentre(highlightsRef.current, () => {
+      setSlide(orderedProjects.indexOf(project));
+      highlightsRef.current?.focus({ preventScroll: true });
+    });
+  };
 
-    return () => window.clearTimeout(flashTimer);
-  }, [location.hash, location.pathname]);
-
-  const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-
-  const renderPMs = (pms) => pms.map((pm, index) => {
-    const anchorId = `pm-${toAnchorId(pm)}`;
-
-    return (
-      <span key={pm}>
-        <NavHashLink
-          smooth
-          className={styles.projectManagerLink}
-          to={`/board/#${anchorId}`}
-          scroll={el => {
-            if (!el) return;
-
-            const rect = el.getBoundingClientRect();
-            const top = window.pageYOffset + rect.top;
-            const centeredTop = Math.max(0, top - (window.innerHeight / 2 - rect.height / 2));
-
-            window.scrollTo({ top: centeredTop, behavior: 'smooth' });
-          }}
-        >
-          {pm}
-        </NavHashLink>
-        {index < pms.length - 1 && (index === pms.length - 2 ? ' and ' : ', ')}
-      </span>
-    );
-  });
-
-  const renderProjectCard = (project, category) => (
+  const renderProjectCard = (project, index) => (
     <div
-      id={`project-${toAnchorId(project.name)}`}
       key={project.id}
-      className={`${styles.projectCard}`}
-      tabIndex={0}
-      style={{ backgroundColor: `${sectionInfo[category]?.color}40` || 'transparent' }}
+      className={styles.projectCard}
+      style={{
+        '--accent': project.accent,
+        '--on-accent': accentInk(project.accent),
+        '--reveal-delay': `${index * TILE_GAP_MS}ms`,
+      }}
     >
-      <div className={styles.cardFace}>
-        {project.coffeeChatRequired && (
-          <div className={styles.coffeeChatBadge}>
-            <img
-              src={coffeeCupIcon}
-              alt=""
-              className={styles.coffeeIcon}
-              aria-hidden="true"
-            />
-            <span>Coffee Chat Required</span>
-          </div>
+      <span className={styles.cardWipe} aria-hidden="true" />
+
+      <div className={styles.projectIcon} aria-hidden={project.logo ? undefined : 'true'}>
+        {project.logo ? (
+          <img src={project.logo} alt={`${project.name} logo`} className={styles.projectLogo} />
+        ) : (
+          project.name[0]
         )}
-
-        <div className={styles.cardContent}>
-          {project.logo && (
-            <div className={styles.logoContainer}>
-              <img
-                src={project.logo}
-                alt={`${project.name} logo`}
-                className={styles.projectLogo}
-              />
-            </div>
-          )}
-
-          <h3 className={styles.projectName}>{project.name}</h3>
-        </div>
       </div>
 
-      <div className={`${styles.cardHover} ${flashTargetId === `project-${toAnchorId(project.name)}` ? styles.flashTarget : ''}`}>
-        <div className={styles.cardHoverInner}>
-          <p className={styles.hoverLabel}>Project Managers</p>
-          <p className={styles.projectPMs}>{renderPMs(project.pms)}</p>
+      <div className={styles.cardText}>
+        {/* The name is the tile's control, stretched over all of it - see
+            .projectName - with the links to the board lifted above it. */}
+        <div className={styles.projectTitle}>
+          <h3 className={styles.projectName}>
+            <button type="button" onClick={() => showProject(project)}>
+              {project.name}
+            </button>
+          </h3>
 
-          <p className={styles.hoverLabel}>Description</p>
-          <p className={styles.projectDescription}>{project.description}</p>
-
-          {project.clientName && (
-            <p className={styles.projectClient}>
-              <strong>Client:</strong> {project.clientName}
-            </p>
-          )}
+          {project.clientName && <p className={styles.projectClient}>{project.clientName}</p>}
         </div>
+
+        <ProjectPMs pms={project.pms} />
+
+        {project.difficulty && <ProjectDifficulty difficulty={project.difficulty} />}
+
+        {project.coffeeChatRequired && <CoffeeChatBadge />}
       </div>
     </div>
   );
@@ -126,21 +140,22 @@ export default function Projects() {
           </h2>
           <p className={styles.sectionDescription}>{info.description}</p>
         </div>
-        <div className={styles.projectsGrid}>
-          {logosFirst(categoryProjects).map((project) => renderProjectCard(project, category))}
-        </div>
+        <ProjectsGrid reducedMotion={reducedMotion}>
+          {logosFirst(categoryProjects).map((project, index) => renderProjectCard(project, index))}
+        </ProjectsGrid>
       </section>
     );
   };
 
   return (
     <div className={styles.pageContainer}>
-      <div className={`${styles.content} limitWidth`}>
+      <FixedStarField />
+      <div className={styles.content}>
         <button
           type="button"
           className={homeStyles.scrollCue}
           aria-label="Scroll down"
-          onClick={() => nextSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          onClick={() => scrollToCentre(highlightsRef.current)}
           style={{ opacity: showScrollCue ? 1 : 0, pointerEvents: showScrollCue ? 'auto' : 'none' }}
         >
           <span className={homeStyles.scrollCueMain}>⌄</span>
@@ -157,12 +172,13 @@ export default function Projects() {
             ))}
           </ul>
         </header>
+      </div>
 
+      <ProjectHighlights index={slide} onSelect={setSlide} sectionRef={highlightsRef} />
+
+      <div className={styles.content}>
         {/* Project Sections */}
-        <div ref={nextSectionRef}>
-          {renderSection(sectionOrder[0])}
-        </div>
-        {sectionOrder.slice(1).map(renderSection)}
+        {sectionOrder.map(renderSection)}
       </div>
     </div>
   );

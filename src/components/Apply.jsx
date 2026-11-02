@@ -4,6 +4,7 @@ import styles from '../css/Apply.module.css';
 import homeStyles from '../css/HomePage.module.css';
 import heroStyles from '../css/ImmersiveHero.module.css';
 import useScrollCue from './useScrollCue';
+import useInViewOnce from './useInViewOnce';
 import { FixedStarField } from './StarField';
 import JoinScene from './JoinScene';
 import { ScrambleRuns } from './ScrambleText';
@@ -99,32 +100,6 @@ const ANSWER_TYPE_MS = 700;
 
 /* Each event's highlight is one of the about page's value colours, in turn. */
 const EVENT_HIGHLIGHTS = aboutValues.map((value) => value.colour);
-
-/* Raised the first time `ref` comes into the window, and left raised. */
-function useInViewOnce(ref, rootMargin = '0px 0px -10% 0px') {
-  const [seen, setSeen] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-
-    if (!node) return undefined;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setSeen(true);
-        observer.disconnect();
-      },
-      { rootMargin },
-    );
-
-    observer.observe(node);
-
-    return () => observer.disconnect();
-  }, [ref, rootMargin]);
-
-  return seen;
-}
 
 /*
  * The lines from each step to the events it is done at, as paths across the
@@ -293,7 +268,9 @@ function useScrollDrawing(sectionRef, spineRef, linkRefs, reducedMotion) {
       if (frameId === null) frameId = window.requestAnimationFrame(draw);
     };
 
-    draw();
+    // On a frame rather than here, so that ScrollToTop has moved the window off
+    // wherever the last page left it - from there, everything would be passed.
+    schedule();
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
 
@@ -330,7 +307,7 @@ export default function Apply() {
    * raised the first time it is in view and left raised, so scrolling back up
    * to it finds it as it was - see JoinScene.
    */
-  const headIn = useInViewOnce(headRef, '0px');
+  const headIn = useInViewOnce(headRef, 0);
 
   const spineRef = useRef(null);
   const linkRefs = useRef({});

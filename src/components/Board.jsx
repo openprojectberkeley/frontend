@@ -10,6 +10,7 @@ import { NavHashLink } from 'react-router-hash-link';
 import homeStyles from "../css/HomePage.module.css";
 import useScrollCue from './useScrollCue';
 import useCursorTip from './useCursorTip';
+import scrollToCentre from './scrollToCentre';
 import linkedinicon from "../images/about/linkedin_blue.png";
 import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
@@ -554,13 +555,7 @@ export default function Board() {
                     <NavHashLink
                       to={`/projects/#project-${toAnchorId(project)}`}
                       className={`${styles.title} ${styles.projectLink}`}
-                      scroll={el => {
-                        if (!el) return;
-                        const rect = el.getBoundingClientRect();
-                        const elTop = window.pageYOffset + rect.top;
-                        const target = Math.max(0, elTop - (window.innerHeight / 2 - rect.height / 2));
-                        window.scrollTo({ top: target, behavior: 'smooth' });
-                      }}
+                      scroll={scrollToCentre}
                     >
                       {project}
                     </NavHashLink>
