@@ -27,7 +27,11 @@ import { applicationDeadline } from '../data/recruitmentTimeline';
  * The apply page sets its own heading the same way: `runs` for a sentence of
  * its own, `button` for its own label and where it goes - or `disabled`, for
  * a button that is there but greyed out, with `note` to say why in a label
- * that follows the cursor over it.
+ * that follows the cursor over it. The contact and not-found pages do too, with
+ * `title` for a heading of their own; contact passes no `button`, as its form
+ * is what comes next, and `headClassName` and `titleClassName` to stack and
+ * colour it. A `button` with `back` is the plain one, with no fill and its arrow
+ * pointing back in front of its label.
  */
 
 const JOIN_RUNS = [
@@ -63,6 +67,9 @@ function spansOf(runs) {
 export default function JoinScene({
   arrived,
   reducedMotion,
+  title = 'Join us!',
+  headClassName = '',
+  titleClassName = '',
   runs = JOIN_RUNS,
   button = JOIN_BUTTON,
 }) {
@@ -116,8 +123,8 @@ export default function JoinScene({
   }, [arrived, reducedMotion, body, spans]);
 
   return (
-    <div className={styles.aboutHead}>
-      <h2 className={`${styles.aboutTitle} ${shown ? styles.revealed : ''}`}>Join us!</h2>
+    <div className={`${styles.aboutHead} ${headClassName}`}>
+      <h2 className={`${styles.aboutTitle} ${shown ? styles.revealed : ''} ${titleClassName}`}>{title}</h2>
 
       <div className={styles.joinBody}>
         <p className={styles.aboutMission}>
@@ -146,7 +153,7 @@ export default function JoinScene({
           </span>
         </p>
 
-        {button.disabled ? (
+        {button && (button.disabled ? (
           // The handlers are on the box, as a disabled button gets no pointer
           // events of its own.
           <div
@@ -170,15 +177,16 @@ export default function JoinScene({
             className={`${styles.cta} ${styles.joinCta} ${shown ? '' : styles.ctaGone}`}
             tabIndex={shown ? undefined : -1}
           >
-            <button className={`${homeStyles.getInvolvedButton} ${styles.ctaButton} ${styles.joinButton}`}>
+            <button className={`${homeStyles.getInvolvedButton} ${styles.ctaButton} ${button.back ? '' : styles.joinButton}`}>
+              {button.back && <span className={styles.ctaArrowBack} aria-hidden="true">←</span>}
               {button.label}
-              <span className={styles.ctaArrow} aria-hidden="true">→</span>
+              {!button.back && <span className={styles.ctaArrow} aria-hidden="true">→</span>}
             </button>
           </Link>
-        )}
+        ))}
       </div>
 
-      {button.note && cursorTip.tip}
+      {button?.note && cursorTip.tip}
     </div>
   );
 }

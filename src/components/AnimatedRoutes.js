@@ -21,6 +21,14 @@ const routes = [
   { path: '*', element: <NotFound /> },
 ];
 
+/* Where a path sits in the order: anything not in it, the not-found page, is past
+   the end, so that leaving it for any page is going back, sliding in from the left. */
+const orderOf = (path) => {
+  const index = ROUTE_ORDER.indexOf(path);
+
+  return index === -1 ? ROUTE_ORDER.length : index;
+};
+
 function normalizePath(pathname) {
   if (pathname.length > 1 && pathname.endsWith('/')) {
     return pathname.slice(0, -1);
@@ -61,13 +69,7 @@ export default function AnimatedRoutes() {
   const currentPath = normalizePath(location.pathname);
 
   if (currentPath !== prevPathRef.current) {
-    const currentIdx = ROUTE_ORDER.indexOf(currentPath);
-    const prevIdx = ROUTE_ORDER.indexOf(prevPathRef.current);
-
-    if (currentIdx !== -1 && prevIdx !== -1) {
-      directionRef.current = currentIdx >= prevIdx ? 1 : -1;
-    }
-
+    directionRef.current = orderOf(currentPath) >= orderOf(prevPathRef.current) ? 1 : -1;
     prevPathRef.current = currentPath;
   }
 

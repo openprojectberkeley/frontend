@@ -220,6 +220,10 @@
   margin-left: 0.5em;
 }
 
+.ctaArrowBack {
+  margin-right: 0.5em;
+}
+
 .markBox {
   --mark-height: 1.7em;
   display: block;
