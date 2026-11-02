@@ -3,16 +3,26 @@
 import { CURRENT_SEMESTER } from './site';
 
 // Project logos - enabled logos
-import tinyvillageLogo from '../images/projects/tinyvillage.png';
 import atlasLogo from '../images/projects/atlas.png';
-import chessblitzLogo from '../images/projects/chessblitz.png';
-import nexusLogo from '../images/projects/nexus.png';
+import cabalLogo from '../images/projects/cabal.png';
 import calconnectLogo from '../images/projects/calconnect.png';
-import cabalLogo from '../images/projects/cabal.png'
-import nothingbutnetLogo from '../images/projects/nothingbutnet.png'
-import sightlineLogo from '../images/projects/sightline.jpg'
+import chessblitzLogo from '../images/projects/chessblitz.png';
+import cloudTCPLogo from '../images/projects/cloudtcp.jpg';
+import curbIQLogo from '../images/projects/curbiq.jpg';
+import devpadLogo from '../images/projects/devpad.jpg';
+import gettothesurfaceLogo from '../images/projects/gettothesurface.jpg';
+import inductionLogo from '../images/projects/induction.jpg';
+import neoquestLogo from '../images/projects/neoquest.jpg';
+import nexusLogo from '../images/projects/nexus.png';
+import nothingbutnetLogo from '../images/projects/nothingbutnet.png';
+import propertydamageLogo from '../images/projects/propertydamage.jpg';
+import sightlineLogo from '../images/projects/sightline.jpg';
+import smplerLogo from '../images/projects/smpler.png';
+import sortifyLogo from '../images/projects/sortify.jpg';
+import trailmateLogo from '../images/projects/trailmate.jpg';
+import trinketLogo from '../images/projects/trinket.jpg';
+import villagehubLogo from '../images/projects/villagehub.png';
 
-// Unused logos - uncomment when ready
 // import matXLogo from '../images/projects/matX.svg';
 // import copatibleLogo from '../images/projects/copatible.png';
 // import operativeLogo from '../images/projects/operative.svg';
@@ -36,11 +46,6 @@ export const sectionInfo = {
     title: "OP Launch",
     description: "Your first steps in Open Project. Projects in OP Launch help grow your fundamentals in development and systems while becoming a part of our growing OP community! We have lots of passion and client projects - there's something here for everyone.",
     color: "#FDFFBC" // yellow
-  },
-  competitive: {
-    title: "Competitive",
-    description: "Work in teams to turn MVPs into production-ready solutions with PM mentorship.",
-    color: "#97FFC7" // green
   }
 };
 
@@ -74,6 +79,7 @@ export const projects = {
       name: "CloudTCP",
       accent: "#06B6D4",
       difficulty: "advanced",
+      logo: cloudTCPLogo,
       pms: ["Ashley Iattoni", "Benjamin Huang", "Dayton Phan"],
       description: "An AI-powered platform that turns the time-consuming process of drafting Traffic Control Plans into an automated workflow. Build tools that combine image analysis with official traffic-control standards to generate accurate engineering drawings for construction permits in minutes instead of hours.",
       clientName: "Traffic Patterns, LLC"
@@ -92,6 +98,7 @@ export const projects = {
       id: 3,
       name: "Smpler",
       accent: "#F97316",
+      logo: smplerLogo,
       pms: ["Sainik Ghosh", "Justin Le"],
       description: "Smpler is an AI-powered SaaS platform helping institutional investment managers automate investment analysis, turning hours of manual work across messy Excels and PDFs into minutes. This project builds a data pipeline that ingests ~50 public real estate and economic data sources (cap rates, occupancy, job growth, migration trends) into a structured database with an analytics layer and API, so Smpler can benchmark deals against real market context.",
       clientName: "Smpler"
@@ -100,7 +107,7 @@ export const projects = {
       id: 4,
       name: "Village Hub",
       accent: "#14B8A6",
-      logo: tinyvillageLogo,
+      logo: villagehubLogo,
       pms: ["Felicia Ye", "Helena Zhang", "Emmanuel Elizalde-Ocampo"],
       description: "A community platform for clients Tiny Village Spirit and Hope Solutions that connects residents with support resources, meetings, and each other in one place. Work directly with staff and residents to design and build AI-powered tools, shared calendars, and community organizing features that address real community needs.",
       clientName: "Tiny Village Spirit & Hope Solutions"
@@ -112,6 +119,7 @@ export const projects = {
       name: "Get to the Surface",
       accent: "#6366F1",
       difficulty: "beginner",
+      logo: gettothesurfaceLogo,
       pms: ["Turner Osswald"],
       description: "A 2D Foddian-style platformer where players climb from the Earth’s core all the way into space, with each layer introducing new environments, movement mechanics, and obstacles. Build everything from pixel art and original music to physics-based gameplay inspired by games like Jump King and Pogostuck."
     },
@@ -129,6 +137,7 @@ export const projects = {
       name: "Trinket",
       accent: "#14B8A6",
       difficulty: "beginner",
+      logo: trinketLogo,
       pms: ["Keira Tan", "Johanna Flores"],
       description: "A gamified productivity app that turns getting your work done into a collectible experience. Use AI to pull assignments and deadlines from syllabi, stay accountable with an AI companion, and earn virtual currency for completing goals that can be spent on unique collectible trinkets."
     },
@@ -145,6 +154,7 @@ export const projects = {
       id: 10,
       name: "NeoQuest",
       accent: "#7C3AED",
+      logo: neoquestLogo,
       pms: ["Nishaad Sovani", "Siddharth Garimella", "Emily Yue"],
       description: "A local discovery app that turns “there’s nothing to do” into your next side quest. Find spontaneous hangouts and unconventional activities based on your group’s budget, interests, transportation, and location, then explore them through an interactive map or contribute side quests of your own."
     },
@@ -153,6 +163,7 @@ export const projects = {
       name: "CurbIQ",
       accent: "#14B8A6",
       difficulty: "intermediate",
+      logo: curbIQLogo,
       pms: ["Harshini Pulivarthi", "Sneha Atmakur"],
       description: "An accessibility-first navigation app that finds routes based on what a person can actually navigate, not simply what gets them there fastest. Combine maps, elevation data, personalized mobility preferences, and crowdsourced hazard reports to help users avoid stairs, steep slopes, construction, and other accessibility barriers."
     },
@@ -170,6 +181,7 @@ export const projects = {
       name: "Sortify",
       accent: "#84CC16",
       difficulty: "intermediate",
+      logo: sortifyLogo,
       pms: ["Caden Luu"],
       description: "A camera-powered waste sorting tool that takes the guesswork out of deciding what goes in recycling, compost, or landfill. Identify an item with AI, combine it with local disposal rules, and gamify sustainable habits through sorting history, points, and streaks."
     },
@@ -178,6 +190,7 @@ export const projects = {
       name: "TrailMate",
       accent: "#2E752F",
       difficulty: "intermediate",
+      logo: trailmateLogo,
       pms: ["Janice Lin", "Melody Shane", "Miles Petrick"],
       description: "A personalized trail discovery app that learns what you actually enjoy hiking and recommends where to go next. Combine trail, elevation, location, and scenic data with machine learning to find hikes tailored to your experience, available time, and past adventures."
     },
@@ -194,6 +207,7 @@ export const projects = {
       name: "Property Damage",
       accent: "#6C3D39",
       difficulty: "intermediate",
+      logo: propertydamageLogo,
       pms: ["Joseph Ong", "Zander Rosenzweig"],
       description: "A local two-player 2D fighting game featuring a materials simulation as the arena."
     },
@@ -201,6 +215,7 @@ export const projects = {
       id: 17,
       name: "Induction",
       accent: "#3B5BDB",
+      logo: inductionLogo,
       pms: ["Leo Park", "Haaziq Kazi", "Benjamin Wang"],
       description: "We study how fine-tuning on one reasoning task changes a model’s internal mechanisms and whether those same mechanisms are reused on related, unseen tasks. By tracking behavior and causal circuit changes across fine-tuning checkpoints, we test whether mechanistic transfer emerges before, alongside, or after behavioral generalization."
     },
@@ -219,15 +234,15 @@ export const projects = {
       name: "DevPad",
       accent: "#0B7A75",
       difficulty: "intermediate",
+      logo: devpadLogo,
       pms: ["Jason Shorey", "Yuchan Chang"],
       description: "DevPad is a productivity-focused mobile app that assists STEM students in note-taking. It differs from traditional note-taking apps by including features especially helpful for Computer Science topics, such as a built-in interpreter for multiple programming languages."
     }
-  ],
-  competitive: []
+  ]
 };
 
 // The sections in the order the projects page shows them.
-export const sectionOrder = ['client', 'passion', 'competitive'];
+export const sectionOrder = ['client', 'passion'];
 
 // Projects with a logo come first within a section, otherwise in listed order.
 export const logosFirst = (list) => [...list].sort((a, b) => (b.logo ? 1 : 0) - (a.logo ? 1 : 0));
@@ -241,7 +256,7 @@ export const inPageOrder = (semesterProjects) => sectionOrder.flatMap(
 // managers by this.
 export const orderedProjects = inPageOrder(projects);
 
-const NO_PROJECTS = { client: [], passion: [], competitive: [] };
+const NO_PROJECTS = { client: [], passion: [] };
 
 // The semesters the projects page can show, newest first. Fill one in with the
 // same shape as `projects`.
