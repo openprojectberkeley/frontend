@@ -10,15 +10,16 @@ import useInViewOnce from './useInViewOnce';
 import scrollToCentre from './scrollToCentre';
 import accentInk from './accentInk';
 import { FixedStarField } from './StarField';
-import ProjectDetail, { CoffeeChatBadge, ProjectDifficulty, ProjectPMs, ScrambleSwap, toAnchorId } from './ProjectDetail';
+import ProjectDetail, { CoffeeChatBadge, ProjectDifficulty, ScrambleSwap } from './ProjectDetail';
 import ProjectFilters, { NO_FILTERS, matchesFilters } from './ProjectFilters';
 import { ScrambleRuns } from './ScrambleText';
-import { projectsBySemester, sectionInfo, projectTypes, sectionOrder, logosFirst, orderedProjects, inPageOrder } from '../data/projectsData';
+import { toAnchorId, projectsBySemester, sectionInfo, projectTypes, sectionOrder, logosFirst, orderedProjects, inPageOrder } from '../data/projectsData';
 import { CURRENT_SEMESTER } from '../data/site';
 
 /* Rows that come into view together start a beat apart. */
 const ROW_GAP_MS = 60;
 const NAME_SCRAMBLE_MS = 500;
+const TAGLINE_SCRAMBLE_MS = 700;
 // Where the things held in place beside each other sit under the fixed header.
 const HEADER_CLEARANCE = 96;
 
@@ -29,10 +30,10 @@ const projectInHash = (hash) => orderedProjects.findIndex(
 );
 
 /*
- * A project in the list: its icon, and beside it the name, client, project
- * managers and difficulty. Comes in once, the first time it is in view, its name
- * and difficulty typed in with the scramble as its client and project managers
- * are highlighted in - see .flash. Each row asks when it arrives, as a long list
+ * A project in the list: its icon, and beside it the name, client, difficulty,
+ * one line on it and its topics. Comes in once, the first time it is in view, its
+ * name, difficulty and line typed in with the scramble as its client is
+ * highlighted in - see .flash - and its topics blur in. Each row asks when it arrives, as a long list
  * would otherwise play out of sight below the fold.
  *
  * The whole row brings up the project beside the list. Filtered out, or in
@@ -75,46 +76,61 @@ function ProjectRow({ project, anchorId, current, hidden, filterKey, reducedMoti
       <div className={styles.cardText}>
         {/* The name is the row's control, stretched over all of it - see
             .projectName. */}
-        <div className={styles.projectTitle}>
-          <h3 className={styles.projectName}>
-            <button
-              type="button"
-              aria-label={project.name}
-              aria-current={current ? 'true' : undefined}
-              onClick={() => onShow(project)}
-            >
-              <ScrambleRuns
-                runs={[{ text: project.name }]}
-                play={inView}
-                delay={delay}
-                duration={NAME_SCRAMBLE_MS}
-                instant={reducedMotion}
-              />
-            </button>
-          </h3>
+        <div className={styles.rowHead}>
+          <div className={styles.projectTitle}>
+            <h3 className={styles.projectName}>
+              <button
+                type="button"
+                aria-label={project.name}
+                aria-current={current ? 'true' : undefined}
+                onClick={() => onShow(project)}
+              >
+                <ScrambleRuns
+                  runs={[{ text: project.name }]}
+                  play={inView}
+                  delay={delay}
+                  duration={NAME_SCRAMBLE_MS}
+                  instant={reducedMotion}
+                />
+              </button>
+            </h3>
 
-          {project.clientName && (
-            <p className={styles.projectClient}>
-              <span className={styles.flash}>{project.clientName}</span>
-            </p>
+            {project.clientName && (
+              <p className={styles.projectClient}>
+                <span className={styles.flash}>{project.clientName}</span>
+              </p>
+            )}
+          </div>
+
+          {project.difficulty && (
+            <ProjectDifficulty
+              difficulty={project.difficulty}
+              play={inView}
+              delay={delay}
+              instant={reducedMotion}
+            />
           )}
         </div>
 
-        <ProjectPMs pms={project.pms} />
+        <p className={styles.projectTagline}>
+          <ScrambleRuns
+            runs={[{ text: project.tagline }]}
+            play={inView}
+            delay={delay}
+            duration={TAGLINE_SCRAMBLE_MS}
+            instant={reducedMotion}
+          />
+        </p>
 
-        {(project.difficulty || project.coffeeChatRequired) && (
-          <div className={styles.rowMeta}>
-            {project.difficulty && (
-              <ProjectDifficulty
-                difficulty={project.difficulty}
-                play={inView}
-                delay={delay}
-                instant={reducedMotion}
-              />
-            )}
-            {project.coffeeChatRequired && <CoffeeChatBadge />}
-          </div>
-        )}
+        <ul className={styles.projectTags}>
+          {project.tags.map((tag) => (
+            <li key={tag} className={styles.projectTag}>
+              {tag}
+            </li>
+          ))}
+        </ul>
+
+        {project.coffeeChatRequired && <CoffeeChatBadge />}
       </div>
     </li>
   );
@@ -150,6 +166,48 @@ export default function Projects() {
     setSemester(CURRENT_SEMESTER);
     setSelected(linked);
   }, [location.hash]);
+
+  /*
+   * Every row as tall as the tallest, across all the sections and whatever is
+   * filtered out, which only a measurement can tell: for that one moment, before
+   * anything paints, the rows are all there at their own heights - see
+   * .measuringRows. Again when the width changes, and when the fonts arrive.
+   */
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    let width = list.offsetWidth;
+    let frame = null;
+
+    const measure = () => {
+      list.classList.add(styles.measuringRows);
+
+      const heights = [...list.querySelectorAll(`.${styles.projectRow}`)].map(
+        (row) => Math.ceil(row.getBoundingClientRect().height),
+      );
+
+      list.classList.remove(styles.measuringRows);
+      list.style.setProperty('--row-height', `${Math.max(0, ...heights)}px`);
+    };
+
+    // On the next frame, as changing the list's height from inside the observer's
+    // own callback is a ResizeObserver loop.
+    const observer = new ResizeObserver(() => {
+      if (list.offsetWidth === width) return;
+
+      width = list.offsetWidth;
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(measure);
+    });
+
+    measure();
+    observer.observe(list);
+    document.fonts?.ready.then(measure);
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   // Filtering from far down the list goes back up to the top of what is left.
   useLayoutEffect(() => {

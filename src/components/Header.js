@@ -159,6 +159,7 @@ export default function Header() {
         </NavLink>
         <div className={active ? `${styles.linksActive}` : `${styles.links}`} onClick={deActivate}>
           <NavLink to="/about/" className={activeLink('/about')}>about</NavLink>
+          <NavLink to="/apply/" className={activeLink('/apply')}>apply</NavLink>
           <div
             className={styles.menuItem}
             onMouseEnter={openMenu}
@@ -185,7 +186,6 @@ export default function Header() {
               ))}
             </div>
           </div>
-          <NavLink to="/apply/" className={activeLink('/apply')}>apply</NavLink>
           <NavLink to="/projects/" className={activeLink('/projects')}>projects</NavLink>
           <NavLink to="/contact/" className={activeLink('/contact')}>contact</NavLink>
           <a

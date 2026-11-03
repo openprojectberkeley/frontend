@@ -53,6 +53,7 @@
 }
 
 .person {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -60,8 +61,32 @@
     border-radius: 20px;
 }
 
-.anchorTarget {
-    scroll-margin-top: 120px;
+/* The way to the person's own page, laid over their whole card, with the links on
+   the card lifted over it. The title lifted rather than its links, as its opacity
+   would hold them under. */
+.profileLink {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.profileLink:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+}
+
+.name a,
+.title:has(.projectLink) {
+    position: relative;
+    z-index: 2;
+}
+
+/* The name underlined for as long as the cursor's on the way to their page, so it
+   reads as a link: not over the links on the card, which go elsewhere. */
+.person:has(.profileLink:hover) h3 span,
+.person:has(.profileLink:focus-visible) h3 span {
+    text-decoration: underline;
 }
 
 .imageWrapper {
@@ -385,17 +410,6 @@
         opacity: 0;
         transition: opacity 0s linear 360ms;
     }
-}
-
-/* Held back while a link is arriving at the card - see arriveAt. If the cursor is
-   still there once it is done, the hover plays then. */
-.person[data-arriving] .wipe {
-    animation: none;
-}
-
-.person[data-arriving] .altImage {
-    opacity: 0;
-    transition: none;
 }
 
 @keyframes cardWipeIn {

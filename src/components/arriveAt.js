@@ -12,20 +12,8 @@ const LINE_MS = 850;
 // Less than the time .line holds across, so all of them are across together.
 const STAGGER_MS = 90;
 
-// What is being arrived at, marked with data-arriving until the lines are done:
-// the board holds its hover back for that long - see .person.
-let arriving = null;
-
-const finishArriving = (element) => {
-  delete element.dataset.arriving;
-  if (arriving === element) arriving = null;
-};
-
-const playLines = (box, onDone) => {
-  if (!box.isConnected) {
-    onDone();
-    return;
-  }
+const playLines = (box) => {
+  if (!box.isConnected) return;
 
   box.querySelector(`:scope > .${styles.lines}`)?.remove();
 
@@ -52,35 +40,22 @@ const playLines = (box, onDone) => {
 
   lines.append(turned);
   box.append(lines);
-  window.setTimeout(() => {
-    lines.remove();
-    onDone();
-  }, LINE_MS + STAGGER_MS);
+  window.setTimeout(() => lines.remove(), LINE_MS + STAGGER_MS);
 };
 
 /*
  * For a link to something on another page: scrolls to it and then, once it is
  * there and the page has settled, runs white lines over it so the reader sees
- * what they came to. The lines go over the `data-arrival-box` inside it, if it
- * has one. Positioned, as they are laid over it.
+ * what they came to. Positioned, as they are laid over it.
  */
 export default function arriveAt(element) {
   const started = performance.now();
-
-  if (arriving) finishArriving(arriving);
-  arriving = element;
-  element.dataset.arriving = '';
 
   scrollToCentre(element, () => {
     // Once more after the page has settled, as that can move what it arrived at.
     window.setTimeout(
       () => scrollToCentre(element, () => {
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          finishArriving(element);
-          return;
-        }
-
-        playLines(element.querySelector('[data-arrival-box]') ?? element, () => finishArriving(element));
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) playLines(element);
       }),
       Math.max(0, started + ROUTE_SETTLE_MS - performance.now()),
     );

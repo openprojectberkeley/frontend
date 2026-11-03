@@ -1,17 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import { NavHashLink } from 'react-router-hash-link';
+import { Link } from 'react-router-dom';
 import aboutStyles from '../css/About.module.css';
 import styles from '../css/Projects.module.css';
-import arriveAt from './arriveAt';
 import OpensElsewhere from './OpensElsewhere';
 import useCursorTip from './useCursorTip';
 import { HIGHLIGHT_TINTS } from './MomentStrip';
 import PixelSwap from './PixelSwap';
 import { ScrambleRuns, useScrambleSwap } from './ScrambleText';
+import { profilePath } from '../data/boardMembers';
 import coffeeCupIcon from '../images/projects/coffee-cup.svg';
-
-export const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 /* How many of the three pips each difficulty fills. */
 export const DIFFICULTY_LEVELS = { beginner: 1, intermediate: 2, advanced: 3 };
@@ -37,18 +35,6 @@ const pmSeparator = (pms, index) => {
 
   return index === pms.length - 2 ? ' and ' : ', ';
 };
-
-/* A row of the list's, as words only: the links to the board are on the project
-   beside the list. Highlighted in as one line - see .flash. */
-export function ProjectPMs({ pms }) {
-  return (
-    <p className={styles.projectPMs}>
-      <span className={`${styles.flash} ${styles.flashLater}`}>
-        {pms.map((pm, index) => pm + pmSeparator(pms, index)).join('')}
-      </span>
-    </p>
-  );
-}
 
 export function ProjectDifficulty({ difficulty, play, delay, instant }) {
   return (
@@ -106,7 +92,7 @@ export function ScrambleSwap({ text, duration = FIELD_SCRAMBLE_MS, hold, instant
  * it goes, is in a span after them all. Hovered, a name says where it goes in a
  * highlight locked to the cursor.
  */
-function ScrambledPMs({ pms, instant }) {
+function ScrambledPMs({ pms, projectName, instant }) {
   const linkRefs = useRef([]);
   const separatorRefs = useRef([]);
   const restRef = useRef(null);
@@ -138,14 +124,13 @@ function ScrambledPMs({ pms, instant }) {
       {pms.map((pm, index) => (
         // By place, as their text is written from here rather than by React.
         <React.Fragment key={index}>
-          <NavHashLink
-            smooth
+          <Link
             className={styles.projectManagerLink}
-            to={`/board/#pm-${toAnchorId(pm)}`}
-            scroll={arriveAt}
+            to={profilePath(pm)}
+            state={{ fromProject: projectName }}
             draggable={false}
             aria-label={pm}
-            onPointerEnter={(event) => cursorTip.show(event, 'go to board', HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length])}
+            onPointerEnter={(event) => cursorTip.show(event, 'go to profile', HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length])}
             onPointerMove={cursorTip.move}
             onPointerLeave={cursorTip.hide}
             onClick={cursorTip.hide}
@@ -155,7 +140,7 @@ function ScrambledPMs({ pms, instant }) {
                 linkRefs.current[index] = node;
               }}
             />
-          </NavHashLink>
+          </Link>
           <span
             ref={(node) => {
               separatorRefs.current[index] = node;
@@ -189,12 +174,13 @@ function DetailTextSizer({ project }) {
           <h2 className={styles.detailName}>{project.name}</h2>
           {project.clientName && <p className={styles.projectClient}>{project.clientName}</p>}
         </div>
-      </div>
-      <p className={styles.projectPMs}>{project.pms.map((pm, index) => pm + pmSeparator(project.pms, index)).join('')}</p>
-      <div className={styles.detailMeta}>
         <p className={styles.projectDifficulty}>{project.difficulty}</p>
-        {project.coffeeChatRequired && <div className={styles.coffeeChatBadge}>{COFFEE_CHAT_LABEL}</div>}
       </div>
+      <ul className={`${styles.projectTags} ${styles.detailTags}`}>
+        {project.tags.map((tag) => <li key={tag} className={styles.projectTag}>{tag}</li>)}
+      </ul>
+      <p className={styles.projectPMs}>{project.pms.map((pm, index) => pm + pmSeparator(project.pms, index)).join('')}</p>
+      {project.coffeeChatRequired && <div className={styles.coffeeChatBadge}>{COFFEE_CHAT_LABEL}</div>}
       <p className={styles.detailDescription}>{project.description}</p>
     </div>
   );
@@ -245,12 +231,7 @@ export default function ProjectDetail({ project, projects, sectionRef }) {
                 <ScrambleSwap text={project.clientName || ''} instant={instant} />
               </p>
             </div>
-          </div>
-
-          <ScrambledPMs pms={project.pms} instant={instant} />
-
-          {/* Always here, so that the description does not move for them. */}
-          <div className={styles.detailMeta}>
+            {/* Always here, so that the title does not move for it. */}
             <p className={`${styles.projectDifficulty} ${project.difficulty ? '' : styles.metaAbsent}`}>
               <span className={styles.difficultyPips} aria-hidden="true">
                 {[1, 2, 3].map((pip) => (
@@ -259,11 +240,20 @@ export default function ProjectDetail({ project, projects, sectionRef }) {
               </span>
               <span><ScrambleSwap text={project.difficulty || ''} instant={instant} /></span>
             </p>
-            <div className={`${styles.coffeeChatBadge} ${project.coffeeChatRequired ? '' : styles.metaAbsent}`}>
-              <img src={coffeeCupIcon} alt="" className={styles.coffeeIcon} aria-hidden="true" />
-              <span><ScrambleSwap text={project.coffeeChatRequired ? COFFEE_CHAT_LABEL : ''} instant={instant} /></span>
-            </div>
           </div>
+
+          {/* By place, so that each scrambles into the next project's. */}
+          <ul className={`${styles.projectTags} ${styles.detailTags}`}>
+            {project.tags.map((tag, index) => (
+              <li key={index} className={styles.projectTag}>
+                <ScrambleSwap text={tag} instant={instant} />
+              </li>
+            ))}
+          </ul>
+
+          <ScrambledPMs pms={project.pms} projectName={project.name} instant={instant} />
+
+          {project.coffeeChatRequired && <CoffeeChatBadge />}
 
           <p className={styles.detailDescription}>
             <ScrambleSwap

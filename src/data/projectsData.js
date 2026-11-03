@@ -60,13 +60,16 @@ export const projectTypes = [
  * tile rests on a faint, desaturated gradient of it and fills with it on hover,
  * with its text turning dark on an accent too light for white - see accentInk
  * in accentInk.js. `difficulty`, where known, is beginner, intermediate or
- * advanced.
+ * advanced. `tagline` is its one line on its row in the list, and `tags` its
+ * topics, shown under that and filtered by: the filter offers whatever is here.
  */
 export const projects = {
   client: [
     {
       id: 1,
       name: "Atlas",
+      tagline: "One searchable workspace for LG NOVA's project knowledge",
+      tags: ["AI", "Data", "Productivity"],
       accent: "#A50034",
       difficulty: "intermediate",
       logo: atlasLogo,
@@ -77,6 +80,8 @@ export const projects = {
     {
       id: 2,
       name: "CloudTCP",
+      tagline: "AI-drafted traffic control plans, in minutes not hours",
+      tags: ["AI", "Computer Vision", "Automation"],
       accent: "#06B6D4",
       difficulty: "advanced",
       logo: cloudTCPLogo,
@@ -87,6 +92,8 @@ export const projects = {
     {
       id: 5,
       name: "Nexus",
+      tagline: "AI-powered investing on real-time data and live news",
+      tags: ["AI", "Data", "Finance"],
       accent: "#2A3050",
       difficulty: "advanced",
       logo: nexusLogo,
@@ -97,6 +104,8 @@ export const projects = {
     {
       id: 3,
       name: "Smpler",
+      tagline: "Automated investment analysis for institutional managers",
+      tags: ["AI", "Data", "Finance"],
       accent: "#F97316",
       logo: smplerLogo,
       pms: ["Sainik Ghosh", "Justin Le"],
@@ -106,6 +115,8 @@ export const projects = {
     {
       id: 4,
       name: "Village Hub",
+      tagline: "One place for residents, resources and community support",
+      tags: ["AI", "Community"],
       accent: "#14B8A6",
       logo: villagehubLogo,
       pms: ["Felicia Ye", "Helena Zhang", "Emmanuel Elizalde-Ocampo"],
@@ -117,6 +128,8 @@ export const projects = {
     {
       id: 6,
       name: "Get to the Surface",
+      tagline: "A pixel-art platformer from Earth's core into space",
+      tags: ["Games"],
       accent: "#6366F1",
       difficulty: "beginner",
       logo: gettothesurfaceLogo,
@@ -126,6 +139,8 @@ export const projects = {
     {
       id: 7,
       name: "CalConnect",
+      tagline: "Finding Berkeley tutors who fit how you learn",
+      tags: ["AI", "Education"],
       accent: "#3B82F6",
       difficulty: "beginner",
       logo: calconnectLogo,
@@ -135,6 +150,8 @@ export const projects = {
     {
       id: 8,
       name: "Trinket",
+      tagline: "Finish your work, earn collectible trinkets",
+      tags: ["AI", "Productivity"],
       accent: "#14B8A6",
       difficulty: "beginner",
       logo: trinketLogo,
@@ -144,6 +161,8 @@ export const projects = {
     {
       id: 9,
       name: "Cabal",
+      tagline: "Online Diplomacy, where AI takes over for ghosting players",
+      tags: ["AI", "Games"],
       accent: "#EAB308",
       difficulty: "intermediate",
       logo: cabalLogo,
@@ -153,6 +172,8 @@ export const projects = {
     {
       id: 10,
       name: "NeoQuest",
+      tagline: "Turning \"nothing to do\" into your next side quest",
+      tags: ["Community", "Maps"],
       accent: "#7C3AED",
       logo: neoquestLogo,
       pms: ["Nishaad Sovani", "Siddharth Garimella", "Emily Yue"],
@@ -161,6 +182,8 @@ export const projects = {
     {
       id: 11,
       name: "CurbIQ",
+      tagline: "Routes built around what you can actually navigate",
+      tags: ["Accessibility", "Maps"],
       accent: "#14B8A6",
       difficulty: "intermediate",
       logo: curbIQLogo,
@@ -170,6 +193,8 @@ export const projects = {
     {
       id: 12,
       name: "SightLine",
+      tagline: "Your day's best moments in a 60-second video",
+      tags: ["Mobile", "Video"],
       accent: "#22C55E",
       difficulty: "intermediate",
       logo: sightlineLogo,
@@ -179,6 +204,8 @@ export const projects = {
     {
       id: 13,
       name: "Sortify",
+      tagline: "Point your camera to know which bin it goes in",
+      tags: ["AI", "Computer Vision", "Sustainability"],
       accent: "#84CC16",
       difficulty: "intermediate",
       logo: sortifyLogo,
@@ -188,6 +215,8 @@ export const projects = {
     {
       id: 14,
       name: "TrailMate",
+      tagline: "Hike recommendations tailored to what you enjoy",
+      tags: ["AI", "Maps"],
       accent: "#2E752F",
       difficulty: "intermediate",
       logo: trailmateLogo,
@@ -197,6 +226,8 @@ export const projects = {
     {
       id: 15,
       name: "NothingButNet",
+      tagline: "Instant feedback on your basketball shooting form",
+      tags: ["Computer Vision", "Sports"],
       accent: "#E7A977",
       logo: nothingbutnetLogo,
       pms: ["Navya Lella", "Ayah Elzein"],
@@ -205,6 +236,8 @@ export const projects = {
     {
       id: 16,
       name: "Property Damage",
+      tagline: "A two-player fighter in a materials-simulated arena",
+      tags: ["Games"],
       accent: "#6C3D39",
       difficulty: "intermediate",
       logo: propertydamageLogo,
@@ -214,6 +247,8 @@ export const projects = {
     {
       id: 17,
       name: "Induction",
+      tagline: "Do fine-tuned mechanisms transfer to unseen tasks?",
+      tags: ["AI", "Research"],
       accent: "#3B5BDB",
       logo: inductionLogo,
       pms: ["Leo Park", "Haaziq Kazi", "Benjamin Wang"],
@@ -222,6 +257,8 @@ export const projects = {
     {
       id: 18,
       name: "ChessBlitz",
+      tagline: "Teaching K-8 problem solving through chess tactics",
+      tags: ["AI", "Education", "Games"],
       accent: "#FAEF7C",
       difficulty: "intermediate",
       logo: chessblitzLogo,
@@ -232,14 +269,19 @@ export const projects = {
     {
       id: 19,
       name: "DevPad",
+      tagline: "Note-taking for STEM students, with code that runs",
+      tags: ["Education", "Mobile", "Productivity"],
       accent: "#0B7A75",
       difficulty: "intermediate",
       logo: devpadLogo,
-      pms: ["Jason Shorey", "Yuchan Chang"],
+      pms: ["Jason Shorey", "Yuchan Chung"],
       description: "DevPad is a productivity-focused mobile app that assists STEM students in note-taking. It differs from traditional note-taking apps by including features especially helpful for Computer Science topics, such as a built-in interpreter for multiple programming languages."
     }
   ]
 };
+
+// A name as it goes in a link: "Get to the Surface" -> get-to-the-surface.
+export const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 // The sections in the order the projects page shows them.
 export const sectionOrder = ['client', 'passion'];

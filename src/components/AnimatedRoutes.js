@@ -7,22 +7,25 @@ import Contact from './Contact';
 import Apply from './Apply';
 import Projects from './Projects';
 import Board from './Board';
+import MemberProfile from './MemberProfile';
 import NotFound from './NotFound';
 import styles from '../css/AnimatedRoutes.module.css';
-const ROUTE_ORDER = ['/', '/about', '/board', '/apply', '/projects', '/contact'];
+const ROUTE_ORDER = ['/', '/about', '/apply', '/board', '/projects', '/contact'];
 
 const routes = [
   { path: '/', element: <HomePage /> },
   { path: '/about', element: <About /> },
   { path: '/board', element: <Board /> },
+  { path: '/board/:slug', element: <MemberProfile /> },
   { path: '/apply', element: <Apply /> },
   { path: '/projects', element: <Projects /> },
   { path: '/contact', element: <Contact /> },
   { path: '*', element: <NotFound /> },
 ];
 
-/* Where a path sits in the order: anything not in it, the not-found page, is past
-   the end, so that leaving it for any page is going back, sliding in from the left. */
+/* Where a path sits in the order: anything not in it, a member's page or the
+   not-found page, is past the end, so that leaving it for any page is going back,
+   sliding in from the left. */
 const orderOf = (path) => {
   const index = ROUTE_ORDER.indexOf(path);
 

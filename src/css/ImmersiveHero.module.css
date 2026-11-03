@@ -224,6 +224,13 @@
   margin-right: 0.5em;
 }
 
+/* A back button says different things, so is no one width for the wipe's travel
+   to be measured against - see .ctaButton:hover. This clears the longest of them. */
+.ctaButton.ctaButton.ctaBack:hover,
+.ctaButton.ctaButton.ctaBack:focus-visible {
+  box-shadow: 320px 0 0 0 #FFFDF8 inset;
+}
+
 .markBox {
   --mark-height: 1.7em;
   display: block;

@@ -73,7 +73,8 @@ import kitty from "../images/about/spring2024/kitty.thumb.jpg";
 import rohan from "../images/about/spring2024/rohan.thumb.jpg";
 import zee from "../images/about/fall2023/zee.thumb.jpg";
 
-import { orderedProjects } from "./projectsData";
+import { inPageOrder, orderedProjects, projectsBySemester, toAnchorId } from "./projectsData";
+import { CURRENT_SEMESTER } from "./site";
 
 /*
  * Everyone on the board page this semester, once each - someone on the
@@ -566,3 +567,33 @@ export const alumni = [
         hoverImage: placeholder,
     },
 ];
+
+/*
+ * Everyone with a page of their own - the executive team and the project managers,
+ * once each. Worked out from the lists above and each project's `pms`, so that a
+ * project added to a past semester in projectsData.js shows up on its managers'
+ * pages with nothing typed here.
+ */
+const pastProjectsOf = (name) => Object.entries(projectsBySemester)
+    .filter(([semester]) => semester !== CURRENT_SEMESTER)
+    .flatMap(([semester, projects]) => inPageOrder(projects)
+        .filter(({ pms }) => pms.includes(name))
+        .map((project) => ({ project, semester })));
+
+const profiles = new Map(
+    [...new Set([...board, ...projectLeads].map(({ name }) => name))].map((name) => [
+        toAnchorId(name),
+        {
+            ...person(name),
+            title: board.find((member) => member.name === name)?.title,
+            currentProjects: orderedProjects
+                .filter(({ pms }) => pms.includes(name))
+                .map((project) => ({ project })),
+            pastProjects: pastProjectsOf(name),
+        },
+    ]),
+);
+
+export const profileNamed = (slug) => profiles.get(slug);
+
+export const profilePath = (name) => `/board/${toAnchorId(name)}`;

@@ -177,7 +177,7 @@ export default function JoinScene({
             className={`${styles.cta} ${styles.joinCta} ${shown ? '' : styles.ctaGone}`}
             tabIndex={shown ? undefined : -1}
           >
-            <button className={`${homeStyles.getInvolvedButton} ${styles.ctaButton} ${button.back ? '' : styles.joinButton}`}>
+            <button className={`${homeStyles.getInvolvedButton} ${styles.ctaButton} ${button.back ? styles.ctaBack : styles.joinButton}`}>
               {button.back && <span className={styles.ctaArrowBack} aria-hidden="true">←</span>}
               {button.label}
               {!button.back && <span className={styles.ctaArrow} aria-hidden="true">→</span>}

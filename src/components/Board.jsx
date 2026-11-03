@@ -5,6 +5,7 @@ import heroStyles from "../css/ImmersiveHero.module.css";
 import { FixedStarField } from './StarField';
 import { aboutValues } from '../data/aboutValues';
 import { HIGHLIGHT_TINTS } from './MomentStrip';
+import { Link } from 'react-router-dom';
 import { NavHashLink } from 'react-router-hash-link';
 import homeStyles from "../css/HomePage.module.css";
 import useScrollCue from './useScrollCue';
@@ -17,8 +18,8 @@ import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
 // projectLeads arrives grouped by project in the projects page's order - see
 // boardMembers.js.
-import { board, projectLeads, alumni } from '../data/boardMembers';
-import { orderedProjects } from '../data/projectsData';
+import { board, projectLeads, alumni, profilePath } from '../data/boardMembers';
+import { orderedProjects, toAnchorId } from '../data/projectsData';
 import { CURRENT_SEMESTER } from '../data/site';
 
 /* As many columns as the old grid had at each width - see .columns. */
@@ -311,10 +312,8 @@ const settleCard = (card) => {
 
   if (on === card.classList.contains(styles.hoverIn)) return;
 
-  // While a link is arriving at the card its hover is held back - see
-  // .person[data-arriving] - and with nothing shown, there is nothing to undo.
   card.classList.toggle(styles.hoverIn, on);
-  card.classList.toggle(styles.hoverOut, !on && !('arriving' in card.dataset));
+  card.classList.toggle(styles.hoverOut, !on);
 };
 
 const hoverCard = (event, on) => {
@@ -468,28 +467,31 @@ export default function Board() {
   const lightRef = useRef(null);
   const sheetRef = useRef(null);
   const reducedMotion = useReducedMotion();
-  const cursorTip = useCursorTip(styles.cursorTip);
+  const cursorTip = useCursorTip(styles.cursorTip, <OpensElsewhere shown />);
   const cursorIcon = useCursorIcon();
   const showScrollCue = useScrollCue();
 
   useLightSheet(pageRef, lightRef, sheetRef, !reducedMotion);
 
-  const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-
-  // hover: the wipe to their second photo and the major/year caption. The
-  // alumni have no second photos, so they go without.
-  const renderPerson = (idPrefix = '', { hover = true } = {}) => (person, index) => {
+  // caption: what the cursor says over a card that goes to the person's own page,
+  // with the wipe to their second photo. The alumni have neither, so go without.
+  const renderPerson = (caption) => (person, index) => {
+    const hover = Boolean(caption);
     const showCaption = (event) => cursorTip.show(
       event,
-      [person.year, person.major].filter(Boolean).join(' · '),
+      caption,
       HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length],
     );
+    // Over the links on a card, which go somewhere else, it says nothing.
+    const quietOverLink = hover ? {
+      onPointerEnter: cursorTip.hide,
+      onPointerLeave: showCaption,
+    } : {};
 
     return (
       <div
-        className={`${styles.person} ${idPrefix ? styles.anchorTarget : ''}`}
+        className={styles.person}
         key={person.name}
-        id={idPrefix ? `${idPrefix}${toAnchorId(person.name)}` : undefined}
         style={{ '--hl': HIGHLIGHTS[index % HIGHLIGHTS.length] }}
         onPointerEnter={hover ? (event) => {
           hoverCard(event, true);
@@ -502,7 +504,10 @@ export default function Board() {
           cursorTip.hide();
         } : undefined}
       >
-        <div className={styles.imageWrapper} data-arrival-box>
+        {hover && (
+          <Link to={profilePath(person.name)} className={styles.profileLink} aria-label={`${person.name}'s profile`} />
+        )}
+        <div className={styles.imageWrapper}>
           <img
             className={styles.gridImage}
             src={person.image}
@@ -524,6 +529,7 @@ export default function Board() {
               href={person.link}
               target="_blank"
               rel="noopener noreferrer"
+              {...quietOverLink}
             >
             <img
               src={
@@ -541,6 +547,7 @@ export default function Board() {
               href={person.coffee_chat}
               target="_blank"
               rel="noopener noreferrer"
+              {...quietOverLink}
             >
             <img
               src={
@@ -615,7 +622,7 @@ export default function Board() {
       <div className={styles.boardPics} id="team" ref={nextSectionRef}>
         <h1 className={heroStyles.drift1}>{CURRENT_SEMESTER} Board</h1>
         <h2 id="exec">Executive Team</h2>
-        <ParallaxColumns people={board} renderPerson={renderPerson()} />
+        <ParallaxColumns people={board} renderPerson={renderPerson('go to profile')} />
       </div>
     </section>
 
@@ -624,7 +631,7 @@ export default function Board() {
       <div className={`${styles.lightInner} limitWidth`}>
         <div className={styles.boardPics}>
           <h2 id="pms">Project Managers</h2>
-          <ParallaxColumns people={projectLeads} renderPerson={renderPerson('pm-')} />
+          <ParallaxColumns people={projectLeads} renderPerson={renderPerson('go to profile')} />
         </div>
       </div>
     </section>
@@ -633,7 +640,7 @@ export default function Board() {
     <section className={`${styles.darkTail} limitWidth`}>
       <div className={styles.boardPics}>
         <h2 id="alumni">OP Alumni</h2>
-        <ParallaxColumns people={alumni} renderPerson={renderPerson('', { hover: false })} />
+        <ParallaxColumns people={alumni} renderPerson={renderPerson()} />
       </div>
     </section>
 

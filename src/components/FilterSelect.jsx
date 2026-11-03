@@ -18,6 +18,20 @@ export default function FilterSelect({ name, summary, options, selected, multipl
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
 
+  // Within the list only: a long one scrolls, and the page should not with it.
+  const scrollToOption = (index) => {
+    const list = listRef.current;
+    const option = list?.children[index];
+
+    if (!option) return;
+
+    if (option.offsetTop < list.scrollTop) {
+      list.scrollTop = option.offsetTop;
+    } else if (option.offsetTop + option.offsetHeight > list.scrollTop + list.clientHeight) {
+      list.scrollTop = option.offsetTop + option.offsetHeight - list.clientHeight;
+    }
+  };
+
   const close = (refocus) => {
     setOpen(false);
     if (refocus) buttonRef.current?.focus();
@@ -46,9 +60,12 @@ export default function FilterSelect({ name, summary, options, selected, multipl
     };
 
     listRef.current?.focus();
+    scrollToOption(active);
     document.addEventListener('pointerdown', closeIfOutside);
 
     return () => document.removeEventListener('pointerdown', closeIfOutside);
+    // Only as it opens, not as the arrow keys move on.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const onButtonKeyDown = (event) => {
@@ -69,6 +86,7 @@ export default function FilterSelect({ name, summary, options, selected, multipl
     if (event.key in moves) {
       event.preventDefault();
       setActive(moves[event.key]);
+      scrollToOption(moves[event.key]);
     } else if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       choose(options[active]);

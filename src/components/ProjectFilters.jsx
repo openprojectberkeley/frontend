@@ -3,18 +3,18 @@ import aboutStyles from '../css/About.module.css';
 import styles from '../css/Projects.module.css';
 import FilterSelect from './FilterSelect';
 import { DIFFICULTY_LEVELS } from './ProjectDetail';
-import { projects, projectsBySemester, sectionInfo, sectionOrder } from '../data/projectsData';
+import { orderedProjects, projects, projectsBySemester, sectionInfo, sectionOrder } from '../data/projectsData';
 
-export const NO_FILTERS = { query: '', types: [], difficulties: [] };
+export const NO_FILTERS = { query: '', types: [], difficulties: [], topics: [] };
 
 const TYPES = sectionOrder.filter((category) => projects[category]?.length > 0);
 
 /*
  * Every word searched for is somewhere in the project, and it is of one of the
- * types and difficulties picked, where any are.
+ * types and difficulties, and has one of the topics, picked, where any are.
  */
-export const matchesFilters = (project, category, { query, types, difficulties }) => {
-  const haystack = [project.name, project.clientName, ...project.pms, project.description]
+export const matchesFilters = (project, category, { query, types, difficulties, topics }) => {
+  const haystack = [project.name, project.clientName, project.tagline, ...project.tags, ...project.pms, project.description]
     .join(' ')
     .toLowerCase();
 
@@ -22,6 +22,7 @@ export const matchesFilters = (project, category, { query, types, difficulties }
     query.toLowerCase().split(/\s+/).every((word) => haystack.includes(word))
     && (types.length === 0 || types.includes(category))
     && (difficulties.length === 0 || difficulties.includes(project.difficulty))
+    && (topics.length === 0 || topics.some((topic) => project.tags.includes(topic)))
   );
 };
 
@@ -39,10 +40,15 @@ const DIFFICULTY_OPTIONS = Object.entries(DIFFICULTY_LEVELS).map(([difficulty, l
   ),
 }));
 
-const difficultySummary = (difficulties) => {
-  if (difficulties.length === 0) return 'Difficulty';
+const TOPIC_OPTIONS = [...new Set(orderedProjects.flatMap(({ tags }) => tags))]
+  .sort()
+  .map((topic) => ({ value: topic, label: topic }));
 
-  return difficulties.length === 1 ? difficulties[0] : `Difficulty: ${difficulties.length}`;
+// What a dropdown of any number says about what is picked in it.
+const summaryOf = (name, picked) => {
+  if (picked.length === 0) return name;
+
+  return picked.length === 1 ? picked[0] : `${name}: ${picked.length}`;
 };
 
 const toggled = (list, item) => (list.includes(item) ? list.filter((other) => other !== item) : [...list, item]);
@@ -63,8 +69,8 @@ function FilterChip({ pressed, colour, onClick, children }) {
 
 /* Above the list. The semester is what is being filtered, so Clear leaves it be. */
 export default function ProjectFilters({ filters, onChange, semester, onSemesterChange, shown, total }) {
-  const { query, types, difficulties } = filters;
-  const active = query !== '' || types.length > 0 || difficulties.length > 0;
+  const { query, types, difficulties, topics } = filters;
+  const active = query !== '' || types.length > 0 || difficulties.length > 0 || topics.length > 0;
 
   return (
     <div className={styles.filters}>
@@ -92,14 +98,23 @@ export default function ProjectFilters({ filters, onChange, semester, onSemester
           ))}
         </div>
 
-        <div className={styles.filterGroup}>
+        <div className={`${styles.filterGroup} ${styles.filterDropdowns}`}>
           <FilterSelect
             name="Difficulty"
-            summary={difficultySummary(difficulties)}
+            summary={summaryOf('Difficulty', difficulties)}
             options={DIFFICULTY_OPTIONS}
             selected={difficulties}
             multiple
             onChange={(next) => onChange({ ...filters, difficulties: next })}
+          />
+
+          <FilterSelect
+            name="Topics"
+            summary={summaryOf('Topics', topics)}
+            options={TOPIC_OPTIONS}
+            selected={topics}
+            multiple
+            onChange={(next) => onChange({ ...filters, topics: next })}
           />
 
           <FilterSelect

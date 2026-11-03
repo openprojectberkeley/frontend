@@ -1,0 +1,98 @@
+/* Who they are and their projects on the left, with the more room, and their photo
+   on the right. */
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 32px;
+  box-sizing: border-box;
+  min-height: 80vh;
+  padding: 140px var(--margin-from-screen) 120px;
+}
+
+/* Held in view beside the projects as they go by, as the project is beside the
+   list on the projects page. Over the stars, as what it holds comes in in blocks. */
+.photo {
+  position: sticky;
+  z-index: 1;
+  top: 112px;
+  justify-self: end;
+  width: min(100%, 340px);
+  aspect-ratio: 1 / 1.2;
+  overflow: hidden;
+  border-radius: 14px;
+  user-select: none;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+/* A scramble in a line with what is beside it, as in the back button. Doubled to
+   win over .scrambleBox. */
+.inlineScramble.inlineScramble {
+  display: inline-block;
+}
+
+/* Over everything else on the left, its arrow in line with the words under it:
+   back by the button's own padding, which shows only as the wipe crosses it. */
+.back {
+  display: inline-block;
+  margin: 0 0 24px -18px;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.socials {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.socials a {
+  display: block;
+  height: 24px;
+}
+
+.socials img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.projects {
+  margin-top: 40px;
+}
+
+.projectsTitle {
+  margin: 0 0 12px;
+  /* In line with the words of the rows under it, as the projects page's are. */
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: normal;
+  font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+  line-height: 1.1;
+  color: #FAF3E0;
+}
+
+.none {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* The photo first, in the middle. */
+@media screen and (max-width: 768px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .photo {
+    position: static;
+    order: -1;
+    justify-self: start;
+    width: min(70%, 240px);
+  }
+}
