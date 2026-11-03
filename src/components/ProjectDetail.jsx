@@ -5,6 +5,8 @@ import aboutStyles from '../css/About.module.css';
 import styles from '../css/Projects.module.css';
 import arriveAt from './arriveAt';
 import OpensElsewhere from './OpensElsewhere';
+import useCursorTip from './useCursorTip';
+import { HIGHLIGHT_TINTS } from './MomentStrip';
 import PixelSwap from './PixelSwap';
 import { ScrambleRuns, useScrambleSwap } from './ScrambleText';
 import coffeeCupIcon from '../images/projects/coffee-cup.svg';
@@ -30,26 +32,19 @@ const COFFEE_CHAT_LABEL = 'Coffee Chat Required';
 // In the list, the difficulty starts this beat behind its row's name.
 const DIFFICULTY_BEHIND_NAME_MS = 150;
 
-/* A row of the list's. Highlighted in as one line - see .flash. */
+const pmSeparator = (pms, index) => {
+  if (index === pms.length - 1) return '';
+
+  return index === pms.length - 2 ? ' and ' : ', ';
+};
+
+/* A row of the list's, as words only: the links to the board are on the project
+   beside the list. Highlighted in as one line - see .flash. */
 export function ProjectPMs({ pms }) {
   return (
     <p className={styles.projectPMs}>
       <span className={`${styles.flash} ${styles.flashLater}`}>
-        {pms.map((pm, index) => (
-          <span key={pm}>
-            <NavHashLink
-              smooth
-              className={styles.projectManagerLink}
-              to={`/board/#pm-${toAnchorId(pm)}`}
-              scroll={arriveAt}
-              draggable={false}
-            >
-              {pm}
-              <OpensElsewhere />
-            </NavHashLink>
-            {index < pms.length - 1 && (index === pms.length - 2 ? ' and ' : ', ')}
-          </span>
-        ))}
+        {pms.map((pm, index) => pm + pmSeparator(pms, index)).join('')}
       </span>
     </p>
   );
@@ -104,22 +99,18 @@ export function ScrambleSwap({ text, duration = FIELD_SCRAMBLE_MS, hold, instant
   );
 }
 
-const pmSeparator = (pms, index) => {
-  if (index === pms.length - 1) return '';
-
-  return index === pms.length - 2 ? ' and ' : ', ';
-};
-
 /*
  * The project managers, scrambled as one line, cut up across their links and
  * what is between them: two names can become four with no name just appearing.
  * The links go to the new names at once. What is left of a longer old line, as
- * it goes, is in a span after them all.
+ * it goes, is in a span after them all. Hovered, a name says where it goes in a
+ * highlight locked to the cursor.
  */
 function ScrambledPMs({ pms, instant }) {
   const linkRefs = useRef([]);
   const separatorRefs = useRef([]);
   const restRef = useRef(null);
+  const cursorTip = useCursorTip('', <OpensElsewhere shown />);
   const line = pms.map((pm, index) => pm + pmSeparator(pms, index)).join('');
 
   useScrambleSwap(
@@ -141,6 +132,8 @@ function ScrambledPMs({ pms, instant }) {
   );
 
   return (
+    <>
+    {cursorTip.tip}
     <p className={styles.projectPMs}>
       {pms.map((pm, index) => (
         // By place, as their text is written from here rather than by React.
@@ -152,13 +145,16 @@ function ScrambledPMs({ pms, instant }) {
             scroll={arriveAt}
             draggable={false}
             aria-label={pm}
+            onPointerEnter={(event) => cursorTip.show(event, 'go to board', HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length])}
+            onPointerMove={cursorTip.move}
+            onPointerLeave={cursorTip.hide}
+            onClick={cursorTip.hide}
           >
             <span
               ref={(node) => {
                 linkRefs.current[index] = node;
               }}
             />
-            <OpensElsewhere />
           </NavHashLink>
           <span
             ref={(node) => {
@@ -169,6 +165,7 @@ function ScrambledPMs({ pms, instant }) {
       ))}
       <span ref={restRef} aria-hidden="true" />
     </p>
+    </>
   );
 }
 

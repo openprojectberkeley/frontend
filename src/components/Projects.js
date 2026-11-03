@@ -74,7 +74,7 @@ function ProjectRow({ project, anchorId, current, hidden, filterKey, reducedMoti
 
       <div className={styles.cardText}>
         {/* The name is the row's control, stretched over all of it - see
-            .projectName - with the links to the board lifted above it. */}
+            .projectName. */}
         <div className={styles.projectTitle}>
           <h3 className={styles.projectName}>
             <button

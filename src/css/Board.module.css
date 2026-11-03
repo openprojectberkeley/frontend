@@ -460,6 +460,9 @@
     visibility: hidden;
     /* Down and to the left of the hotspot, clear of the cursor's arrow. */
     transform: translate3d(calc(var(--icon-x, 0px) + var(--icon-off-x)), calc(var(--icon-y, 0px) + var(--icon-off-y)), 0);
+    /* Faint, and following the logo's own shape, so that a white one shows on the
+       white paper and a transparent one gets no box around it. */
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.28));
     pointer-events: none;
 }
 

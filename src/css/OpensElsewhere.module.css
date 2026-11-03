@@ -12,6 +12,7 @@
   transition: width 120ms ease, margin-left 120ms ease, opacity 120ms ease;
 }
 
+.shown,
 a:hover > .opensElsewhere,
 a:focus-visible > .opensElsewhere {
   width: 0.8em;

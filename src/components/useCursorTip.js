@@ -8,11 +8,12 @@ import heroStyles from '../css/ImmersiveHero.module.css';
  * its button is grey. Written straight to the element, as there: a render per
  * pointer move would be the whole page.
  *
- * `className` is the page's own, for hiding it where there is no hover.
+ * `className` is the page's own, for hiding it where there is no hover, and
+ * `after` is anything to set after the words.
  */
 const TIP_FLIP_MARGIN = 260;
 
-export default function useCursorTip(className = '') {
+export default function useCursorTip(className = '', after = null) {
   const tipRef = useRef(null);
   const textRef = useRef(null);
 
@@ -56,7 +57,10 @@ export default function useCursorTip(className = '') {
 
   const tip = (
     <div ref={tipRef} className={`${heroStyles.momentTip} ${className}`} aria-hidden="true">
-      <span ref={textRef} className={heroStyles.momentTipText} />
+      <span className={heroStyles.momentTipText}>
+        <span ref={textRef} />
+        {after}
+      </span>
     </div>
   );
 

@@ -536,11 +536,12 @@
   cursor: pointer;
 }
 
-/* The name's button, stretched over the row, so all of it is one control
-   without a button having to hold the links to the board. */
+/* The name's button, stretched over the row and over the words in it, so all of
+   it is one control. */
 .projectName button::after {
   content: "";
   position: absolute;
+  z-index: 1;
   inset: 0;
   border-radius: inherit;
 }
@@ -612,8 +613,6 @@
 /* Over the name's stretched button, so they go to the board rather than
    bringing up the project. */
 .projectManagerLink {
-  position: relative;
-  z-index: 1;
   color: inherit;
   text-decoration: none;
 }
