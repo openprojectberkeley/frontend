@@ -104,7 +104,8 @@ export function createPixelTrail() {
     /* A fast stroke reports points far apart, and drawn as they come the
        trail would be a row of separate dots. The gap is filled with points
        of the ages and reaches they would have had, so the stroke tapers
-       along its length the way a slow one does. */
+       along its length the way a slow one does. Returns how far the new point
+       reaches, for anything that wants to answer the stroke's speed too. */
     add(x, y, now) {
       const distance = last ? Math.hypot(x - last.x, y - last.y) : 0;
       const elapsed = last ? now - last.t : Infinity;
@@ -127,6 +128,8 @@ export function createPixelTrail() {
 
       points.push({ x, y, t: now, reach });
       last = { x, y, t: now, reach };
+
+      return reach;
     },
 
     /* Drops the points that have run out, and says whether any are left. */

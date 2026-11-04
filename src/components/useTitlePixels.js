@@ -1,5 +1,15 @@
 import { useEffect } from 'react';
-import { TRAIL_BLOCK, blockLife, createPixelTrail, stepped } from './pixelTrail';
+import {
+  TRAIL_BLOCK,
+  TRAIL_MIN_RADIUS,
+  TRAIL_RADIUS,
+  blockLife,
+  clamp01,
+  createPixelTrail,
+  smoothstep,
+  stepped,
+} from './pixelTrail';
+import createBlobSim from './blobSim';
 
 /* Past this much of the playhead the title is on its way into the zoom, and
    the trail leaves it be: what is left of it goes out, and no more is laid. */
@@ -13,34 +23,17 @@ const TITLE_PIXELS_MARGIN = 2;
 const TITLE_PIXELS_SALT = 997;
 
 /*
- * The static the trail leaves on the backdrop.
+ * What the pointer feeds into the blob behind the title - see blobSim. Both come
+ * from how fast the stroke is going, as the share of its full reach the trail has
+ * given it (see createPixelTrail).
  *
- *   STATIC_GRAIN   the size of one grain of it, in px
- *   STATIC_COLOURS what a grain can be: the navy of the page's own grain
- *                  towards the bottom right (see --page-backdrop), taken
- *                  up through brighter blues, so the static reads as that
- *                  grain lit up rather than as a grey fizz
- *   STATIC_LOW     the dimmest a grain gets, as a share of its colour; a
- *                  spread of brightness is what keeps it from reading as
- *                  confetti
- *   STATIC_ALPHA   how strong a fresh block of it is, before its steps
- *   STATIC_TILES   how many sheets of noise are made up front. Each frame
- *                  every block takes a random patch of a random sheet, so it
- *                  seethes without any noise being made per frame
- *   STATIC_TILE    the size of each sheet, in grains
+ *   SKY_PIXEL        the size of one canvas pixel, in px, and so of the grain
+ *   SKY_MIN_STRENGTH how much of the trail's reach a stroke needs before it pushes
+ *                    the fluid about at all. Below it the blob only follows the
+ *                    pointer, thin and calm
  */
-const STATIC_GRAIN = 2;
-const STATIC_COLOURS = [
-  [0x0c, 0x1c, 0x52],
-  [0x16, 0x30, 0x8c],
-  [0x22, 0x46, 0xb8],
-  [0x36, 0x5c, 0xd0],
-  [0x60, 0x80, 0xd8],
-];
-const STATIC_LOW = 0.35;
-const STATIC_ALPHA = 0.3;
-const STATIC_TILES = 4;
-const STATIC_TILE = 128;
+const SKY_PIXEL = 2;
+const SKY_MIN_STRENGTH = 0.5;
 
 const svgMask = (body, columns, rows) =>
   `url("data:image/svg+xml,${encodeURIComponent(
@@ -78,34 +71,11 @@ const faceMetrics = (font) => {
   };
 };
 
-const makeTiles = () =>
-  Array.from({ length: STATIC_TILES }, () => {
-    const tile = document.createElement('canvas');
-    const context = tile.getContext('2d');
-    const image = context.createImageData(STATIC_TILE, STATIC_TILE);
-
-    for (let key = 0; key < image.data.length; key += 4) {
-      const [red, green, blue] = STATIC_COLOURS[Math.floor(Math.random() * STATIC_COLOURS.length)];
-      const bright = STATIC_LOW + Math.random() * (1 - STATIC_LOW);
-
-      image.data[key] = red * bright;
-      image.data[key + 1] = green * bright;
-      image.data[key + 2] = blue * bright;
-      image.data[key + 3] = 255;
-    }
-
-    tile.width = STATIC_TILE;
-    tile.height = STATIC_TILE;
-    context.putImageData(image, 0, 0);
-
-    return tile;
-  });
-
 /*
  * The scene 5 trail, over scene one: where the pointer has been, the
  * Montserrat phrase and the vector mark give way, block by block, to the
  * phrase in Argent Pixel CF and the mark as pixel art, and the sky behind
- * them to static in the mark's colours.
+ * them to a liquid blob.
  *
  * One grid, laid from the stage's corner in TRAIL_BLOCK squares, decides it
  * all, so a block of static and a block of the title meet edge to edge.
@@ -120,13 +90,13 @@ const makeTiles = () =>
  * twin - so the swap reads as the same word changing face, not a second word
  * underneath.
  *
- * The sky. A canvas over the stars, screened, so it only brightens: each
- * block the trail covers is a patch of noise in the mark's colours, a
- * different patch every frame.
+ * The sky. A canvas over the stars, screened, so it only brightens, with a fluid
+ * simulation on it that the pointer feeds along its whole path - see blobSim. The
+ * title goes on following the trail, which is blocks; the sky follows the blob.
  *
  * Nothing runs while the pointer is still: the loop stops with the last of
- * the trail, and with it the masks come off, the pixel layer is hidden and
- * the static cleared. Off for touch, and for anyone who has asked for less
+ * the trail and the blob, and with it the masks come off, the pixel layer
+ * is hidden and the static cleared. Off for touch, and for anyone who has asked for less
  * motion.
  */
 export default function useTitlePixels({
@@ -144,11 +114,14 @@ export default function useTitlePixels({
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
     const trail = createPixelTrail();
-    let tiles = null;
     let faces = null;
     let frame = 0;
     let showing = false;
-    let painted = false;
+    let blob = null;
+    let blobTried = false;
+    /* The pointer's path since the last frame. */
+    let path = null;
+    let lastMove = null;
 
     const parts = () => {
       const lockup = lockupRef.current;
@@ -171,56 +144,9 @@ export default function useTitlePixels({
       delete found.overlay.dataset.showing;
     };
 
-    const clearStatic = () => {
-      const canvas = staticRef.current;
-
-      painted = false;
-      if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-    };
-
-    /* The stage's grid: its origin on the screen, and its blocks. */
-    const gridOf = (canvas) => {
-      const rect = canvas.getBoundingClientRect();
-
-      return {
-        rect,
-        columns: Math.ceil(rect.width / TRAIL_BLOCK),
-        rows: Math.ceil(rect.height / TRAIL_BLOCK),
-      };
-    };
-
-    const drawStatic = (canvas, grid, lives) => {
-      const width = Math.ceil(grid.rect.width / STATIC_GRAIN);
-      const height = Math.ceil(grid.rect.height / STATIC_GRAIN);
-      const context = canvas.getContext('2d');
-
-      if (canvas.width !== width) canvas.width = width;
-      if (canvas.height !== height) canvas.height = height;
-      if (!tiles) tiles = makeTiles();
-
-      context.clearRect(0, 0, width, height);
-
-      const block = TRAIL_BLOCK / STATIC_GRAIN;
-      let any = false;
-
-      lives.forEach((covered, key) => {
-        const column = key % grid.columns;
-        const row = Math.floor(key / grid.columns);
-        const life = blockLife(covered, TITLE_PIXELS_SALT + 1, column, row);
-
-        if (life <= 0) return;
-
-        const tile = tiles[Math.floor(Math.random() * STATIC_TILES)];
-        const sourceX = Math.floor(Math.random() * (STATIC_TILE - block));
-        const sourceY = Math.floor(Math.random() * (STATIC_TILE - block));
-
-        context.globalAlpha = stepped(life) * STATIC_ALPHA;
-        context.drawImage(tile, sourceX, sourceY, block, block, column * block, row * block, block, block);
-        any = true;
-      });
-
-      context.globalAlpha = 1;
-      painted = any;
+    const clearSky = () => {
+      path = null;
+      if (blob) blob.clear();
     };
 
     /* Puts each pixel letter over the middle of its Montserrat twin, on the
@@ -408,42 +334,101 @@ export default function useTitlePixels({
 
       const found = parts();
       const canvas = staticRef.current;
+      const alive = trail.prune(now);
 
-      if (!trail.prune(now) || !found || !canvas) {
+      if (!found || !canvas || (!alive && !path && !(blob && blob.active(now)))) {
         if (showing) hideTitle();
-        if (painted) clearStatic();
+        clearSky();
         return;
       }
 
       frame = requestAnimationFrame(tick);
 
-      const grid = gridOf(canvas);
-      const lives = trail.coverage(grid.rect, grid.columns, grid.rows, now);
-
-      if (!lives) {
-        if (showing) hideTitle();
-        if (painted) clearStatic();
-        return;
+      /* Not until the pointer first moves, so that a page nobody touches sets
+         nothing up on the GPU. */
+      if (!blobTried) {
+        blobTried = true;
+        blob = createBlobSim(canvas);
       }
 
-      drawStatic(canvas, grid, lives);
+      const rect = canvas.getBoundingClientRect();
 
-      if (drawTitle(found, grid, lives)) showing = true;
+      if (blob && blob.resize(rect.width, rect.height, SKY_PIXEL)) {
+        if (path) {
+          blob.feed(
+            {
+              ...path,
+              fromX: path.fromX - rect.left,
+              fromY: path.fromY - rect.top,
+              toX: path.toX - rect.left,
+              toY: path.toY - rect.top,
+            },
+            now,
+          );
+        }
+
+        blob.advance(now);
+        blob.render(now);
+      }
+
+      path = null;
+
+      const grid = {
+        rect,
+        columns: Math.ceil(rect.width / TRAIL_BLOCK),
+        rows: Math.ceil(rect.height / TRAIL_BLOCK),
+      };
+      const lives = alive ? trail.coverage(grid.rect, grid.columns, grid.rows, now) : null;
+
+      if (lives && drawTitle(found, grid, lives)) showing = true;
       else if (showing) hideTitle();
+    };
+
+    /* The pointer has gone, or the title has: the next stroke starts afresh,
+       and what is already in the blob finishes on its own. */
+    const lift = () => {
+      trail.lift();
+      lastMove = null;
+    };
+
+    /* Adds this move to the path the next frame feeds in, however many moves the
+       mouse reports in a frame. */
+    const extendPath = (x, y, now, reach) => {
+      const previous = lastMove;
+
+      lastMove = { x, y, t: now };
+
+      if (!previous || now <= previous.t || now - previous.t > 150) return;
+
+      const strength = clamp01((reach - TRAIL_MIN_RADIUS) / (TRAIL_RADIUS - TRAIL_MIN_RADIUS));
+      const power = smoothstep((strength - SKY_MIN_STRENGTH) / (1 - SKY_MIN_STRENGTH));
+
+      path = {
+        fromX: path ? path.fromX : previous.x,
+        fromY: path ? path.fromY : previous.y,
+        toX: x,
+        toY: y,
+        elapsed: (path ? path.elapsed : 0) + now - previous.t,
+        body: strength,
+        power,
+      };
     };
 
     const onMove = (event) => {
       if (playheadRef.current > TITLE_PIXELS_UNTIL) {
-        trail.lift();
+        lift();
         return;
       }
 
-      trail.add(event.clientX, event.clientY, performance.now());
+      const now = performance.now();
+      const reach = trail.add(event.clientX, event.clientY, now);
+
+      extendPath(event.clientX, event.clientY, now, reach);
 
       if (!frame) frame = requestAnimationFrame(tick);
     };
 
-    const onLeave = () => trail.lift();
+    const onLeave = () => lift();
 
     window.addEventListener('mousemove', onMove, { passive: true });
     document.addEventListener('mouseleave', onLeave);
@@ -453,7 +438,7 @@ export default function useTitlePixels({
       document.removeEventListener('mouseleave', onLeave);
       if (frame) cancelAnimationFrame(frame);
       hideTitle();
-      clearStatic();
+      clearSky();
     };
   }, [playheadRef, lockupRef, markBoxRef, typedRef, overlayRef, pixelMarkRef, pixelTextRef, staticRef]);
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import aboutStyles from '../css/About.module.css';
@@ -15,7 +15,7 @@ import coffeeCupIcon from '../images/projects/coffee-cup.svg';
 export const DIFFICULTY_LEVELS = { beginner: 1, intermediate: 2, advanced: 3 };
 
 // The collage's frames, filled from the first: photos are `photos` on a project
-// in projectsData.js, and any frames left over stay as empty tinted ones.
+// in data/projects, and any frames left over stay as empty tinted ones.
 const COLLAGE_FRAMES = 3;
 
 // The size of the blocks the icon and the collage change in, in px.
@@ -92,7 +92,7 @@ export function ScrambleSwap({ text, duration = FIELD_SCRAMBLE_MS, hold, instant
  * it goes, is in a span after them all. Hovered, a name says where it goes in a
  * highlight locked to the cursor.
  */
-function ScrambledPMs({ pms, projectName, instant }) {
+function ScrambledPMs({ pms, projectName, semester, instant }) {
   const linkRefs = useRef([]);
   const separatorRefs = useRef([]);
   const restRef = useRef(null);
@@ -127,7 +127,7 @@ function ScrambledPMs({ pms, projectName, instant }) {
           <Link
             className={styles.projectManagerLink}
             to={profilePath(pm)}
-            state={{ fromProject: projectName }}
+            state={{ fromProject: projectName, fromSemester: semester }}
             draggable={false}
             aria-label={pm}
             onPointerEnter={(event) => cursorTip.show(event, 'go to profile', HIGHLIGHT_TINTS[index % HIGHLIGHT_TINTS.length])}
@@ -161,9 +161,11 @@ const ProjectIcon = ({ project }) => (project.logo ? (
 ));
 
 /*
- * A project's words, laid out but never seen, all of them in one grid cell with
- * the live ones: the words' box is then as tall as the longest project's, and
- * the images under it hold still as the words change.
+ * A project's words, laid out but never seen. Stacked above the list, all of them
+ * share one grid cell with the live ones: the words' box is then as tall as the
+ * longest project's, and the list under it holds still as the words change. Beside
+ * the list, the picked project's alone says how tall its words will be, which the
+ * scrambling ones can't - see .detailMeasure.
  */
 function DetailTextSizer({ project }) {
   return (
@@ -194,10 +196,44 @@ function DetailTextSizer({ project }) {
  * Which one shows is up to the page, out of `projects`. It takes the focus when
  * the page scrolls back up to it.
  */
-export default function ProjectDetail({ project, projects, sectionRef }) {
+export default function ProjectDetail({ project, projects, semester, sectionRef }) {
   const instant = useReducedMotion();
   const photos = project.photos || [];
   const level = DIFFICULTY_LEVELS[project.difficulty] || 0;
+  const textRef = useRef(null);
+  const measureRef = useRef(null);
+
+  // The words' box follows the height of the words to come, and the images take
+  // the rest. Also catches a new width and the fonts arriving.
+  useLayoutEffect(() => {
+    const observer = new ResizeObserver(() => {
+      const { height } = measureRef.current.getBoundingClientRect();
+
+      textRef.current.style.setProperty('--words-height', `${Math.ceil(height)}px`);
+    });
+
+    observer.observe(measureRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Longer old words run on over the images until they have scrambled away, rather
+  // than being cut off at the new box, with no scrollbar. Only words the window has
+  // no room for get one.
+  useLayoutEffect(() => {
+    if (instant) return undefined;
+
+    const text = textRef.current;
+
+    text.style.overflowY = 'visible';
+
+    // A little past the scramble, whose last frame can land after its time is up.
+    const timer = window.setTimeout(() => {
+      text.style.overflowY = '';
+    }, DESCRIPTION_SCRAMBLE_MS + 100);
+
+    return () => window.clearTimeout(timer);
+  }, [project.name, instant]);
 
   // So that what comes next has something to show as it comes in.
   useEffect(() => {
@@ -217,7 +253,13 @@ export default function ProjectDetail({ project, projects, sectionRef }) {
     >
       <span className={aboutStyles.visuallyHidden} aria-live="polite">{project.name}</span>
 
-      <div className={styles.detailText}>
+      <div className={styles.detailMeasure}>
+        <div ref={measureRef}>
+          <DetailTextSizer project={project} />
+        </div>
+      </div>
+
+      <div ref={textRef} className={styles.detailText}>
         <div className={styles.detailLive}>
           <div className={styles.detailHeading}>
             <PixelSwap swapKey={project.name} block={ICON_BLOCK} className={styles.detailIcon}>
@@ -251,7 +293,7 @@ export default function ProjectDetail({ project, projects, sectionRef }) {
             ))}
           </ul>
 
-          <ScrambledPMs pms={project.pms} projectName={project.name} instant={instant} />
+          <ScrambledPMs pms={project.pms} projectName={project.name} semester={semester} instant={instant} />
 
           {project.coffeeChatRequired && <CoffeeChatBadge />}
 
@@ -268,28 +310,31 @@ export default function ProjectDetail({ project, projects, sectionRef }) {
         {projects.map((other) => <DetailTextSizer key={other.name} project={other} />)}
       </div>
 
-      <div className={styles.collage}>
-        {Array.from({ length: COLLAGE_FRAMES }, (_, slot) => {
-          const photo = photos[slot];
-          const frameStyle = { '--accent': project.accent };
+      {/* One swap over all the frames, as they move as well as change size. */}
+      <PixelSwap swapKey={project.name} block={COLLAGE_BLOCK} seed={1}>
+        <div className={styles.collage}>
+          {Array.from({ length: COLLAGE_FRAMES }, (_, slot) => {
+            const photo = photos[slot];
+            const frameStyle = { '--accent': project.accent };
 
-          return (
-            <PixelSwap key={slot} swapKey={project.name} block={COLLAGE_BLOCK} seed={slot + 1} className={styles.collageSlot}>
-              {photo ? (
-                <img
-                  src={photo}
-                  alt={`${project.name}, ${slot + 1} of ${photos.length}`}
-                  className={styles.collageFrame}
-                  style={frameStyle}
-                  draggable={false}
-                />
-              ) : (
-                <span className={styles.collageFrame} style={frameStyle} aria-hidden="true" />
-              )}
-            </PixelSwap>
-          );
-        })}
-      </div>
+            return (
+              <div key={slot} className={styles.collageSlot}>
+                {photo ? (
+                  <img
+                    src={photo}
+                    alt={`${project.name}, ${slot + 1} of ${photos.length}`}
+                    className={styles.collageFrame}
+                    style={frameStyle}
+                    draggable={false}
+                  />
+                ) : (
+                  <span className={styles.collageFrame} style={frameStyle} aria-hidden="true" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </PixelSwap>
     </section>
   );
 }

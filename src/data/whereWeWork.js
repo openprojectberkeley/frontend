@@ -1,6 +1,6 @@
 /*
- * The employers our members have gone on to, for the logos that spill out of
- * the "Where We Work" banner at the end of the hero.
+ * The employers our members have gone on to, for the logos the client logos turn
+ * into under the "Where We Work" heading at the end of the hero.
  *
  * Same shape as clientsData.js on purpose: default-import each file at the top
  * and list the bindings below, so an entry is a plain image src and the order

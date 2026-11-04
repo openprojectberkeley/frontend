@@ -3,11 +3,13 @@ import aboutStyles from '../css/About.module.css';
 import styles from '../css/Projects.module.css';
 import FilterSelect from './FilterSelect';
 import { DIFFICULTY_LEVELS } from './ProjectDetail';
-import { orderedProjects, projects, projectsBySemester, sectionInfo, sectionOrder } from '../data/projectsData';
+import { allProjects, hasSections, projectsBySemester, sectionInfo, sectionOrder } from '../data/projectsData';
 
 export const NO_FILTERS = { query: '', types: [], difficulties: [], topics: [] };
 
-const TYPES = sectionOrder.filter((category) => projects[category]?.length > 0);
+const TYPES = sectionOrder.filter((category) => (
+  Object.values(projectsBySemester).some((semesterProjects) => semesterProjects[category]?.length > 0)
+));
 
 /*
  * Every word searched for is somewhere in the project, and it is of one of the
@@ -40,7 +42,7 @@ const DIFFICULTY_OPTIONS = Object.entries(DIFFICULTY_LEVELS).map(([difficulty, l
   ),
 }));
 
-const TOPIC_OPTIONS = [...new Set(orderedProjects.flatMap(({ tags }) => tags))]
+const TOPIC_OPTIONS = [...new Set(allProjects.flatMap(({ tags }) => tags))]
   .sort()
   .map((topic) => ({ value: topic, label: topic }));
 
@@ -85,18 +87,20 @@ export default function ProjectFilters({ filters, onChange, semester, onSemester
       </label>
 
       <div className={styles.filterChips}>
-        <div className={styles.filterGroup} role="group" aria-label="Filter by type">
-          {TYPES.map((category) => (
-            <FilterChip
-              key={category}
-              colour={sectionInfo[category].color}
-              pressed={types.includes(category)}
-              onClick={() => onChange({ ...filters, types: toggled(types, category) })}
-            >
-              {sectionInfo[category].title}
-            </FilterChip>
-          ))}
-        </div>
+        {hasSections(semester) && (
+          <div className={styles.filterGroup} role="group" aria-label="Filter by type">
+            {TYPES.map((category) => (
+              <FilterChip
+                key={category}
+                colour={sectionInfo[category].color}
+                pressed={types.includes(category)}
+                onClick={() => onChange({ ...filters, types: toggled(types, category) })}
+              >
+                {sectionInfo[category].title}
+              </FilterChip>
+            ))}
+          </div>
+        )}
 
         <div className={`${styles.filterGroup} ${styles.filterDropdowns}`}>
           <FilterSelect

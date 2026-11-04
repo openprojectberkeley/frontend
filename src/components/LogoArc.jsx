@@ -237,6 +237,10 @@ export default function LogoArc({
    * second paint is every logo being redrawn for nothing.
    */
   wipesRef,
+  /* The rows' black copies within that, without the white they are drawn over:
+     hidden on their own on the way back up, when the rows come back as black. */
+  twinsRef,
+  twinsClassName,
   children,
 }) {
   // useId hands back ":r0:"-style strings, which are fine in a fill attribute
@@ -398,7 +402,7 @@ export default function LogoArc({
             />
           </g>
         ))}
-        <g clipPath={`url(#${arcClip})`}>
+        <g ref={twinsRef} className={twinsClassName} clipPath={`url(#${arcClip})`}>
           {wipes.map((wipe, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <g key={index} ref={wipe.slotRef} clipPath={`url(#${wipeClip(index)})`} />

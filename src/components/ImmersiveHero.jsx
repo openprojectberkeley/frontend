@@ -12,7 +12,6 @@ import MomentStrip from './MomentStrip';
 import useTitlePixels from './useTitlePixels';
 import JoinScene from './JoinScene';
 import StarField, { ABOUT_STARS_REACH, STAR_LAYERS, scatter } from './StarField';
-import scramble from './scramble';
 import { clients } from '../data/clientsData';
 import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWeWork';
 import { CURRENT_SEASON, CURRENT_YEAR } from '../data/site';
@@ -146,8 +145,7 @@ const DISC_HIGHLIGHT_AT = 0.7;
 const PROJECTS_HIGHLIGHT_AT = 1.7;
 
 /*
- * The heading on the arc, and the point from which the arc stops holding still
- * and starts travelling up with the page.
+ * The heading on the arc.
  *
  * 2.4 is the heading's only edge, in both directions: it is the one place it
  * comes and the one place it goes, scrolling down or back up. Nothing else
@@ -155,44 +153,24 @@ const PROJECTS_HIGHLIGHT_AT = 1.7;
  * flag alone and why the arc straightening no longer fades it out.
  */
 const CLIENTS_AT = 2.4;
-const ARC_LIFT_AT = 2.45;
 
 /*
- * The arc no longer leaves: it rises to just under the header and parks there,
- * as the bar of clients the rest of the scene plays beneath.
- *
- * It is parked before the wipes start, so what they run across is something
- * standing still. The rest in px rather than in stages because what it is
- * clearing is the header, which is its own size whatever the window is - 66px
- * of it at the moment, and the rest of this is the little below.
- */
-const ARC_LIFT_OVER = 0.35;
-const ARC_REST_TOP = 88;
-
-/*
- * Where the bowl straightens out: both ends swing outwards and the bulge drops
- * away until what is left is a level band running off either side of the
- * screen, with the heading sitting in it and the logos riding along it.
+ * Where the bowl straightens out: both ends swing outwards and come down while
+ * the bulge rises to meet them, until what is left is a level band running off
+ * either side of the screen, centred on it, with the logos riding along it. The
+ * heading climbs as it does, so the band arrives under the word and never
+ * crosses it.
  *
  * It starts after the sheet has turned the arc dark and the logos have faded
  * up, so what flattens is the finished band rather than a shape still settling
- * into its colour.
+ * into its colour. And it is over before the wipes start, so what they run
+ * across is something standing still.
  */
 const FLATTEN_AT = 2.6;
 const FLATTEN_OVER = 0.2;
-
-/*
- * The heading leaves the band. It starts just under the band's top edge, drops
- * behind it while the band is climbing the other way, and comes out below its
- * bottom edge in the middle of the screen - where it stops, because it has let
- * go of the lift that is taking the band away.
- *
- * It only reads as passing behind the band because of where it sits in the
- * stack: .arcTitle is under .arcHolder, so the stroke covers the word for the
- * part of the journey it is crossing it.
- */
-const TITLE_DROP_AT = 2.64;
-const TITLE_DROP_OVER = 0.22;
+/* How far the circle's centre, which the straight line lands on, sits above the
+   holder's own, as a share of the holder's width. */
+const ARC_CENTRE_RISE = 0.1572;
 
 /*
  * The black comes into the band. It opens out from the middle of the band as a
@@ -220,8 +198,10 @@ const INK_OVER = 0.12;
  * bowl. Tied to the same number, the two cannot disagree.
  */
 const WIPE_SECOND_AT = 2.8;
-const WIPE_TOP_AT = 2.86;
-const WIPE_OVER = 0.18;
+const WIPE_TOP_AT = 2.83;
+const WIPE_OVER = 0.1;
+/* How far forward counts as having turned round on the way back up. */
+const RETURN_TURN_ROUND = 0.005;
 
 /*
  * With the second row turned over there is nothing left for the band to do.
@@ -253,28 +233,22 @@ const WIPE_FADE_AT = BAND_FADE_AT + BAND_FADE_OVER;
 const WIPE_FADE_OVER = 0.06;
 
 /*
- * And they are page, and the page is being scrolled: they leave upwards at the
- * rate the reader is going.
- *
- * This one is a mark of its own rather than the end of the chain above, and it
- * is deliberately inside it: the band is already on its way out while the
- * second row is still turning over and while the fades are running, which is
- * what keeps the end of the scene from being a list of things happening one
- * after another.
+ * Anything still on the band then leaves upwards, at the rate the reader is
+ * going. Nothing should be: every client has been turned by now.
  *
  * The span is held rather than run to the end of the timeline, so moving the
  * start earlier moves the whole journey earlier instead of stretching it over
  * more scrolling and slowing it down.
  */
-const ARC_EXIT_AT = 2.9;
+const ARC_EXIT_AT = 3.18;
 const ARC_EXIT_OVER = 0.95;
 
 /*
- * Scene four. The banner and its heading go up with the arc rather than after
- * it, and what comes up from the bottom to replace them is the club's third
- * value - the one the whole of this scene has been building towards.
+ * Scene four. The heading goes up with the arc rather than after it, and what
+ * comes up from the bottom to replace them is the club's third value - the one
+ * the whole of this scene has been building towards.
  *
- * The two overlap on purpose: the banner is still clearing the top of the
+ * The two overlap on purpose: the heading is still clearing the top of the
  * screen as the panel clears the bottom of it, so the eye is handed from one
  * to the other instead of waiting in an empty frame.
  *
@@ -294,31 +268,14 @@ const COMMUNITY_OVER = 0.55;
 const COMMUNITY_LEAD_IN = 1.3;
 const COMMUNITY_LEAD_OUT = 4.5;
 /*
- * The banner goes at the same moment, so it is travelling up with the band
+ * The heading goes at the same moment, so it is travelling up with the band
  * and its logos rather than waiting for them to be gone - three things
  * leaving by one door instead of a queue at it.
  */
-const BANNER_EXIT_AT = 3.2;
-const BANNER_EXIT_OVER = 0.55;
+const TITLE_EXIT_AT = 3.2;
+const TITLE_EXIT_OVER = 0.55;
 
-/*
- * And then the bar itself leaves the way it arrived: off to the right, rigid,
- * on the same curve - the entrance run backwards rather than a fade. The word
- * hands its colour back and blurs away as it goes, which is the same blur it
- * arrived out of at 2.4.
- */
-const BANNER_OUT_AT = 3.4;
-const BANNER_OUT_OVER = 0.13;
-/*
- * The word goes as the bar does, so the blur is something you see happen on
- * the black rather than something you find has happened once the black has
- * left.
- *
- * And it keeps its cream to the end. Turning it back to the page's black as
- * the bar slid out meant a moment of black text on white paper, announcing
- * itself on the way out; left cream, the bar slides from under it and the
- * word is simply paper on paper - gone before the fade has finished the job.
- */
+/* And then the word blurs away, the same blur it arrived out of at 2.4. */
 const TITLE_GONE_AT = 3.4;
 
 /*
@@ -460,56 +417,23 @@ const ABOUT_ARRIVED_AT = JOIN_AT + 0.1;
 const HEADER_DARK_OVER = 0.05;
 
 /*
- * The last beat. A black banner arrives behind the heading, the heading rises
- * out of the middle of the screen to sit near the top of it, and the logos of
- * where our members have gone start tipping out of the bar.
+ * The last beat. Crossing this mark changes the heading, and the clients all turn
+ * into where our members have gone the moment the new words show.
  *
- * The banner is quick and the rise is long: the bar wants to be there before
- * the reader has decided it is a bar, and the heading wants to look like it is
- * being carried rather than snatched.
- */
-const BANNER_AT = 2.95;
-const BANNER_OVER = 0.115;
-/*
- * The word turns cream a moment after the bar sets off: not when the bar
- * reaches it, but when it has passed it.
- *
- * The heading is one colour across its whole width and the bar arrives from
- * one side, so for as long as the edge is somewhere inside the word, half of
- * it is on black and half on paper and one of those halves is invisible
- * whichever colour it is. The word therefore changes hands once the bar is
- * wholly under it, which with the easing above is a little under half way
- * through the arrival - what reads is the bar wiping the word away and handing
- * it straight back in cream.
- */
-const BANNER_INK_AT = 2.995;
-const TITLE_RAISE_AT = 2.95;
-const TITLE_RAISE_OVER = 0.25;
-/*
- * And then it starts emptying.
- *
- * Its own mark rather than the bar's arrival, which is what it used to ride.
- * A bar that is pouring logos before it has finished arriving is a bar that
- * was full of them all along; let it get there, be read as a bar, and tip.
+ * Only the crossing is on the scroll. The highlight plays on a clock from there:
+ * black across the word, the swap, and the black on off the far side, leaving
+ * white text on teal. TITLE_SWAP_SHARE is how far through that the swap falls,
+ * and the stylesheet's keyframes are cut at the same place.
  */
 const SPILL_AT = 3.0;
-/* How far past the top of the band to carry it before it is certainly gone. */
+const TITLE_CHANGE_MS = 460;
+const TITLE_SWAP_SHARE = 0.45;
+/* How far past the top of the screen to carry the band before it is certainly
+   gone. */
 const ARC_EXIT_CLEAR = 48;
 
-/*
- * And becomes the heading for what the band is carrying - on its own stretch of
- * the timeline rather than the drop's, so the word changes as the rows above it
- * turn over rather than on the way down to them. It is still settling for a
- * moment after the heading has landed, which is what keeps the landing and the
- * change from being one event.
- */
-const SCRAMBLE_AT = 2.8;
-const SCRAMBLE_OVER = 0.2;
 const HEADING_FROM = 'Clients';
 const HEADING_TO = 'Where We Work';
-
-/* The heading's change, on the scramble in scramble.js. */
-const scrambled = (progress) => scramble(HEADING_FROM, HEADING_TO, progress);
 
 /*
  * Two rows of client logos inside the stroke, running against each other.
@@ -807,11 +731,6 @@ function ProjectsCopy() {
     return away / (away + (1 - t) ** out);
   };
 
-  /* The banner's own pair: away a little more readily than the wipes and a good
-     deal longer coming to rest. */
-  const BANNER_LEAD_IN = 1.4;
-  const BANNER_LEAD_OUT = 4.2;
-
   /*
    * Where `element` sits inside `ancestor`, in layout coordinates.
    *
@@ -877,6 +796,18 @@ function ProjectsCopy() {
     /* The second paint of the rows. Kept out of the tree until a wipe starts,
        so the arc can scale without redrawing a second copy of every logo. */
     const wipesRef = useRef(null);
+    const rowTwinsRef = useRef(null);
+    /*
+     * The lowest the playhead has been since the clients came back, or null when
+     * they are not on their way back.
+     *
+     * Coming back up the page, the rows are not black logos on the paper waiting
+     * for the band to return: they stay empty, and the white retreating off each
+     * row is what shows them, in their original white on the black behind it.
+     */
+    const returningRef = useRef(null);
+    /* Whether the clients were taken for having been skipped - see render. */
+    const skippedClientsRef = useRef(false);
 
     /*
      * Where each row draws itself a second time, in black over its own white:
@@ -886,8 +817,33 @@ function ProjectsCopy() {
      */
     const [topWipeSlot, setTopWipeSlot] = useState(null);
     const [secondWipeSlot, setSecondWipeSlot] = useState(null);
-    /* The heading the band carries off. */
-    const arcTitleRef = useRef(null);
+    /* Each row's handle on its logos, for taking them off it. */
+    const outerRowRef = useRef(null);
+    const innerRowRef = useRef(null);
+    /* Every client off both rows, with those that were on screen handed back. */
+    const takeClients = useCallback(
+      () => [
+        ...(outerRowRef.current?.takeAll() ?? []),
+        ...(innerRowRef.current?.takeAll() ?? []),
+      ],
+      [],
+    );
+    const restoreClients = useCallback(() => {
+      outerRowRef.current?.restore();
+      innerRowRef.current?.restore();
+
+      /* Already past the wipes, and there is nothing for them to bring back. */
+      if (playheadRef.current > WIPE_SECOND_AT) {
+        returningRef.current = playheadRef.current;
+
+        /* At once: the fade is only for coming back in, and on the way out it
+           would show the black logos this is here to keep hidden. */
+        if (rowTwinsRef.current) {
+          rowTwinsRef.current.style.transition = 'none';
+          rowTwinsRef.current.style.opacity = '0';
+        }
+      }
+    }, []);
     /*
      * The three pieces of the community panel, which are also the three things
      * the fallen logos are pushed along by as it comes up.
@@ -946,7 +902,6 @@ function ProjectsCopy() {
       headerDark: false,
     aboutArrived: false,
       ctaHidden: false,
-      bannerInk: false,
       spill: false,
       titleGone: false,
     };
@@ -1101,13 +1056,26 @@ function ProjectsCopy() {
         /* A narrow band, because the threshold itself is close enough to nil
            that the default one would sit below zero and never let go. */
         ctaHidden: crossed(flags.ctaHidden, playhead, CTA_HIDE_AT, 0.02),
-        bannerInk: crossed(flags.bannerInk, playhead, BANNER_INK_AT, 0.02),
-        /* Back into the blur it came out of, just before the bar leaves. */
+        /* Back into the blur it came out of. */
         titleGone: crossed(flags.titleGone, playhead, TITLE_GONE_AT, 0.02),
         /* What lets the spill go. Everything past this point is the spill's own
            clock, which is why it is a flag and not a value. */
         spill: crossed(flags.spill, playhead, SPILL_AT, 0.02),
       };
+
+      /*
+       * Arriving past the spill without having come through the clients, as a
+       * reload partway down does: there is nothing to turn into anything, so
+       * they are off the rows before the rows first draw, not a moment after.
+       * Given back if the reader goes back up before the spill has got going.
+       */
+      if (next.spill && !flags.clients && !flags.spill) {
+        takeClients();
+        skippedClientsRef.current = true;
+      } else if (!next.spill && flags.spill && skippedClientsRef.current) {
+        restoreClients();
+        skippedClientsRef.current = false;
+      }
 
       if (Object.keys(next).some((key) => next[key] !== flags[key])) {
         revealedRef.current = next;
@@ -1215,43 +1183,6 @@ function ProjectsCopy() {
       stage.style.setProperty('--arc-grow', grow.toFixed(4));
 
       /*
-       * The arc rises to its place under the header and stops.
-       *
-       * Worked out rather than set: where the band's top edge would sit with no
-       * rise at all, less where it is wanted, is how far it has to go - which
-       * depends on how big the arc has been drawn and how tall the stage is, and
-       * is therefore not a number that can be written down. The heading takes the
-       * same travel, so the two keep their spacing until the drop takes it off.
-       *
-       * Eased to a stop at both ends: it is arriving somewhere now, not setting
-       * off up the page.
-       */
-      const arcScale = 0.25 + grow * 0.75;
-      // The arc's box is 453.6 of its own units across, however wide it is drawn.
-      const unit = (holderWidth * arcScale) / 453.6;
-      const bandTop =
-        stageHeight / 2 - 0.1572 * holderWidth * arcScale - (STROKE_WIDTH / 2) * unit;
-      /*
-       * Two journeys on one value, one after the other: up to the resting place
-       * under the header, and then - once there is nothing left of the band but
-       * the logos - on up and out of the top of the screen.
-       *
-       * The second is measured from where the band is parked rather than from
-       * where it started, so the two add rather than one undoing the other, and
-       * it carries the band's whole depth plus a little, which is what makes it
-       * gone rather than nearly gone.
-       */
-      // Not `rise`: scene two has one of those, and it is the bubbles'.
-      const arcPark =
-        smootherstep(clamp01((playhead - ARC_LIFT_AT) / ARC_LIFT_OVER)) *
-        Math.max(0, bandTop - ARC_REST_TOP);
-      const arcExit =
-        easeIntoScroll(clamp01((playhead - ARC_EXIT_AT) / ARC_EXIT_OVER)) *
-        (ARC_REST_TOP + STROKE_WIDTH * unit + ARC_EXIT_CLEAR);
-
-      stage.style.setProperty('--arc-rise', `${(-(arcPark + arcExit)).toFixed(2)}px`);
-
-      /*
        * The arc unbends. Written straight onto both paths rather than through a
        * custom property, because what changes is the geometry itself and not a
        * transform of it - which is also what carries the ticker, since it reads
@@ -1266,57 +1197,33 @@ function ProjectsCopy() {
          its own and has to be told how far the bowl has opened out. */
       stage.style.setProperty('--flat', flat.toFixed(4));
 
+      const arcScale = 0.25 + grow * 0.75;
+      // The arc's box is 453.6 of its own units across, however wide it is drawn.
+      const unit = (holderWidth * arcScale) / 453.6;
       /*
-       * The heading drops out from under the band. One value carries the whole of
-       * it: the sideways offset that had it centred on the arc's circle rather
-       * than on the screen, the height it was riding at inside the band, and the
-       * lift it was taking from the arc are all multiplied out by it, so at 1 the
-       * heading is simply in the middle of the stage and staying there while the
-       * band goes on up without it.
+       * Two journeys on one value, one after the other: down as it straightens,
+       * on the same curve, so the line lands on the middle of the stage; and
+       * then, once the clients have all gone, on up and out of the top of it.
        *
-       * Eased hard at both ends. It leaves the band gently and arrives gently,
-       * which is what makes the landing read as a stop rather than as a value
-       * running out of range.
+       * The second is measured from where the first left it, and it carries half
+       * the stage and the band's depth plus a little, which is what makes it gone
+       * rather than nearly gone.
        */
-      stage.style.setProperty(
-        '--title-drop',
-        smootherstep(clamp01((playhead - TITLE_DROP_AT) / TITLE_DROP_OVER)).toFixed(4),
-      );
+      const arcSettle = flat * ARC_CENTRE_RISE * holderWidth * arcScale;
+      const arcExit =
+        easeIntoScroll(clamp01((playhead - ARC_EXIT_AT) / ARC_EXIT_OVER)) *
+        (stageHeight / 2 + (STROKE_WIDTH / 2) * unit + ARC_EXIT_CLEAR);
+
+      stage.style.setProperty('--arc-rise', `${(arcSettle - arcExit).toFixed(2)}px`);
 
       /*
-       * The banner behind the heading, and the heading's climb out of the middle
-       * of the screen.
-       *
-       * The bar is drawn by the heading's own ::before, so it needs nothing here
-       * but how far it has opened - and the stage's width, because it has to
-       * stop exactly at the edge of the screen for its pointed end to be on it.
-       * 100vw would be the scrollbar too wide, and the stage would clip the
-       * point off.
-       */
-      stage.style.setProperty('--stage-w', `${stageWidth.toFixed(1)}px`);
-      /* Thrown in and settling, rather than eased evenly at both ends: the bar
-         should be most of the way across before it is being watched arrive. */
-      stage.style.setProperty(
-        '--banner',
-        easeLead(
-          clamp01((playhead - BANNER_AT) / BANNER_OVER),
-          BANNER_LEAD_IN,
-          BANNER_LEAD_OUT,
-        ).toFixed(4),
-      );
-      stage.style.setProperty(
-        '--title-raise',
-        smootherstep(clamp01((playhead - TITLE_RAISE_AT) / TITLE_RAISE_OVER)).toFixed(4),
-      );
-
-      /*
-       * Scene four: the banner goes up and out, and the community panel comes up
+       * Scene four: the heading goes up and out, and the community panel comes up
        * behind it. Both eased to a stop, because both are arriving somewhere -
        * one at the top of the screen and one at the middle of it.
        */
       stage.style.setProperty(
-        '--banner-exit',
-        smootherstep(clamp01((playhead - BANNER_EXIT_AT) / BANNER_EXIT_OVER)).toFixed(4),
+        '--title-exit',
+        smootherstep(clamp01((playhead - TITLE_EXIT_AT) / TITLE_EXIT_OVER)).toFixed(4),
       );
       stage.style.setProperty(
         '--community',
@@ -1413,39 +1320,6 @@ function ProjectsCopy() {
         stage.style.setProperty('--grid-sub', `${sub.toFixed(3)}px`);
         stage.style.setProperty('--grid-hair', `${hair.toFixed(3)}px`);
         stage.style.setProperty('--grid-shift', `${shiftX.toFixed(3)}px ${shiftY.toFixed(3)}px`);
-      }
-      /* The bar's exit, on the curve it arrived on so the two read as one move
-         made twice. */
-      stage.style.setProperty(
-        '--banner-out',
-        easeLead(
-          clamp01((playhead - BANNER_OUT_AT) / BANNER_OUT_OVER),
-          BANNER_LEAD_IN,
-          BANNER_LEAD_OUT,
-        ).toFixed(4),
-      );
-
-      /*
-       * And the word it lands as. Written straight to the node, like everything
-       * else on this timeline: it changes on most frames of the scramble, and a
-       * string through React state would put a reconciliation between the scroll
-       * and the paint.
-       */
-      const title = arcTitleRef.current;
-      /*
-       * Straight off the scroll, with no easing on it: the letters turn at a
-       * steady rate across the whole of their stretch rather than bunching in the
-       * middle of it.
-       */
-      const word = scrambled(clamp01((playhead - SCRAMBLE_AT) / SCRAMBLE_OVER));
-
-      /*
-       * Against the node rather than against a remembered string: React owns this
-       * element too, and if it ever wrote its own "Clients" back over the word, a
-       * remembered one would agree with itself and leave it there.
-       */
-      if (title && title.textContent !== word) {
-        title.textContent = word;
       }
 
       /*
@@ -1545,20 +1419,22 @@ function ProjectsCopy() {
       }
 
       /*
-       * The bar stays over the pile. The spill shares the grid's layer and
-       * follows it in the stage, which puts the logos on the ruling, and the
-       * heading is that same layer and later, so they still come out from
-       * behind the bar.
-       *
-       * Not until the drop has finished. Before that the heading is under the
-       * band, and lifting it would put the word in front of the stroke it is
-       * crossing.
+       * Over once the wipes have fully retreated, or as soon as the reader turns
+       * round, when the first pass's black logos are wanted again.
        */
-      if (arcTitleRef.current) {
-        const next = playhead >= TITLE_DROP_AT + TITLE_DROP_OVER ? '6' : '5';
+      if (returningRef.current !== null) {
+        returningRef.current = Math.min(returningRef.current, playhead);
 
-        if (arcTitleRef.current.style.zIndex !== next) {
-          arcTitleRef.current.style.zIndex = next;
+        if (
+          playhead <= WIPE_SECOND_AT ||
+          playhead > returningRef.current + RETURN_TURN_ROUND
+        ) {
+          returningRef.current = null;
+
+          if (rowTwinsRef.current) {
+            rowTwinsRef.current.style.transition = '';
+            rowTwinsRef.current.style.opacity = '';
+          }
         }
       }
 
@@ -1651,7 +1527,7 @@ function ProjectsCopy() {
             ? `scene ${SCENES.length}/${SCENES.length} · end of timeline`
             : `scene ${index + 1}/${SCENES.length} · ${SCENES[index].name}`;
       }
-    }, []);
+    }, [takeClients, restoreClients]);
 
     useTitlePixels({
       playheadRef,
@@ -2018,6 +1894,8 @@ function ProjectsCopy() {
                 fadeClassName={styles.bandFade}
                 wipeClassName={styles.rowWipe}
                 wipesRef={wipesRef}
+                twinsRef={rowTwinsRef}
+                twinsClassName={styles.rowTwins}
                 wipes={[
                   { slotRef: setSecondWipeSlot, rectRef: secondWipeRef, half: -1 },
                   { slotRef: setTopWipeSlot, rectRef: topWipeRef, half: 1 },
@@ -2033,6 +1911,7 @@ function ProjectsCopy() {
                   direction={1}
                   height={TICKER_LOGO_HEIGHT}
                   growRef={arcFlatRef}
+                  handleRef={outerRowRef}
                   overhang={STROKE_WIDTH / 2}
                 />
                 <ArcTicker
@@ -2045,6 +1924,7 @@ function ProjectsCopy() {
                   direction={-1}
                   height={TICKER_LOGO_HEIGHT}
                   growRef={arcFlatRef}
+                  handleRef={innerRowRef}
                   overhang={STROKE_WIDTH / 2}
                 />
               </LogoArc>
@@ -2067,9 +1947,8 @@ function ProjectsCopy() {
           )}
 
           {/*
-            Before the heading in the stage, so the heading and the black bar it
-            carries paint over the top: the logos come out from behind the bar
-            rather than over it.
+            Before the heading in the stage, so the heading paints over the top
+            of anything that passes it.
           */}
           {!prefersReducedMotion && (
             <LogoSpill
@@ -2082,7 +1961,9 @@ function ProjectsCopy() {
               obstacleRefs={communityBodies.current}
               running={revealed.spill}
               stageRef={stageRef}
-              originRef={arcTitleRef}
+              delay={TITLE_CHANGE_MS * TITLE_SWAP_SHARE}
+              takeClients={takeClients}
+              restoreClients={restoreClients}
             />
           )}
 
@@ -2151,16 +2032,19 @@ function ProjectsCopy() {
           )}
 
           {/* Outside the arc's holder, which is being scaled: a heading inside it
-              would be scaled with it. Under it in the stack, though, so the band
-              covers the word as it drops past. */}
+              would be scaled with it. */}
           {!prefersReducedMotion && (
             <h2
-              ref={arcTitleRef}
+              aria-label={HEADING_TO}
               className={`${styles.overlayTitle} ${styles.arcTitle} ${
                 revealed.clients && !revealed.titleGone ? styles.revealed : ''
-              } ${revealed.bannerInk ? styles.onBanner : ''}`}
+              } ${revealed.spill ? styles.arcTitleChanged : ''}`}
+              style={{ '--title-change': `${TITLE_CHANGE_MS}ms` }}
             >
-              {HEADING_FROM}
+              <span className={styles.arcTitleTeal} aria-hidden="true" />
+              <span className={styles.arcTitleFrom} aria-hidden="true">{HEADING_FROM}</span>
+              <span className={styles.arcTitleTo} aria-hidden="true">{HEADING_TO}</span>
+              <span className={styles.arcTitleCover} aria-hidden="true" />
             </h2>
           )}
 

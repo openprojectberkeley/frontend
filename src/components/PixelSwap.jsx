@@ -21,7 +21,7 @@ const MASK_STEPS = 14;
 
 const masks = new Map();
 
-const maskAt = (columns, rows, seed, shown) => {
+export const maskAt = (columns, rows, seed, shown) => {
   const step = Math.round(clamp01(shown) * MASK_STEPS);
   const key = `${columns}x${rows}@${seed}@${step}`;
   let mask = masks.get(key);
@@ -60,7 +60,7 @@ const maskAt = (columns, rows, seed, shown) => {
   return mask;
 };
 
-const setMask = (element, mask) => {
+export const setMask = (element, mask) => {
   if (!element) return;
 
   element.style.maskImage = mask;
@@ -71,7 +71,9 @@ const setMask = (element, mask) => {
  * Holds `children`, and plays the change when `swapKey` does: until it is over
  * the old children stay, in a layer under the new. `block` is the size of a
  * block in px, rounded to what divides the box evenly; `seed` keeps swaps that
- * run side by side from breaking up alike.
+ * run side by side from breaking up alike. A box that changes height with the
+ * swap holds the old children at the old height, level with its bottom, and
+ * neither is squeezed into the other's shape.
  */
 export default function PixelSwap({ swapKey, block, seed = 0, className, children }) {
   const reducedMotion = useReducedMotion();
@@ -91,22 +93,23 @@ export default function PixelSwap({ swapKey, block, seed = 0, className, childre
       return undefined;
     }
 
-    setLeaving(last);
-
     const box = boxRef.current;
+    const rowsIn = (height) => Math.max(1, Math.round(height / block));
     const columns = Math.max(1, Math.round(box.offsetWidth / block));
-    const rows = Math.max(1, Math.round(box.offsetHeight / block));
+    // Still the old height here: whatever resizes the box does so after this.
+    const goingHeight = box.offsetHeight;
     const start = performance.now();
     let frame = null;
 
-    setMask(comingRef.current, maskAt(columns, rows, seed * 2 + 1, 0));
+    setLeaving({ ...last, height: goingHeight });
+    setMask(comingRef.current, maskAt(columns, rowsIn(goingHeight), seed * 2 + 1, 0));
 
     const step = (now) => {
       const progress = Math.min(1, (now - start) / PIXEL_MS);
 
       if (progress < 1) {
-        setMask(comingRef.current, maskAt(columns, rows, seed * 2 + 1, progress));
-        setMask(goingRef.current, maskAt(columns, rows, seed * 2 + 2, 1 - progress));
+        setMask(comingRef.current, maskAt(columns, rowsIn(box.offsetHeight), seed * 2 + 1, progress));
+        setMask(goingRef.current, maskAt(columns, rowsIn(goingHeight), seed * 2 + 2, 1 - progress));
         frame = window.requestAnimationFrame(step);
       } else {
         frame = null;
@@ -130,7 +133,7 @@ export default function PixelSwap({ swapKey, block, seed = 0, className, childre
   return (
     <div ref={boxRef} className={`${styles.pixelSwap} ${className ?? ''}`}>
       {leaving && (
-        <div key={leaving.swapKey} ref={goingRef} className={`${styles.pixelLayer} ${styles.pixelLeaving}`} aria-hidden="true">
+        <div key={leaving.swapKey} ref={goingRef} className={`${styles.pixelLayer} ${styles.pixelLeaving}`} style={{ height: leaving.height }} aria-hidden="true">
           {leaving.children}
         </div>
       )}

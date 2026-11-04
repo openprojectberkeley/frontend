@@ -188,6 +188,47 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
   }, []);
 
   /*
+   * The photographs are fetched only as their card comes near.
+   *
+   * Only about eight of the cards are in shot at once, and the page they sit on
+   * is a long way down from the top of the hero, so none of them is worth
+   * fetching or decoding at load. A screen and a half of warning is enough for
+   * one to be there by the time the observer above fades it in. It is written
+   * straight on to the element, not through state, for the reason at the top of
+   * this file; and React leaves it alone, having never been given a src.
+   *
+   * The strip itself is the root rather than the window, because the stage's
+   * overflow: hidden would otherwise cut the cards waiting off to the right out
+   * of the intersection, margin or no margin, and each would start loading only
+   * as it came into shot.
+   *
+   * Once fetched a picture stays: the card can come back on a scroll up.
+   */
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const index = Number(entry.target.dataset.momentIndex);
+          const image = mediaRefs.current.get(index);
+
+          if (image) image.src = communityMoments[index].image;
+
+          observer.unobserve(entry.target);
+        });
+      },
+      { root: rootRef.current, rootMargin: '100% 150% 100% 100%', threshold: 0 },
+    );
+
+    cardRefs.current.forEach((card, index) => {
+      if (communityMoments[index]?.image) observer.observe(card);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  /*
    * The clips play only while their card is in shot.
    *
    * Separate from the observer above, which lets a card go the moment it has
@@ -888,7 +929,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
                   else mediaRefs.current.delete(index);
                 }}
                 className={styles.momentImage}
-                src={moment.image}
+                decoding="async"
                 alt=""
               />
             ) : (

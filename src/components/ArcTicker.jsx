@@ -134,6 +134,14 @@ export default function ArcTicker({
    */
   growRef,
   /*
+   * Filled with { takeAll, restore }. takeAll hides every logo on the row and
+   * returns those that were on screen, as { rect, src, filtered, speed }, where
+   * speed is how fast that spot on the row is moving across the screen, in px a
+   * second. All read before any of it is written, so the page is only laid out
+   * once however many there are. restore puts them all back.
+   */
+  handleRef,
+  /*
    * How far past each end of the path the band still paints. The stroke has
    * round caps, so the ink runs on half a stroke-width beyond the last point -
    * and a logo out there is still over the band and still visible.
@@ -148,6 +156,39 @@ export default function ArcTicker({
    * the browser has these files cached already.
    */
   const [logos, setLogos] = useState(null);
+  /* Whether the logos have been taken off the row. Outlives the loop, which
+     restarts around it. */
+  const takenRef = useRef(false);
+  /* The running loop's part in taking them, while there is one. */
+  const takeRunningRef = useRef(null);
+
+  /*
+   * There from the start, and not only once the loop is. A page loaded partway
+   * down can ask for the logos while they are still decoding, and the row has to
+   * remember being asked, or they would come out when they had decoded.
+   */
+  useLayoutEffect(() => {
+    if (!handleRef) {
+      return undefined;
+    }
+
+    handleRef.current = {
+      takeAll: () => {
+        const taken = takeRunningRef.current?.() ?? [];
+
+        takenRef.current = true;
+
+        return taken;
+      },
+      restore: () => {
+        takenRef.current = false;
+      },
+    };
+
+    return () => {
+      handleRef.current = null;
+    };
+  }, [handleRef]);
 
   useEffect(() => {
     let live = true;
@@ -311,6 +352,11 @@ export default function ArcTicker({
       const offset = progress * loop;
 
       for (let index = 0; index < count; index += 1) {
+        if (takenRef.current) {
+          transforms[index] = null;
+          continue;
+        }
+
         /*
          * The train runs backwards rather than its carriages being reordered,
          * so both rows are the one layout travelling opposite ways. The lean
@@ -338,6 +384,7 @@ export default function ArcTicker({
         if (distance + reach < -overhang || distance - reach > length + overhang) {
           transforms[index] = null;
         } else {
+
           const point = sample(distance);
           /*
            * Turned to lie along the curve, and then half a turn further. The
@@ -349,8 +396,10 @@ export default function ArcTicker({
           /* The last translate is in the turned frame, so its y runs across
              the stroke whatever angle this stretch of the path is at - which
              is what keeps a row parallel to the arc instead of to the screen. */
-          transforms[index] =
+          const transform =
             `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${lean.toFixed(2)}) translate(0 ${rowOffset.toFixed(2)}) scale(${grow.toFixed(4)}) translate(${(-widths[index] / 2).toFixed(2)} ${(-height / 2).toFixed(2)})`;
+
+          transforms[index] = transform;
         }
       }
 
@@ -376,6 +425,36 @@ export default function ArcTicker({
       frame = window.requestAnimationFrame(tick);
     };
 
+    takeRunningRef.current = () => {
+      const twins = twinRef.current ? twinRef.current.children : null;
+      const taken = [];
+
+      for (let index = 0; index < count; index += 1) {
+        if (transforms[index] !== null) {
+          const rect = (twins?.[index] ?? nodes[index]).getBoundingClientRect();
+          const middle = rect.left + rect.width / 2;
+
+          if (rect.width > 0 && middle > 0 && middle < window.innerWidth) {
+            taken.push({
+              rect,
+              src: logos[index].dark,
+              filtered: logos[index].filtered,
+              /* A row with direction 1 travels to the left of the screen. */
+              speed: -direction * SPEED * (rect.height / height),
+            });
+          }
+        }
+      }
+
+      for (let index = 0; index < count; index += 1) {
+        transforms[index] = null;
+        place(nodes[index], index, null, shown);
+        place(twins?.[index], index, null, twinShown);
+      }
+
+      return taken;
+    };
+
     /*
      * The scroll reshapes the arc in an animation frame of its own, and that
      * one is asked for after this loop's, so it runs second: placed only here,
@@ -394,6 +473,7 @@ export default function ArcTicker({
     return () => {
       reshaped.disconnect();
       window.cancelAnimationFrame(frame);
+      takeRunningRef.current = null;
     };
   }, [pathRef, items, running, rowOffset, direction, height, logos, growRef, overhang]);
 

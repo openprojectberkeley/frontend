@@ -15,8 +15,16 @@
   display: grid;
   place-items: center;
   padding: 0 var(--margin-from-screen);
-  /* The disc leaves the stage's box long before it fills the screen. */
+  /*
+   * The disc leaves the stage's box long before it fills the screen.
+   *
+   * Clip, not just hidden. A hidden box can still be scrolled by the browser, and
+   * tabbing to a link in a scene further down does exactly that: nothing ever
+   * scrolled it back, so the stage stayed offset until the page was reloaded.
+   * Hidden stays as the fallback for a browser without clip.
+   */
   overflow: hidden;
+  overflow: clip;
   color: white;
 }
 
@@ -759,166 +767,130 @@
 }
 
 /*
- * The heading on the arc, sitting astride the inside of the bowl so that its
- * top half is over the empty middle and its bottom half crosses the stroke.
+ * The heading on the arc, in the opening of the bowl, centred on the screen left
+ * to right for the whole of the scene - the arc is carried onto the screen's
+ * centre by a correction of its own, so the two share an axis.
  *
- * Centred on the screen, left to right, for the whole of the scene - the arc
- * is carried onto the screen's centre by a correction of its own, so the two
- * share an axis and the heading needs no nudge towards the bowl.
+ * Its height is measured against the arc: 0.057 of the box above the middle of
+ * the stage while it is a bowl, and as the bowl straightens, up to just over
+ * where the band's top edge will rest - half a stroke, 0.138 of the box, above
+ * the middle of the stage - less half the word's own height and some air.
+ * The word therefore always stays above the band, which never crosses it.
  *
- * The height is still measured against the arc's circle, whose centre sits
- * 71.32 viewBox units above the element's own - 0.1572 of the 453.6-unit box.
- * From there the heading is dropped a tenth of the box into the bowl, which is
- * high in the opening and well clear of the stroke below.
+ * Both offsets repeat the arc's own min(), so a shallow window, where the height
+ * term wins and the arc shrinks, moves the heading by exactly as much.
  *
- * That tenth is given back as the bowl straightens. A heading sitting low in
- * an opening that no longer exists would hang off the bottom edge of the band
- * and onto the paper, where black stops being a word cut out of the stroke and
- * becomes black text on white; riding --flat back up to the circle's own
- * centre leaves it sitting squarely in the band instead.
- *
- * All three offsets repeat the arc's own min(), so a shallow window - where the
- * height term wins and the arc shrinks - moves the heading by exactly as much,
- * and the lift keeps the two travelling together.
- *
- * Until --title-drop, which undoes what is left. Both offsets that tie the
- * heading to the arc - the height inside the band and the lift - are multiplied
- * by (1 - drop), so at 1 nothing of the arc is left in the position and the
- * heading is in the middle of the stage. Sideways it was there already. The
- * band carries on up; the heading has stopped taking the lift and stays where
- * it landed.
- *
- * It is under .arcHolder rather than over it, so the stroke hides the word for
- * the part of the drop that crosses it: the heading goes in at the band's top
- * edge and comes out below its bottom one.
- *
- * And then --title-raise takes it the last of the way, out of the middle of
- * the screen and up to 30% down it. A percentage, because top's percentages
- * are of the stage: 50% less 20% of it is 30% of it, whatever size it is.
+ * One grid cell holding both words, so the box is always as wide as the longer
+ * of them, and the highlights behind it need no measuring.
  */
 .arcTitle {
   position: absolute;
   left: 50%;
   top: calc(
-    50% + min(54.5vw, 86vh) * (-0.057 - var(--flat, 0) * 0.1002) *
-      (1 - var(--title-drop, 0)) - var(--title-raise, 0) * 20%
+    50% + min(54.5vw, 86vh) * (-0.057 - var(--flat, 0) * 0.081) - var(--flat, 0) * 1.5em
   );
-  z-index: 5;
+  z-index: 6;
+  display: grid;
+  justify-items: center;
   margin: 0;
+  padding: 0 0.28em;
   font-size: clamp(3rem, 8vw, 6.5rem);
-  /* Three journeys on one line: what is left of the arc's rise, and then the
-     bar's own exit up and out of the top for scene four. */
-  transform: translate(-50%, -50%)
-    translateY(calc(var(--arc-rise, 0px) * (1 - var(--title-drop, 0))))
-    translateY(calc(var(--banner-exit, 0) * -46vh));
+  white-space: nowrap;
+  transform: translate(-50%, -50%) translateY(calc(var(--title-exit, 0) * -46vh));
   text-align: center;
   pointer-events: none;
   /*
-   * All three, not just colour. A transition shorthand replaces the one on the
-   * shared rule above outright, so naming only colour here left the heading
-   * with no opacity or filter transition at all - it snapped in and out
-   * instead of fading, every time it was scrolled past.
+   * Both, not just one. A transition shorthand replaces the one on the shared
+   * rule above outright, so this has to name everything it wants to keep.
    */
-  transition: color 320ms ease, opacity 700ms ease, filter 700ms ease;
+  transition: opacity 700ms ease, filter 700ms ease;
+}
+
+.arcTitleFrom,
+.arcTitleTo {
+  position: relative;
+  grid-area: 1 / 1;
 }
 
 /*
- * The banner the heading ends up on.
+ * Everything below plays on a clock from the class going on or off, so the same
+ * time however fast the page is scrolled. Two sets of keyframes, because changing
+ * the name is what restarts an animation; each ends where the rule it is on rests.
+ * The first run, on mount, plays while the heading is still invisible.
  *
- * The heading's own ::before rather than an element of its own, so it rides
- * every bit of the positioning above for free instead of repeating a formula
- * that four other things already feed into. Its height is the heading's line
- * box and a tenth of an em either side, which is what makes it exactly as high
- * as the text without being told how high the text is.
- *
- * --stage-w and not 100vw: vw counts the scrollbar, and the stage clips what
- * overhangs, so the point on the right would be cut off the right of the
- * screen rather than drawn at it.
- *
- * It slides in from the left rather than growing: the whole bar starts one
- * width out and is carried into place, so the shape never changes - the wedge
- * on its end arrives at the size it will keep instead of being stretched out
- * of a sliver as it opens.
- *
- * And it is wider than the screen by a wedge at each end, so that when it
- * stops, both angled ends are past the edges of the screen and what is left
- * is a plain bar running from one side to the other. Neither wedge is meant
- * to be seen at rest: the right one is the leading edge on the way in, and
- * the left one only comes into view as --banner-out carries the whole bar off
- * to the right, on the same curve, so the exit is the entrance continued
- * rather than a fade.
+ * 45% is TITLE_SWAP_SHARE in ImmersiveHero, the moment the black covers the box.
  */
-.arcTitle::before {
-  content: '';
+.arcTitleFrom {
+  animation: arcTitleShow var(--title-change, 460ms) linear;
+}
+
+.arcTitleTo,
+.arcTitleTeal {
+  opacity: 0;
+  animation: arcTitleHide var(--title-change, 460ms) linear;
+}
+
+.arcTitleChanged .arcTitleFrom {
+  opacity: 0;
+  animation-name: arcTitleHide;
+}
+
+.arcTitleChanged .arcTitleTo,
+.arcTitleChanged .arcTitleTeal {
+  opacity: 1;
+  animation-name: arcTitleShow;
+}
+
+.arcTitleTo {
+  color: #fff;
+}
+
+.arcTitleTeal,
+.arcTitleCover {
   position: absolute;
-  top: -0.1em;
-  bottom: -0.1em;
-  left: 50%;
-  /* The screen, plus a wedge hanging off each side of it. */
-  --wedge: 1.9em;
-  --bar-width: calc(var(--stage-w, 100vw) + var(--wedge) * 2);
-  width: var(--bar-width);
-  /* Behind the text. The heading carries a z-index of its own, so this is
-     behind the word and not behind the scene. */
-  z-index: -1;
+  inset: 0;
+}
+
+/* The under-highlight that stays, the dark end of the teal circle's gradient. */
+.arcTitleTeal {
+  background-color: #2F7F8C;
+}
+
+/* The black: its right edge comes across, then its left edge follows it off. */
+.arcTitleCover {
   background-color: #000;
-  /*
-   * Cut away at both ends, each into a right trapezoid, and the two leaning
-   * the same way so the bar reads as one stroke rather than as something
-   * tapered at both ends.
-   *
-   * The right end keeps its flat side up - the top edge runs the full width
-   * and the bottom stops short. The left end is the same wedge the other way
-   * up, flat side down: the bottom edge runs the full width and the top one
-   * starts in. At rest the right wedge is past the edge of the screen and the
-   * left one is the only one you see.
-   */
-  clip-path: polygon(var(--wedge) 0, 100% 0, calc(100% - var(--wedge)) 100%, 0 100%);
-  /*
-   * Centred, which with a wedge hanging off each side puts both of them just
-   * outside the screen; then a whole bar's width to the left for every part of
-   * the arrival still to come, and a whole bar's width to the right for the
-   * exit.
-   */
-  transform: translateX(
-    calc(
-      -50% - (1 - var(--banner, 0)) * var(--bar-width) +
-        var(--banner-out, 0) * var(--bar-width)
-    )
-  );
+  clip-path: inset(0 100% 0 0);
+  animation: arcTitleCoverBack var(--title-change, 460ms) ease-in-out;
+}
+
+.arcTitleChanged .arcTitleCover {
+  animation-name: arcTitleCover;
+}
+
+@keyframes arcTitleShow {
+  0%, 44.9% { opacity: 0; }
+  45%, 100% { opacity: 1; }
+}
+
+@keyframes arcTitleHide {
+  0%, 44.9% { opacity: 1; }
+  45%, 100% { opacity: 0; }
+}
+
+@keyframes arcTitleCover {
+  0% { clip-path: inset(0 100% 0 0); }
+  45% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 100%); }
+}
+
+@keyframes arcTitleCoverBack {
+  0% { clip-path: inset(0 100% 0 0); }
+  45% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 100%); }
 }
 
 /*
- * Cream once the bar is under it.
- *
- * Three classes deep, not two. The rule below paints the heading the page's
- * black and is already two deep for its own reasons, and it comes later in the
- * file - so at equal specificity it wins on source order and the word stays
- * black on a black bar.
- */
-.arcTitle.arcTitle.onBanner {
-  color: #FFFDF8;
-  /*
-   * Faded rather than switched, and on a clock rather than on the playhead:
-   * this is a transition, so it takes the same third of a second however fast
-   * the page is being scrolled through it.
-   *
-   * The same length both ways, which is the point of setting it here as well
-   * as on the rule below - the heading turns cream over a third of a second on
-   * the way down and black over the same on the way back up, instead of
-   * snapping on and easing off.
-   *
-   * It is wholly over the bar by the time this applies, so what the fade reads
-   * as is the word arriving on the black rather than passing through it.
-   *
-   * The other two are named because a transition shorthand replaces the one
-   * above outright, and without them the heading would lose its fade in.
-   */
-  transition: color 320ms ease, opacity 700ms ease, filter 700ms ease;
-}
-
-/*
- * What tips out of the banner.
+ * The logos the clients turn into.
  *
  * The container is the stage, so the simulation can work in plain screen
  * pixels and the stage's own overflow keeps the pile on stage. Each logo is
@@ -932,8 +904,7 @@
   /*
    * The grid's own layer, and after it in the stage, so the pile sits on the
    * ruling rather than under it. The heading is this same layer and later
-   * still, once it has left the band, which is what keeps the logos coming
-   * out from behind the bar.
+   * still, so anything passing it goes behind the word.
    */
   z-index: 6;
   pointer-events: none;
@@ -1014,6 +985,8 @@
  */
 .arcTitle.arcTitle {
   color: #000;
+  /* The highlights fill the line box, so it wants to be close to the letters. */
+  line-height: 1.15;
 }
 
 /* The black that fills the band. The page's own, so what the band becomes is
@@ -1041,6 +1014,11 @@
  * over it and would go with it - and later because it is what hides the group
  * on its way out.
  */
+/* Only ever seen fading back in, if the reader turns round on the way back up. */
+.rowTwins {
+  transition: opacity 200ms ease;
+}
+
 .rowWipe {
   fill: #FFFDF8;
   opacity: calc(1 - var(--wipe-fade, 0));

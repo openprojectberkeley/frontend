@@ -1,48 +1,23 @@
-// Projects Data - `projects` is the current semester's, CURRENT_SEMESTER in
-// site.js, and the semesters before it are in projectsBySemester below.
+// Projects Data - what every semester shares. Each semester's projects and logos
+// are in its own file in ./projects, and the current one is CURRENT_SEMESTER in
+// site.js.
 import { CURRENT_SEMESTER } from './site';
-
-// Project logos - enabled logos
-import atlasLogo from '../images/projects/atlas.png';
-import cabalLogo from '../images/projects/cabal.png';
-import calconnectLogo from '../images/projects/calconnect.png';
-import chessblitzLogo from '../images/projects/chessblitz.png';
-import cloudTCPLogo from '../images/projects/cloudtcp.jpg';
-import curbIQLogo from '../images/projects/curbiq.jpg';
-import devpadLogo from '../images/projects/devpad.jpg';
-import gettothesurfaceLogo from '../images/projects/gettothesurface.jpg';
-import inductionLogo from '../images/projects/induction.jpg';
-import neoquestLogo from '../images/projects/neoquest.jpg';
-import nexusLogo from '../images/projects/nexus.png';
-import nothingbutnetLogo from '../images/projects/nothingbutnet.png';
-import propertydamageLogo from '../images/projects/propertydamage.jpg';
-import sightlineLogo from '../images/projects/sightline.jpg';
-import smplerLogo from '../images/projects/smpler.png';
-import sortifyLogo from '../images/projects/sortify.jpg';
-import trailmateLogo from '../images/projects/trailmate.jpg';
-import trinketLogo from '../images/projects/trinket.jpg';
-import villagehubLogo from '../images/projects/villagehub.png';
-
-// import matXLogo from '../images/projects/matX.svg';
-// import copatibleLogo from '../images/projects/copatible.png';
-// import operativeLogo from '../images/projects/operative.svg';
-// import ibmLogo from '../images/projects/ibm.png';
-// import bmLogo from '../images/projects/bm.png';
-// import educalLogo from '../images/projects/educal.svg';
-// import fonarLogo from '../images/projects/fonar.svg';
-// import gisticeLogo from '../images/projects/gistice-league.svg';
-// import syncrateLogo from '../images/projects/syncrate.svg';
-// import huddleLogo from '../images/projects/huddle.svg';
-// import tracklistLogo from '../images/projects/tracklist.svg';
-// import matchlabLogo from '../images/projects/matchlab.svg';
+import fall2026 from './projects/fall2026';
+import spring2026 from './projects/spring2026';
+import fall2025 from './projects/fall2025';
+import spring2025 from './projects/spring2025';
+import fall2024 from './projects/fall2024';
+import spring2024 from './projects/spring2024';
+import fall2023 from './projects/fall2023';
+import spring2023 from './projects/spring2023';
 
 export const sectionInfo = {
-  client: {
+  studio: {
     title: "OP Studio",
     description: "For returning members looking to be involved in a more serious client project. Working with more experienced devs and PMs, you'll hone your skills and learn what tech looks like in industry.",
     color: "#9BE9FF" // blue
   },
-  passion: {
+  launch: {
     title: "OP Launch",
     description: "Your first steps in Open Project. Projects in OP Launch help grow your fundamentals in development and systems while becoming a part of our growing OP community! We have lots of passion and client projects - there's something here for everyone.",
     color: "#FDFFBC" // yellow
@@ -56,6 +31,8 @@ export const projectTypes = [
 ];
 
 /*
+ * What goes in a project, in the files in ./projects.
+ *
  * Each project's `accent` is the colour of its tile on the projects page: the
  * tile rests on a faint, desaturated gradient of it and fills with it on hover,
  * with its text turning dark on an accent too light for white - see accentInk
@@ -63,228 +40,20 @@ export const projectTypes = [
  * advanced. `tagline` is its one line on its row in the list, and `tags` its
  * topics, shown under that and filtered by: the filter offers whatever is here.
  */
-export const projects = {
-  client: [
-    {
-      id: 1,
-      name: "Atlas",
-      tagline: "One searchable workspace for LG NOVA's project knowledge",
-      tags: ["AI", "Data", "Productivity"],
-      accent: "#A50034",
-      difficulty: "intermediate",
-      logo: atlasLogo,
-      pms: ["Chester Duan", "Ojasvi Shrivastava", "Cindy Wang"],
-      description: "An internal knowledge and project intelligence platform for LG NOVA that brings scattered project data, documents, and updates into one searchable workspace. Build dashboards, data integrations, and AI-powered discovery tools that help teams quickly find what they need and understand what’s happening across the organization.",
-      clientName: "LG NOVA"
-    },
-    {
-      id: 2,
-      name: "CloudTCP",
-      tagline: "AI-drafted traffic control plans, in minutes not hours",
-      tags: ["AI", "Computer Vision", "Automation"],
-      accent: "#06B6D4",
-      difficulty: "advanced",
-      logo: cloudTCPLogo,
-      pms: ["Ashley Iattoni", "Benjamin Huang", "Dayton Phan"],
-      description: "An AI-powered platform that turns the time-consuming process of drafting Traffic Control Plans into an automated workflow. Build tools that combine image analysis with official traffic-control standards to generate accurate engineering drawings for construction permits in minutes instead of hours.",
-      clientName: "Traffic Patterns, LLC"
-    },
-    {
-      id: 5,
-      name: "Nexus",
-      tagline: "AI-powered investing on real-time data and live news",
-      tags: ["AI", "Data", "Finance"],
-      accent: "#2A3050",
-      difficulty: "advanced",
-      logo: nexusLogo,
-      pms: ["Ganesh Karayi", "Arnav Mahadev", "Jonathan Tran", "Diego Llamas"],
-      description: "AI-powered investment platform, utilizing real-time financial data and live news events to create a hub of information so that investors can make the most informed finance decisions possible.\n\n3 Main projects this semester:\n\nFeedback Driven Reinforcement Learning, Portfolio Analysis, and Stock Ranking",
-      clientName: "iPick.ai"
-    },
-    {
-      id: 3,
-      name: "Smpler",
-      tagline: "Automated investment analysis for institutional managers",
-      tags: ["AI", "Data", "Finance"],
-      accent: "#F97316",
-      logo: smplerLogo,
-      pms: ["Sainik Ghosh", "Justin Le"],
-      description: "Smpler is an AI-powered SaaS platform helping institutional investment managers automate investment analysis, turning hours of manual work across messy Excels and PDFs into minutes. This project builds a data pipeline that ingests ~50 public real estate and economic data sources (cap rates, occupancy, job growth, migration trends) into a structured database with an analytics layer and API, so Smpler can benchmark deals against real market context.",
-      clientName: "Smpler"
-    },
-    {
-      id: 4,
-      name: "Village Hub",
-      tagline: "One place for residents, resources and community support",
-      tags: ["AI", "Community"],
-      accent: "#14B8A6",
-      logo: villagehubLogo,
-      pms: ["Felicia Ye", "Helena Zhang", "Emmanuel Elizalde-Ocampo"],
-      description: "A community platform for clients Tiny Village Spirit and Hope Solutions that connects residents with support resources, meetings, and each other in one place. Work directly with staff and residents to design and build AI-powered tools, shared calendars, and community organizing features that address real community needs.",
-      clientName: "Tiny Village Spirit & Hope Solutions"
-    }
-  ],
-  passion: [
-    {
-      id: 6,
-      name: "Get to the Surface",
-      tagline: "A pixel-art platformer from Earth's core into space",
-      tags: ["Games"],
-      accent: "#6366F1",
-      difficulty: "beginner",
-      logo: gettothesurfaceLogo,
-      pms: ["Turner Osswald"],
-      description: "A 2D Foddian-style platformer where players climb from the Earth’s core all the way into space, with each layer introducing new environments, movement mechanics, and obstacles. Build everything from pixel art and original music to physics-based gameplay inspired by games like Jump King and Pogostuck."
-    },
-    {
-      id: 7,
-      name: "CalConnect",
-      tagline: "Finding Berkeley tutors who fit how you learn",
-      tags: ["AI", "Education"],
-      accent: "#3B82F6",
-      difficulty: "beginner",
-      logo: calconnectLogo,
-      pms: ["Leo Li", "Jamil Shirinov", "James Apuyan"],
-      description: "A personalized tutoring platform that helps UC Berkeley students find peer tutors who match not only what they’re learning, but how they learn best. Build an AI-assisted matching experience around courses, availability, learning styles, and personality to make finding the right academic support easier."
-    },
-    {
-      id: 8,
-      name: "Trinket",
-      tagline: "Finish your work, earn collectible trinkets",
-      tags: ["AI", "Productivity"],
-      accent: "#14B8A6",
-      difficulty: "beginner",
-      logo: trinketLogo,
-      pms: ["Keira Tan", "Johanna Flores"],
-      description: "A gamified productivity app that turns getting your work done into a collectible experience. Use AI to pull assignments and deadlines from syllabi, stay accountable with an AI companion, and earn virtual currency for completing goals that can be spent on unique collectible trinkets."
-    },
-    {
-      id: 9,
-      name: "Cabal",
-      tagline: "Online Diplomacy, where AI takes over for ghosting players",
-      tags: ["AI", "Games"],
-      accent: "#EAB308",
-      difficulty: "intermediate",
-      logo: cabalLogo,
-      pms: ["Karthik Subramanian", "Christopher Chang"],
-      description: "Diplomacy is a seven-player game of pure negotiation and betrayal, with a devoted community stuck on software from 2012. Cabal is the modern version. Its real edge: when a player ghosts mid-game, which is the thing that kills online Diplomacy, AI takes over their position and plays plausibly instead of letting their units sit frozen. Everything else, correct adjudication and a reputation system that deters abandoners, is what earns the community's trust."
-    },
-    {
-      id: 10,
-      name: "NeoQuest",
-      tagline: "Turning \"nothing to do\" into your next side quest",
-      tags: ["Community", "Maps"],
-      accent: "#7C3AED",
-      logo: neoquestLogo,
-      pms: ["Nishaad Sovani", "Siddharth Garimella", "Emily Yue"],
-      description: "A local discovery app that turns “there’s nothing to do” into your next side quest. Find spontaneous hangouts and unconventional activities based on your group’s budget, interests, transportation, and location, then explore them through an interactive map or contribute side quests of your own."
-    },
-    {
-      id: 11,
-      name: "CurbIQ",
-      tagline: "Routes built around what you can actually navigate",
-      tags: ["Accessibility", "Maps"],
-      accent: "#14B8A6",
-      difficulty: "intermediate",
-      logo: curbIQLogo,
-      pms: ["Harshini Pulivarthi", "Sneha Atmakur"],
-      description: "An accessibility-first navigation app that finds routes based on what a person can actually navigate, not simply what gets them there fastest. Combine maps, elevation data, personalized mobility preferences, and crowdsourced hazard reports to help users avoid stairs, steep slopes, construction, and other accessibility barriers."
-    },
-    {
-      id: 12,
-      name: "SightLine",
-      tagline: "Your day's best moments in a 60-second video",
-      tags: ["Mobile", "Video"],
-      accent: "#22C55E",
-      difficulty: "intermediate",
-      logo: sightlineLogo,
-      pms: ["Chad Park", "Ryan Lin", "Austin Tenbrink"],
-      description: "SightLine is a mobile app that turns the best moments of your day into a single 60-second video for you to save, share, and remember. The app will connect to the user’s Meta Ray-Ban Glasses, capturing video and audio whenever the user is recording with the glasses. By the end of the day, the final video will be generated with one click of a button."
-    },
-    {
-      id: 13,
-      name: "Sortify",
-      tagline: "Point your camera to know which bin it goes in",
-      tags: ["AI", "Computer Vision", "Sustainability"],
-      accent: "#84CC16",
-      difficulty: "intermediate",
-      logo: sortifyLogo,
-      pms: ["Caden Luu"],
-      description: "A camera-powered waste sorting tool that takes the guesswork out of deciding what goes in recycling, compost, or landfill. Identify an item with AI, combine it with local disposal rules, and gamify sustainable habits through sorting history, points, and streaks."
-    },
-    {
-      id: 14,
-      name: "TrailMate",
-      tagline: "Hike recommendations tailored to what you enjoy",
-      tags: ["AI", "Maps"],
-      accent: "#2E752F",
-      difficulty: "intermediate",
-      logo: trailmateLogo,
-      pms: ["Janice Lin", "Melody Shane", "Miles Petrick"],
-      description: "A personalized trail discovery app that learns what you actually enjoy hiking and recommends where to go next. Combine trail, elevation, location, and scenic data with machine learning to find hikes tailored to your experience, available time, and past adventures."
-    },
-    {
-      id: 15,
-      name: "NothingButNet",
-      tagline: "Instant feedback on your basketball shooting form",
-      tags: ["Computer Vision", "Sports"],
-      accent: "#E7A977",
-      logo: nothingbutnetLogo,
-      pms: ["Navya Lella", "Ayah Elzein"],
-      description: "NothingButNet is an app that analyzes a basketball player's shooting form using computer vision and pose estimation. A user records a free throw or jump shot on their phone, uploads it to the app, and receives instant feedback on their shooting mechanics — including a visual overlay showing their joint positions, angle measurements for key checkpoints, and specific tips for improvement."
-    },
-    {
-      id: 16,
-      name: "Property Damage",
-      tagline: "A two-player fighter in a materials-simulated arena",
-      tags: ["Games"],
-      accent: "#6C3D39",
-      difficulty: "intermediate",
-      logo: propertydamageLogo,
-      pms: ["Joseph Ong", "Zander Rosenzweig"],
-      description: "A local two-player 2D fighting game featuring a materials simulation as the arena."
-    },
-    {
-      id: 17,
-      name: "Induction",
-      tagline: "Do fine-tuned mechanisms transfer to unseen tasks?",
-      tags: ["AI", "Research"],
-      accent: "#3B5BDB",
-      logo: inductionLogo,
-      pms: ["Leo Park", "Haaziq Kazi", "Benjamin Wang"],
-      description: "We study how fine-tuning on one reasoning task changes a model’s internal mechanisms and whether those same mechanisms are reused on related, unseen tasks. By tracking behavior and causal circuit changes across fine-tuning checkpoints, we test whether mechanistic transfer emerges before, alongside, or after behavioral generalization."
-    },
-    {
-      id: 18,
-      name: "ChessBlitz",
-      tagline: "Teaching K-8 problem solving through chess tactics",
-      tags: ["AI", "Education", "Games"],
-      accent: "#FAEF7C",
-      difficulty: "intermediate",
-      logo: chessblitzLogo,
-      pms: ["Matthew Rodrigues", "Yashom Kapoor", "Peter Lourenco", "Ashley Iattoni"],
-      description: "Application for teaching problem solving skills to students K-8 in a gamified manner through chess tactics. Building out custom curriculums, game design, and an LLM coach.",
-      clientName: "School of the Madeline"
-    },
-    {
-      id: 19,
-      name: "DevPad",
-      tagline: "Note-taking for STEM students, with code that runs",
-      tags: ["Education", "Mobile", "Productivity"],
-      accent: "#0B7A75",
-      difficulty: "intermediate",
-      logo: devpadLogo,
-      pms: ["Jason Shorey", "Yuchan Chung"],
-      description: "DevPad is a productivity-focused mobile app that assists STEM students in note-taking. It differs from traditional note-taking apps by including features especially helpful for Computer Science topics, such as a built-in interpreter for multiple programming languages."
-    }
-  ]
-};
 
 // A name as it goes in a link: "Get to the Surface" -> get-to-the-surface.
 export const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+// Where a project is on the projects page, which a link to it arrives by. A
+// semester's rows each have one, and a name can come up in more than one semester.
+export const projectAnchor = (name, semester = CURRENT_SEMESTER) => (
+  semester === CURRENT_SEMESTER
+    ? `project-${toAnchorId(name)}`
+    : `project-${toAnchorId(semester)}-${toAnchorId(name)}`
+);
+
 // The sections in the order the projects page shows them.
-export const sectionOrder = ['client', 'passion'];
+export const sectionOrder = ['studio', 'launch'];
 
 // Projects with a logo come first within a section, otherwise in listed order.
 export const logosFirst = (list) => [...list].sort((a, b) => (b.logo ? 1 : 0) - (a.logo ? 1 : 0));
@@ -296,19 +65,25 @@ export const inPageOrder = (semesterProjects) => sectionOrder.flatMap(
 
 // The current semester's, in that order. The board page groups its project
 // managers by this.
-export const orderedProjects = inPageOrder(projects);
+export const orderedProjects = inPageOrder(fall2026);
 
-const NO_PROJECTS = { client: [], passion: [] };
-
-// The semesters the projects page can show, newest first. Fill one in with the
-// same shape as `projects`.
+// The semesters the projects page can show, newest first. Fill one in in its file
+// in ./projects.
 export const projectsBySemester = {
-  [CURRENT_SEMESTER]: projects,
-  'Spring 2026': NO_PROJECTS,
-  'Fall 2025': NO_PROJECTS,
-  'Spring 2025': NO_PROJECTS,
-  'Fall 2024': NO_PROJECTS,
-  'Spring 2024': NO_PROJECTS,
-  'Fall 2023': NO_PROJECTS,
-  'Spring 2023': NO_PROJECTS,
+  [CURRENT_SEMESTER]: fall2026,
+  'Spring 2026': spring2026,
+  'Fall 2025': fall2025,
+  'Spring 2025': spring2025,
+  'Fall 2024': fall2024,
+  'Spring 2024': spring2024,
+  'Fall 2023': fall2023,
+  'Spring 2023': spring2023,
 };
+
+// Every semester's projects, newest semester first.
+export const allProjects = Object.values(projectsBySemester).flatMap(inPageOrder);
+
+// OP Studio and OP Launch began in Fall 2026, so a semester before it is one plain
+// list, without their headings or filters. Keep its projects under `studio`.
+const semesterNames = Object.keys(projectsBySemester);
+export const hasSections = (semester) => semesterNames.indexOf(semester) <= semesterNames.indexOf('Fall 2026');

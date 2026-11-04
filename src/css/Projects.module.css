@@ -697,8 +697,9 @@
 
 /*
  * The project picked, on the stars: its words, then its images under them, which
- * take what height is left. Held under the fixed header as the list goes by, and
- * no taller than the window has room for; words that need more than that scroll.
+ * take what height is left, so fewer words mean larger images. Held under the
+ * fixed header as the list goes by, and no taller than the window has room for;
+ * words that need more than that scroll.
  */
 .detail {
   position: sticky;
@@ -714,10 +715,33 @@
 }
 
 .detailText {
+  /* Over the images, for the words that run past the box or the old images that
+     reach up behind it during a change. A grid item needs no position for this,
+     and with one the hidden text and cursor tip inside would count as overflow. */
+  z-index: 1;
   display: grid;
+  /* Set from ProjectDetail, so that the images take their new size in one go
+     rather than jumping about with the lines of the scrambling words. */
+  height: var(--words-height, auto);
+  max-height: 100%;
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: thin;
+}
+
+/* The picked project's words, for their height: the box's width, taking no room. */
+.detailMeasure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Keeps an empty description's margin in, as the live words' grid cell does. */
+.detailMeasure > div {
+  display: flow-root;
 }
 
 .detailLive,
@@ -729,6 +753,10 @@
 /* See DetailTextSizer. */
 .detailSizer {
   visibility: hidden;
+}
+
+.detailText > .detailSizer {
+  display: none;
 }
 
 .detailHeading {
@@ -792,6 +820,12 @@
   grid-template-columns: 2fr 1fr;
   grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.collageSlot {
   min-height: 0;
 }
 
@@ -825,7 +859,10 @@
   -webkit-mask-size: 100% 100%;
 }
 
+/* Held at the height it had, its height written from PixelSwap, so that what is
+   going never takes on the shape of what is coming. */
 .pixelLeaving {
+  top: auto;
   pointer-events: none;
 }
 
@@ -847,7 +884,17 @@
   }
 
   .detailText {
+    height: auto;
+    max-height: none;
     overflow-y: visible;
+  }
+
+  .detailText > .detailSizer {
+    display: block;
+  }
+
+  .detailMeasure {
+    display: none;
   }
 }
 

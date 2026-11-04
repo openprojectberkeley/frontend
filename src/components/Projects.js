@@ -13,7 +13,7 @@ import { FixedStarField } from './StarField';
 import ProjectDetail, { CoffeeChatBadge, ProjectDifficulty, ScrambleSwap } from './ProjectDetail';
 import ProjectFilters, { NO_FILTERS, matchesFilters } from './ProjectFilters';
 import { ScrambleRuns } from './ScrambleText';
-import { toAnchorId, projectsBySemester, sectionInfo, projectTypes, sectionOrder, logosFirst, orderedProjects, inPageOrder } from '../data/projectsData';
+import { projectAnchor, projectsBySemester, sectionInfo, projectTypes, sectionOrder, logosFirst, inPageOrder, hasSections } from '../data/projectsData';
 import { CURRENT_SEMESTER } from '../data/site';
 
 /* Rows that come into view together start a beat apart. */
@@ -23,11 +23,22 @@ const TAGLINE_SCRAMBLE_MS = 700;
 // Where the things held in place beside each other sit under the fixed header.
 const HEADER_CLEARANCE = 96;
 
-// The project a link from the board names, by its #project-<name>, if any. The
-// board is always the current semester's.
-const projectInHash = (hash) => orderedProjects.findIndex(
-  ({ name }) => `#project-${toAnchorId(name)}` === hash,
-);
+// The project a link from the board or a profile names, if any: its semester, and
+// its place among that semester's projects.
+const projectInHash = (hash) => {
+  const semesters = Object.keys(projectsBySemester);
+
+  for (let at = 0; at < semesters.length; at += 1) {
+    const semester = semesters[at];
+    const index = inPageOrder(projectsBySemester[semester]).findIndex(
+      ({ name }) => `#${projectAnchor(name, semester)}` === hash,
+    );
+
+    if (index !== -1) return { semester, index };
+  }
+
+  return null;
+};
 
 /*
  * A project in the list: its icon, and beside it the name, client, difficulty,
@@ -144,8 +155,8 @@ export default function Projects() {
   const showScrollCue = useScrollCue();
   const reducedMotion = useReducedMotion();
   // A page arrived at by a link starts on that project.
-  const [selected, setSelected] = useState(() => Math.max(0, projectInHash(location.hash)));
-  const [semester, setSemester] = useState(CURRENT_SEMESTER);
+  const [selected, setSelected] = useState(() => projectInHash(location.hash)?.index ?? 0);
+  const [semester, setSemester] = useState(() => projectInHash(location.hash)?.semester ?? CURRENT_SEMESTER);
   const [filters, setFilters] = useState(NO_FILTERS);
   const semesterProjects = projectsBySemester[semester];
   const shownProjects = useMemo(() => inPageOrder(semesterProjects), [semesterProjects]);
@@ -161,10 +172,10 @@ export default function Projects() {
   useEffect(() => {
     const linked = projectInHash(location.hash);
 
-    if (linked === -1) return;
+    if (!linked) return;
 
-    setSemester(CURRENT_SEMESTER);
-    setSelected(linked);
+    setSemester(linked.semester);
+    setSelected(linked.index);
   }, [location.hash]);
 
   /*
@@ -249,6 +260,8 @@ export default function Projects() {
   const changeSemester = (next) => {
     setSemester(next);
     setSelected(0);
+    // A semester without sections has no chips to see or undo a type picked here.
+    if (!hasSections(next)) setFilters((current) => ({ ...current, types: [] }));
   };
 
   const renderSection = (rowsSemester, category) => {
@@ -264,18 +277,20 @@ export default function Projects() {
         key={`${rowsSemester} ${category}`}
         hidden={!categoryProjects.some(rowShown)}
       >
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle} style={{ color: info.color }}>
-            {info.title}
-          </h2>
-          <p className={styles.sectionDescription}>{info.description}</p>
-        </div>
+        {hasSections(rowsSemester) && (
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle} style={{ color: info.color }}>
+              {info.title}
+            </h2>
+            <p className={styles.sectionDescription}>{info.description}</p>
+          </div>
+        )}
         <ul className={styles.projectRows}>
           {logosFirst(categoryProjects).map((project) => (
             <ProjectRow
-              key={project.id}
+              key={project.name}
               project={project}
-              anchorId={rowsSemester === CURRENT_SEMESTER ? `project-${toAnchorId(project.name)}` : undefined}
+              anchorId={projectAnchor(project.name, rowsSemester)}
               current={selectedProject === project}
               hidden={!rowShown(project)}
               filterKey={filterKey}
@@ -349,7 +364,7 @@ export default function Projects() {
         </div>
 
         {selectedProject && (
-          <ProjectDetail project={selectedProject} projects={shownProjects} sectionRef={detailRef} />
+          <ProjectDetail project={selectedProject} projects={shownProjects} semester={semester} sectionRef={detailRef} />
         )}
       </div>
     </div>

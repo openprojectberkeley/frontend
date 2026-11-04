@@ -73,7 +73,7 @@ import kitty from "../images/about/spring2024/kitty.thumb.jpg";
 import rohan from "../images/about/spring2024/rohan.thumb.jpg";
 import zee from "../images/about/fall2023/zee.thumb.jpg";
 
-import { inPageOrder, orderedProjects, projectsBySemester, toAnchorId } from "./projectsData";
+import { allProjects, inPageOrder, orderedProjects, projectsBySemester, toAnchorId } from "./projectsData";
 import { CURRENT_SEMESTER } from "./site";
 
 /*
@@ -89,7 +89,7 @@ import { CURRENT_SEMESTER } from "./site";
  *   coffee_chat  optional: a Calendly or other booking link, shown as an icon
  *
  * The key is the person's name exactly as it is written in `board` below and
- * in each project's `pms` in projectsData.js.
+ * in each project's `pms` in ./projects.
  */
 export const people = {
     // Executive team
@@ -433,13 +433,12 @@ export const people = {
     },
 };
 
-const person = (name) => {
-    if (!people[name]) {
-        console.warn(`boardMembers: "${name}" has no entry in people`);
-        return { name, image: placeholder, hoverImage: placeholder };
-    }
+const withDetails = (name) => ({ name, image: placeholder, hoverImage: placeholder, ...people[name] });
 
-    return { name, ...people[name] };
+const person = (name) => {
+    if (!people[name]) console.warn(`boardMembers: "${name}" has no entry in people`);
+
+    return withDetails(name);
 };
 
 // The executive team, in the order the cards are dealt.
@@ -470,7 +469,7 @@ export const board = [
 
 /*
  * The project managers, worked out from each project's `pms` in
- * projectsData.js rather than listed here, so a PM is added, moved or removed
+ * ./projects rather than listed here, so a PM is added, moved or removed
  * by editing the project. They come grouped by project in the order the
  * projects page shows them, and someone on more than one project is one card
  * listing them all, at the first.
@@ -569,10 +568,12 @@ export const alumni = [
 ];
 
 /*
- * Everyone with a page of their own - the executive team and the project managers,
- * once each. Worked out from the lists above and each project's `pms`, so that a
- * project added to a past semester in projectsData.js shows up on its managers'
- * pages with nothing typed here.
+ * Everyone with a page of their own - the executive team and the project managers
+ * of any semester, once each by name. Worked out from the lists above and each
+ * project's `pms`, so that a project added to a past semester in ./projects shows
+ * up on its managers' pages, and gives anyone new a page, with nothing typed here.
+ * Past managers need no entry in `people`: they have the placeholder photo until
+ * they do, without the warning that a current one gets.
  */
 const pastProjectsOf = (name) => Object.entries(projectsBySemester)
     .filter(([semester]) => semester !== CURRENT_SEMESTER)
@@ -581,10 +582,13 @@ const pastProjectsOf = (name) => Object.entries(projectsBySemester)
         .map((project) => ({ project, semester })));
 
 const profiles = new Map(
-    [...new Set([...board, ...projectLeads].map(({ name }) => name))].map((name) => [
+    [...new Set([
+        ...board.map(({ name }) => name),
+        ...allProjects.flatMap(({ pms }) => pms),
+    ])].map((name) => [
         toAnchorId(name),
         {
-            ...person(name),
+            ...withDetails(name),
             title: board.find((member) => member.name === name)?.title,
             currentProjects: orderedProjects
                 .filter(({ pms }) => pms.includes(name))

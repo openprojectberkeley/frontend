@@ -13,13 +13,14 @@ import accentInk from './accentInk';
 import arriveAt from './arriveAt';
 import useInViewOnce from './useInViewOnce';
 import { FixedStarField } from './StarField';
+import FluidImage from './FluidImage';
 import JoinScene from './JoinScene';
 import PixelSwap from './PixelSwap';
 import { ScrambleRuns } from './ScrambleText';
 import NotFound from './NotFound';
 import { ProjectDifficulty } from './ProjectDetail';
 import { profileNamed } from '../data/boardMembers';
-import { toAnchorId } from '../data/projectsData';
+import { projectAnchor } from '../data/projectsData';
 import linkedinicon from '../images/about/linkedin_blue.png';
 import websiteicon from '../images/about/web.png';
 import coffeechaticon from '../images/about/coffeechat.png';
@@ -57,7 +58,7 @@ const QuickScramble = ({ text, play, delay, instant, className }) => (
  * Back the way they came: to the project they came from, picked and in view, or
  * otherwise to the board.
  */
-function BackButton({ fromProject, play, instant }) {
+function BackButton({ fromProject, fromSemester, play, instant }) {
   const label = (
     <button className={`${homeStyles.getInvolvedButton} ${heroStyles.ctaButton} ${heroStyles.ctaBack}`}>
       <span className={heroStyles.ctaArrowBack} aria-hidden="true">←</span>
@@ -71,7 +72,7 @@ function BackButton({ fromProject, play, instant }) {
   );
 
   return fromProject ? (
-    <NavHashLink className={styles.back} to={`/projects/#project-${toAnchorId(fromProject)}`} scroll={arriveAt}>
+    <NavHashLink className={styles.back} to={`/projects/#${projectAnchor(fromProject, fromSemester)}`} scroll={arriveAt}>
       {label}
     </NavHashLink>
   ) : (
@@ -80,10 +81,9 @@ function BackButton({ fromProject, play, instant }) {
 }
 
 /*
- * A project as it is in the projects page's list. A current one goes to its row
- * there; there is nowhere yet to go for one from a past semester, so it has no
- * link and no fill, and says when it was. Its words are typed in, and what has no
- * words blurs in with them, when `play` is first raised.
+ * A project as it is in the projects page's list, going to its row there, in its
+ * semester. One from a past semester says when it was. Its words are typed in, and
+ * what has no words blurs in with them, when `play` is first raised.
  */
 function ProjectCard({ project, semester, play, delay, instant }) {
   const typed = { play, delay, instant };
@@ -93,11 +93,11 @@ function ProjectCard({ project, semester, play, delay, instant }) {
       className={`${projectStyles.projectRow} ${play || instant ? projectStyles.inView : ''}`}
       style={{
         '--accent': project.accent,
-        '--on-accent': semester ? 'white' : accentInk(project.accent),
+        '--on-accent': accentInk(project.accent),
         '--reveal-delay': `${delay}ms`,
       }}
     >
-      {!semester && <span className={projectStyles.cardWipe} aria-hidden="true" />}
+      <span className={projectStyles.cardWipe} aria-hidden="true" />
 
       <div className={projectStyles.projectIcon} aria-hidden={project.logo ? undefined : 'true'}>
         {project.logo ? (
@@ -111,15 +111,13 @@ function ProjectCard({ project, semester, play, delay, instant }) {
         <div className={projectStyles.rowHead}>
           <div className={projectStyles.projectTitle}>
             <h3 className={projectStyles.projectName}>
-              {semester ? <QuickScramble text={project.name} {...typed} /> : (
-                <NavHashLink
-                  to={`/projects/#project-${toAnchorId(project.name)}`}
-                  scroll={arriveAt}
-                  aria-label={project.name}
-                >
-                  <QuickScramble text={project.name} {...typed} />
-                </NavHashLink>
-              )}
+              <NavHashLink
+                to={`/projects/#${projectAnchor(project.name, semester)}`}
+                scroll={arriveAt}
+                aria-label={semester ? `${project.name}, ${semester}` : project.name}
+              >
+                <QuickScramble text={project.name} {...typed} />
+              </NavHashLink>
             </h3>
 
             {(semester || project.clientName) && (
@@ -174,7 +172,7 @@ function ProjectSection({ title, colour, projects }) {
         <ul className={projectStyles.projectRows}>
           {projects.map(({ project, semester }, index) => (
             <ProjectCard
-              key={`${semester} ${project.id}`}
+              key={`${semester} ${project.name}`}
               project={project}
               semester={semester}
               play={inView}
@@ -191,7 +189,7 @@ function ProjectSection({ title, colour, projects }) {
 /*
  * A board member's own page: the contact page's frame, with who they are and
  * their projects down the left and their photo, coming in in blocks once it has
- * loaded, in the right. Everything on it comes from `profiles` in boardMembers.js.
+ * loaded and with water over it, in the right. Everything on it comes from `profiles` in boardMembers.js.
  */
 export default function MemberProfile() {
   const { slug } = useParams();
@@ -229,7 +227,7 @@ export default function MemberProfile() {
       <FixedStarField />
       <div className={`${applyStyles.applyWrapper} ${styles.page} limitWidth`}>
         <div className={contactStyles.main}>
-          <BackButton fromProject={state?.fromProject} play={headIn} instant={reducedMotion} />
+          <BackButton fromProject={state?.fromProject} fromSemester={state?.fromSemester} play={headIn} instant={reducedMotion} />
 
           <div ref={headRef}>
             <JoinScene
@@ -270,7 +268,7 @@ export default function MemberProfile() {
         </div>
 
         <PixelSwap swapKey={photoShown ? 'shown' : 'hidden'} block={PHOTO_BLOCK} className={styles.photo}>
-          {photoShown && <img src={image} alt={name} />}
+          {photoShown && <FluidImage src={image} alt={name} />}
         </PixelSwap>
       </div>
     </>

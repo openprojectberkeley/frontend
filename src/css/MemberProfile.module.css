@@ -23,11 +23,33 @@
   user-select: none;
 }
 
-.photo img {
+/* The photo, and over it once it has drawn, the water - see FluidImage. Vertical
+   swipes still scroll the page. */
+.fluid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+
+.fluid img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 50% 30%;
+}
+
+.fluid canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+}
+
+.fluid canvas.fluidDrawn {
+  visibility: visible;
 }
 
 /* A scramble in a line with what is beside it, as in the back button. Doubled to
@@ -90,7 +112,9 @@
   }
 
   .photo {
-    position: static;
+    /* Not static: what it holds is laid out against it - see .pixelLayer. */
+    position: relative;
+    top: auto;
     order: -1;
     justify-self: start;
     width: min(70%, 240px);
