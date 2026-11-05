@@ -13,8 +13,8 @@ import accentInk from './accentInk';
 import arriveAt from './arriveAt';
 import useInViewOnce from './useInViewOnce';
 import { FixedStarField } from './StarField';
-import FluidImage from './FluidImage';
 import JoinScene from './JoinScene';
+import PixelImage from './PixelImage';
 import PixelSwap from './PixelSwap';
 import { ScrambleRuns } from './ScrambleText';
 import NotFound from './NotFound';
@@ -189,7 +189,7 @@ function ProjectSection({ title, colour, projects }) {
 /*
  * A board member's own page: the contact page's frame, with who they are and
  * their projects down the left and their photo, coming in in blocks once it has
- * loaded and with water over it, in the right. Everything on it comes from `profiles` in boardMembers.js.
+ * loaded and pixelating under the pointer, in the right. Everything on it comes from `profiles` in boardMembers.js.
  */
 export default function MemberProfile() {
   const { slug } = useParams();
@@ -268,7 +268,7 @@ export default function MemberProfile() {
         </div>
 
         <PixelSwap swapKey={photoShown ? 'shown' : 'hidden'} block={PHOTO_BLOCK} className={styles.photo}>
-          {photoShown && <FluidImage src={image} alt={name} />}
+          {photoShown && <PixelImage src={image} alt={name} />}
         </PixelSwap>
       </div>
     </>

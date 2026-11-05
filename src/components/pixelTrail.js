@@ -40,6 +40,30 @@ export const TRAIL_SPACING = 16;
 export const TRAIL_STEPS = 4;
 export const TRAIL_NOISE = 0.5;
 
+/* The strongest the white edge round each of a picture's blocks gets; it rises
+   from nothing and falls back over the block's life, peaking halfway. */
+export const TRAIL_OUTLINE = 0.35;
+
+/* object-fit: cover, done by hand, so the blocks show the crop the picture
+   shows. `position` is its object-position as fractions, the middle by default. */
+export const drawCover = (target, source, sourceWidth, sourceHeight, width, height, position = { x: 0.5, y: 0.5 }) => {
+  const scale = Math.max(width / sourceWidth, height / sourceHeight);
+  const cropWidth = width / scale;
+  const cropHeight = height / scale;
+
+  target.drawImage(
+    source,
+    (sourceWidth - cropWidth) * position.x,
+    (sourceHeight - cropHeight) * position.y,
+    cropWidth,
+    cropHeight,
+    0,
+    0,
+    width,
+    height,
+  );
+};
+
 export const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
 export const smoothstep = (value) => {
   const t = clamp01(value);

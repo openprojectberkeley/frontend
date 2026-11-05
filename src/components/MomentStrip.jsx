@@ -3,10 +3,12 @@ import styles from '../css/ImmersiveHero.module.css';
 import { communityMoments } from '../data/communityMoments';
 import {
   TRAIL_BLOCK,
+  TRAIL_OUTLINE,
   blockLife,
   blockNoise,
   clamp01,
   createPixelTrail,
+  drawCover,
   stepped,
 } from './pixelTrail';
 
@@ -50,11 +52,6 @@ export const HIGHLIGHT_TINTS = ['#4D5F9A', '#3D7659', '#805B0B', '#71377A', '#27
    this point a label laid out rightwards would run off the screen. */
 const TIP_FLIP_MARGIN = 260;
 
-/* The strongest the white edge round each of the trail's blocks gets; it
-   rises from nothing and falls back over the block's life, peaking halfway.
-   The rest of the trail is pixelTrail.js, shared with the title. */
-const TRAIL_OUTLINE = 0.35;
-
 /*
  * The way the cards go at the start of scene six: broken into the trail's
  * blocks and dropped out, bottom first, in noise.
@@ -86,26 +83,6 @@ const DISSOLVE_NOISE = 0.45;
 const DISSOLVE_PIXEL = 0.22;
 const DISSOLVE_BLOCK = 28;
 const DISSOLVE_STEPS = 24;
-
-/* object-fit: cover, done by hand: the middle of the source at the target's
-   aspect ratio, so the blocks show the crop the picture shows. */
-const drawCover = (target, source, sourceWidth, sourceHeight, width, height) => {
-  const scale = Math.max(width / sourceWidth, height / sourceHeight);
-  const cropWidth = width / scale;
-  const cropHeight = height / scale;
-
-  target.drawImage(
-    source,
-    (sourceWidth - cropWidth) / 2,
-    (sourceHeight - cropHeight) / 2,
-    cropWidth,
-    cropHeight,
-    0,
-    0,
-    width,
-    height,
-  );
-};
 
 const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
   const rootRef = useRef(null);

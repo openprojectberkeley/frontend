@@ -42,7 +42,7 @@ export const projectTypes = [
  */
 
 // A name as it goes in a link: "Get to the Surface" -> get-to-the-surface.
-export const toAnchorId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+export const toAnchorId = (name) => name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 // Where a project is on the projects page, which a link to it arrives by. A
 // semester's rows each have one, and a name can come up in more than one semester.

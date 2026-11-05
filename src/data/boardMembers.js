@@ -60,6 +60,41 @@ import haaziq from "../images/about/fall2026/haaziq.thumb.jpg";
 // import yuchan from "../images/about/fall2026/yuchan.thumb.jpg"; // (placeholder for now)
 // import jason from "../images/about/fall2026/jason.thumb.jpg"; // (placeholder for now)
 
+// Old board
+import benr from "../images/about/spring2026/benr.thumb.jpg";
+import yonatan from "../images/about/spring2026/yon.thumb.jpg";
+import andre from "../images/about/fall2025/andre.thumb.jpg";
+import erin from "../images/about/spring2026/erin.thumb.jpg";
+import emily_ma from "../images/about/spring2026/emily.thumb.jpg";
+import david from "../images/about/spring2026/david.thumb.jpg";
+import surabhi from "../images/about/spring2026/surabhi.thumb.jpg";
+import noor from "../images/about/spring2026/noor.thumb.jpg";
+import zehra from "../images/about/spring2026/zehra.thumb.jpg";
+import jessica from "../images/about/spring2026/jessica.thumb.jpg";
+import jaydenl from "../images/about/spring2026/jaydenl.thumb.jpg";
+import jaydens from "../images/about/spring2026/jaydens.thumb.jpg";
+import andrew from "../images/about/spring2026/andrew.thumb.jpg";
+import parsa from "../images/about/spring2026/parsa.thumb.jpg";
+import charmi from "../images/about/spring2026/charmi.thumb.jpg";
+import devah from "../images/about/spring2026/devah.thumb.jpg";
+import sophie from "../images/about/spring2026/sophie.thumb.jpg";
+import neel from "../images/about/spring2025/neel.thumb.jpg";
+import karthikeya from "../images/about/fall2025/karthikeya.thumb.jpg";
+import isaac from "../images/about/fall2025/isaac.thumb.jpg";
+import holden from "../images/about/fall2025/holden.thumb.jpg";
+import sami from "../images/about/fall2025/sami.thumb.jpg";
+import ayman from "../images/about/fall2025/ayman.thumb.jpg";
+import peyton from "../images/about/fall2025/peyton.thumb.jpg";
+import kailash from "../images/about/fall2025/kailash.thumb.jpg";
+import david_cruz from "../images/about/fall2025/david2.thumb.jpg";
+import devansh from "../images/about/fall2025/devansh.thumb.jpg";
+import abhi from "../images/about/fall2025/abhi.thumb.jpg";
+import edwin from "../images/about/fall2025/edwin.thumb.jpg";
+import aslesha from "../images/about/fall2025/aslesha.thumb.jpg";
+import khushi from "../images/about/spring2025/khushi.thumb.jpg";
+import dylan from "../images/about/fall2025/dylan.thumb.jpg";
+import julia from "../images/about/fall2025/julia.thumb.jpg";
+
 // Alumni
 import ethan from "../images/about/fall2023/ethan.thumb.jpg";
 import colin from "../images/about/spring2023/colin.thumb.jpg";
@@ -77,395 +112,564 @@ import { allProjects, inPageOrder, orderedProjects, projectsBySemester, toAnchor
 import { CURRENT_SEMESTER } from "./site";
 
 /*
- * Everyone on the board page this semester, once each - someone on the
- * executive team who also manages a project is still one entry here, so their
- * photo, major and year are only ever typed in one place.
+ * What goes in the lists here, each person in one of them, once:
  *
- *   image        the photo on the card
+ *   name         exactly as it is written in each project's `pms` in ./projects
+ *   title        optional: their role on the board
+ *   image        the photo on the card (placeholder until there is one)
  *   hoverImage   the photo the hover wipe uncovers (placeholder until there is one)
  *   major        shown with year in the label that follows the cursor
  *   year         e.g. "Class of 2027"
  *   link         optional: a LinkedIn or personal site, shown as an icon
  *   coffee_chat  optional: a Calendly or other booking link, shown as an icon
- *
- * The key is the person's name exactly as it is written in `board` below and
- * in each project's `pms` in ./projects.
  */
-export const people = {
-    // Executive team
-    "Mia Salinas": {
-        image: mia,
-        hoverImage: placeholder,
-        major: "Cognitive Science, Media Studies",
-        year: "Senior",
-    },
-    "Jenny Liang": {
-        image: jenny,
-        hoverImage: placeholder,
-        major: "Data Science, Statistics",
-        year: "Senior",
-    },
-    "Anupriya Islam": {
-        image: anupriya,
-        hoverImage: placeholder,
-        major: "Stats",
-        year: "Senior",
-    },
-    "Chad Park": {
-        image: chad,
-        hoverImage: placeholder,
-        major: "Data Science, Industrial Engineering & Operations Research",
-        year: "Senior",
-    },
-    "Christopher Chang": {
-        image: christopher,
-        hoverImage: placeholder,
-        major: "Data Science & Economics",
-        year: "Sophomore",
-    },
-    "Ganesh Karayi": {
-        image: ganesh,
-        hoverImage: placeholder,
-        major: "Applied Math, Data Science",
-        year: "Junior",
-    },
-    "Ashley Li": {
-        image: ashleyl,
-        hoverImage: placeholder,
-        major: "Analytics",
-        year: "Senior",
-    },
-    "Annie Lin": {
-        image: annie,
-        hoverImage: placeholder,
-        major: "Cognitive Science, Data Science",
-        year: "Sophomore",
-    },
-    "Ashley Iattoni": {
-        image: ashleyi,
-        hoverImage: placeholder,
-        major: "Cognitive Science, Data Science",
-        year: "Junior",
-    },
-    "Helena Zhang": {
-        image: helena,
-        hoverImage: placeholder,
-        major: "Math + Data Science",
-        year: "Senior",
-    },
-    "Ryan Lin": {
-        image: ryan,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Jonathan Tran": {
-        image: jonathan,
-        hoverImage: placeholder,
-        major: "Computer Science, Data Science",
-        year: "Senior",
-    },
-    "Megan Nguyen": {
-        image: megan,
-        hoverImage: placeholder,
-        major: "Data Science + Integrative Biology",
-        year: "Sophomore",
-    },
-    "Arnav Mahadev": {
-        image: arnav,
-        hoverImage: placeholder,
-        major: "EECS",
-        year: "Junior",
-    },
-    "Ashwika Gampa": {
-        image: ashwika,
-        hoverImage: placeholder,
-        major: "EECS",
-        year: "Senior",
-    },
-    "Benjamin Huang": {
-        image: benh,
-        hoverImage: placeholder,
-        major: "ECE + Physics",
-        year: "Junior",
-    },
-    "Nicole Ta": {
-        image: nicole,
-        hoverImage: placeholder,
-        major: "Business Administration",
-        year: "Junior",
-    },
-    "Sriya Bandarupalli": {
-        image: sriya,
-        hoverImage: placeholder,
-        major: "Applied Mathematics",
-        year: "Sophomore",
-    },
-    "Diego Llamas": {
-        image: diego,
-        hoverImage: placeholder,
-        major: "Business Administration, Data Science, & Economics",
-        year: "Senior",
-    },
-    "Felicia Ye": {
-        image: felicia,
-        hoverImage: placeholder,
-        major: "Applied Math, Computer Science",
-        year: "Junior",
-    },
-    "Peter Lourenco": {
-        image: peter,
-        hoverImage: placeholder,
-        major: "EECS",
-        year: "Junior",
-    },
-    "Yashom Kapoor": {
-        image: yashom,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-
-    // Project managers not on the executive team
-    "James Apuyan": {
-        image: james,
-        hoverImage: placeholder,
-        major: "Data Science & Economics",
-        year: "Sophomore",
-    },
-    "Turner Osswald": {
-        image: turner,
-        hoverImage: placeholder,
-        major: "Astrophysics, Physics",
-        year: "Junior",
-    },
-    "Jamil Shirinov": {
-        image: jamil,
-        hoverImage: placeholder,
-        major: "Computer Science",
-        year: "Sophomore",
-    },
-    "Leo Li": {
-        image: leol,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Janice Lin": {
-        image: janice,
-        hoverImage: placeholder,
-        major: "Applied Math, Data Science",
-        year: "Senior",
-    },
-    "Melody Shane": {
-        image: melody,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Senior",
-    },
-    "Miles Petrick": {
-        image: miles,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Johanna Flores": {
-        image: johanna,
-        hoverImage: placeholder,
-        major: "Computer Science",
-        year: "Junior",
-    },
-    "Keira Tan": {
-        image: keira,
-        hoverImage: placeholder,
-        major: "EECS",
-        year: "Sophomore",
-    },
-    "Joseph Ong": {
-        image: joseph,
-        hoverImage: placeholder,
-        major: "Applied Math and Computer Science",
-        year: "Sophomore",
-    },
-    "Zander Rosenzweig": {
-        image: zander,
-        hoverImage: placeholder,
-        major: "Cognitive Science & Data Science",
-        year: "Sophomore",
-    },
-    "Harshini Pulivarthi": {
-        image: harshini,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Sneha Atmakur": {
-        image: sneha,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Ayah Elzein": {
-        image: ayah,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Senior",
-    },
-    "Navya Lella": {
-        image: navya,
-        hoverImage: placeholder,
-        major: "IEOR",
-        year: "Sophomore",
-    },
-    "Nishaad Sovani": {
-        image: nishaad,
-        hoverImage: placeholder,
-        major: "Statistics + Economics",
-        year: "Junior",
-    },
-    "Siddharth Garimella": {
-        image: siddharth,
-        hoverImage: placeholder,
-        major: "Applied Math + Data Science",
-        year: "Sophomore",
-    },
-    "Emily Yue": {
-        image: placeholder,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Caden Luu": {
-        image: caden,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Sophomore",
-    },
-    "Austin Tenbrink": {
-        image: austin,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Senior",
-    },
-    "Dayton Phan": {
-        image: dayton,
-        hoverImage: placeholder,
-        major: "Data Science, CS",
-        year: "Junior",
-    },
-    "Matthew Rodrigues": {
-        image: matthew,
-        hoverImage: placeholder,
-        major: "Computer Science + Business",
-        year: "Junior",
-    },
-    "Cindy Wang": {
-        image: cindy,
-        hoverImage: placeholder,
-        major: "Economics + Cognitive Science",
-        year: "Junior",
-    },
-    "Ojasvi Shrivastava": {
-        image: ojasvi,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Senior",
-    },
-    "Chester Duan": {
-        image: chester,
-        hoverImage: placeholder,
-        major: "EECS",
-        year: "Senior",
-    },
-    "Benjamin Wang": {
-        image: benw,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Haaziq Kazi": {
-        image: haaziq,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Leo Park": {
-        image: leop,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Sophomore",
-    },
-    "Emmanuel Elizalde-Ocampo": {
-        image: placeholder,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Junior",
-    },
-    "Justin Le": {
-        image: justin,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Justin Le",
-    },
-    "Sainik Ghosh": {
-        image: sainik,
-        hoverImage: placeholder,
-        major: "Statistics and Economics",
-        year: "Junior",
-    },
-    "Karthik Subramanian": {
-        image: karthik,
-        hoverImage: placeholder,
-        major: "EECS",
-        year: "Sophomore",
-    },
-    "Jason Shorey": {
-        image: placeholder,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Sophomore",
-    },
-    "Yuchan Chung": {
-        image: placeholder,
-        hoverImage: placeholder,
-        major: "Data Science",
-        year: "Sophomore",
-    },
-};
-
-const withDetails = (name) => ({ name, image: placeholder, hoverImage: placeholder, ...people[name] });
-
-const person = (name) => {
-    if (!people[name]) console.warn(`boardMembers: "${name}" has no entry in people`);
-
-    return withDetails(name);
-};
+const withDefaults = (member) => ({ image: placeholder, hoverImage: placeholder, ...member });
 
 // The executive team, in the order the cards are dealt.
 export const board = [
-    { name: "Mia Salinas", title: "Co-President" },
-    { name: "Jenny Liang", title: "Co-President" },
-    { name: "Anupriya Islam", title: "VP of Projects" },
-    { name: "Chad Park", title: "VP of Projects" },
-    { name: "Christopher Chang", title: "VP of Projects" },
-    { name: "Ganesh Karayi", title: "VP of Projects" },
-    { name: "Ashley Li", title: "VP of Marketing" },
-    { name: "Annie Lin", title: "VP of Marketing" },
-    { name: "Ashley Iattoni", title: "VP of Design" },
-    { name: "Helena Zhang", title: "VP of Internals" },
-    { name: "Ryan Lin", title: "VP of Internals" },
-    { name: "Jonathan Tran", title: "VP of Professional Development" },
-    { name: "Megan Nguyen", title: "VP of Professional Development" },
-    { name: "Arnav Mahadev", title: "VP of Professional Development" },
-    { name: "Ashwika Gampa", title: "VP of Client" },
-    { name: "Benjamin Huang", title: "VP of Client" },
-    { name: "Nicole Ta", title: "VP of Externals" },
-    { name: "Sriya Bandarupalli", title: "VP of Externals" },
-    { name: "Diego Llamas", title: "VP of Finance" },
-    { name: "Felicia Ye", title: "VP of Finance" },
-    { name: "Peter Lourenco", title: "VP of Tech" },
-    { name: "Yashom Kapoor", title: "VP of Tech" },
-].map(({ name, title }) => ({ ...person(name), title }));
+    {
+        name: "Mia Salinas",
+        title: "Co-President",
+        image: mia,
+        major: "Cognitive Science, Media Studies",
+        year: "Senior",
+    },
+    {
+        name: "Jenny Liang",
+        title: "Co-President",
+        image: jenny,
+        major: "Data Science, Statistics",
+        year: "Senior",
+    },
+    {
+        name: "Anupriya Islam",
+        title: "VP of Projects",
+        image: anupriya,
+        major: "Stats",
+        year: "Senior",
+    },
+    {
+        name: "Chad Park",
+        title: "VP of Projects",
+        image: chad,
+        major: "Data Science, Industrial Engineering & Operations Research",
+        year: "Senior",
+    },
+    {
+        name: "Christopher Chang",
+        title: "VP of Projects",
+        image: christopher,
+        major: "Data Science & Economics",
+        year: "Sophomore",
+    },
+    {
+        name: "Ganesh Karayi",
+        title: "VP of Projects",
+        image: ganesh,
+        major: "Applied Math, Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Ashley Li",
+        title: "VP of Marketing",
+        image: ashleyl,
+        major: "Analytics",
+        year: "Senior",
+    },
+    {
+        name: "Annie Lin",
+        title: "VP of Marketing",
+        image: annie,
+        major: "Cognitive Science, Data Science",
+        year: "Sophomore",
+    },
+    {
+        name: "Ashley Iattoni",
+        title: "VP of Design",
+        image: ashleyi,
+        major: "Cognitive Science, Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Helena Zhang",
+        title: "VP of Internals",
+        image: helena,
+        major: "Math + Data Science",
+        year: "Senior",
+    },
+    {
+        name: "Ryan Lin",
+        title: "VP of Internals",
+        image: ryan,
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Jonathan Tran",
+        title: "VP of Professional Development",
+        image: jonathan,
+        major: "Computer Science, Data Science",
+        year: "Senior",
+    },
+    {
+        name: "Megan Nguyen",
+        title: "VP of Professional Development",
+        image: megan,
+        major: "Data Science + Integrative Biology",
+        year: "Sophomore",
+    },
+    {
+        name: "Arnav Mahadev",
+        title: "VP of Professional Development",
+        image: arnav,
+        major: "EECS",
+        year: "Junior",
+    },
+    {
+        name: "Ashwika Gampa",
+        title: "VP of Client",
+        image: ashwika,
+        major: "EECS",
+        year: "Senior",
+    },
+    {
+        name: "Benjamin Huang",
+        title: "VP of Client",
+        image: benh,
+        major: "ECE + Physics",
+        year: "Junior",
+    },
+    {
+        name: "Nicole Ta",
+        title: "VP of Externals",
+        image: nicole,
+        major: "Business Administration",
+        year: "Junior",
+    },
+    {
+        name: "Sriya Bandarupalli",
+        title: "VP of Externals",
+        image: sriya,
+        major: "Applied Mathematics",
+        year: "Sophomore",
+    },
+    {
+        name: "Diego Llamas",
+        title: "VP of Finance",
+        image: diego,
+        major: "Business Administration, Data Science, & Economics",
+        year: "Senior",
+    },
+    {
+        name: "Felicia Ye",
+        title: "VP of Finance",
+        image: felicia,
+        major: "Applied Math, Computer Science",
+        year: "Junior",
+    },
+    {
+        name: "Peter Lourenco",
+        title: "VP of Tech",
+        image: peter,
+        major: "EECS",
+        year: "Junior",
+    },
+    {
+        name: "Yashom Kapoor",
+        title: "VP of Tech",
+        image: yashom,
+        major: "Data Science",
+        year: "Junior",
+    },
+].map(withDefaults);
+
+// This semester's project managers who are not on the executive team.
+const managers = [
+    {
+        name: "James Apuyan",
+        image: james,
+        major: "Data Science & Economics",
+        year: "Sophomore",
+    },
+    {
+        name: "Turner Osswald",
+        image: turner,
+        major: "Astrophysics, Physics",
+        year: "Junior",
+    },
+    {
+        name: "Jamil Shirinov",
+        image: jamil,
+        major: "Computer Science",
+        year: "Sophomore",
+    },
+    {
+        name: "Leo Li",
+        image: leol,
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Janice Lin",
+        image: janice,
+        major: "Applied Math, Data Science",
+        year: "Senior",
+    },
+    {
+        name: "Melody Shane",
+        image: melody,
+        major: "Data Science",
+        year: "Senior",
+    },
+    {
+        name: "Miles Petrick",
+        image: miles,
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Johanna Flores",
+        image: johanna,
+        major: "Computer Science",
+        year: "Junior",
+    },
+    {
+        name: "Keira Tan",
+        image: keira,
+        major: "EECS",
+        year: "Sophomore",
+    },
+    {
+        name: "Joseph Ong",
+        image: joseph,
+        major: "Applied Math and Computer Science",
+        year: "Sophomore",
+    },
+    {
+        name: "Zander Rosenzweig",
+        image: zander,
+        major: "Cognitive Science & Data Science",
+        year: "Sophomore",
+    },
+    {
+        name: "Harshini Pulivarthi",
+        image: harshini,
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Sneha Atmakur",
+        image: sneha,
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Ayah Elzein",
+        image: ayah,
+        major: "Data Science",
+        year: "Senior",
+    },
+    {
+        name: "Navya Lella",
+        image: navya,
+        major: "IEOR",
+        year: "Sophomore",
+    },
+    {
+        name: "Nishaad Sovani",
+        image: nishaad,
+        major: "Statistics + Economics",
+        year: "Junior",
+    },
+    {
+        name: "Siddharth Garimella",
+        image: siddharth,
+        major: "Applied Math + Data Science",
+        year: "Sophomore",
+    },
+    {
+        name: "Emily Yue",
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Caden Luu",
+        image: caden,
+        major: "Data Science",
+        year: "Sophomore",
+    },
+    {
+        name: "Austin Tenbrink",
+        image: austin,
+        major: "Data Science",
+        year: "Senior",
+    },
+    {
+        name: "Dayton Phan",
+        image: dayton,
+        major: "Data Science, CS",
+        year: "Junior",
+    },
+    {
+        name: "Matthew Rodrigues",
+        image: matthew,
+        major: "Computer Science + Business",
+        year: "Junior",
+    },
+    {
+        name: "Cindy Wang",
+        image: cindy,
+        major: "Economics + Cognitive Science",
+        year: "Junior",
+    },
+    {
+        name: "Ojasvi Shrivastava",
+        image: ojasvi,
+        major: "Data Science",
+        year: "Senior",
+    },
+    {
+        name: "Chester Duan",
+        image: chester,
+        major: "EECS",
+        year: "Senior",
+    },
+    {
+        name: "Benjamin Wang",
+        image: benw,
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Haaziq Kazi",
+        image: haaziq,
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Leo Park",
+        image: leop,
+        major: "Data Science",
+        year: "Sophomore",
+    },
+    {
+        name: "Emmanuel Elizalde-Ocampo",
+        major: "Data Science",
+        year: "Junior",
+    },
+    {
+        name: "Justin Le",
+        image: justin,
+        major: "Data Science",
+    },
+    {
+        name: "Sainik Ghosh",
+        image: sainik,
+        major: "Statistics and Economics",
+        year: "Junior",
+    },
+    {
+        name: "Karthik Subramanian",
+        image: karthik,
+        major: "EECS",
+        year: "Sophomore",
+    },
+    {
+        name: "Jason Shorey",
+        major: "Data Science",
+        year: "Sophomore",
+    },
+    {
+        name: "Yuchan Chung",
+        major: "Data Science",
+        year: "Sophomore",
+    },
+].map(withDefaults);
+
+/*
+ * Project managers of past semesters who are no longer on the board. They have a
+ * page of their own for the projects they ran, but no card on the board page. Take
+ * someone out of here when they join `board` or `managers`.
+ */
+const oldBoard = [
+    {
+        name: "Ben Ross",
+        title: "VP of Internals",
+        image: benr,
+    },
+    {
+        name: "Yonatan Herrera Gonzalez",
+        title: "VP of Clients",
+        image: yonatan,
+    },
+    {
+        name: "Andre Ramos",
+        title: "Project Manager",
+        image: andre,
+    },
+    {
+        name: "Erin Lee",
+        title: "Project Manager",
+        image: erin,
+    },
+    {
+        name: "Emily Ma",
+        title: "Project Manager",
+        image: emily_ma,
+    },
+    {
+        name: "David Zhang",
+        title: "Project Manager",
+        image: david,
+    },
+    {
+        name: "Surabhi Verma",
+        title: "Project Manager",
+        image: surabhi,
+    },
+    {
+        name: "Noor Pirzada",
+        title: "Project Manager",
+        image: noor,
+    },
+    {
+        name: "Zehra Naqvi",
+        title: "Project Manager",
+        image: zehra,
+    },
+    {
+        name: "Jessica Chiu",
+        title: "Project Manager",
+        image: jessica,
+    },
+    {
+        name: "Jayden Lee",
+        title: "Project Manager",
+        image: jaydenl,
+    },
+    {
+        name: "Jayden Szeto",
+        title: "Project Manager",
+        image: jaydens,
+    },
+    {
+        name: "Andrew Zhou",
+        title: "Project Manager",
+        image: andrew,
+    },
+    {
+        name: "Parsa Faraji Alamouti",
+        title: "Instructor PM",
+        image: parsa,
+    },
+    {
+        name: "Charmi Buddaluru",
+        title: "Instructor PM",
+        image: charmi,
+    },
+    {
+        name: "Devah Schaefers",
+        title: "VP of Tech",
+        image: devah,
+    },
+    {
+        name: "Sophie Nguyen",
+        title: "VP of Finance",
+        image: sophie,
+    },
+    {
+        name: "Neel Sharma",
+        title: "VP of Professional Development",
+        image: neel,
+    },
+    {
+        name: "Ted Nguyen",
+        title: "Project Manager",
+    },
+    {
+        name: "Karthik Gannavarapu",
+        title: "Project Manager",
+        image: karthikeya,
+    },
+    {
+        name: "Isaac Hwang",
+        title: "Project Manager",
+        image: isaac,
+    },
+    {
+        name: "Holden Fees",
+        title: "Project Manager",
+        image: holden,
+    },
+    {
+        name: "Sami Houssaini",
+        title: "Project Manager",
+        image: sami,
+    },
+    {
+        name: "Ayman Islam",
+        title: "Project Manager",
+        image: ayman,
+    },
+    {
+        name: "Peyton Li",
+        title: "Project Manager",
+        image: peyton,
+    },
+    {
+        name: "Kailash Ramesh",
+        title: "Project Manager",
+        image: kailash,
+    },
+    {
+        name: "David Cruz",
+        title: "Project Manager",
+        image: david_cruz,
+    },
+    {
+        name: "Devansh Ojha",
+        title: "Project Manager",
+        image: devansh,
+    },
+    {
+        name: "Abhi Kiran",
+        title: "Project Manager",
+        image: abhi,
+    },
+    {
+        name: "Edwin Luck",
+        title: "Project Manager",
+        image: edwin,
+    },
+    {
+        name: "Aslesha Chandra",
+        title: "Project Manager",
+        image: aslesha,
+    },
+    {
+        name: "Khushi Bhalla",
+        title: "Project Manager",
+        image: khushi,
+    },
+    {
+        name: "Dylan Stier",
+        title: "Project Manager",
+        image: dylan,
+    },
+    {
+        name: "Julia Beaupré",
+        title: "Project Manager",
+        image: julia,
+    },
+].map(withDefaults);
+
+const members = new Map([...oldBoard, ...managers, ...board].map((member) => [member.name, member]));
+
+const person = (name) => {
+    if (!members.has(name)) console.warn(`boardMembers: "${name}" is not in any of the lists here`);
+
+    return members.get(name) || withDefaults({ name });
+};
 
 /*
  * The project managers, worked out from each project's `pms` in
@@ -479,7 +683,10 @@ export const projectLeads = (() => {
 
     orderedProjects.forEach((project) => {
         project.pms.forEach((name) => {
-            if (!leads.has(name)) leads.set(name, { ...person(name), projects: [] });
+            // Their board role is for their board card, not this one.
+            const { title, ...lead } = person(name);
+
+            if (!leads.has(name)) leads.set(name, { ...lead, projects: [] });
             leads.get(name).projects.push(project.name);
         });
     });
@@ -493,87 +700,74 @@ export const alumni = [
         link: "https://ethanikegami.com/",
         title: "Co-Founder",
         image: ethan,
-        hoverImage: placeholder,
     },
     {
         name: "Nick Litvinov",
         link: "https://www.linkedin.com/in/nick-litvinov-ab04981b5/",
         title: "Co-Founder",
         image: nick,
-        hoverImage: placeholder,
     },
     {
         name: "Colin FitzGerald",
         link: "https://www.linkedin.com/in/colinfitzgerald328/",
         title: "Co-Founder",
         image: colin,
-        hoverImage: placeholder,
     },
     {
         name: "Uyen Phan",
         link: "https://uyentphan.com/",
         title: "Co-Founder",
         image: uyen,
-        hoverImage: placeholder,
     },
     {
         name: "Nhu Vu",
         link: "https://www.linkedin.com/in/nhu-vu-0b9b89215/",
         title: "Co-Founder",
         image: nhu,
-        hoverImage: placeholder,
     },
     {
         name: "Joel Jaison",
         link: "https://www.linkedin.com/in/joel-jaison/",
         title: "Co-Founder",
         image: joel,
-        hoverImage: placeholder,
     },
     {
         name: "Jessica Lee",
         link: "https://www.linkedin.com/in/jessica-lee-5370b71b4",
         title: "",
         image: jess,
-        hoverImage: placeholder,
     },
     {
         name: "Christopher Bannon",
         link: "https://cbannon.com/",
         title: "",
         image: christopher_alumni,
-        hoverImage: placeholder,
     },
     {
         name: "Kitty Ng",
         link: "https://www.linkedin.com/in/kitty-ng-443678246/",
         title: "",
         image: kitty,
-        hoverImage: placeholder,
     },
     {
         name: "Rohan Agarwal",
         link: "https://www.linkedin.com/in/rohan-agarwal-2908321a1",
         title: "",
         image: rohan,
-        hoverImage: placeholder,
     },
     {
         name: "Zee Babar",
         link: "https://www.linkedin.com/in/moebabar",
         title: "",
         image: zee,
-        hoverImage: placeholder,
     },
-];
+].map(withDefaults);
 
 /*
- * Everyone with a page of their own - the executive team and the project managers
- * of any semester, once each by name. Worked out from the lists above and each
- * project's `pms`, so that a project added to a past semester in ./projects shows
- * up on its managers' pages, and gives anyone new a page, with nothing typed here.
- * Past managers need no entry in `people`: they have the placeholder photo until
- * they do, without the warning that a current one gets.
+ * Everyone with a page of their own: the executive team, this semester's project
+ * managers and the old board. Their past projects are worked out from each
+ * project's `pms`. A project in ./projects naming someone with no page warns here,
+ * as their name on it would link nowhere: add them to `oldBoard`.
  */
 const pastProjectsOf = (name) => Object.entries(projectsBySemester)
     .filter(([semester]) => semester !== CURRENT_SEMESTER)
@@ -581,15 +775,13 @@ const pastProjectsOf = (name) => Object.entries(projectsBySemester)
         .filter(({ pms }) => pms.includes(name))
         .map((project) => ({ project, semester })));
 
+allProjects.flatMap(({ pms }) => pms).forEach(person);
+
 const profiles = new Map(
-    [...new Set([
-        ...board.map(({ name }) => name),
-        ...allProjects.flatMap(({ pms }) => pms),
-    ])].map((name) => [
+    [...board, ...projectLeads, ...oldBoard].map(({ name }) => [
         toAnchorId(name),
         {
-            ...withDetails(name),
-            title: board.find((member) => member.name === name)?.title,
+            ...person(name),
             currentProjects: orderedProjects
                 .filter(({ pms }) => pms.includes(name))
                 .map((project) => ({ project })),

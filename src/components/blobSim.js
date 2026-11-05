@@ -1,6 +1,6 @@
 /*
- * A liquid blob behind the title, in WebGL2: the same stable-fluids solver as
- * fluidSim, carrying colour instead of bending a picture.
+ * A liquid blob behind the title, in WebGL2: a stable-fluids solver carrying
+ * colour.
  *
  *   velocity   Navier-Stokes on a small grid. The pointer pushes it, and because
  *              the pressure solve makes it divergence-free, pushes that meet
