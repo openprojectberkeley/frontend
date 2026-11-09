@@ -13,6 +13,7 @@ import useCursorTip from './useCursorTip';
 import useCursorIcon from './useCursorIcon';
 import arriveAt from './arriveAt';
 import { clearHeaderTone, setHeaderTone } from './headerTone';
+import { isLite } from './liteMode';
 import OpensElsewhere from './OpensElsewhere';
 import LinkedInIcon from "./LinkedInIcon";
 import websiteicon from "../images/about/web.png";
@@ -433,7 +434,7 @@ function ParallaxColumns({ people, renderPerson }) {
   const reducedMotion = useReducedMotion();
   const columns = reducedMotion ? [] : dealColumns(people, count);
 
-  useColumnDrift(gridRef, count > 1 && !reducedMotion, `${count}:${people.length}`);
+  useColumnDrift(gridRef, count > 1 && !reducedMotion && !isLite, `${count}:${people.length}`);
   useRevealOnce(gridRef);
 
   // Under reduced motion, no columns of different speeds: a plain grid, in order.

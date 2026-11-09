@@ -3,6 +3,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { hydrate, render } from "react-dom";
+import { applyLiteClass, isLite } from './components/liteMode';
+
+applyLiteClass();
 
 function normalizePath(path) {
   if (!path) return '/';
@@ -15,7 +18,15 @@ const snapshotRoute = rootElement
   ?.querySelector('[data-snapshot-route]')
   ?.getAttribute('data-snapshot-route');
 const currentRoute = normalizePath(window.location.pathname);
-const shouldHydrate = rootElement.hasChildNodes() && normalizePath(snapshotRoute) === currentRoute;
+// A snapshot taken in the other mode is a different tree - lite drops whole
+// layers of the home page - so it is rendered over rather than hydrated.
+const snapshotLite = rootElement
+  ?.querySelector('[data-snapshot-route]')
+  ?.getAttribute('data-snapshot-lite');
+const shouldHydrate =
+  rootElement.hasChildNodes() &&
+  normalizePath(snapshotRoute) === currentRoute &&
+  snapshotLite === (isLite ? '1' : '0');
 
 if (shouldHydrate) {
   hydrate(<App />, rootElement);

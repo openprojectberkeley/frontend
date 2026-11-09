@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import styles from '../css/Projects.module.css';
 import { blockNoise, clamp01, stepped } from './pixelTrail';
+import { isLite } from './liteMode';
 
 /*
  * One thing giving way to another in place, in blocks: the old one goes out and
@@ -97,7 +98,8 @@ export const setMask = (element, mask) => {
  * neither is squeezed into the other's shape.
  */
 export default function PixelSwap({ swapKey, block, seed = 0, className, children }) {
-  const reducedMotion = useReducedMotion();
+  // Lite mode swaps at once, as reduced motion does - see liteMode.js.
+  const reducedMotion = useReducedMotion() || isLite;
   const [leaving, setLeaving] = useState(null);
   const boxRef = useRef(null);
   const comingRef = useRef(null);

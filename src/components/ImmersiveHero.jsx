@@ -8,6 +8,7 @@ import useScrollPlayhead from './useScrollPlayhead';
 import LogoArc, { arcMiddle, arcOutline, arcPath, STROKE_WIDTH } from './LogoArc';
 import { clearHeaderTone, setHeaderTone } from './headerTone';
 import screenHeight from './screenHeight';
+import { isLite } from './liteMode';
 import ArcTicker from './ArcTicker';
 import LogoSpill from './LogoSpill';
 import MomentStrip from './MomentStrip';
@@ -619,6 +620,8 @@ const VAR_TARGETS = {
   '--wipe-fade': ['arcHolder'],
   '--flat': ['arcTitle'],
   '--title-exit': ['arcTitle'],
+  // Lite mode only: how far the band is through leaving, which it fades by.
+  '--arc-leave': ['arcHolder'],
   '--grid-sub': ['gridSheet'],
   '--grid-hair': ['gridSheet'],
   '--grid-shift': ['gridSheet'],
@@ -1194,7 +1197,7 @@ function ProjectsCopy() {
        * partway down does: there is nothing on screen to fall, so the rows are
        * emptied before they first draw, not a moment after.
        */
-      if (next.gravity && !flags.clients && !flags.gravity) {
+      if (!isLite && next.gravity && !flags.clients && !flags.gravity) {
         takeLogos();
         skippedClientsRef.current = true;
       }
@@ -1337,9 +1340,14 @@ function ProjectsCopy() {
        * rather than nearly gone.
        */
       const arcSettle = flat * ARC_CENTRE_RISE * holderWidth * arcScale;
-      const arcExit =
-        easeIntoScroll(clamp01((playhead - ARC_EXIT_AT) / ARC_EXIT_OVER)) *
-        (stageHeight / 2 + (STROKE_WIDTH / 2) * unit + ARC_EXIT_CLEAR);
+      const arcLeave = easeIntoScroll(clamp01((playhead - ARC_EXIT_AT) / ARC_EXIT_OVER));
+      const arcExit = arcLeave * (stageHeight / 2 + (STROKE_WIDTH / 2) * unit + ARC_EXIT_CLEAR);
+
+      /* In lite mode the band, still carrying its logos rather than dropping
+         them, fades as it goes - see .arcHolder there. */
+      if (isLite) {
+        setStageVar('--arc-leave', arcLeave.toFixed(4));
+      }
 
       setStageVar('--arc-rise', `${(arcSettle - arcExit).toFixed(2)}px`);
 
@@ -1391,7 +1399,10 @@ function ProjectsCopy() {
       /* How far the copy's top is down the window, which the stars' parallax
          gives back a share of - see ABOUT_STARS_LAG. */
       if (aboutRect) {
-        aboutRef.current.style.setProperty('--about-scroll', `${aboutRect.top.toFixed(1)}px`);
+        // Not in lite mode, where the stars hold still - see StarField.
+        if (!isLite) {
+          aboutRef.current.style.setProperty('--about-scroll', `${aboutRect.top.toFixed(1)}px`);
+        }
       }
 
       if (aboutWipeRef.current && aboutRect) {
@@ -1962,7 +1973,9 @@ function ProjectsCopy() {
           */}
           {!prefersReducedMotion && (
             <div ref={starFieldRef} className={styles.starField} aria-hidden="true">
-              {STARS.map((star, index) => (
+              {/* In lite mode, only the coarse layers: the finest is the most
+                  crowded, and a phone hides it anyway - see .starFine. */}
+              {(isLite ? STARS.filter((star) => !star.fine) : STARS).map((star, index) => (
                 <span
                   key={index}
                   className={`${styles.star} ${star.fine ? styles.starFine : ''}`}
@@ -1993,7 +2006,7 @@ function ProjectsCopy() {
           {/* The cursor's trail over the backdrop in scene one: static, in the
               trail's blocks - see useTitlePixels. Over the stars and under
               everything else, by document order at z-index 0. */}
-          {!prefersReducedMotion && (
+          {!prefersReducedMotion && !isLite && (
             <canvas ref={pixelStaticRef} className={styles.titleStatic} aria-hidden="true" />
           )}
 
@@ -2085,6 +2098,7 @@ function ProjectsCopy() {
                   height={TICKER_LOGO_HEIGHT}
                   growRef={arcFlatRef}
                   handleRef={outerRowRef}
+                  lite={isLite}
                   overhang={STROKE_WIDTH / 2}
                 />
                 <ArcTicker
@@ -2103,6 +2117,7 @@ function ProjectsCopy() {
                   height={TICKER_LOGO_HEIGHT}
                   growRef={arcFlatRef}
                   handleRef={innerRowRef}
+                  lite={isLite}
                   overhang={STROKE_WIDTH / 2}
                 />
               </LogoArc>
@@ -2128,7 +2143,9 @@ function ProjectsCopy() {
             Before the heading in the stage, so the heading paints over the top
             of anything that passes it.
           */}
-          {!prefersReducedMotion && (
+          {/* Not in lite mode: the rows carry on and leave with the heading
+              instead of falling - see .arcHolder there. */}
+          {!prefersReducedMotion && !isLite && (
             <LogoSpill
               className={styles.spill}
               logoClassName={styles.spillLogo}
@@ -2194,7 +2211,7 @@ function ProjectsCopy() {
           */}
           {!prefersReducedMotion && <span ref={aboutWipeRef} className={styles.aboutWipe} aria-hidden="true" />}
 
-          {!prefersReducedMotion && <MomentStrip ref={momentStripRef} />}
+          {!prefersReducedMotion && <MomentStrip ref={momentStripRef} lite={isLite} />}
 
           {/*
             Scene six's words, over the moments and the stars: see JOIN_AT.
@@ -2306,6 +2323,7 @@ function ProjectsCopy() {
                   trail; useTitlePixels places it and masks it. Always here
                   rather than added on a hover, so the mark's float keeps time
                   with the real one's. */}
+              {!isLite && (
               <span ref={pixelLayerRef} className={styles.lockupPixel} aria-hidden="true">
                 <span ref={pixelMarkRef} className={styles.markPixelBox}>
                   <img
@@ -2327,6 +2345,7 @@ function ProjectsCopy() {
                   />
                 </span>
               </span>
+              )}
             </h1>
 
             {/* The foot of the page's button, reskinned for a black stage: the

@@ -521,3 +521,8 @@
         display: none;
     }
 }
+
+/* Lite mode: the portraits fade in without the blur - see liteMode.js. */
+:global(html.op-lite) .gridImage {
+    filter: none;
+}

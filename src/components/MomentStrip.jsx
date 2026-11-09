@@ -84,7 +84,14 @@ const DISSOLVE_PIXEL = 0.22;
 const DISSOLVE_BLOCK = 28;
 const DISSOLVE_STEPS = 24;
 
-const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
+const MomentStrip = forwardRef(function MomentStrip({ lite = false }, ref) {
+  /*
+   * Lite mode (see liteMode.js): no pointer drift, no trail, and the break-up
+   * is a plain fade - each card going on its own turn as before, but with no
+   * colours read off the pictures and no masks or squares drawn.
+   */
+  const liteRef = useRef(lite);
+  liteRef.current = lite;
   const rootRef = useRef(null);
   const tipRef = useRef(null);
   const tipTextRef = useRef(null);
@@ -268,7 +275,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
 
     if (!root || !tip) return undefined;
 
-    const drift = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const drift = !liteRef.current && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const onMove = (event) => {
       if (drift) {
@@ -318,7 +325,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
   useEffect(() => {
     const canvas = trailRef.current;
 
-    if (!canvas) return undefined;
+    if (!canvas || liteRef.current) return undefined;
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
@@ -707,6 +714,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
          revealed mid-dissolve would have it written back without. */
       if (step === 0) {
         delete card.dataset.dissolve;
+        element.style.opacity = '';
         element.style.maskImage = '';
         element.style.webkitMaskImage = '';
         if (layer) layer.width = 0;
@@ -726,6 +734,11 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
       }
 
       card.dataset.dissolve = 'going';
+
+      if (liteRef.current) {
+        element.style.opacity = (1 - step / DISSOLVE_STEPS).toFixed(3);
+        return;
+      }
 
       const { columns, rows } = grids.get(index);
 

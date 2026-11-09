@@ -10,6 +10,7 @@ import Board from './Board';
 import MemberProfile from './MemberProfile';
 import NotFound from './NotFound';
 import styles from '../css/AnimatedRoutes.module.css';
+import { isLite } from './liteMode';
 const ROUTE_ORDER = ['/', '/about', '/apply', '/board', '/projects', '/contact'];
 
 const routes = [
@@ -67,7 +68,9 @@ const OWN_SWIPE = '[data-no-page-swipe], .swiper';
 export default function AnimatedRoutes() {
   const location = useLocation();
   const navigate = useNavigate();
-  const prefersReducedMotion = useReducedMotion();
+  /* Lite mode changes page at once, as reduced motion does: the slide keeps
+     both pages - often the whole home hero - drawing for its length. */
+  const prefersReducedMotion = useReducedMotion() || isLite;
   const element = useRoutes(routes);
 
   const prevPathRef = useRef(normalizePath(location.pathname));

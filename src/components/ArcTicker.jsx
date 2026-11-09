@@ -300,6 +300,12 @@ export default function ArcTicker({
    * and a logo out there is still over the band and still visible.
    */
   overhang = 0,
+  /*
+   * Lite mode (see liteMode.js): the turning over is a crossfade, each logo
+   * fading in or out as the sweep reaches it, instead of breaking up into
+   * blocks - no masks to build and rewrite.
+   */
+  lite = false,
 }) {
   const groupRef = useRef(null);
   const twinRef = useRef(null);
@@ -309,6 +315,8 @@ export default function ArcTicker({
   const uid = useId().replace(/:/g, '');
   const swappedRef = useRef(swapped);
   const swapDelayRef = useRef(swapDelay);
+  const liteRef = useRef(lite);
+  liteRef.current = lite;
   const swapOrderRef = useRef(swapOrder);
 
   swappedRef.current = swapped;
@@ -663,9 +671,20 @@ export default function ArcTicker({
     const maskGroup = (which, index) =>
       maskRef.current?.children[(which === 'client' ? 0 : clientTrain.count) + index]?.firstChild ?? null;
     const unmask = (which, index) =>
-      picturesOf(which, index).forEach((picture) => picture?.removeAttribute('mask'));
+      picturesOf(which, index).forEach((picture) => {
+        picture?.removeAttribute('mask');
+        picture?.removeAttribute('opacity');
+      });
 
     const writeMask = (which, index, units, tall, seed, shownShare) => {
+      if (liteRef.current) {
+        picturesOf(which, index).forEach((picture) =>
+          picture?.setAttribute('opacity', shownShare.toFixed(3)),
+        );
+
+        return;
+      }
+
       const group = maskGroup(which, index);
 
       if (!group) {
@@ -787,14 +806,16 @@ export default function ArcTicker({
           return;
         }
 
-        const reached = Math.floor(progress * SWAP_STEPS);
+        // A fade has no blocks to keep on their lines, so it takes finer steps.
+        const stepCount = liteRef.current ? SWAP_STEPS * 4 : SWAP_STEPS;
+        const reached = Math.floor(progress * stepCount);
 
         if (reached === steps[index]) {
           return;
         }
 
         const seed = (index % SWAP_SEEDS) * 2 + (which === 'client' ? 2 : 1);
-        const share = reached / SWAP_STEPS;
+        const share = reached / stepCount;
 
         steps[index] = reached;
         writeMask(which, index, train.widths[index], train.heights[index], seed, wantOn ? share : 1 - share);

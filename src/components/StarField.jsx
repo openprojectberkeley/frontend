@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import styles from '../css/ImmersiveHero.module.css';
+import { isLite } from './liteMode';
 
 /*
  * The squares of sky the home page's hero and the about page share: the
@@ -175,6 +176,9 @@ export function FixedStarField() {
   const layerRefs = useRef([]);
 
   useEffect(() => {
+    // Lite mode: the stars hold still - see liteMode.js.
+    if (isLite) return undefined;
+
     let frameId = null;
 
     const measure = () => {
@@ -248,6 +252,9 @@ export function FixedStarField() {
  */
 export function useStarParallax(ref) {
   useEffect(() => {
+    // Lite mode: no parallax, the field sits where --about-scroll's 0 puts it.
+    if (isLite) return undefined;
+
     let frameId = null;
 
     const measure = () => {

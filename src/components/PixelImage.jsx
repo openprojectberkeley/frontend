@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import styles from '../css/MemberProfile.module.css';
+import { isLite } from './liteMode';
 import {
   TRAIL_BLOCK,
   TRAIL_OUTLINE,
@@ -30,6 +31,7 @@ export default function PixelImage({ src, alt }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    if (isLite) return undefined;
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 

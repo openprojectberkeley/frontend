@@ -2740,3 +2740,54 @@
     width: 92vw;
   }
 }
+
+/*
+ * Lite mode - phones, tablets and slow machines; see liteMode.js.
+ *
+ * The decorative loops stop: the floats, the stars' spin and the values'
+ * orbit run forever whether or not anyone is looking at them. The reveals
+ * that blurred in fade in, filter being the dearer half of them. The band's
+ * paper shadow goes, as it repainted the whole band on every frame of the ink
+ * filling it. And the band, which no longer drops its logos into a pile,
+ * fades out as it leaves with the heading instead (--arc-leave).
+ */
+:global(html.op-lite) .mark,
+:global(html.op-lite) .starSpin,
+:global(html.op-lite) .bubbleCircle,
+:global(html.op-lite) .drift1,
+:global(html.op-lite) .drift2,
+:global(html.op-lite) .drift3,
+:global(html.op-lite) .drift4,
+:global(html.op-lite) .drift5,
+:global(html.op-lite) .floatSlow,
+:global(html.op-lite) .floatSlower,
+:global(html.op-lite) .valuesDiamond,
+:global(html.op-lite) .valueShape,
+:global(html.op-lite) .valueShape img {
+  animation: none;
+}
+
+:global(html.op-lite) .cta,
+:global(html.op-lite) .ctaGone,
+:global(html.op-lite) .discCopy,
+:global(html.op-lite) .overlayCopy,
+:global(html.op-lite) .arcTitle,
+:global(html.op-lite) .aboutTitle,
+:global(html.op-lite) .momentImage,
+:global(html.op-lite) .momentBlank,
+:global(html.op-lite) .titleAside {
+  filter: none;
+}
+
+:global(html.op-lite) .arcHolder {
+  filter: none;
+  /* Gone two thirds of the way up, so none of it is left to slide out past
+     the header. */
+  opacity: max(0, 1 - var(--arc-leave, 0) * 1.5);
+}
+
+:global(html.op-lite) .readout {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background-color: rgba(0, 0, 0, 0.8);
+}

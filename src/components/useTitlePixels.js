@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { isLite } from './liteMode';
 import {
   TRAIL_BLOCK,
   TRAIL_MIN_RADIUS,
@@ -110,6 +111,8 @@ export default function useTitlePixels({
   staticRef,
 }) {
   useEffect(() => {
+    // Lite mode renders none of the pixel layers - see liteMode.js.
+    if (isLite) return undefined;
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 

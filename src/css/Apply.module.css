@@ -677,3 +677,16 @@
     position: static;
   }
 }
+
+/* Lite mode: the figures stop rocking and spinning, and the reveals fade
+   without the blur - see liteMode.js. */
+:global(html.op-lite) .shapeSquare,
+:global(html.op-lite) .shapeTriangle,
+:global(html.op-lite) .circle img {
+  animation: none;
+}
+
+:global(html.op-lite) .stepFigure,
+:global(html.op-lite) .faqItem {
+  filter: none;
+}

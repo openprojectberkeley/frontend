@@ -919,3 +919,11 @@
     margin-bottom: 40px;
   }
 }
+
+/* Lite mode: the row details fade in without the blur - see liteMode.js. */
+:global(html.op-lite) .projectIcon,
+:global(html.op-lite) .projectRow .projectTag,
+:global(html.op-lite) .projectRow .difficultyPips,
+:global(html.op-lite) .projectRow .coffeeChatBadge {
+  filter: none;
+}
