@@ -67,6 +67,82 @@ function prepare(image) {
 }
 
 /*
+ * The route the logos follow, worked out from the path's d rather than asked
+ * of the path element.
+ *
+ * getTotalLength and getPointAtLength bring the page's style and layout up to
+ * date before they answer. The hero rewrites its stage every frame before this
+ * loop runs, so asking them meant restyling the whole stage a second time per
+ * frame, and the length itself is recomputed from scratch on each call. The
+ * arc is only ever one of two shapes - a single circular arc, or the straight
+ * line it flattens into (see arcPath) - and both are a few lines of geometry.
+ *
+ * Returns null for any other path, and the caller falls back to the element.
+ */
+const ARC_D = /^M\s*(-?[\d.]+)[\s,]+(-?[\d.]+)\s*A\s*([\d.]+)[\s,]+([\d.]+)[\s,]+(-?[\d.]+)[\s,]+([01])[\s,]*([01])[\s,]*(-?[\d.]+)[\s,]+(-?[\d.]+)\s*$/;
+const LINE_D = /^M\s*(-?[\d.]+)[\s,]+(-?[\d.]+)\s*L\s*(-?[\d.]+)[\s,]+(-?[\d.]+)\s*$/;
+
+export function routeOf(d) {
+  const line = LINE_D.exec(d);
+
+  if (line) {
+    const [x0, y0, x1, y1] = line.slice(1).map(Number);
+    const length = Math.hypot(x1 - x0, y1 - y0);
+    const ux = length ? (x1 - x0) / length : 1;
+    const uy = length ? (y1 - y0) / length : 0;
+
+    return {
+      length,
+      at: (s) => ({ x: x0 + ux * s, y: y0 + uy * s, tx: ux, ty: uy }),
+    };
+  }
+
+  const arc = ARC_D.exec(d);
+
+  // Circular, unrotated and the short way round, which is all arcPath draws.
+  if (!arc || arc[3] !== arc[4] || Number(arc[5]) !== 0 || arc[6] !== '0') {
+    return null;
+  }
+
+  const [x0, y0, , , , , sweepFlag, x1, y1] = arc.slice(1).map(Number);
+  const halfX = (x0 - x1) / 2;
+  const halfY = (y0 - y1) / 2;
+  const halfSq = halfX * halfX + halfY * halfY;
+
+  if (!halfSq) {
+    return { length: 0, at: () => ({ x: x0, y: y0, tx: 1, ty: 0 }) };
+  }
+
+  // A radius too small to span the chord is scaled up to just span it, as the
+  // SVG spec has it.
+  const r = Math.max(Number(arc[3]), Math.sqrt(halfSq));
+  const sweep = sweepFlag === 1;
+  // The centre, by the spec's endpoint-to-centre conversion (F.6.5) with no
+  // rotation and the large-arc flag off.
+  const k = (sweep ? 1 : -1) * Math.sqrt(Math.max(0, (r * r - halfSq) / halfSq));
+  const cx = k * halfY + (x0 + x1) / 2;
+  const cy = -k * halfX + (y0 + y1) / 2;
+  const start = Math.atan2(y0 - cy, x0 - cx);
+  let turn = Math.atan2(y1 - cy, x1 - cx) - start;
+
+  if (sweep && turn < 0) turn += 2 * Math.PI;
+  if (!sweep && turn > 0) turn -= 2 * Math.PI;
+
+  const direction = sweep ? 1 : -1;
+
+  return {
+    length: r * Math.abs(turn),
+    at: (s) => {
+      const angle = start + (direction * s) / r;
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+
+      return { x: cx + r * cos, y: cy + r * sin, tx: -sin * direction, ty: cos * direction };
+    },
+  };
+}
+
+/*
  * A marquee of client logos riding the arc.
  *
  * Every position comes from the path itself - getPointAtLength for where a logo
@@ -304,8 +380,20 @@ export default function ArcTicker({
       }
     };
 
+    /* The route, kept until the path's d changes - which is only while the
+       arc is flattening. */
+    let routeD = null;
+    let route = null;
+
     const layout = (elapsed) => {
-      const length = path.getTotalLength();
+      const d = path.getAttribute('d');
+
+      if (d !== routeD) {
+        routeD = d;
+        route = routeOf(d);
+      }
+
+      const length = route ? route.length : path.getTotalLength();
 
       /*
        * Where a logo sits and which way it leans, carrying straight on past
@@ -318,6 +406,20 @@ export default function ArcTicker({
        * fading.
        */
       const sample = (d) => {
+        if (route) {
+          // Past either end the tangent runs on, as below.
+          const clamped = Math.min(length, Math.max(0, d));
+          const point = route.at(clamped);
+          const over = d - clamped;
+
+          return {
+            x: point.x + point.tx * over,
+            y: point.y + point.ty * over,
+            tx: point.tx,
+            ty: point.ty,
+          };
+        }
+
         if (d < 0) {
           const a = path.getPointAtLength(0);
           const b = path.getPointAtLength(1);

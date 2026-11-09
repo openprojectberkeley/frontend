@@ -12,6 +12,7 @@ import useScrollCue from './useScrollCue';
 import useCursorTip from './useCursorTip';
 import useCursorIcon from './useCursorIcon';
 import arriveAt from './arriveAt';
+import { clearHeaderTone, setHeaderTone } from './headerTone';
 import OpensElsewhere from './OpensElsewhere';
 import LinkedInIcon from "./LinkedInIcon";
 import websiteicon from "../images/about/web.png";
@@ -344,7 +345,7 @@ const hoverCard = (event, on) => {
  *
  * It also turns the header light while the paper is behind it, with the root
  * class and the --header-scrim and --header-wash the home page's hero writes
- * (see ImmersiveHero), ramped across the header's height at either edge. All
+ * (see headerTone), ramped across the header's height at either edge. All
  * of it is taken off on unmount, so no other route inherits it.
  */
 const WIPE_IN_AT = 0.7;
@@ -403,8 +404,7 @@ function useLightSheet(pageRef, sectionRef, sheetRef, moving) {
         clamp01(sheetBottom / headerLine),
       );
 
-      root.style.setProperty('--header-scrim', (1 - under).toFixed(3));
-      root.style.setProperty('--header-wash', under.toFixed(3));
+      setHeaderTone(1 - under, under);
       root.classList.toggle('op-light', under >= 0.5);
     };
 
@@ -422,8 +422,7 @@ function useLightSheet(pageRef, sectionRef, sheetRef, moving) {
 
       if (frameId !== null) window.cancelAnimationFrame(frameId);
       root.classList.remove('op-light');
-      root.style.removeProperty('--header-scrim');
-      root.style.removeProperty('--header-wash');
+      clearHeaderTone();
     };
   }, [pageRef, sectionRef, sheetRef, moving]);
 }

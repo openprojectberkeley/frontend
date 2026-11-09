@@ -738,8 +738,41 @@
   /* A phone's block is already most of the screen wide, so the inset there is
      just a gutter; the deep one is set below. */
   left: clamp(1rem, 6vw, 2.5rem);
-  transform: translateY(calc(-50% + var(--disc-drift, 0px)));
+  transform: translateY(calc(-50% + var(--disc-drift, 0px) - var(--disc-push, 0px)));
   will-change: transform, opacity;
+}
+
+/*
+ * On a phone the two blocks share the width, so the projects copy coming up
+ * underneath pushes this one up ahead of it rather than running into it.
+ *
+ * Both are worked out in the stage's terms. This block's bottom: its middle
+ * at half the stage, plus the drift, plus half its height. The projects
+ * copy's top: its bubble's middle - the foot of the stage, plus the bubble's
+ * --pad, less --rise of its --speed, as .bubble has it - less half that
+ * copy's height. The push is however far the first is past the second, with
+ * a gap between, and nothing when they are apart.
+ *
+ * The stage is the small viewport's height, which is what svh is.
+ */
+@media (max-width: 760px) {
+  .discCopy {
+    --disc-push: max(
+      0px,
+      var(--disc-drift, 0px) + var(--disc-h, 0px) / 2 + var(--projects-h, 0px) / 2 + 1.5rem
+        - 50vh - var(--projects-pad, 0px) + var(--rise, 0) * var(--projects-speed, 0px)
+    );
+  }
+
+  @supports (height: 1svh) {
+    .discCopy {
+      --disc-push: max(
+        0px,
+        var(--disc-drift, 0px) + var(--disc-h, 0px) / 2 + var(--projects-h, 0px) / 2 + 1.5rem
+          - 50svh - var(--projects-pad, 0px) + var(--rise, 0) * var(--projects-speed, 0px)
+      );
+    }
+  }
 }
 
 /*

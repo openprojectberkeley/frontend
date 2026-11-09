@@ -57,6 +57,13 @@ const slideVariants = {
 const SWIPE_THRESHOLD = 60;
 const SWIPE_MAX_VERTICAL = 80;
 
+/*
+ * Anything that takes a sideways swipe for itself - the about page's team
+ * carousel, a Swiper - marks itself with data-no-page-swipe, and a swipe that
+ * starts inside it turns its slides and not the page.
+ */
+const OWN_SWIPE = '[data-no-page-swipe], .swiper';
+
 export default function AnimatedRoutes() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -80,10 +87,16 @@ export default function AnimatedRoutes() {
     touchStartRef.current = {
       x: event.touches[0].clientX,
       y: event.touches[0].clientY,
+      // A pinch, or a swipe something on the page is handling itself.
+      ignore: event.touches.length > 1 || Boolean(event.target.closest?.(OWN_SWIPE)),
     };
   };
 
   const handleTouchEnd = (event) => {
+    if (touchStartRef.current.ignore) {
+      return;
+    }
+
     const deltaX = event.changedTouches[0].clientX - touchStartRef.current.x;
     const deltaY = event.changedTouches[0].clientY - touchStartRef.current.y;
 

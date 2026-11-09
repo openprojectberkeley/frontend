@@ -195,6 +195,8 @@ export default function TeamCarousel() {
       className={styles.teamCarousel}
       aria-roledescription="carousel"
       aria-label="Open Project teams by semester"
+      // Its own swipe turns the semesters; see AnimatedRoutes.
+      data-no-page-swipe
       tabIndex={0}
       onKeyDown={onKeyDown}
     >

@@ -50,15 +50,25 @@ export default function Header() {
   const [menuPlay, setMenuPlay] = useState(0);
   const menuOpenRef = useRef(false);
 
+  /*
+   * Whether the page is more than SCROLLED_AFTER down, from a marker at the top
+   * of the document going out of view rather than from reading scrollY on
+   * every scroll event: that read is a layout query, and on the home page,
+   * whose hero rewrites its stage every frame, it was making the browser
+   * restyle the stage a second time per frame just to answer it.
+   */
+  const scrollMarkerRef = useRef(null);
+
   useEffect(() => {
-    const updateScrolledState = () => {
-      setScrolled(window.scrollY > 100);
-    };
+    const marker = scrollMarkerRef.current;
 
-    updateScrolledState();
-    window.addEventListener('scroll', updateScrolledState, { passive: true });
+    if (!marker) return undefined;
 
-    return () => window.removeEventListener('scroll', updateScrolledState);
+    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting));
+
+    observer.observe(marker);
+
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -152,7 +162,13 @@ export default function Header() {
           aria-hidden="true"
         />
       )}
-      <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`} id="header">
+      <div ref={scrollMarkerRef} className={styles.scrollMarker} aria-hidden="true" />
+      <header
+        className={`${styles.header} ${scrolled ? styles.headerScrolled : ''} ${
+          active ? styles.headerMenuOpen : ''
+        }`}
+        id="header"
+      >
         <NavLink to="/">
           <img src={logo} alt="logo" className={styles.logo} />
           <img src={logoInk} alt="" aria-hidden="true" className={styles.logoInk} />
@@ -197,13 +213,31 @@ export default function Header() {
             open portal
           </a>
         </div>
-        <div className={styles.hamburger}>
-          <div className={styles.hamburger} onClick={hamburgerMode}>
-            <span className={active ? `${styles.barLeft}` : `${styles.bar}`}></span>
-            <span className={active ? `${styles.barGone}` : `${styles.bar}`}></span>
-            <span className={active ? `${styles.barRight}` : `${styles.bar}`}></span>
-          </div>
-        </div>
+        {/*
+          A solid tile with the three bars cut out of it, so whatever is behind
+          the header shows through them. They used to be dark bars painted on a
+          white tile, which only looked cut out while the page behind was black.
+          The cut is a mask, so the bars still turn into the cross.
+        */}
+        <button
+          type="button"
+          className={`${styles.hamburger} ${active ? styles.hamburgerOpen : ''}`}
+          onClick={hamburgerMode}
+          aria-label={active ? 'Close menu' : 'Open menu'}
+          aria-expanded={active}
+        >
+          <svg viewBox="0 0 25 29" aria-hidden="true" focusable="false">
+            <defs>
+              <mask id="op-hamburger-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="29">
+                <rect width="25" height="29" fill="white" />
+                <rect className={`${styles.cut} ${styles.cutTop}`} x="-1" y="5" width="27" height="3" fill="black" />
+                <rect className={`${styles.cut} ${styles.cutMiddle}`} x="-1" y="13" width="27" height="3" fill="black" />
+                <rect className={`${styles.cut} ${styles.cutBottom}`} x="-1" y="21" width="27" height="3" fill="black" />
+              </mask>
+            </defs>
+            <rect width="25" height="29" fill="currentColor" mask="url(#op-hamburger-cut)" />
+          </svg>
+        </button>
       </header>
     </>
   );

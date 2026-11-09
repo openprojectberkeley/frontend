@@ -6,6 +6,7 @@ import homeStyles from '../css/HomePage.module.css';
 import LogoMark, { DISC_CENTRE_X, DISC_CENTRE_Y, DISC_WIDTH } from './LogoMark';
 import useScrollPlayhead from './useScrollPlayhead';
 import LogoArc, { arcMiddle, arcOutline, arcPath, STROKE_WIDTH } from './LogoArc';
+import { clearHeaderTone, setHeaderTone } from './headerTone';
 import ArcTicker from './ArcTicker';
 import LogoSpill from './LogoSpill';
 import MomentStrip from './MomentStrip';
@@ -566,6 +567,10 @@ const BUBBLES = [
   { size: 7, left: 36, stagger: 30, speed: 268, colour: 'magenta', layer: 0, opacity: 0.44 },
 ];
 
+/* The bubble carrying the projects copy, which the disc's copy is kept clear
+   of on a phone - see .discCopy. */
+const PROJECTS_BUBBLE = BUBBLES.find((bubble) => bubble.content === 'projects');
+
 /* Scene two's scatter - see scatter in StarField. */
 const STAR_SEED = 20260517;
 
@@ -863,6 +868,11 @@ function ProjectsCopy() {
       communityBodyRef,
     ]);
     const momentStripRef = useRef(null);
+    const starFieldRef = useRef(null);
+    /* The two blocks of copy in scenes one and two, measured for .discCopy's
+       push - see the effect that does it. */
+    const discCopyRef = useRef(null);
+    const projectsCopyRef = useRef(null);
     const readoutValueRef = useRef(null);
     const readoutSceneRef = useRef(null);
     /* Two hidden copies of the word: the club's name, which is the box the lockup
@@ -880,6 +890,8 @@ function ProjectsCopy() {
      * leaves the lockup agreeing with both.
      */
     const playheadRef = useRef(0);
+    /* What render last wrote to the stage's variables - see setStageVar. */
+    const stageVarsRef = useRef({ stage: null, values: {} });
     const centreRef = useRef({ value: 0, target: 0, frame: null, last: 0, first: true });
 
     /*
@@ -979,6 +991,26 @@ function ProjectsCopy() {
         return;
       }
 
+      /*
+       * Every variable below is inherited by the whole stage, so each write
+       * restyles everything in it. Most of them are clamped and sit still for
+       * all but their own scene, so only the ones whose value has moved are
+       * written.
+       */
+      const written = stageVarsRef.current;
+
+      if (written.stage !== stage) {
+        written.stage = stage;
+        written.values = {};
+      }
+
+      const setStageVar = (name, value) => {
+        if (written.values[name] !== value) {
+          written.values[name] = value;
+          stage.style.setProperty(name, value);
+        }
+      };
+
       // --- scene 1: zoom into the disc, the other two shapes leave -------------
       const t = clamp01(playhead / ZOOM_END);
 
@@ -996,6 +1028,10 @@ function ProjectsCopy() {
          Neither moves with anything written below, only with the scroll. */
       const aboutRect = aboutRef.current?.getBoundingClientRect();
       const stageTop = stage.getBoundingClientRect().top;
+      /* Here too: window.innerHeight is a layout read like the others, and
+         asked for further down, after the writes, it made the browser restyle
+         the whole stage a second time every frame. */
+      const vh = window.innerHeight / 100;
 
       // The disc's centre, as a pivot inside the lockup and as a point on the
       // stage: it is both what the zoom turns about and what has to land on the
@@ -1017,14 +1053,14 @@ function ProjectsCopy() {
       // scale multiplies at a constant rate rather than adding at one.
       const zoom = Math.pow(Math.max(restRadius / startRadius, 1), eased);
 
-      stage.style.setProperty('--zoom', zoom.toFixed(4));
+      setStageVar('--zoom', zoom.toFixed(4));
       /*
        * The disc's paper shadow arrives with the zoom. At the mark's resting size
        * the offset duplicate is a couple of pixels of dark fringe that just makes
        * the logo look badly printed; it only reads as a second sheet once the
        * disc is big, so that is when it is there.
        */
-      stage.style.setProperty('--disc-shadow-opacity', smoothstep(clamp01(t / 0.85)).toFixed(3));
+      setStageVar('--disc-shadow-opacity', smoothstep(clamp01(t / 0.85)).toFixed(3));
 
       /*
        * The first touch of scroll anchors the lockup. Hysteresis, so a scroll
@@ -1081,8 +1117,8 @@ function ProjectsCopy() {
         revealedRef.current = next;
         setRevealed(next);
       }
-      stage.style.setProperty('--zoom-origin-x', `${pivotX.toFixed(2)}px`);
-      stage.style.setProperty('--zoom-origin-y', `${pivotY.toFixed(2)}px`);
+      setStageVar('--zoom-origin-x', `${pivotX.toFixed(2)}px`);
+      setStageVar('--zoom-origin-y', `${pivotY.toFixed(2)}px`);
       /*
        * Horizontally the lockup is between two places: where it is now, pushed
        * sideways so the phrase on screen reads centred, and where scene one wants
@@ -1095,7 +1131,7 @@ function ProjectsCopy() {
        * which is what makes the handover impossible to catch out.
        */
       const settleX = stageWidth * DISC_REST_X - discX;
-      stage.style.setProperty(
+      setStageVar(
         '--zoom-dx',
         `${(centreRef.current.value * (1 - eased) + settleX * eased).toFixed(2)}px`,
       );
@@ -1103,14 +1139,14 @@ function ProjectsCopy() {
       // The bar and the arc are gone by four fifths of the way in, so the scene
       // settles on one shape rather than three.
       const fly = easeIn(clamp01(t / 0.8));
-      stage.style.setProperty('--fly', fly.toFixed(4));
+      setStageVar('--fly', fly.toFixed(4));
       // They travel under their own steam and only fade at the very end, as
       // insurance against a shape still being on screen when the scene ends.
-      stage.style.setProperty('--part-opacity', (1 - clamp01((fly - 0.85) / 0.15)).toFixed(4));
+      setStageVar('--part-opacity', (1 - clamp01((fly - 0.85) / 0.15)).toFixed(4));
 
       // The word and the scroll cue step aside early, while the zoom is still
       // gentle enough that nothing is visibly stretched on the way out.
-      stage.style.setProperty('--word-opacity', (1 - clamp01(t / 0.6)).toFixed(4));
+      setStageVar('--word-opacity', (1 - clamp01(t / 0.6)).toFixed(4));
 
       /*
        * The cue's own rules come from HomePage.module.css, which the other pages
@@ -1127,7 +1163,7 @@ function ProjectsCopy() {
       // Linear, so the bubbles keep a constant pace against the scroll and read
       // as parallax rather than as an animation that happens to be scrubbed.
       const rise = clamp01((playhead - ZOOM_END) / (BUBBLE_RISE_END - ZOOM_END));
-      stage.style.setProperty('--rise', rise.toFixed(4));
+      setStageVar('--rise', rise.toFixed(4));
 
       /*
        * One gate over the whole flock, not a fade per bubble.
@@ -1143,7 +1179,7 @@ function ProjectsCopy() {
        * of the fold by the time the gate is fully open, so this reads as them
        * entering, not as a flock fading up.
        */
-      stage.style.setProperty('--bubble-gate', clamp01(rise / GATE_RISE).toFixed(4));
+      setStageVar('--bubble-gate', clamp01(rise / GATE_RISE).toFixed(4));
 
       /*
        * And the stars behind them, fading up over the opening of the scene.
@@ -1153,10 +1189,9 @@ function ProjectsCopy() {
        * is the one thing that ends them, and they cannot outlive it however the
        * scene before is retimed.
        */
-      stage.style.setProperty(
-        '--stars',
-        smoothstep(clamp01((playhead - STARS_AT) / STARS_OVER)).toFixed(4),
-      );
+      const starsIn = smoothstep(clamp01((playhead - STARS_AT) / STARS_OVER));
+
+      setStageVar('--stars', starsIn.toFixed(4));
 
       // --- scene 3: the arc comes back ----------------------------------------
       /*
@@ -1170,7 +1205,7 @@ function ProjectsCopy() {
        */
       const arcRaw = clamp01((playhead - ARC_RETURN_AT) / ARC_RETURN_OVER);
       const arc = easeOut(arcRaw);
-      stage.style.setProperty('--arc', arc.toFixed(4));
+      setStageVar('--arc', arc.toFixed(4));
       /*
        * The growth runs on its own, gentler curve. On the eased value it would be
        * near full size almost at once, since that curve spends most of itself in
@@ -1180,7 +1215,7 @@ function ProjectsCopy() {
        */
       const grow = smoothstep(arcRaw);
 
-      stage.style.setProperty('--arc-grow', grow.toFixed(4));
+      setStageVar('--arc-grow', grow.toFixed(4));
 
       /*
        * The arc unbends. Written straight onto both paths rather than through a
@@ -1195,7 +1230,7 @@ function ProjectsCopy() {
 
       /* The heading is not inside the SVG, so it cannot follow the geometry on
          its own and has to be told how far the bowl has opened out. */
-      stage.style.setProperty('--flat', flat.toFixed(4));
+      setStageVar('--flat', flat.toFixed(4));
 
       const arcScale = 0.25 + grow * 0.75;
       // The arc's box is 453.6 of its own units across, however wide it is drawn.
@@ -1214,18 +1249,18 @@ function ProjectsCopy() {
         easeIntoScroll(clamp01((playhead - ARC_EXIT_AT) / ARC_EXIT_OVER)) *
         (stageHeight / 2 + (STROKE_WIDTH / 2) * unit + ARC_EXIT_CLEAR);
 
-      stage.style.setProperty('--arc-rise', `${(arcSettle - arcExit).toFixed(2)}px`);
+      setStageVar('--arc-rise', `${(arcSettle - arcExit).toFixed(2)}px`);
 
       /*
        * Scene four: the heading goes up and out, and the community panel comes up
        * behind it. Both eased to a stop, because both are arriving somewhere -
        * one at the top of the screen and one at the middle of it.
        */
-      stage.style.setProperty(
+      setStageVar(
         '--title-exit',
         smootherstep(clamp01((playhead - TITLE_EXIT_AT) / TITLE_EXIT_OVER)).toFixed(4),
       );
-      stage.style.setProperty(
+      setStageVar(
         '--community',
         easeLead(
           clamp01((playhead - COMMUNITY_AT) / COMMUNITY_OVER),
@@ -1243,17 +1278,17 @@ function ProjectsCopy() {
        */
       const panPx = -panScreens(playhead) * stageWidth;
 
-      stage.style.setProperty('--pan', `${panPx.toFixed(1)}px`);
+      setStageVar('--pan', `${panPx.toFixed(1)}px`);
 
       /* Scene six: the black behind the moments, and the moments lifting. */
       const aboutWipe = clamp01((playhead - ABOUT_COPY_AT) / ABOUT_WIPE_OVER);
       const aboutWipeEased = 1 - (1 - aboutWipe) * (1 - aboutWipe);
 
-      stage.style.setProperty('--about-wipe', aboutWipeEased.toFixed(4));
+      setStageVar('--about-wipe', aboutWipeEased.toFixed(4));
 
       const joinRise = clamp01((playhead - JOIN_AT) / JOIN_RISE_OVER);
 
-      stage.style.setProperty(
+      setStageVar(
         '--join-rise',
         `${((1 - joinRise) ** 3 * JOIN_RISE_FROM * stageHeight).toFixed(1)}px`,
       );
@@ -1271,7 +1306,6 @@ function ProjectsCopy() {
       }
 
       if (aboutWipeRef.current && aboutRect) {
-        const vh = window.innerHeight / 100;
         const wipeTop =
           stageTop - 5 * vh + (1 - aboutWipeEased) * (stageHeight + 5 * vh);
         const fieldTop = aboutRect.top - ABOUT_STARS_REACH * vh;
@@ -1281,7 +1315,7 @@ function ProjectsCopy() {
           `${Math.max(0, wipeTop - fieldTop).toFixed(1)}px`,
         );
       }
-      stage.style.setProperty(
+      setStageVar(
         '--moments-lift',
         `${(-momentsLift(playhead) * stageHeight).toFixed(1)}px`,
       );
@@ -1317,9 +1351,9 @@ function ProjectsCopy() {
         const shiftX = snapToDevice(panPx * 0.12, dpr);
         const shiftY = snapToDevice(Math.max(0, playhead - SHEET_AT) * -0.1 * stageHeight, dpr);
 
-        stage.style.setProperty('--grid-sub', `${sub.toFixed(3)}px`);
-        stage.style.setProperty('--grid-hair', `${hair.toFixed(3)}px`);
-        stage.style.setProperty('--grid-shift', `${shiftX.toFixed(3)}px ${shiftY.toFixed(3)}px`);
+        setStageVar('--grid-sub', `${sub.toFixed(3)}px`);
+        setStageVar('--grid-hair', `${hair.toFixed(3)}px`);
+        setStageVar('--grid-shift', `${shiftX.toFixed(3)}px ${shiftY.toFixed(3)}px`);
       }
 
       /*
@@ -1357,7 +1391,7 @@ function ProjectsCopy() {
       const ink = easeOut(clamp01((playhead - INK_AT) / INK_OVER));
       const middle = arcMiddle(flat);
 
-      stage.style.setProperty('--ink', ink.toFixed(4));
+      setStageVar('--ink', ink.toFixed(4));
 
       if (arcInkRef.current) {
         arcInkRef.current.setAttribute('cx', middle.x.toFixed(2));
@@ -1458,11 +1492,11 @@ function ProjectsCopy() {
        * not in that group, because the black logos drawn over it must not fade
        * with it.
        */
-      stage.style.setProperty(
+      setStageVar(
         '--band-fade',
         smoothstep(clamp01((playhead - BAND_FADE_AT) / BAND_FADE_OVER)).toFixed(4),
       );
-      stage.style.setProperty(
+      setStageVar(
         '--wipe-fade',
         smoothstep(clamp01((playhead - WIPE_FADE_AT) / WIPE_FADE_OVER)).toFixed(4),
       );
@@ -1472,23 +1506,31 @@ function ProjectsCopy() {
        * it - how far it has risen, how far the client
        * logos have faded up - reads this one number, so they cannot drift apart.
        */
-      stage.style.setProperty(
-        '--sheet',
-        smoothstep(clamp01((playhead - SHEET_AT) / SHEET_OVER)).toFixed(4),
-      );
+      const sheet = smoothstep(clamp01((playhead - SHEET_AT) / SHEET_OVER));
 
-      /* The header is outside this section, so what it needs goes on the root. */
-      const root = document.documentElement;
-      root.style.setProperty(
-        '--header-scrim',
-        (1 - clamp01((playhead - SCRIM_FADE_AT) / SCRIM_FADE_OVER)).toFixed(4),
-      );
-      root.style.setProperty(
-        '--header-wash',
-        (
-          smoothstep(clamp01((playhead - HEADER_WASH_AT) / HEADER_WASH_OVER)) *
-          (1 - smoothstep(clamp01((playhead - HEADER_DARK_AT) / HEADER_DARK_OVER)))
-        ).toFixed(4),
+      setStageVar('--sheet', sheet.toFixed(4));
+
+      /*
+       * The stars are a third of everything in the stage, and every variable
+       * above is inherited by all of them, so while they are in the tree each
+       * frame restyles them whether or not they can be seen. Outside scene two
+       * - before they fade up, and once the sheet has covered them - their
+       * field is fully transparent, and it is taken out of the tree instead.
+       */
+      if (starFieldRef.current) {
+        const display = starsIn > 0 && sheet < 1 ? '' : 'none';
+
+        if (starFieldRef.current.style.display !== display) {
+          starFieldRef.current.style.display = display;
+        }
+      }
+
+      /* The header is outside this section, so it is told directly - see
+         headerTone for why not through the root. */
+      setHeaderTone(
+        1 - clamp01((playhead - SCRIM_FADE_AT) / SCRIM_FADE_OVER),
+        smoothstep(clamp01((playhead - HEADER_WASH_AT) / HEADER_WASH_OVER)) *
+          (1 - smoothstep(clamp01((playhead - HEADER_DARK_AT) / HEADER_DARK_OVER))),
       );
 
       /*
@@ -1502,7 +1544,7 @@ function ProjectsCopy() {
        * placement is where scene two starts from.
        */
       const driftY = -smoothstep(rise) * DISC_DRIFT_VH * (stageHeight / 100);
-      stage.style.setProperty(
+      setStageVar(
         '--zoom-dy',
         `${((stageHeight * DISC_REST_Y - discY) * eased + driftY).toFixed(2)}px`,
       );
@@ -1512,7 +1554,7 @@ function ProjectsCopy() {
        * drift and none of the zoom, because a block of body text scaled five
        * times over would be unreadable long before it was legible.
        */
-      stage.style.setProperty('--disc-drift', `${driftY.toFixed(2)}px`);
+      setStageVar('--disc-drift', `${driftY.toFixed(2)}px`);
 
 
       // --- the readout ---------------------------------------------------------
@@ -1711,6 +1753,10 @@ function ProjectsCopy() {
       return () => root.classList.remove('op-light');
     }, [revealed.headerLight, revealed.headerDark]);
 
+    /* And the washes, or the next page's header starts wherever this one's
+       scroll left it. */
+    useEffect(() => clearHeaderTone, []);
+
     const caretResting = charCount === 0 || charCount === phrase.length;
 
     /*
@@ -1758,6 +1804,38 @@ function ProjectsCopy() {
       cueScrollRef.current = window.requestAnimationFrame(step);
     }, [prefersReducedMotion]);
 
+    /*
+     * On a phone both blocks of copy are most of the screen wide, so they
+     * cannot pass beside each other the way they do on a desktop: the projects
+     * bubble rises faster than the disc drifts, and on a narrow enough screen
+     * its copy - taller for being narrower - ran up into the bottom of the
+     * disc's. .discCopy works out how far to push its block up to keep it
+     * clear, from the bubble's own numbers and --rise, in the stylesheet so it
+     * lands on the same frame as the bubble with no measuring per frame. All it
+     * needs from here is the two blocks' heights, which only change when the
+     * text reflows.
+     */
+    useEffect(() => {
+      const disc = discCopyRef.current;
+      const projects = projectsCopyRef.current;
+
+      if (!disc || !projects) {
+        return undefined;
+      }
+
+      const measure = () => {
+        disc.style.setProperty('--disc-h', `${disc.offsetHeight}px`);
+        disc.style.setProperty('--projects-h', `${projects.offsetHeight}px`);
+      };
+
+      const observer = new ResizeObserver(measure);
+
+      observer.observe(disc);
+      observer.observe(projects);
+
+      return () => observer.disconnect();
+    }, []);
+
     /* A tween still running when the route changes would scroll the next page. */
     useEffect(
       () => () => {
@@ -1792,7 +1870,7 @@ function ProjectsCopy() {
             so this is a backdrop to the flock and a sky over the swirl.
           */}
           {!prefersReducedMotion && (
-            <div className={styles.starField} aria-hidden="true">
+            <div ref={starFieldRef} className={styles.starField} aria-hidden="true">
               {STARS.map((star, index) => (
                 <span
                   key={index}
@@ -1864,6 +1942,7 @@ function ProjectsCopy() {
                 />
                 {bubble.content === 'projects' && (
                   <div
+                    ref={projectsCopyRef}
                     className={`${styles.overlayCopy} ${styles.overlayRight} ${
                       revealed.projects ? styles.revealed : ''
                     } ${revealed.projectsHighlight ? styles.highlighted : ''}`}
@@ -2052,10 +2131,17 @@ function ProjectsCopy() {
               without taking the zoom. */}
           {!prefersReducedMotion && (
             <div
+              ref={discCopyRef}
               className={`${styles.discCopy} ${styles.overlayLeft} ${
                 revealed.disc ? styles.revealed : ''
               } ${revealed.discHighlight ? styles.highlighted : ''}`}
-              style={{ '--ink-colour': BUBBLE_COLOURS.violet.ink }}
+              style={{
+                '--ink-colour': BUBBLE_COLOURS.violet.ink,
+                // Where the projects bubble starts and how far it travels, in
+                // the units .bubble is placed in.
+                '--projects-pad': `calc(${PROJECTS_BUBBLE.size / 2}vmin + ${PROJECTS_BUBBLE.stagger}vh)`,
+                '--projects-speed': `${PROJECTS_BUBBLE.speed}vh`,
+              }}
             >
               <WhatIsCopy />
             </div>

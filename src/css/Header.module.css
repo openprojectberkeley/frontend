@@ -58,6 +58,29 @@
     opacity: 1;
 }
 
+/*
+ * The open menu brings its own backdrop, full screen; the header's wash on top
+ * of it would be a second, darker band across the top of the menu, stronger or
+ * weaker depending on where the page happened to be scrolled.
+ */
+.header.headerMenuOpen::after {
+    opacity: 0;
+}
+
+/*
+ * Goes out of view once the page is 100px down, which is what turns the
+ * header's wash on. Absolute, so it scrolls with the document.
+ */
+.scrollMarker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 100px;
+    pointer-events: none;
+    visibility: hidden;
+}
+
 .header > * {
     position: relative;
     z-index: 1;
@@ -208,17 +231,50 @@
 
 .hamburger {
     display: none;
-    background-color: white;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: white;
+    transition: color 420ms ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.bar {
+.hamburger svg {
     display: block;
     width: 25px;
-    height: 3px;
-    margin: 5px auto;
-    -webkit-transition: all 0.3s ease-in-out;
-    transition: all 0.3s ease-in-out;
-    background-color: #101010;
+    height: 29px;
+    overflow: visible;
+}
+
+.hamburger:focus-visible {
+    outline: 2px solid #F9C12C;
+    outline-offset: 4px;
+}
+
+/* The bars cut out of the tile, turning into the cross when the menu opens. */
+.cut {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.hamburgerOpen .cutTop {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.hamburgerOpen .cutMiddle {
+    opacity: 0;
+}
+
+.hamburgerOpen .cutBottom {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hamburger,
+    .cut {
+        transition: none;
+    }
 }
 
 .menuBackdrop {
@@ -246,6 +302,18 @@
         pointer-events: auto;
     }
 
+    /*
+     * The page is held still under the menu, but a phone's browser will still
+     * try to scroll it from a drag on the backdrop or the links, and a scroll
+     * on the home page can carry it across into the light and change the
+     * menu's colours under the reader.
+     */
+    .menuBackdrop,
+    .links {
+        touch-action: none;
+        overscroll-behavior: contain;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .menuBackdrop {
             transition: none;
@@ -255,21 +323,6 @@
         display: block;
         cursor: pointer;
         z-index: 2;
-    }
-
-    .barGone {
-        composes: bar;
-        opacity: 0;
-    }
-
-    .barLeft {
-        composes: bar;
-        transform: translateY(8px) rotate(45deg);
-    }
-
-    .barRight {
-        composes: bar;
-        transform: translateY(-8px) rotate(-45deg);
     }
 
     .links {
@@ -371,10 +424,17 @@
     color: #22114F;
 }
 
-:global(html.op-light) .bar,
-:global(html.op-light) .barLeft,
-:global(html.op-light) .barRight {
-    background-color: #22114F;
+:global(html.op-light) .hamburger {
+    color: #22114F;
+}
+
+/*
+ * On the light pages the menu opens on paper rather than on black: the links
+ * have turned to ink with the rest of the header, and on the dark backdrop
+ * they all but disappeared.
+ */
+:global(html.op-light) .menuBackdrop {
+    background: rgba(255, 253, 248, 0.9);
 }
 
 /*
