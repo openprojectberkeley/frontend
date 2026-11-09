@@ -830,7 +830,7 @@
   padding: 0 0.28em;
   font-size: clamp(3rem, 8vw, 6.5rem);
   white-space: nowrap;
-  transform: translate(-50%, -50%) translateY(calc(var(--title-exit, 0) * -46vh));
+  transform: translate(-50%, -50%) translateY(calc(var(--title-exit, 0px) * -1));
   text-align: center;
   pointer-events: none;
   /*
@@ -1048,11 +1048,6 @@
  * over it and would go with it - and later because it is what hides the group
  * on its way out.
  */
-/* Only ever seen fading back in, if the reader turns round on the way back up. */
-.rowTwins {
-  transition: opacity 200ms ease;
-}
-
 .rowWipe {
   fill: #FFFDF8;
   opacity: calc(1 - var(--wipe-fade, 0));

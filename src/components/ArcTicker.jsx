@@ -1,5 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { maskPaths } from './PixelSwap';
+import logoSource from './logoSource';
 
 /* All in the arc's own viewBox units, so they hold whatever size it is drawn at. */
 const LOGO_HEIGHT = 54;
@@ -28,6 +30,65 @@ const GAP_FLOOR = 0.75;
  * twice over, is most of what drawing the rows costs.
  */
 const BITMAP_MAX_HEIGHT = 320;
+
+/*
+ * The row turning over to its next set of logos: a sweep across the screen,
+ * SWAP_SWEEP long, and every logo on screen breaking up into blocks as it
+ * passes - the old ones going and the new ones coming, each over SWAP_MS, so
+ * neighbours overlap. The blocks are about SWAP_BLOCK pixels, and the change is
+ * cut into SWAP_STEPS visible steps, so a logo only rewrites its mask a handful
+ * of times.
+ */
+const SWAP_MS = 350;
+const SWAP_SWEEP = 650;
+const SWAP_BLOCK = 8;
+const SWAP_STEPS = 8;
+const SWAP_SEEDS = 6;
+
+/*
+ * How much taller a narrow logo is drawn than the row height, so a mark that
+ * is about as wide as it is tall does not sit as a dot between wordmarks.
+ *
+ * The same rule as the spill's, roughly: equal area rather than equal height,
+ * so a logo SIZE_AT_ONE times as wide as it is tall or wider stays at the row
+ * height, and one narrower grows by the square root of how much narrower it
+ * is. A hand correction for the logo goes on top, and SIZE_MAX caps the lot:
+ * each row has half the band to itself, about twice the row height, and a
+ * logo much taller than this starts to crowd the row beside it.
+ */
+const SIZE_AT_ONE = 2.6;
+const SIZE_MAX = 1.7;
+
+const sizeOf = (aspect, nudge = 1) =>
+  Math.min(SIZE_MAX, Math.max(1, Math.sqrt(SIZE_AT_ONE / aspect)) * nudge);
+
+/* Every logo in a list, measured and drawn - see prepare. */
+const loadAll = (list, urls) =>
+  Promise.all(
+    list.map(
+      (src) =>
+        new Promise((resolve) => {
+          const image = new window.Image();
+
+          // A square is the least surprising fallback, and a logo that will
+          // not decode is not going to be visible to be wrong about.
+          image.onload = () => {
+            const aspect = image.naturalHeight ? image.naturalWidth / image.naturalHeight : 1;
+            prepare(image)
+              .then(({ light, dark }) => {
+                urls.push(light, dark);
+                resolve({ aspect, light, dark, filtered: false });
+              })
+              .catch(() => resolve({ aspect, light: src, dark: src, filtered: true }));
+          };
+          image.onerror = () => resolve({ aspect: 1, light: src, dark: src, filtered: true });
+          // An SVG at a size matching its own drawing - see logoSource.
+          logoSource(src).then((source) => {
+            image.src = source.src;
+          });
+        }),
+    ),
+  );
 
 /*
  * Each logo at no more than BITMAP_MAX_HEIGHT, and the same again as a black
@@ -210,11 +271,27 @@ export default function ArcTicker({
    */
   growRef,
   /*
-   * Filled with { takeAll, restore }. takeAll hides every logo on the row and
-   * returns those that were on screen, as { rect, src, filtered, speed }, where
-   * speed is how fast that spot on the row is moving across the screen, in px a
-   * second. All read before any of it is written, so the page is only laid out
-   * once however many there are. restore puts them all back.
+   * What the row turns into: a second row of its own, laid out from its own
+   * logos at its own spacing and running at the same speed, which nobody can
+   * tell apart from the first. Nothing pairs a client with a new logo.
+   *
+   * Turning `swapped` on turns the row over after `swapDelay` ms: a sweep across
+   * the screen in `swapOrder` ('ltr' or 'rtl'), breaking up the clients and
+   * bringing in the new logos as it passes them. Off screen the change is
+   * instant, so whatever comes in from the side afterwards is already new.
+   * Turning it off plays the same change backwards, the sweep the other way.
+   */
+  nextItems = [],
+  /* A hand correction to how big a new logo is drawn, by src - see sizeOf. */
+  nextScales,
+  swapped = false,
+  swapDelay = 0,
+  swapOrder = 'ltr',
+  /*
+   * Filled with { takeVisible, restore }. takeVisible finishes any turning
+   * over, hides the whole row, and returns the new logos that were on screen as
+   * { index, rect }: index into nextItems, and the logo's box on the page. All
+   * read before any of it is written. restore puts the row back.
    */
   handleRef,
   /*
@@ -226,12 +303,38 @@ export default function ArcTicker({
 }) {
   const groupRef = useRef(null);
   const twinRef = useRef(null);
+  const nextRef = useRef(null);
+  const maskRef = useRef(null);
+  // useId hands back ":r0:"-style strings, which are invalid in url(#...).
+  const uid = useId().replace(/:/g, '');
+  const swappedRef = useRef(swapped);
+  const swapDelayRef = useRef(swapDelay);
+  const swapOrderRef = useRef(swapOrder);
+
+  swappedRef.current = swapped;
+  swapDelayRef.current = swapDelay;
+  swapOrderRef.current = swapOrder;
   /*
    * How wide each logo wants to be at the height they all share, which only the
    * file itself can say, and the bitmaps each row is drawn from. Decoded once:
    * the browser has these files cached already.
    */
   const [logos, setLogos] = useState(null);
+  /*
+   * What every logo is doing in turning over - see runSwap. `target` is which
+   * set the row is turning to, or has turned to: true for the new logos. Each
+   * logo is 'on', 'off', or the time it starts to change towards the target.
+   * Outlives the loop, which restarts around it.
+   */
+  const swapRef = useRef({
+    target: false,
+    armedAt: null,
+    client: [],
+    next: [],
+    clientStep: [],
+    nextStep: [],
+    pixels: 1,
+  });
   /* Whether the logos have been taken off the row. Outlives the loop, which
      restarts around it. */
   const takenRef = useRef(false);
@@ -249,14 +352,22 @@ export default function ArcTicker({
     }
 
     handleRef.current = {
-      takeAll: () => {
+      takeVisible: () => {
         const taken = takeRunningRef.current?.() ?? [];
 
         takenRef.current = true;
 
         return taken;
       },
+      /*
+       * The new logos that were taken are in the pile, so they do not come back
+       * to the row: it comes back empty, and the clients turn back in on it.
+       */
       restore: () => {
+        if (takenRef.current) {
+          swapRef.current.next = swapRef.current.next.map(() => 'off');
+        }
+
         takenRef.current = false;
       },
     };
@@ -270,30 +381,15 @@ export default function ArcTicker({
     let live = true;
     const urls = [];
 
-    Promise.all(
-      items.map(
-        (src) =>
-          new Promise((resolve) => {
-            const image = new window.Image();
-
-            // A square is the least surprising fallback, and a logo that will
-            // not decode is not going to be visible to be wrong about.
-            image.onload = () => {
-              const aspect = image.naturalHeight ? image.naturalWidth / image.naturalHeight : 1;
-              prepare(image)
-                .then(({ light, dark }) => {
-                  urls.push(light, dark);
-                  resolve({ aspect, light, dark, filtered: false });
-                })
-                .catch(() => resolve({ aspect, light: src, dark: src, filtered: true }));
-            };
-            image.onerror = () => resolve({ aspect: 1, light: src, dark: src, filtered: true });
-            image.src = src;
-          }),
-      ),
-    ).then((prepared) => {
+    Promise.all([loadAll(items, urls), loadAll(nextItems, urls)]).then(([clients, next]) => {
       if (live) {
-        setLogos(prepared);
+        setLogos({
+          clients: clients.map((logo) => ({ ...logo, size: 1 })),
+          next: next.map((logo, index) => ({
+            ...logo,
+            size: sizeOf(logo.aspect, nextScales?.get(nextItems[index]) ?? 1),
+          })),
+        });
       } else {
         urls.forEach((url) => URL.revokeObjectURL(url));
       }
@@ -303,7 +399,10 @@ export default function ArcTicker({
       live = false;
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [items]);
+  }, [items, nextItems, nextScales]);
+
+  const clientLogos = logos ? logos.clients : [];
+  const nextLogos = logos ? logos.next : [];
 
   /* A layout effect so that the first placement is in before the browser
      paints the render that started the loop. */
@@ -316,30 +415,38 @@ export default function ArcTicker({
     }
 
     const nodes = Array.from(group.children);
-    const count = nodes.length;
     const gap = height * GAP_SHARE;
-    const widths = logos.map(({ aspect }) => height * aspect);
+    const swap = swapRef.current;
 
     /*
-     * How much logo there is in front of each one. The train is laid out from
-     * this per frame rather than once, because its two parts - the logos and
-     * the gaps - no longer grow at the same rate, so the spacing cannot be a
-     * fixed set of positions with one multiplier over it.
+     * A row of logos laid out as a train: how wide each is, how much logo there
+     * is in front of it, and how far round the loop it has got - as a share of
+     * the train rather than a distance, because the train is not always the
+     * same length: it shrinks with the logos while the arc is still bent.
+     *
+     * The clients and the new logos are two of these, each spaced by its own
+     * logos, travelling at the same speed.
      */
-    const widthBefore = [];
-    let totalWidth = 0;
+    const trainOf = (list) => {
+      const widths = list.map(({ aspect, size }) => height * aspect * size);
+      const heights = list.map(({ size }) => height * size);
+      const before = [];
+      let total = 0;
 
-    widths.forEach((width) => {
-      widthBefore.push(totalWidth);
-      totalWidth += width;
-    });
+      widths.forEach((width) => {
+        before.push(total);
+        total += width;
+      });
 
-    /*
-     * This frame's answer for each logo, worked out in full before any of it
-     * is written. getPointAtLength brings layout up to date before it answers,
-     * so a read after every write would lay the whole page out once per logo.
-     */
-    const transforms = new Array(count).fill(null);
+      return { widths, heights, before, total, count: list.length, progress: 0, transforms: list.map(() => null) };
+    };
+    const clientTrain = trainOf(logos.clients);
+    const nextTrain = trainOf(logos.next);
+
+    /* Every logo where the row last left it, or settled for the set it is on. */
+    swap.client = logos.clients.map((_, index) => swap.client[index] ?? (swap.target ? 'off' : 'on'));
+    swap.next = logos.next.map((_, index) => swap.next[index] ?? (swap.target ? 'on' : 'off'));
+
     /*
      * What each node was last told, so an unchanged opacity is not rewritten:
      * it is a presentation attribute, and every write is a style recalc.
@@ -349,19 +456,14 @@ export default function ArcTicker({
      * is still showing, still placed for the arc as it was then; taken for
      * hidden, it would be left there until its turn came round again.
      */
-    const shown = new Array(count).fill(null);
-    const twinShown = new Array(count).fill(null);
+    const shown = clientTrain.transforms.map(() => null);
+    let twinShown = clientTrain.transforms.map(() => null);
+    let nextShown = nextTrain.transforms.map(() => null);
     let lastTwins = null;
+    let lastNext = null;
 
     let frame = null;
     let last = null;
-    /*
-     * Held as a share of the train rather than as a distance along it, because
-     * the train is not always the same length: it shrinks with the logos while
-     * the arc is still bent. A distance would send every logo backwards the
-     * moment the train resized; a fraction of it rides the change.
-     */
-    let progress = 0;
 
     const place = (node, index, transform, seen) => {
       if (!node) {
@@ -380,12 +482,77 @@ export default function ArcTicker({
       }
     };
 
+    /*
+     * Whether each logo is to be drawn at all, as of `now`. One changing is
+     * drawn from its start if it is coming, and until its end if it is going -
+     * which is the whole of its change for one going, as it is masked away.
+     */
+    const isOn = (state, coming, now) =>
+      state === 'on' || (typeof state === 'number' && (!coming || now >= state));
+    const clientOn = (index, now) => isOn(swap.client[index], !swap.target, now);
+    const nextOn = (index, now) => isOn(swap.next[index], swap.target, now);
+
     /* The route, kept until the path's d changes - which is only while the
        arc is flattening. */
     let routeD = null;
     let route = null;
 
-    const layout = (elapsed) => {
+    const layTrain = (train, length, sample, grow, gapGrow, travel) => {
+      const loop = train.total * grow + train.count * gap * gapGrow;
+
+      if (!loop) {
+        return;
+      }
+
+      train.progress = (train.progress + travel / loop) % 1;
+      const offset = train.progress * loop;
+
+      for (let index = 0; index < train.count; index += 1) {
+        /*
+         * The train runs backwards rather than its carriages being reordered,
+         * so both rows are the one layout travelling opposite ways. The lean
+         * below is read off the path either way, which is what keeps a row
+         * going against the drawing direction upright rather than mirrored.
+         */
+        const reach = (train.widths[index] * grow) / 2;
+        const centre = train.before[index] * grow + index * gap * gapGrow + reach;
+        let distance = (((centre + direction * offset) % loop) + loop) % loop;
+
+        /*
+         * The far end of the loop is the near side of the start: a logo that
+         * has not reached the path yet is one about to, so it is read as a
+         * negative distance and slides in from before the first point rather
+         * than appearing on it.
+         */
+        if (distance > length + reach + overhang) {
+          distance -= loop;
+        }
+
+        /* Nothing of it over the band, so nothing to draw. Measured against
+           the caps and not the last point of the path: a logo still inside the
+           cap is still on screen, and dropping it there is what made them
+           vanish while they could plainly still be seen. */
+        if (distance + reach < -overhang || distance - reach > length + overhang) {
+          train.transforms[index] = null;
+        } else {
+          const point = sample(distance);
+          /*
+           * Turned to lie along the curve, and then half a turn further. The
+           * arc is travelled from the end that ends up on the right, so without
+           * the 180 every logo would ride it upside down.
+           */
+          const lean = (Math.atan2(point.ty, point.tx) * 180) / Math.PI + 180;
+
+          /* The last translate is in the turned frame, so its y runs across
+             the stroke whatever angle this stretch of the path is at - which
+             is what keeps a row parallel to the arc instead of to the screen. */
+          train.transforms[index] =
+            `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${lean.toFixed(2)}) translate(0 ${rowOffset.toFixed(2)}) scale(${grow.toFixed(4)}) translate(${(-train.widths[index] / 2).toFixed(2)} ${(-train.heights[index] / 2).toFixed(2)})`;
+        }
+      }
+    };
+
+    const layout = (elapsed, now) => {
       const d = path.getAttribute('d');
 
       if (d !== routeD) {
@@ -405,12 +572,12 @@ export default function ArcTicker({
        * off - which is what leaving at the end looks like when nothing is
        * fading.
        */
-      const sample = (d) => {
+      const sample = (at) => {
         if (route) {
           // Past either end the tangent runs on, as below.
-          const clamped = Math.min(length, Math.max(0, d));
+          const clamped = Math.min(length, Math.max(0, at));
           const point = route.at(clamped);
-          const over = d - clamped;
+          const over = at - clamped;
 
           return {
             x: point.x + point.tx * over,
@@ -420,21 +587,21 @@ export default function ArcTicker({
           };
         }
 
-        if (d < 0) {
+        if (at < 0) {
           const a = path.getPointAtLength(0);
           const b = path.getPointAtLength(1);
-          return { x: a.x + (b.x - a.x) * d, y: a.y + (b.y - a.y) * d, tx: b.x - a.x, ty: b.y - a.y };
+          return { x: a.x + (b.x - a.x) * at, y: a.y + (b.y - a.y) * at, tx: b.x - a.x, ty: b.y - a.y };
         }
 
-        if (d >= length) {
+        if (at >= length) {
           const a = path.getPointAtLength(length - 1);
           const b = path.getPointAtLength(length);
-          const over = d - length;
+          const over = at - length;
           return { x: b.x + (b.x - a.x) * over, y: b.y + (b.y - a.y) * over, tx: b.x - a.x, ty: b.y - a.y };
         }
 
-        const here = path.getPointAtLength(d);
-        const ahead = path.getPointAtLength(Math.min(length, d + 1));
+        const here = path.getPointAtLength(at);
+        const ahead = path.getPointAtLength(Math.min(length, at + 1));
         return { x: here.x, y: here.y, tx: ahead.x - here.x, ty: ahead.y - here.y };
       };
       /*
@@ -447,112 +614,253 @@ export default function ArcTicker({
       const flat = growRef ? growRef.current : 1;
       const grow = GROW_FLOOR + (1 - GROW_FLOOR) * flat;
       const gapGrow = GAP_FLOOR + (1 - GAP_FLOOR) * flat;
-      const loop = totalWidth * grow + count * gap * gapGrow;
-
       // A tab left in the background hands back one enormous delta on return.
-      progress = (progress + (SPEED * Math.min(elapsed, 0.1)) / loop) % 1;
-      const offset = progress * loop;
+      const travel = SPEED * Math.min(elapsed, 0.1);
 
-      for (let index = 0; index < count; index += 1) {
-        if (takenRef.current) {
-          transforms[index] = null;
-          continue;
-        }
-
-        /*
-         * The train runs backwards rather than its carriages being reordered,
-         * so both rows are the one layout travelling opposite ways. The lean
-         * below is read off the path either way, which is what keeps a row
-         * going against the drawing direction upright rather than mirrored.
-         */
-        const reach = (widths[index] * grow) / 2;
-        const centre = widthBefore[index] * grow + index * gap * gapGrow + reach;
-        let distance = (((centre + direction * offset) % loop) + loop) % loop;
-
-        /*
-         * The far end of the loop is the near side of the start: a logo that
-         * has not reached the path yet is one about to, so it is read as a
-         * negative distance and slides in from before the first point rather
-         * than appearing on it.
-         */
-        if (distance > length + reach + overhang) {
-          distance -= loop;
-        }
-
-        /* Nothing of it over the band, so nothing to draw. Measured against
-           the caps and not the last point of the path: a logo still inside the
-           cap is still on screen, and dropping it there is what made them
-           vanish while they could plainly still be seen. */
-        if (distance + reach < -overhang || distance - reach > length + overhang) {
-          transforms[index] = null;
-        } else {
-
-          const point = sample(distance);
-          /*
-           * Turned to lie along the curve, and then half a turn further. The
-           * arc is travelled from the end that ends up on the right, so without
-           * the 180 every logo would ride it upside down.
-           */
-          const lean = (Math.atan2(point.ty, point.tx) * 180) / Math.PI + 180;
-
-          /* The last translate is in the turned frame, so its y runs across
-             the stroke whatever angle this stretch of the path is at - which
-             is what keeps a row parallel to the arc instead of to the screen. */
-          const transform =
-            `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${lean.toFixed(2)}) translate(0 ${rowOffset.toFixed(2)}) scale(${grow.toFixed(4)}) translate(${(-widths[index] / 2).toFixed(2)} ${(-height / 2).toFixed(2)})`;
-
-          transforms[index] = transform;
-        }
-      }
+      layTrain(clientTrain, length, sample, grow, gapGrow, travel);
+      layTrain(nextTrain, length, sample, grow, gapGrow, travel);
 
       const twins = twinRef.current ? twinRef.current.children : null;
+      const nexts = nextRef.current ? nextRef.current.children : null;
 
-      /* The copy can be mounted, or mounted again, after this loop started,
+      /* The copies can be mounted, or mounted again, after this loop started,
          and new nodes start out hidden whatever was last written. */
       if (twins !== lastTwins) {
         lastTwins = twins;
-        twinShown.fill(null);
+        twinShown = twinShown.map(() => null);
       }
 
-      for (let index = 0; index < count; index += 1) {
-        place(nodes[index], index, transforms[index], shown);
-        place(twins && twins[index], index, transforms[index], twinShown);
+      if (nexts !== lastNext) {
+        lastNext = nexts;
+        nextShown = nextShown.map(() => null);
+      }
+
+      const taken = takenRef.current;
+
+      for (let index = 0; index < clientTrain.count; index += 1) {
+        const transform = taken || !clientOn(index, now) ? null : clientTrain.transforms[index];
+
+        place(nodes[index], index, transform, shown);
+        place(twins && twins[index], index, transform, twinShown);
+      }
+
+      for (let index = 0; index < nextTrain.count; index += 1) {
+        const transform = taken || !nextOn(index, now) ? null : nextTrain.transforms[index];
+
+        place(nexts && nexts[index], index, transform, nextShown);
+      }
+    };
+
+    /*
+     * The pictures inside a logo's groups, which are what carry its mask while
+     * it changes; the groups themselves are what move. A client is drawn twice,
+     * in white on the band and in black over the paper, and both change.
+     */
+    const picturesOf = (which, index) =>
+      which === 'client'
+        ? [nodes[index]?.firstChild, twinRef.current?.children[index]?.firstChild]
+        : [nextRef.current?.children[index]?.firstChild];
+    const maskGroup = (which, index) =>
+      maskRef.current?.children[(which === 'client' ? 0 : clientTrain.count) + index]?.firstChild ?? null;
+    const unmask = (which, index) =>
+      picturesOf(which, index).forEach((picture) => picture?.removeAttribute('mask'));
+
+    const writeMask = (which, index, units, tall, seed, shownShare) => {
+      const group = maskGroup(which, index);
+
+      if (!group) {
+        return;
+      }
+
+      const columns = Math.max(1, Math.round((units * swap.pixels) / SWAP_BLOCK));
+      const rows = Math.max(1, Math.round((tall * swap.pixels) / SWAP_BLOCK));
+
+      group.setAttribute('transform', `scale(${1 / columns} ${1 / rows})`);
+      group.innerHTML = maskPaths(columns, rows, seed, shownShare)
+        .map(([level, d]) => `<path fill="#fff" fill-opacity="${level}" d="${d}"/>`)
+        .join('');
+      picturesOf(which, index).forEach((picture) =>
+        picture?.setAttribute('mask', `url(#${uid}-${which}-${index})`),
+      );
+    };
+
+    /*
+     * The sweep, from what is on screen this moment, towards `swap.target`.
+     * Each logo on screen that is not already where it is going gets the time
+     * the sweep reaches it; everything off screen changes at once. Coming back
+     * the sweep runs the other way, the change played backwards.
+     *
+     * Nothing hidden has been placed lately, so every logo is put where it is
+     * before anything is measured, and all of it is read before it is decided.
+     */
+    const plan = (now) => {
+      const want = swap.target;
+      const reversed = (swapOrderRef.current === 'rtl') === want;
+      const width = window.innerWidth;
+      const at = (rect) => {
+        const middle = rect.left + rect.width / 2;
+
+        if (!(rect.width > 0) || middle < 0 || middle > width) {
+          return null;
+        }
+
+        const across = Math.min(1, Math.max(0, middle / width));
+
+        return now + (reversed ? 1 - across : across) * SWAP_SWEEP;
+      };
+      const groups = (list) => (list ? list.children : []);
+      const clientNodes = nodes;
+      const nexts = groups(nextRef.current);
+
+      clientTrain.transforms.forEach((transform, index) => {
+        if (transform !== null) clientNodes[index]?.setAttribute('transform', transform);
+      });
+      nextTrain.transforms.forEach((transform, index) => {
+        if (transform !== null) nexts[index]?.setAttribute('transform', transform);
+      });
+
+      const rectsOf = (train, list) =>
+        train.transforms.map((transform, index) =>
+          transform !== null && list[index] ? list[index].getBoundingClientRect() : null,
+        );
+      const clientRects = rectsOf(clientTrain, clientNodes);
+      const nextRects = rectsOf(nextTrain, nexts);
+      const sized = clientRects.findIndex((rect) => rect && rect.height > 0);
+
+      swap.pixels = sized >= 0 ? clientRects[sized].height / clientTrain.heights[sized] : 1;
+
+      /* A logo still changing the other way is taken as having got there. */
+      const turn = (which, rects, list, steps, wantOn) => {
+        const settled = wantOn ? 'on' : 'off';
+
+        rects.forEach((rect, index) => {
+          steps[index] = null;
+          unmask(which, index);
+
+          if (list[index] !== settled) {
+            list[index] = (rect && at(rect)) ?? settled;
+          }
+        });
+      };
+
+      turn('client', clientRects, swap.client, swap.clientStep, !want);
+      turn('next', nextRects, swap.next, swap.nextStep, want);
+    };
+
+    /* Before the layout of the same frame, so a logo whose turn has come is
+       masked before it is first drawn. Either way round, after the same delay,
+       which is the heading's own change reaching its middle. */
+    const runSwap = (now) => {
+      const wanted = swappedRef.current;
+
+      if (wanted !== swap.target) {
+        if (swap.armedAt === null) {
+          swap.armedAt = now + swapDelayRef.current;
+        }
+
+        if (now < swap.armedAt) {
+          return;
+        }
+
+        swap.armedAt = null;
+        swap.target = wanted;
+        plan(now);
+      } else {
+        /* Turned round again before the change had begun. */
+        swap.armedAt = null;
+      }
+
+      const step = (which, index, list, steps, wantOn, train) => {
+        const start = list[index];
+
+        if (typeof start !== 'number' || now < start) {
+          return;
+        }
+
+        const progress = (now - start) / SWAP_MS;
+
+        if (progress >= 1) {
+          list[index] = wantOn ? 'on' : 'off';
+          steps[index] = null;
+          unmask(which, index);
+
+          return;
+        }
+
+        const reached = Math.floor(progress * SWAP_STEPS);
+
+        if (reached === steps[index]) {
+          return;
+        }
+
+        const seed = (index % SWAP_SEEDS) * 2 + (which === 'client' ? 2 : 1);
+        const share = reached / SWAP_STEPS;
+
+        steps[index] = reached;
+        writeMask(which, index, train.widths[index], train.heights[index], seed, wantOn ? share : 1 - share);
+      };
+
+      for (let index = 0; index < clientTrain.count; index += 1) {
+        step('client', index, swap.client, swap.clientStep, !swap.target, clientTrain);
+      }
+
+      for (let index = 0; index < nextTrain.count; index += 1) {
+        step('next', index, swap.next, swap.nextStep, swap.target, nextTrain);
       }
     };
 
     const tick = (now) => {
       const elapsed = last === null ? 0 : (now - last) / 1000;
       last = now;
-      layout(elapsed);
+      runSwap(now);
+      layout(elapsed, now);
       frame = window.requestAnimationFrame(tick);
     };
 
     takeRunningRef.current = () => {
-      const twins = twinRef.current ? twinRef.current.children : null;
+      const now = performance.now();
+
+      /* Whatever was still turning over, or waiting to, has turned. */
+      swap.target = swappedRef.current;
+      swap.armedAt = null;
+
+      for (let index = 0; index < clientTrain.count; index += 1) {
+        swap.client[index] = swap.target ? 'off' : 'on';
+        unmask('client', index);
+      }
+
+      for (let index = 0; index < nextTrain.count; index += 1) {
+        swap.next[index] = swap.target ? 'on' : 'off';
+        unmask('next', index);
+      }
+
+      layout(0, now);
+
+      const nexts = nextRef.current ? nextRef.current.children : null;
       const taken = [];
 
-      for (let index = 0; index < count; index += 1) {
-        if (transforms[index] !== null) {
-          const rect = (twins?.[index] ?? nodes[index]).getBoundingClientRect();
-          const middle = rect.left + rect.width / 2;
+      nextTrain.transforms.forEach((transform, index) => {
+        const picture = nexts?.[index]?.firstChild;
 
-          if (rect.width > 0 && middle > 0 && middle < window.innerWidth) {
-            taken.push({
-              rect,
-              src: logos[index].dark,
-              filtered: logos[index].filtered,
-              /* A row with direction 1 travels to the left of the screen. */
-              speed: -direction * SPEED * (rect.height / height),
-            });
-          }
+        if (transform === null || !picture) {
+          return;
         }
-      }
 
-      for (let index = 0; index < count; index += 1) {
-        transforms[index] = null;
-        place(nodes[index], index, null, shown);
-        place(twins?.[index], index, null, twinShown);
-      }
+        const rect = picture.getBoundingClientRect();
+
+        if (
+          rect.width > 0 &&
+          rect.right > 0 &&
+          rect.left < window.innerWidth &&
+          rect.bottom > 0 &&
+          rect.top < window.innerHeight
+        ) {
+          taken.push({ index, rect });
+        }
+      });
+
+      takenRef.current = true;
+      layout(0, now);
 
       return taken;
     };
@@ -564,12 +872,12 @@ export default function ArcTicker({
      * frame before, out of line with the band and its clip. Following the
      * path's own changes puts them back on it before that frame is painted.
      */
-    const reshaped = new MutationObserver(() => layout(0));
+    const reshaped = new MutationObserver(() => layout(0, performance.now()));
     reshaped.observe(path, { attributes: true, attributeFilter: ['d'] });
 
     /* Placed now and not a frame from now, so the first frame painted with the
        loop running is not one with every logo where the last run left it. */
-    layout(0);
+    layout(0, performance.now());
     frame = window.requestAnimationFrame(tick);
 
     return () => {
@@ -577,36 +885,68 @@ export default function ArcTicker({
       window.cancelAnimationFrame(frame);
       takeRunningRef.current = null;
     };
-  }, [pathRef, items, running, rowOffset, direction, height, logos, growRef, overhang]);
+  }, [pathRef, items, running, rowOffset, direction, height, logos, growRef, overhang, uid]);
 
-  const images = (dark) =>
-    items.map((src, index) => {
-      const logo = logos && logos[index];
+  const picture = (logo, dark) => (
+    <image
+      href={dark ? logo.dark : logo.light}
+      width={(height * logo.aspect * logo.size).toFixed(2)}
+      height={(height * logo.size).toFixed(2)}
+      preserveAspectRatio="xMidYMid meet"
+      style={dark && logo.filtered ? { filter: 'brightness(0)' } : undefined}
+    />
+  );
 
-      return (
-        <image
-          /* eslint-disable-next-line react/no-array-index-key */
-          key={index}
-          href={logo ? (dark ? logo.dark : logo.light) : undefined}
-          width={logo ? (height * logo.aspect).toFixed(2) : undefined}
-          height={height}
-          opacity="0"
-          preserveAspectRatio="xMidYMid meet"
-          style={dark && logo && logo.filtered ? { filter: 'brightness(0)' } : undefined}
-        />
-      );
-    });
-
+  /*
+   * The clients in white, as the band carries them; the clients again in black
+   * for the copy over the white; and the new logos, in their own colours, in
+   * the same place. Each logo is a group, which is what moves, around its
+   * picture, which is what carries a mask while it changes.
+   */
   return (
     <>
       <g ref={groupRef} className={className} aria-hidden="true" pointerEvents="none">
-        {images(false)}
+        {clientLogos.map((logo, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <g key={index} opacity="0">
+            {picture(logo, false)}
+          </g>
+        ))}
       </g>
       {twinContainer &&
         createPortal(
-          <g ref={twinRef} className={className} aria-hidden="true" pointerEvents="none">
-            {images(true)}
-          </g>,
+          <>
+            <defs ref={maskRef}>
+              {clientLogos.map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <mask key={`client-${index}`} id={`${uid}-client-${index}`} maskContentUnits="objectBoundingBox">
+                  <g />
+                </mask>
+              ))}
+              {nextLogos.map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <mask key={`next-${index}`} id={`${uid}-next-${index}`} maskContentUnits="objectBoundingBox">
+                  <g />
+                </mask>
+              ))}
+            </defs>
+            <g ref={twinRef} className={className} aria-hidden="true" pointerEvents="none">
+              {clientLogos.map((logo, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <g key={index} opacity="0">
+                  {picture(logo, true)}
+                </g>
+              ))}
+            </g>
+            <g ref={nextRef} className={className} aria-hidden="true" pointerEvents="none">
+              {nextLogos.map((logo, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <g key={index} opacity="0">
+                  {picture(logo, false)}
+                </g>
+              ))}
+            </g>
+          </>,
           twinContainer,
         )}
     </>

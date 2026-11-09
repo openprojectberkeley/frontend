@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import Matter from 'matter-js';
 
 import { measureOutline } from './alphaOutline';
-import { maskAt, setMask } from './PixelSwap';
+import logoSource from './logoSource';
 
 /*
- * Client logos all turning into the logos of where our members work at once, and
- * all falling together to pile up at the bottom of the screen. There are more of
- * these than there are clients on screen, so the rest come up out of nothing in
- * among them.
+ * The logos of where our members work, falling off the band they were riding
+ * and piling up at the bottom of the screen. Only those still on screen when it
+ * is let go fall: the rest have gone with the band, and are not seen again.
  *
  * The falling is matter-js's: a rigid body per logo in a world with a floor
  * and two walls, stepped once a frame, with this file doing nothing but
@@ -34,32 +33,12 @@ import { maskAt, setMask } from './PixelSwap';
 const { Bodies, Body, Composite, Engine, Mouse, MouseConstraint, Query, Render, Sleeping } =
   Matter;
 
-/*
- * How long the clients take to turn into the logos, and the size of the blocks
- * they break up in. Physics starts when this ends, so what falls is finished.
- */
-const CHANGE_MS = 350;
-const CHANGE_BLOCK = 8;
-/*
- * What keeps thirty-odd masks moving at once affordable.
- *
- * Each new mask is a repaint of its element, so the change is cut into a few
- * visible steps, and only the step changing writes anything. Spread over phases,
- * so a third of the logos step on any one frame rather than all of them on the
- * same one. And a handful of patterns are shared, so most of them are already
- * built by the time they are asked for.
- */
-const CHANGE_STEPS = 8;
-const CHANGE_PHASES = 3;
-const MASK_SEEDS = 6;
-/* The pictures are drawn once at the size they appear, at no more than this many
-   pixels to the CSS pixel, so that nothing re-rasterises an SVG mid-change. */
+/* The pictures are drawn once at their size, at no more than this many pixels
+   to the CSS pixel, so that nothing re-rasterises an SVG as it tumbles. */
 const BITMAP_MAX_DENSITY = 2;
-/* For the ones with no client to come from: how many goes to find a clear spot,
-   and how far above and below the middle of the screen it may be, as a share of
-   the screen's height. */
-const THIN_AIR_TRIES = 12;
-const THIN_AIR_SPREAD = 0.16;
+/* And at least this tall, in CSS pixels: they fall at the row's height, which
+   can be well over the size the area rule gives them. */
+const BITMAP_MIN_HEIGHT = 72;
 /*
  * Scrolling back up takes the floor away and lets the pile fall off the
  * bottom of the stage. Once every logo has cleared that edge, the linger is
@@ -72,9 +51,6 @@ const EXIT_FADE = 420;
 const EXIT_LIMIT = 2200;
 /* How far above the bottom of the stage the pile stands. */
 const FLOOR_INSET = 24;
-/* Sideways and turning, either way, as it is let go. */
-const DRIFT = 40;
-const SPIN = 1.2;
 /*
  * What a logo is made of.
  *
@@ -253,8 +229,6 @@ const entryOutline = (entry) => (entry && 'current' in entry ? null : (entry?.ou
  * Same origin, so the canvas does not taint, and it is the image the browser
  * has already fetched for the img tag below.
  */
-const blocksAcross = (size) => Math.max(1, Math.round(size / CHANGE_BLOCK));
-
 /* Whenever the page has nothing better to do, where that can be asked. */
 const whenIdle = (work) => {
   if (window.requestIdleCallback) {
@@ -309,7 +283,10 @@ const bake = (src, width, height) =>
         resolve(null);
       }
     };
-    image.src = src;
+    // An SVG at a size matching its own drawing - see logoSource.
+    logoSource(src).then((source) => {
+      image.src = source.src;
+    });
   });
 
 const measureInk = (src) =>
@@ -400,7 +377,10 @@ const measureInk = (src) =>
     };
 
     image.onerror = () => resolve(whole);
-    image.src = src;
+    // An SVG at a size matching its own drawing - see logoSource.
+    logoSource(src).then((source) => {
+      image.src = source.src;
+    });
   });
 
 export default function LogoSpill({
@@ -413,13 +393,13 @@ export default function LogoSpill({
   running,
   stageRef,
   /*
-   * How long after the mark to start, in ms, and what they turn from. takeClients
-   * hides all the clients and returns those on screen, as { rect, src, filtered,
-   * speed }. restoreClients brings them all back.
+   * When the logos fall, and which. Turning gravity on during a run asks
+   * takeLogos for the logos on screen, as { index, rect }: index into items,
+   * and where that logo is on the page right now. Those, and only those, become
+   * bodies there, at that size.
    */
-  delay = 0,
-  takeClients,
-  restoreClients,
+  gravity,
+  takeLogos,
   /* Per-logo multipliers on the size the area rule arrives at, keyed by src.
      Optional: anything missing is left alone. */
   scales,
@@ -464,6 +444,10 @@ export default function LogoSpill({
   const [runId, setRunId] = useState(0);
 
   runningRef.current = running;
+
+  const gravityRef = useRef(gravity);
+
+  gravityRef.current = gravity;
 
   useEffect(() => {
     const started = running && !wasRunningRef.current;
@@ -545,9 +529,8 @@ export default function LogoSpill({
     });
 
     /*
-     * Everything the change will ask for, made ahead of time and one logo at a
-     * time, whenever the page has a moment: its bitmap and its masks. The first
-     * frame of the change is then only ever writing what already exists.
+     * Each logo's bitmap, made ahead of time and one at a time, whenever the page
+     * has a moment, so that nothing is decoding when they start to fall.
      */
     let live = true;
     let cancel = null;
@@ -559,16 +542,9 @@ export default function LogoSpill({
 
       const shape = sized[index];
 
-      for (let step = 0; step <= CHANGE_STEPS; step += 1) {
-        maskAt(
-          blocksAcross(shape.elementWidth),
-          blocksAcross(shape.elementHeight),
-          (index % MASK_SEEDS) * 2 + 1,
-          step / CHANGE_STEPS,
-        );
-      }
+      const up = Math.max(1, BITMAP_MIN_HEIGHT / shape.elementHeight);
 
-      bake(items[index], shape.elementWidth, shape.elementHeight).then((url) => {
+      bake(items[index], shape.elementWidth * up, shape.elementHeight * up).then((url) => {
         if (url && live) {
           urls.push(url);
           nodes[index].src = url;
@@ -626,10 +602,11 @@ export default function LogoSpill({
     Composite.add(engine.world, walls);
 
     const bodies = nodes.map(() => null);
-    /* The changes under way: { index, start, ghost }, oldest first. */
-    const changes = [];
-    /* The black copies of the clients, for clearing up. */
-    const ghosts = new Set();
+    /*
+     * Each logo's shape for this run. The ink is where it was measured to be in
+     * the file; the size is the row's, set when it is let go.
+     */
+    const shapes = sized.map((shape) => ({ ...shape }));
     /* One static body per obstacle, made the first time its element has a
        size to measure, and moved to follow it from then on. */
     const obstacles = (obstacleRefs ?? []).map(() => null);
@@ -648,7 +625,6 @@ export default function LogoSpill({
     let frames = 0;
     /* Counts down from SETTLE_WATCH whenever an obstacle moves. */
     let watching = 0;
-    const startAt = performance.now() + delay;
     let started = false;
     let last = null;
     let frame = null;
@@ -741,195 +717,61 @@ export default function LogoSpill({
       Render.run(render);
     }
 
-    /* A mask of blocks at `shown`, cut to the box it is on. */
-    const maskElement = (element, boxWidth, boxHeight, seed, shown) => {
-      setMask(element, maskAt(blocksAcross(boxWidth), blocksAcross(boxHeight), seed, shown));
-    };
-
-    /* Where a logo's element goes for its ink to be centred on a point. */
-    const logoTransform = (index, x, y) => {
-      const shape = sized[index];
-      const offsetX = (shape.x + shape.width / 2 - 0.5) * shape.elementWidth;
-      const offsetY = (shape.y + shape.height / 2 - 0.5) * shape.elementHeight;
-
-      return `translate(${(x - offsetX - shape.elementWidth / 2).toFixed(1)}px, ${(y - offsetY - shape.elementHeight / 2).toFixed(1)}px)`;
-    };
-
-    /* What has been placed so far this run, for keeping the rest off it. */
-    const placed = [];
-    const overlaps = (x, y, shape) =>
-      placed.some(
-        (box) =>
-          Math.abs(box.x - x) < (box.width + shape.inkWidth) / 2 &&
-          Math.abs(box.y - y) < (box.height + shape.inkHeight) / 2,
-      );
-
     /*
-     * Somewhere in among the ones already there: across the screen and around the
-     * middle of it, where the band is, clear of the others if a few goes can find
-     * it. Failing that it takes the last go, and the world sorts out the overlap.
+     * The logos still on screen, from the band, at the size and the place they
+     * were in it: a body for each, cut to its ink, and nothing for the rest.
+     * Every position read before anything is written.
      */
-    const thinAir = (shape, middle) => {
-      const edge = shape.inkWidth / 2;
-      let x = 0;
-      let y = 0;
-
-      for (let go = 0; go < THIN_AIR_TRIES; go += 1) {
-        x = edge + Math.random() * Math.max(0, width - edge * 2);
-        y = middle + (Math.random() * 2 - 1) * height * THIN_AIR_SPREAD;
-
-        if (!overlaps(x, y, shape)) {
-          break;
-        }
-      }
-
-      return { x, y };
-    };
-
-    /*
-     * Where a client was, a logo goes. With no client left on screen to take its
-     * place from, it comes up out of nothing in among the others.
-     *
-     * The row goes on moving while they change, so those on it ride along, or the
-     * rest of the row would pass through them. Handed to the compositor as one
-     * animation each, since where they will be is known from the start: that is
-     * no work on the page for the whole of the ride.
-     */
-    const startChange = (index, at, client, frameBox, middle) => {
-      const rect = client?.rect;
-      const shape = sized[index];
-      const spot = rect ? null : thinAir(shape, middle);
-      const centreX = rect ? rect.left + rect.width / 2 - frameBox.left : spot.x;
-      const centreY = rect ? rect.top + rect.height / 2 - frameBox.top : spot.y;
-      const endX = centreX + ((client?.speed ?? 0) * CHANGE_MS) / 1000;
-
-      placed.push({ x: centreX, y: centreY, width: shape.inkWidth, height: shape.inkHeight });
-
-      const node = nodes[index];
-      const rides = [];
-      let ghost = null;
-
-      node.style.maskSize = '100% 100%';
-      node.style.webkitMaskSize = '100% 100%';
-      node.style.transform = logoTransform(index, endX, centreY);
-      maskElement(node, shape.elementWidth, shape.elementHeight, (index % MASK_SEEDS) * 2 + 1, 0);
-      node.style.opacity = '1';
-
-      if (rect) {
-        const ghostAt = (x) =>
-          `translate(${(x - rect.width / 2).toFixed(1)}px, ${(centreY - rect.height / 2).toFixed(1)}px)`;
-
-        ghost = document.createElement('img');
-        ghost.src = client.src;
-        ghost.alt = '';
-        ghost.className = logoClassName ?? '';
-        ghost.style.width = `${rect.width.toFixed(1)}px`;
-        ghost.style.height = `${rect.height.toFixed(1)}px`;
-        ghost.style.maskSize = '100% 100%';
-        ghost.style.webkitMaskSize = '100% 100%';
-        ghost.style.transform = ghostAt(endX);
-
-        if (client.filtered) {
-          ghost.style.filter = 'brightness(0)';
-        }
-
-        group.appendChild(ghost);
-        ghosts.add(ghost);
-        rides.push(
-          node.animate(
-            [{ transform: logoTransform(index, centreX, centreY) }, { transform: logoTransform(index, endX, centreY) }],
-            { duration: CHANGE_MS, easing: 'linear' },
-          ),
-          ghost.animate([{ transform: ghostAt(centreX) }, { transform: ghostAt(endX) }], {
-            duration: CHANGE_MS,
-            easing: 'linear',
-          }),
-        );
-      }
-
-      changes.push({
-        index,
-        start: at,
-        ghost,
-        rides,
-        step: 0,
-        centreX: endX,
-        centreY,
-        boxWidth: rect?.width,
-        boxHeight: rect?.height,
-      });
-    };
-
-    /* All of them, off one reading of the page: nothing here lays it out again. */
-    const startChanges = (at) => {
-      const clients = takeClients?.() ?? [];
+    const letGo = () => {
+      const taken = (takeLogos?.() ?? []).filter(({ index }) => index < nodes.length);
       const frameBox = readFrame();
-      const middle = stage.getBoundingClientRect().top + height / 2 - frameBox.top;
 
-      nodes.forEach((_, index) => startChange(index, at, clients[index], frameBox, middle));
-    };
+      taken.forEach(({ index, rect }) => {
+        const shape = shapes[index];
 
-    const clearChange = (change) => {
-      change.rides.forEach((ride) => ride.cancel());
-      setMask(nodes[change.index], '');
+        shape.elementWidth = rect.width;
+        shape.elementHeight = rect.height;
+        shape.inkWidth = Math.max(1, rect.width * shape.width);
+        shape.inkHeight = Math.max(1, rect.height * shape.height);
 
-      if (change.ghost) {
-        change.ghost.remove();
-        ghosts.delete(change.ghost);
+        const x = rect.left - frameBox.left + (shape.x + shape.width / 2) * rect.width;
+        const y = rect.top - frameBox.top + (shape.y + shape.height / 2) * rect.height;
+        const options = { ...MATERIAL, ...DEBUG_BODY };
+        /* A roundel gets a round body, whether it said so itself or was named.
+           Everything else is near enough a card. */
+        const body = shape.round || roundSet?.has(items[index])
+          ? Bodies.circle(x, y, Math.min(shape.inkWidth, shape.inkHeight) / 2, options)
+          : Bodies.rectangle(x, y, shape.inkWidth, shape.inkHeight, options);
+
+        /* Let go from rest, with no push or turn of its own: a new body is
+           still, so it hangs where the row left it for a moment and then
+           falls, and whatever tumbling there is comes from landing. */
+        Composite.add(engine.world, body);
+        bodies[index] = body;
+      });
+
+      /*
+       * A logo half off the side of the screen starts inside a wall, and the
+       * first step would shove it out sideways. The walls are moved out past
+       * whatever is overlapping them instead, so every logo starts in the clear
+       * and falls straight down from where the row left it.
+       */
+      const placed = bodies.filter(Boolean);
+
+      if (placed.length) {
+        const left = Math.min(0, ...placed.map((body) => body.bounds.min.x));
+        const right = Math.max(width, ...placed.map((body) => body.bounds.max.x));
+
+        Body.setPosition(walls[1], { x: left - 200, y: walls[1].position.y });
+        Body.setPosition(walls[2], { x: right + 200, y: walls[2].position.y });
       }
-    };
 
-    /* The logo is all there: from here on it is the world's. */
-    const letGo = (change) => {
-      const { index, centreY } = change;
-      const shape = sized[index];
-      /* A fast scroll can carry the row a long way in the time a change takes;
-         the logo still has to land inside the walls. */
-      const centreX = clamp(change.centreX, shape.inkWidth / 2, width - shape.inkWidth / 2);
-      const options = { ...MATERIAL, ...DEBUG_BODY };
-
-      clearChange(change);
-
-      /* A roundel gets a round body, whether it said so itself or was named.
-         Everything else is near enough a card. */
-      const body = shape.round || roundSet?.has(items[index])
-        ? Bodies.circle(centreX, centreY, Math.min(shape.inkWidth, shape.inkHeight) / 2, options)
-        : Bodies.rectangle(centreX, centreY, shape.inkWidth, shape.inkHeight, options);
-
-      Body.setVelocity(body, { x: ((Math.random() * 2 - 1) * DRIFT) / 60, y: 0 });
-      Body.setAngularVelocity(body, ((Math.random() * 2 - 1) * SPIN) / 60);
-      Composite.add(engine.world, body);
-
-      bodies[index] = body;
-    };
-
-    const runChanges = (now) => {
-      for (let at = changes.length - 1; at >= 0; at -= 1) {
-        const change = changes[at];
-        const progress = (now - change.start) / CHANGE_MS;
-
-        if (progress >= 1) {
-          changes.splice(at, 1);
-          letGo(change);
-        } else {
-          const step = Math.min(
-            CHANGE_STEPS,
-            Math.floor(progress * CHANGE_STEPS + (change.index % CHANGE_PHASES) / CHANGE_PHASES),
-          );
-
-          if (step !== change.step) {
-            const shape = sized[change.index];
-            const seed = change.index % MASK_SEEDS;
-
-            change.step = step;
-            maskElement(nodes[change.index], shape.elementWidth, shape.elementHeight, seed * 2 + 1, step / CHANGE_STEPS);
-
-            if (change.ghost) {
-              maskElement(change.ghost, change.boxWidth, change.boxHeight, seed * 2 + 2, 1 - step / CHANGE_STEPS);
-            }
-          }
-        }
-      }
+      taken.forEach(({ index, rect }) => {
+        nodes[index].style.width = `${rect.width.toFixed(1)}px`;
+        nodes[index].style.height = `${rect.height.toFixed(1)}px`;
+        nodes[index].style.opacity = '1';
+        draw(index);
+      });
     };
 
     const draw = (index) => {
@@ -939,7 +781,7 @@ export default function LogoSpill({
         return;
       }
 
-      const shape = sized[index];
+      const shape = shapes[index];
       const sin = Math.sin(body.angle);
       const cos = Math.cos(body.angle);
       /* The body is the ink. The element is bigger than its ink and the ink is
@@ -1137,16 +979,6 @@ export default function LogoSpill({
        * floor - and anything asleep is woken so gravity can take it.
        */
       if (!runningRef.current && exitAt === null) {
-        /* Whatever was still changing goes with the clients it came from. */
-        changes.splice(0).forEach((change) => {
-          clearChange(change);
-          nodes[change.index].style.opacity = '0';
-        });
-
-        if (started) {
-          restoreClients?.();
-        }
-
         if (bodies.every((body) => !body)) {
           retire();
 
@@ -1170,13 +1002,9 @@ export default function LogoSpill({
         });
       }
 
-      if (exitAt === null && !started && now >= startAt) {
+      if (exitAt === null && !started && gravityRef.current) {
         started = true;
-        startChanges(now);
-      }
-
-      if (changes.length) {
-        runChanges(now);
+        letGo();
       }
 
       const targets = exitAt === null ? readObstacles() : null;
@@ -1366,10 +1194,7 @@ export default function LogoSpill({
 
       Composite.clear(engine.world, false);
       Engine.clear(engine);
-      ghosts.forEach((ghost) => ghost.remove());
-      ghosts.clear();
       nodes.forEach((node) => {
-        setMask(node, '');
         node.style.opacity = '0';
         node.style.transform = '';
       });
@@ -1380,7 +1205,7 @@ export default function LogoSpill({
     return retire;
     // sized is rebuilt each render; ink and the scales are what actually change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runId, items, stageRef, delay, takeClients, restoreClients, logoClassName, ink, scales, sizeScale, obstacleRefs, outlines, roundSet]);
+  }, [runId, items, stageRef, takeLogos, ink, scales, sizeScale, obstacleRefs, outlines, roundSet]);
 
   if (!items.length) {
     return null;

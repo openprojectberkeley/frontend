@@ -49,7 +49,7 @@
  *   ffmpeg -ss 0.5 -i clip.MOV -frames:v 1 -vf scale=640:-2 -q:v 4 \
  *     clip-poster.jpg
  *
- * The pan is PAN_TRAVEL screens long at playhead 7 - see ImmersiveHero - so a
+ * The pan is PAN_TRAVEL screens long at playhead 7.5 - see ImmersiveHero - so a
  * card is at `stagger - 100 * PAN_TRAVEL * z` vw there. The last card, at
  * 0.84, is near 90vw. It then coasts to a stop under the about sheet, about
  * half a screen further (times z) by the time it is covered.

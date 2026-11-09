@@ -20,15 +20,21 @@ const BLOCK_FADE = 0.35;
 const MASK_STEPS = 14;
 
 const masks = new Map();
+const blocks = new Map();
 
-export const maskAt = (columns, rows, seed, shown) => {
+/*
+ * The blocks showing at `shown`, as [opacity, path] pairs on a grid of columns
+ * by rows - runs along each row, to keep them short. Kept, as the same sizes
+ * come round again and again. Shared with whatever draws the pattern as SVG
+ * itself rather than as a CSS mask.
+ */
+export const maskPaths = (columns, rows, seed, shown) => {
   const step = Math.round(clamp01(shown) * MASK_STEPS);
   const key = `${columns}x${rows}@${seed}@${step}`;
-  let mask = masks.get(key);
+  let found = blocks.get(key);
 
-  if (mask) return mask;
+  if (found) return found;
 
-  // The blocks at each strength, as runs along each row, to keep it short.
   const paths = new Map();
 
   for (let row = 0; row < rows; row += 1) {
@@ -49,7 +55,22 @@ export const maskAt = (columns, rows, seed, shown) => {
     }
   }
 
-  const drawn = [...paths].map(([level, d]) => `<path fill-opacity='${level}' d='${d}'/>`).join('');
+  found = [...paths];
+  blocks.set(key, found);
+
+  return found;
+};
+
+export const maskAt = (columns, rows, seed, shown) => {
+  const step = Math.round(clamp01(shown) * MASK_STEPS);
+  const key = `${columns}x${rows}@${seed}@${step}`;
+  let mask = masks.get(key);
+
+  if (mask) return mask;
+
+  const drawn = maskPaths(columns, rows, seed, shown)
+    .map(([level, d]) => `<path fill-opacity='${level}' d='${d}'/>`)
+    .join('');
 
   mask = `url("data:image/svg+xml,${encodeURIComponent(
     `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${columns} ${rows}' ` +

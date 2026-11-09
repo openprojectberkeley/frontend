@@ -55,7 +55,7 @@ import salesforce from "../images/wherewework/salesforce.svg";
 import square from "../images/wherewework/square.svg";
 import tinder from "../images/wherewework/tinder.svg";
 import volvo from "../images/wherewework/volvo.svg";
-import waymo from "../images/wherewework/waymo.png";
+import waymo from "../images/wherewework/waymo.svg";
 import workday from "../images/wherewework/workday.svg";
 import ycombinator from "../images/wherewework/ycombinator.svg";
 
@@ -80,6 +80,18 @@ export const whereWeWorkScale = new Map([
   [ycombinator, 1.15],
   [paypal, 1.12],
   [ibm, 1.12],
+]);
+
+/*
+ * The same kind of hand correction for the slider the logos first appear in.
+ *
+ * There every logo starts at the row's height, and one narrower than a typical
+ * wordmark is drawn taller by a rule of its own (sizeOf in ArcTicker.jsx), so a
+ * round or square mark is not a dot between wordmarks. This goes on top of that
+ * rule for a logo it still leaves looking small, up to a cap set there.
+ */
+export const whereWeWorkRowScale = new Map([
+  [lg, 1.2],
 ]);
 
 /*

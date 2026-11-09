@@ -15,7 +15,7 @@ import useTitlePixels from './useTitlePixels';
 import JoinScene from './JoinScene';
 import StarField, { ABOUT_STARS_REACH, STAR_LAYERS, scatter } from './StarField';
 import { clients } from '../data/clientsData';
-import { whereWeWork, whereWeWorkRound, whereWeWorkScale } from '../data/whereWeWork';
+import { whereWeWork, whereWeWorkRound, whereWeWorkRowScale, whereWeWorkScale } from '../data/whereWeWork';
 import { CURRENT_SEASON, CURRENT_YEAR } from '../data/site';
 import speechbubble from '../images/speechbubbles.png';
 import star from '../images/star.png';
@@ -59,19 +59,19 @@ const SCENES = [
   /* The arc is still on its way out when the next scene starts - the two
      overlap by design - so this is where the community takes over the frame
      rather than where the arc has finished leaving it. */
-  { name: 'the arc returns', end: 3.2 },
+  { name: 'the arc returns', end: 3.7 },
   /* The panel is still settling when the frame starts travelling, which is the
      same overlap as above: scene five opens on scene four finishing. */
-  { name: 'the community rises', end: 3.4 },
+  { name: 'the community rises', end: 3.9 },
   /* And the frame is still coasting to a stop as the about sheet comes up:
      scene six opens on scene five finishing, like every scene before it. The
-     pan would halt at 7, after the timeline has ended, but the moments have
+     pan would halt at 7.5, after the timeline has ended, but the moments have
      gone from the stage by then. */
-  { name: 'the moments pass', end: 6.4 },
+  { name: 'the moments pass', end: 6.9 },
   /* Ends the moment the call to apply comes to rest in the middle, so the
      very next scroll lets go of it and brings the footer up - there is
      nothing after it to wait for. See JOIN_AT. */
-  { name: 'join us comes up', end: 6.8 },
+  { name: 'join us comes up', end: 7.3 },
 ];
 
 const TIMELINE_END = SCENES[SCENES.length - 1].end;
@@ -199,11 +199,14 @@ const INK_OVER = 0.12;
  * painting its straight bars across a band that had been scrolled back into a
  * bowl. Tied to the same number, the two cannot disagree.
  */
-const WIPE_SECOND_AT = 2.8;
-const WIPE_TOP_AT = 2.83;
+/*
+ * Not straight after the flatten: the straight band holds, white clients on
+ * black, for a while first, so "Clients" is there long enough to be read as
+ * the heading for what is riding under it.
+ */
+const WIPE_SECOND_AT = 3.1;
+const WIPE_TOP_AT = 3.13;
 const WIPE_OVER = 0.1;
-/* How far forward counts as having turned round on the way back up. */
-const RETURN_TURN_ROUND = 0.005;
 
 /*
  * With the second row turned over there is nothing left for the band to do.
@@ -235,14 +238,15 @@ const WIPE_FADE_AT = BAND_FADE_AT + BAND_FADE_OVER;
 const WIPE_FADE_OVER = 0.06;
 
 /*
- * Anything still on the band then leaves upwards, at the rate the reader is
- * going. Nothing should be: every client has been turned by now.
+ * Then the band, by now carrying where our members work, leaves upwards with the
+ * heading, at the rate the reader is going - starting just after the heading
+ * changes, so the logos are turning over as it goes.
  *
  * The span is held rather than run to the end of the timeline, so moving the
  * start earlier moves the whole journey earlier instead of stretching it over
  * more scrolling and slowing it down.
  */
-const ARC_EXIT_AT = 3.18;
+const ARC_EXIT_AT = 3.32;
 const ARC_EXIT_OVER = 0.95;
 
 /*
@@ -259,7 +263,13 @@ const ARC_EXIT_OVER = 0.95;
  * it arrives underneath the logos and pushes them up the page in front of it.
  * That is the point of it having a body at all.
  */
-const COMMUNITY_AT = 3.18;
+const COMMUNITY_AT = 3.6;
+/*
+ * And once the panel is on its way and the band has gone a little way up, the
+ * logos still on screen fall off it. Only those: the rest have left with the
+ * band, and the pile is made of what was there to be seen.
+ */
+const GRAVITY_AT = 3.68;
 const COMMUNITY_OVER = 0.55;
 /*
  * Thrown up and settling, rather than eased evenly at both ends. A smoothstep
@@ -270,15 +280,13 @@ const COMMUNITY_OVER = 0.55;
 const COMMUNITY_LEAD_IN = 1.3;
 const COMMUNITY_LEAD_OUT = 4.5;
 /*
- * The heading goes at the same moment, so it is travelling up with the band
- * and its logos rather than waiting for them to be gone - three things
- * leaving by one door instead of a queue at it.
+ * The heading goes up with the band, by exactly as much - see --title-exit - so
+ * the two keep their spacing and leave as one thing rather than the word
+ * running on ahead into the header.
  */
-const TITLE_EXIT_AT = 3.2;
-const TITLE_EXIT_OVER = 0.55;
 
 /* And then the word blurs away, the same blur it arrived out of at 2.4. */
-const TITLE_GONE_AT = 3.4;
+const TITLE_GONE_AT = 3.9;
 
 /*
  * Scene five: the frame starts travelling.
@@ -297,7 +305,7 @@ const TITLE_GONE_AT = 3.4;
  * scrolling turned on its side, and a scroller that accelerates out from
  * under the hand feels broken rather than smooth.
  */
-const PAN_AT = 3.4;
+const PAN_AT = 3.9;
 const PAN_OVER = 3.6;
 /*
  * How far the frame travels over that, in screens.
@@ -306,7 +314,7 @@ const PAN_OVER = 3.6;
  * strip is seen and how fast it goes past, and the moments are placed in the
  * same units - see communityMoments.js - so the two can be read against each
  * other. It is the whole distance, coast included, so the pan comes to rest
- * at playhead 7 with every card exactly where communityMoments.js says.
+ * at playhead 7.5 with every card exactly where communityMoments.js says.
  */
 const PAN_TRAVEL = 4.46;
 /*
@@ -389,7 +397,7 @@ const MOMENTS_DISSOLVE_AT = ABOUT_AT - 0.1;
 const MOMENTS_DISSOLVE_OVER = 0.45;
 /* And from here the cards raise no captions on hover: the call to apply is
    well up over them, and a label would come up on top of its words. */
-const MOMENT_CAPTIONS_OFF_AT = 6.6;
+const MOMENT_CAPTIONS_OFF_AT = 7.1;
 
 function momentsLift(playhead) {
   const t = Math.max(0, Math.min(playhead, TIMELINE_END) - ABOUT_AT);
@@ -419,15 +427,16 @@ const ABOUT_ARRIVED_AT = JOIN_AT + 0.1;
 const HEADER_DARK_OVER = 0.05;
 
 /*
- * The last beat. Crossing this mark changes the heading, and the clients all turn
- * into where our members have gone the moment the new words show.
+ * The last beat. Crossing this mark changes the heading, and as the new words
+ * show, the clients on the rows turn into where our members have gone, one by
+ * one along each row, while the rows carry on - see ArcTicker.
  *
  * Only the crossing is on the scroll. The highlight plays on a clock from there:
  * black across the word, the swap, and the black on off the far side, leaving
  * white text on teal. TITLE_SWAP_SHARE is how far through that the swap falls,
  * and the stylesheet's keyframes are cut at the same place.
  */
-const SPILL_AT = 3.0;
+const SPILL_AT = 3.3;
 const TITLE_CHANGE_MS = 460;
 const TITLE_SWAP_SHARE = 0.45;
 /* How far past the top of the screen to carry the band before it is certainly
@@ -461,6 +470,13 @@ const TICKER_LOGO_HEIGHT = 28;
  */
 const CLIENTS_OUTER = clients.filter((_, index) => index % 2 === 0);
 const CLIENTS_INNER = clients.filter((_, index) => index % 2 === 1);
+/* And what each row turns into, split the same way, so a row's slot k carries
+   whereWeWork[2k] on the outer row and whereWeWork[2k + 1] on the inner. */
+const WHERE_OUTER = whereWeWork.filter((_, index) => index % 2 === 0);
+const WHERE_INNER = whereWeWork.filter((_, index) => index % 2 === 1);
+/* Which way the outer row turns over: the top row goes left to right, the
+   bottom right to left. */
+const OUTER_ROW_ORDER = 'ltr';
 
 /*
  * The white sheet rises while the arc is still growing, and the page turns
@@ -873,16 +889,6 @@ function ProjectsCopy() {
     /* The second paint of the rows. Kept out of the tree until a wipe starts,
        so the arc can scale without redrawing a second copy of every logo. */
     const wipesRef = useRef(null);
-    const rowTwinsRef = useRef(null);
-    /*
-     * The lowest the playhead has been since the clients came back, or null when
-     * they are not on their way back.
-     *
-     * Coming back up the page, the rows are not black logos on the paper waiting
-     * for the band to return: they stay empty, and the white retreating off each
-     * row is what shows them, in their original white on the black behind it.
-     */
-    const returningRef = useRef(null);
     /* Whether the clients were taken for having been skipped - see render. */
     const skippedClientsRef = useRef(false);
 
@@ -897,29 +903,20 @@ function ProjectsCopy() {
     /* Each row's handle on its logos, for taking them off it. */
     const outerRowRef = useRef(null);
     const innerRowRef = useRef(null);
-    /* Every client off both rows, with those that were on screen handed back. */
-    const takeClients = useCallback(
+    /* Both rows off the band, with the new logos that were on screen handed
+       back by their place in whereWeWork - see WHERE_OUTER. */
+    const takeLogos = useCallback(
       () => [
-        ...(outerRowRef.current?.takeAll() ?? []),
-        ...(innerRowRef.current?.takeAll() ?? []),
+        ...(outerRowRef.current?.takeVisible() ?? []).map(({ index, rect }) => ({ index: index * 2, rect })),
+        ...(innerRowRef.current?.takeVisible() ?? []).map(({ index, rect }) => ({ index: index * 2 + 1, rect })),
       ],
       [],
     );
+    /* The rows back on the band, to turn back into the clients as the heading
+       turns back - see ArcTicker's swapped. */
     const restoreClients = useCallback(() => {
       outerRowRef.current?.restore();
       innerRowRef.current?.restore();
-
-      /* Already past the wipes, and there is nothing for them to bring back. */
-      if (playheadRef.current > WIPE_SECOND_AT) {
-        returningRef.current = playheadRef.current;
-
-        /* At once: the fade is only for coming back in, and on the way out it
-           would show the black logos this is here to keep hidden. */
-        if (rowTwinsRef.current) {
-          rowTwinsRef.current.style.transition = 'none';
-          rowTwinsRef.current.style.opacity = '0';
-        }
-      }
     }, []);
     /*
      * The three pieces of the community panel, which are also the three things
@@ -987,6 +984,7 @@ function ProjectsCopy() {
     aboutArrived: false,
       ctaHidden: false,
       spill: false,
+      gravity: false,
       titleGone: false,
     };
     const revealedRef = useRef(initialFlags);
@@ -1187,18 +1185,22 @@ function ProjectsCopy() {
         /* What lets the spill go. Everything past this point is the spill's own
            clock, which is why it is a flag and not a value. */
         spill: crossed(flags.spill, playhead, SPILL_AT, 0.02),
+        /* And when what is still on screen of it falls. */
+        gravity: crossed(flags.gravity, playhead, GRAVITY_AT, 0.02),
       };
 
       /*
-       * Arriving past the spill without having come through the clients, as a
-       * reload partway down does: there is nothing to turn into anything, so
-       * they are off the rows before the rows first draw, not a moment after.
-       * Given back if the reader goes back up before the spill has got going.
+       * Arriving past the fall without having come through the band, as a reload
+       * partway down does: there is nothing on screen to fall, so the rows are
+       * emptied before they first draw, not a moment after.
        */
-      if (next.spill && !flags.clients && !flags.spill) {
-        takeClients();
+      if (next.gravity && !flags.clients && !flags.gravity) {
+        takeLogos();
         skippedClientsRef.current = true;
-      } else if (!next.spill && flags.spill && skippedClientsRef.current) {
+      }
+
+      /* Going back up past the change: the rows are the clients again. */
+      if (!next.spill && flags.spill) {
         restoreClients();
         skippedClientsRef.current = false;
       }
@@ -1346,10 +1348,7 @@ function ProjectsCopy() {
        * behind it. Both eased to a stop, because both are arriving somewhere -
        * one at the top of the screen and one at the middle of it.
        */
-      setStageVar(
-        '--title-exit',
-        smootherstep(clamp01((playhead - TITLE_EXIT_AT) / TITLE_EXIT_OVER)).toFixed(4),
-      );
+      setStageVar('--title-exit', `${arcExit.toFixed(2)}px`);
       setStageVar(
         '--community',
         easeLead(
@@ -1542,26 +1541,6 @@ function ProjectsCopy() {
         }
       }
 
-      /*
-       * Over once the wipes have fully retreated, or as soon as the reader turns
-       * round, when the first pass's black logos are wanted again.
-       */
-      if (returningRef.current !== null) {
-        returningRef.current = Math.min(returningRef.current, playhead);
-
-        if (
-          playhead <= WIPE_SECOND_AT ||
-          playhead > returningRef.current + RETURN_TURN_ROUND
-        ) {
-          returningRef.current = null;
-
-          if (rowTwinsRef.current) {
-            rowTwinsRef.current.style.transition = '';
-            rowTwinsRef.current.style.opacity = '';
-          }
-        }
-      }
-
       if (wiping) {
         wipe(secondWipeRef.current, secondProgress, 1);
         wipe(topWipeRef.current, topProgress, -1);
@@ -1659,7 +1638,7 @@ function ProjectsCopy() {
             ? `scene ${SCENES.length}/${SCENES.length} · end of timeline`
             : `scene ${index + 1}/${SCENES.length} · ${SCENES[index].name}`;
       }
-    }, [takeClients, restoreClients]);
+    }, [takeLogos, restoreClients]);
 
     useTitlePixels({
       playheadRef,
@@ -2085,8 +2064,6 @@ function ProjectsCopy() {
                 fadeClassName={styles.bandFade}
                 wipeClassName={styles.rowWipe}
                 wipesRef={wipesRef}
-                twinsRef={rowTwinsRef}
-                twinsClassName={styles.rowTwins}
                 wipes={[
                   { slotRef: setSecondWipeSlot, rectRef: secondWipeRef, half: -1 },
                   { slotRef: setTopWipeSlot, rectRef: topWipeRef, half: 1 },
@@ -2097,6 +2074,11 @@ function ProjectsCopy() {
                   className={styles.tickerFade}
                   pathRef={arcPathRef}
                   items={CLIENTS_OUTER}
+                  nextItems={WHERE_OUTER}
+                  nextScales={whereWeWorkRowScale}
+                  swapped={revealed.spill}
+                  swapDelay={TITLE_CHANGE_MS * TITLE_SWAP_SHARE}
+                  swapOrder={OUTER_ROW_ORDER}
                   running={revealed.clients}
                   rowOffset={-TICKER_ROW_OFFSET}
                   direction={1}
@@ -2110,6 +2092,11 @@ function ProjectsCopy() {
                   className={styles.tickerFade}
                   pathRef={arcPathRef}
                   items={CLIENTS_INNER}
+                  nextItems={WHERE_INNER}
+                  nextScales={whereWeWorkRowScale}
+                  swapped={revealed.spill}
+                  swapDelay={TITLE_CHANGE_MS * TITLE_SWAP_SHARE}
+                  swapOrder={OUTER_ROW_ORDER === 'ltr' ? 'rtl' : 'ltr'}
                   running={revealed.clients}
                   rowOffset={TICKER_ROW_OFFSET}
                   direction={-1}
@@ -2152,10 +2139,9 @@ function ProjectsCopy() {
               roundSet={whereWeWorkRound}
               obstacleRefs={communityBodies.current}
               running={revealed.spill}
+              gravity={revealed.gravity}
               stageRef={stageRef}
-              delay={TITLE_CHANGE_MS * TITLE_SWAP_SHARE}
-              takeClients={takeClients}
-              restoreClients={restoreClients}
+              takeLogos={takeLogos}
             />
           )}
 
