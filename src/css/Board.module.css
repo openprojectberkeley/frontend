@@ -129,13 +129,17 @@
     padding-top: 10px;
 }
 
-.name img {
+.name img,
+.name svg {
+    display: block;
     width: 20px;
     height: 20px;
 }
 
+/* The name's own colour, which the LinkedIn mark is drawn in - see .onPaper. */
 .name a {
     height: 20px;
+    color: inherit;
 }
 
 .name h3 {
@@ -214,6 +218,7 @@
 .boardPics h1.onPaper,
 .boardPics h2.onPaper,
 .name.onPaper h3,
+.name.onPaper a,
 .title.onPaper,
 .title.onPaper .title {
     color: #22114F;
@@ -295,7 +300,7 @@
 /* The link icons beside the name come in as the name is uncovered. */
 .name a {
     opacity: 0;
-    transition: opacity 400ms ease 500ms;
+    transition: opacity 400ms ease 500ms, color 150ms ease;
 }
 
 .inView .name a {

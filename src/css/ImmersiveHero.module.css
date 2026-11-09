@@ -2223,6 +2223,32 @@
   color: #FAF3E0;
 }
 
+/* A heading with something set in line after it - see JoinScene's titleAside. A
+   long heading may wrap, and what is beside it goes under it if it has to. */
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.titleRow > .aboutTitle {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.titleAside {
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 700ms ease, filter 700ms ease;
+}
+
+/* Doubled, as .revealed comes earlier in the file. */
+.titleAside.revealed {
+  opacity: 1;
+  filter: blur(0);
+}
+
 .aboutMission {
   position: relative;
   margin: 0;

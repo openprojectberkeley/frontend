@@ -31,7 +31,8 @@ import { applicationDeadline } from '../data/recruitmentTimeline';
  * `title` for a heading of their own; contact passes no `button`, as its form
  * is what comes next, and `headClassName` and `titleClassName` to stack and
  * colour it. A `button` with `back` is the plain one, with no fill and its arrow
- * pointing back in front of its label.
+ * pointing back in front of its label. `titleAside` is set in line after the
+ * heading, blurring in with it - a board member's profile links.
  */
 
 const JOIN_RUNS = [
@@ -70,6 +71,7 @@ export default function JoinScene({
   title = 'Join us!',
   headClassName = '',
   titleClassName = '',
+  titleAside = null,
   runs = JOIN_RUNS,
   button = JOIN_BUTTON,
 }) {
@@ -124,7 +126,14 @@ export default function JoinScene({
 
   return (
     <div className={`${styles.aboutHead} ${headClassName}`}>
-      <h2 className={`${styles.aboutTitle} ${shown ? styles.revealed : ''} ${titleClassName}`}>{title}</h2>
+      {titleAside ? (
+        <div className={styles.titleRow}>
+          <h2 className={`${styles.aboutTitle} ${shown ? styles.revealed : ''} ${titleClassName}`}>{title}</h2>
+          <div className={`${styles.titleAside} ${shown ? styles.revealed : ''}`}>{titleAside}</div>
+        </div>
+      ) : (
+        <h2 className={`${styles.aboutTitle} ${shown ? styles.revealed : ''} ${titleClassName}`}>{title}</h2>
+      )}
 
       <div className={styles.joinBody}>
         <p className={styles.aboutMission}>

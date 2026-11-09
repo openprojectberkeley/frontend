@@ -27,7 +27,7 @@ const fall2026 = {
       accent: "#A50034",
       difficulty: "intermediate",
       logo: atlasLogo,
-      pms: ["Chester Duan", "Ojasvi Shrivastava", "Cindy Wang"],
+      pms: ["Chester Duan", "Cindy Wang"],
       description: "An internal knowledge and project intelligence platform for LG NOVA that brings scattered project data, documents, and updates into one searchable workspace. Build dashboards, data integrations, and AI-powered discovery tools that help teams quickly find what they need and understand what’s happening across the organization.",
       clientName: "LG NOVA"
     },

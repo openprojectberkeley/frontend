@@ -61,22 +61,25 @@
   text-decoration: none;
 }
 
+/* In line after their name - see JoinScene's titleAside. */
 .socials {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 20px;
 }
 
+/* The colour of the name beside them, which the LinkedIn mark is drawn in. */
 .socials a {
   display: block;
-  height: 24px;
+  height: 30px;
+  color: #FAF3E0;
 }
 
-.socials img {
+.socials img,
+.socials svg {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
 }
 
 .projects {

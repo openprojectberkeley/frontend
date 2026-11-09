@@ -21,7 +21,7 @@ import NotFound from './NotFound';
 import { ProjectDifficulty } from './ProjectDetail';
 import { profileNamed } from '../data/boardMembers';
 import { projectAnchor } from '../data/projectsData';
-import linkedinicon from '../images/about/linkedin_blue.png';
+import LinkedInIcon from './LinkedInIcon';
 import websiteicon from '../images/about/web.png';
 import coffeechaticon from '../images/about/coffeechat.png';
 
@@ -222,6 +222,29 @@ export default function MemberProfile() {
 
   const { name, image, link, coffee_chat: coffeeChat, currentProjects, pastProjects } = profile;
 
+  const socials = (link || coffeeChat) && (
+    <div className={styles.socials}>
+      {link && (
+        <a href={link} target="_blank" rel="noopener noreferrer">
+          {link.includes('linkedin') ? (
+            <LinkedInIcon label={`${name}'s LinkedIn`} />
+          ) : (
+            <img src={websiteicon} className={boardStyles.icon} alt={`${name}'s profile link`} />
+          )}
+        </a>
+      )}
+      {coffeeChat && (
+        <a href={coffeeChat} target="_blank" rel="noopener noreferrer">
+          <img
+            src={coffeeChat.includes('calendly') ? coffeechaticon : websiteicon}
+            className={boardStyles.icon}
+            alt={`Book a coffee chat with ${name}`}
+          />
+        </a>
+      )}
+    </div>
+  );
+
   return (
     <>
       <FixedStarField />
@@ -234,34 +257,12 @@ export default function MemberProfile() {
               arrived={headIn}
               reducedMotion={reducedMotion}
               title={name}
+              titleAside={socials}
               headClassName={contactStyles.head}
               runs={runs}
               button={null}
             />
           </div>
-
-          {(link || coffeeChat) && (
-            <div className={styles.socials}>
-              {link && (
-                <a href={link} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src={link.includes('linkedin') ? linkedinicon : websiteicon}
-                    className={boardStyles.icon}
-                    alt={`${name}'s profile link`}
-                  />
-                </a>
-              )}
-              {coffeeChat && (
-                <a href={coffeeChat} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src={coffeeChat.includes('calendly') ? coffeechaticon : websiteicon}
-                    className={boardStyles.icon}
-                    alt={`Book a coffee chat with ${name}`}
-                  />
-                </a>
-              )}
-            </div>
-          )}
 
           <ProjectSection title="Current projects" colour={SECTION_COLOURS.current} projects={currentProjects} />
           <ProjectSection title="Past projects" colour={SECTION_COLOURS.past} projects={pastProjects} />

@@ -26,7 +26,6 @@ import yashom from "../images/about/spring2025/yashom.thumb.jpg";
 
 // Project Managers
 import chester from "../images/about/fall2026/chester.thumb.jpg";
-import ojasvi from "../images/about/fall2026/ojasvi.thumb.jpg";
 import cindy from "../images/about/fall2026/cindy.thumb.jpg";
 // import emmanuel from "../images/about/fall2026/emmanuel.thumb.jpg"; // (placeholder for now)
 import sainik from "../images/about/fall2026/sainik.thumb.jpg";
@@ -94,6 +93,22 @@ import aslesha from "../images/about/fall2025/aslesha.thumb.jpg";
 import khushi from "../images/about/spring2025/khushi.thumb.jpg";
 import dylan from "../images/about/fall2025/dylan.thumb.jpg";
 import julia from "../images/about/fall2025/julia.thumb.jpg";
+import danh from "../images/about/fall2024/Danh.thumb.jpg";
+import payam from "../images/about/spring2025/payam.thumb.jpg";
+import gabriel from "../images/about/fall2024/gabriel.thumb.jpg";
+import isaac_lei from "../images/about/spring2025/isaac.thumb.jpg";
+import ava from "../images/about/spring2025/ava.thumb.jpg";
+import mihir from "../images/about/spring2025/mihir.thumb.jpg";
+import rachelc from "../images/about/spring2025/rachelc.thumb.jpg";
+import smriti from "../images/about/spring2025/smriti.thumb.jpg";
+import sofia from "../images/about/spring2025/sofia.thumb.jpg";
+import sibi from "../images/about/spring2025/sibi.thumb.jpg";
+import jesslyn from "../images/about/spring2025/jesslyn.thumb.jpg";
+import arthur from "../images/about/spring2025/arthur.thumb.jpg";
+import anthony from "../images/about/spring2025/anthony.thumb.jpg";
+import ethan_zhang from "../images/about/spring2025/ethan.thumb.jpg";
+import dennis from "../images/about/spring2025/dennis.thumb.jpg";
+import damond from "../images/about/spring2024/damond.thumb.jpg";
 
 // Alumni
 import ethan from "../images/about/fall2023/ethan.thumb.jpg";
@@ -133,6 +148,7 @@ export const board = [
         image: mia,
         major: "Cognitive Science, Media Studies",
         year: "Senior",
+        link: "https://www.linkedin.com/in/miasalinas-/"
     },
     {
         name: "Jenny Liang",
@@ -140,6 +156,7 @@ export const board = [
         image: jenny,
         major: "Data Science, Statistics",
         year: "Senior",
+        link: "https://www.linkedin.com/in/jenny-liang-08571631a"
     },
     {
         name: "Anupriya Islam",
@@ -147,6 +164,7 @@ export const board = [
         image: anupriya,
         major: "Stats",
         year: "Senior",
+        link: "https://www.linkedin.com/in/anupriya-islam/"
     },
     {
         name: "Chad Park",
@@ -154,6 +172,7 @@ export const board = [
         image: chad,
         major: "Data Science, Industrial Engineering & Operations Research",
         year: "Senior",
+        link: "www.linkedin.com/in/chad-park1"
     },
     {
         name: "Christopher Chang",
@@ -161,6 +180,7 @@ export const board = [
         image: christopher,
         major: "Data Science & Economics",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/christopherchangg/"
     },
     {
         name: "Ganesh Karayi",
@@ -168,6 +188,7 @@ export const board = [
         image: ganesh,
         major: "Applied Math, Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/ganesh-karayi/"
     },
     {
         name: "Ashley Li",
@@ -175,6 +196,7 @@ export const board = [
         image: ashleyl,
         major: "Analytics",
         year: "Senior",
+        link: "https://www.linkedin.com/in/ashley-li-a05b99285/"
     },
     {
         name: "Annie Lin",
@@ -182,6 +204,7 @@ export const board = [
         image: annie,
         major: "Cognitive Science, Data Science",
         year: "Sophomore",
+        link: "linkedin.com/in/annie-y-lin"
     },
     {
         name: "Ashley Iattoni",
@@ -189,6 +212,7 @@ export const board = [
         image: ashleyi,
         major: "Cognitive Science, Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/ashley-iattoni-9508272a9"
     },
     {
         name: "Helena Zhang",
@@ -196,6 +220,7 @@ export const board = [
         image: helena,
         major: "Math + Data Science",
         year: "Senior",
+        link: "https://www.linkedin.com/in/helena-zhang-/"
     },
     {
         name: "Ryan Lin",
@@ -203,6 +228,7 @@ export const board = [
         image: ryan,
         major: "Data Science",
         year: "Junior",
+        link: "www.linkedin.com/in/ryanthelion"
     },
     {
         name: "Jonathan Tran",
@@ -210,6 +236,7 @@ export const board = [
         image: jonathan,
         major: "Computer Science, Data Science",
         year: "Senior",
+        link: "https://www.linkedin.com/in/jnthntrn/"
     },
     {
         name: "Megan Nguyen",
@@ -217,6 +244,7 @@ export const board = [
         image: megan,
         major: "Data Science + Integrative Biology",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/megan-nguyen001"
     },
     {
         name: "Arnav Mahadev",
@@ -224,6 +252,7 @@ export const board = [
         image: arnav,
         major: "EECS",
         year: "Junior",
+        link: "linkedin.com/in/arnavmahadev"
     },
     {
         name: "Ashwika Gampa",
@@ -231,6 +260,7 @@ export const board = [
         image: ashwika,
         major: "EECS",
         year: "Senior",
+        link: "https://www.linkedin.com/in/ashwikagampa/"
     },
     {
         name: "Benjamin Huang",
@@ -238,6 +268,7 @@ export const board = [
         image: benh,
         major: "ECE + Physics",
         year: "Junior",
+        link: "https://www.linkedin.com/in/benjamin-huang-78b72a256/"
     },
     {
         name: "Nicole Ta",
@@ -245,6 +276,7 @@ export const board = [
         image: nicole,
         major: "Business Administration",
         year: "Junior",
+        link: "www.linkedin.com/in/nicole-y-ta"
     },
     {
         name: "Sriya Bandarupalli",
@@ -252,6 +284,7 @@ export const board = [
         image: sriya,
         major: "Applied Mathematics",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/sriya-bandarupalli-810289260/"
     },
     {
         name: "Diego Llamas",
@@ -259,6 +292,7 @@ export const board = [
         image: diego,
         major: "Business Administration, Data Science, & Economics",
         year: "Senior",
+        link: "www.linkedin.com/in/diegofllamas"
     },
     {
         name: "Felicia Ye",
@@ -266,6 +300,7 @@ export const board = [
         image: felicia,
         major: "Applied Math, Computer Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/felicia-ye-1485a337a/"
     },
     {
         name: "Peter Lourenco",
@@ -273,6 +308,7 @@ export const board = [
         image: peter,
         major: "EECS",
         year: "Junior",
+        link: "https://www.linkedin.com/in/peterllourenco/"
     },
     {
         name: "Yashom Kapoor",
@@ -280,6 +316,7 @@ export const board = [
         image: yashom,
         major: "Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/yashom-kapoor/"
     },
 ].map(withDefaults);
 
@@ -290,102 +327,119 @@ const managers = [
         image: james,
         major: "Data Science & Economics",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/james-floren-apuyan/"
     },
     {
         name: "Turner Osswald",
         image: turner,
         major: "Astrophysics, Physics",
         year: "Junior",
+        link: "https://www.linkedin.com/in/turner-osswald-6387a8307/"
     },
     {
         name: "Jamil Shirinov",
         image: jamil,
         major: "Computer Science",
         year: "Sophomore",
+        link: "linkedin.com/in/Jamil-Shirinov"
     },
     {
         name: "Leo Li",
         image: leol,
         major: "Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/yiheng-li-a30298343/"
     },
     {
         name: "Janice Lin",
         image: janice,
         major: "Applied Math, Data Science",
         year: "Senior",
+        link: "linkedin.com/in/jmaylin"
     },
     {
         name: "Melody Shane",
         image: melody,
         major: "Data Science",
         year: "Senior",
+        link: "https://www.linkedin.com/in/melodyshane/"
     },
     {
         name: "Miles Petrick",
         image: miles,
         major: "Data Science",
         year: "Junior",
+        link: "www.linkedin.com/in/miles-petrick/"
     },
     {
         name: "Johanna Flores",
         image: johanna,
         major: "Computer Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/johanna-flores-pelayo"
     },
     {
         name: "Keira Tan",
         image: keira,
         major: "EECS",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/keira-tan-b5b647296"
     },
     {
         name: "Joseph Ong",
         image: joseph,
         major: "Applied Math and Computer Science",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/joseph-ongg"
     },
     {
         name: "Zander Rosenzweig",
         image: zander,
         major: "Cognitive Science & Data Science",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/zander-rosenzweig-763028349/"
     },
     {
         name: "Harshini Pulivarthi",
         image: harshini,
         major: "Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/harshini-pulivarthi/"
     },
     {
         name: "Sneha Atmakur",
         image: sneha,
         major: "Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/sneha-atmakur/"
     },
     {
         name: "Ayah Elzein",
         image: ayah,
         major: "Data Science",
         year: "Senior",
+        link: "https://www.linkedin.com/in/ayah-elzein/"
     },
     {
         name: "Navya Lella",
         image: navya,
         major: "IEOR",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/navyalella/"
     },
     {
         name: "Nishaad Sovani",
         image: nishaad,
         major: "Statistics + Economics",
         year: "Junior",
+        link: "https://www.linkedin.com/in/nishaad-sovani/"
     },
     {
         name: "Siddharth Garimella",
         image: siddharth,
         major: "Applied Math + Data Science",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/siddharth-garimella-08aab3430/"
     },
     {
         name: "Emily Yue",
@@ -397,92 +451,102 @@ const managers = [
         image: caden,
         major: "Data Science",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/caden-luu/"
     },
     {
         name: "Austin Tenbrink",
         image: austin,
         major: "Data Science",
         year: "Senior",
+        link: "https://www.linkedin.com/in/austin-tenbrink-aqt/"
     },
     {
         name: "Dayton Phan",
         image: dayton,
         major: "Data Science, CS",
         year: "Junior",
+        link: "https://www.linkedin.com/in/dayton-phan/"
     },
     {
         name: "Matthew Rodrigues",
         image: matthew,
         major: "Computer Science + Business",
         year: "Junior",
+        link: "https://www.linkedin.com/in/matt-c-rod/"
     },
     {
         name: "Cindy Wang",
         image: cindy,
         major: "Economics + Cognitive Science",
         year: "Junior",
-    },
-    {
-        name: "Ojasvi Shrivastava",
-        image: ojasvi,
-        major: "Data Science",
-        year: "Senior",
+        link: "https://www.linkedin.com/in/cindy-wang-43a802418/"
     },
     {
         name: "Chester Duan",
         image: chester,
         major: "EECS",
         year: "Senior",
+        link: "https://www.linkedin.com/in/chester-duan-3b1775303/"
     },
     {
         name: "Benjamin Wang",
         image: benw,
         major: "Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/benjamin--wang/"
     },
     {
         name: "Haaziq Kazi",
         image: haaziq,
         major: "Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/haaziq-kazi/"
     },
     {
         name: "Leo Park",
         image: leop,
         major: "Data Science",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/leo-jae-park-965443389/"
     },
     {
         name: "Emmanuel Elizalde-Ocampo",
         major: "Data Science",
         year: "Junior",
+        link: "https://www.linkedin.com/in/emmanuel-elizalde-05aa34287/"
     },
     {
         name: "Justin Le",
         image: justin,
         major: "Data Science",
+        year: "Junior",
+        link: "https://www.linkedin.com/in/justin-le2028/"
     },
     {
         name: "Sainik Ghosh",
         image: sainik,
         major: "Statistics and Economics",
         year: "Junior",
+        link: "https://www.linkedin.com/in/sainikg/"
     },
     {
         name: "Karthik Subramanian",
         image: karthik,
         major: "EECS",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/karthik-subramanian-07/"
     },
     {
         name: "Jason Shorey",
         major: "Data Science",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/jiaqi-ji-5a4a15432/"
     },
     {
         name: "Yuchan Chung",
         major: "Data Science",
         year: "Sophomore",
+        link: "https://www.linkedin.com/in/yuchan-chung1964/"
     },
 ].map(withDefaults);
 
@@ -494,172 +558,399 @@ const managers = [
 const oldBoard = [
     {
         name: "Ben Ross",
+        major: "Applied Math, Data Science",
         title: "VP of Internals",
         image: benr,
+        link: "https://www.linkedin.com/in/benjaminross6/"
     },
     {
         name: "Yonatan Herrera Gonzalez",
+        major: "EECS",
         title: "VP of Clients",
         image: yonatan,
+        link: "https://www.linkedin.com/in/yonatan-herrera-gonzalez-8619b8317/"
     },
     {
         name: "Andre Ramos",
+        major: "Data Science",
         title: "Project Manager",
         image: andre,
+        link: "https://www.linkedin.com/in/andre-ramos-29bb4926b/"
     },
     {
         name: "Erin Lee",
+        major: "Data Science",
         title: "Project Manager",
         image: erin,
+        link: "https://www.linkedin.com/in/erinflee/"
     },
     {
         name: "Emily Ma",
+        major: "Geography & Statistics",
         title: "Project Manager",
         image: emily_ma,
+        link: "https://www.linkedin.com/in/emily-ma-365293297/"
     },
     {
         name: "David Zhang",
+        major: "Applied Mathematics, Computer Science",
         title: "Project Manager",
         image: david,
+        link: "https://www.linkedin.com/in/davidzhang21/"
     },
     {
         name: "Surabhi Verma",
+        major: "Data Science, Economics",
         title: "Project Manager",
         image: surabhi,
+        link: "https://www.linkedin.com/in/surabhi-verma-824092372/"
     },
     {
         name: "Noor Pirzada",
+        major: "Computer Science, Cognitive Science",
         title: "Project Manager",
         image: noor,
+        link: "https://www.linkedin.com/in/noor-pirzada/"
     },
     {
         name: "Zehra Naqvi",
+        major: "Data Science, Physics",
         title: "Project Manager",
         image: zehra,
+        link: "https://www.linkedin.com/in/zehra-naqvi-zn/"
     },
     {
         name: "Jessica Chiu",
+        major: "Data Science, Public Health",
         title: "Project Manager",
         image: jessica,
+        link: "https://www.linkedin.com/in/jessicaclairechiu/"
     },
     {
         name: "Jayden Lee",
+        major: "Data Science",
         title: "Project Manager",
         image: jaydenl,
+        link: "https://www.linkedin.com/in/jaydenelee/"
     },
     {
         name: "Jayden Szeto",
+        major: "Data Science, Computer Science",
         title: "Project Manager",
         image: jaydens,
+        link: "https://www.linkedin.com/in/jaydenszeto/"
     },
     {
         name: "Andrew Zhou",
+        major: "EECS",
         title: "Project Manager",
         image: andrew,
+        link: "https://www.linkedin.com/in/andrewyzhou/"
     },
     {
         name: "Parsa Faraji Alamouti",
+        major: "EECS",
         title: "Instructor PM",
         image: parsa,
+        link: "https://www.linkedin.com/in/parsa-f-942338272/"
     },
     {
         name: "Charmi Buddaluru",
+        major: "Data Science",
         title: "Instructor PM",
         image: charmi,
+        link: "https://www.linkedin.com/in/charmibuddaluru/"
     },
     {
         name: "Devah Schaefers",
+        major: "Data Science, Computer Science",
         title: "VP of Tech",
         image: devah,
+        link: "https://www.linkedin.com/in/devahschaefers/"
     },
     {
         name: "Sophie Nguyen",
+        major: "CS + Econ",
         title: "VP of Finance",
         image: sophie,
+        link: "https://www.linkedin.com/in/sophie-nguyen-615118303/"
     },
     {
         name: "Neel Sharma",
+        major: "Computer Science, Data Science",
         title: "VP of Professional Development",
         image: neel,
+        link: "https://www.linkedin.com/in/neelshar/"
     },
     {
         name: "Ted Nguyen",
+        major: "Computer Science, Data Science",
         title: "Project Manager",
+        link: "https://www.linkedin.com/in/tednguyen23/"
     },
     {
         name: "Karthik Gannavarapu",
+        major: "Computer Science",
         title: "Project Manager",
         image: karthikeya,
+        link: "https://www.linkedin.com/in/karthikeya-gannavarapu-37a234294/"
     },
     {
         name: "Isaac Hwang",
+        major: "Computer Science, Data Science",
         title: "Project Manager",
         image: isaac,
+        link: "https://www.linkedin.com/in/isaac-hwang1/"
     },
     {
         name: "Holden Fees",
+        major: "Data Science, Applied Mathematics",
         title: "Project Manager",
         image: holden,
+        link: "https://www.linkedin.com/in/holden-fees/"
     },
     {
         name: "Sami Houssaini",
+        major: "Economics & CS",
         title: "Project Manager",
         image: sami,
+        link: "https://www.linkedin.com/in/samihoussaini/"
     },
     {
         name: "Ayman Islam",
+        major: "Data Science, Computer Science",
         title: "Project Manager",
         image: ayman,
+        link: "https://www.linkedin.com/in/ayman-islam-3a32291aa/"
     },
     {
         name: "Peyton Li",
+        major: "Data Science + Stats",
         title: "Project Manager",
         image: peyton,
+        link: "https://www.linkedin.com/in/peytonali/"
     },
     {
         name: "Kailash Ramesh",
+        major: "Applied Math",
         title: "Project Manager",
         image: kailash,
+        link: "https://www.linkedin.com/in/kailash-ramesh-563b971ab/"
     },
     {
         name: "David Cruz",
+        major: "Data Science",
         title: "Project Manager",
         image: david_cruz,
+        link: "https://www.linkedin.com/in/davidcruz-cs/"
     },
     {
         name: "Devansh Ojha",
+        major: "EECS",
         title: "Project Manager",
         image: devansh,
+        link: "https://www.linkedin.com/in/devansh-ojha/"
     },
     {
         name: "Abhi Kiran",
+        major: "Data Science",
         title: "Project Manager",
         image: abhi,
+        link: "https://www.linkedin.com/in/abhinav-kiran24/"
     },
     {
         name: "Edwin Luck",
+        major: "Material Science and Engineering",
         title: "Project Manager",
         image: edwin,
+        link: "https://www.linkedin.com/in/edwin-luck/"
     },
     {
         name: "Aslesha Chandra",
+        major: "Data Science & Economics",
         title: "Project Manager",
         image: aslesha,
+        link: "https://www.linkedin.com/in/asleshachandra/"
     },
     {
         name: "Khushi Bhalla",
+        major: "Data Science & Political Science",
         title: "Project Manager",
         image: khushi,
+        link: "https://www.linkedin.com/in/khushi-bhalla/"
     },
     {
         name: "Dylan Stier",
+        major: "Computer Science, Data Science",
         title: "Project Manager",
         image: dylan,
+        link: "https://www.linkedin.com/in/dylan-stier/"
     },
     {
         name: "Julia Beaupré",
+        major: "Data Science",
         title: "Project Manager",
         image: julia,
+        link: "https://www.linkedin.com/in/julia-beaupre/"
+    },
+    {
+        name: "Danh Tran",
+        major: "MCB + DS",
+        title: "VP of Finance",
+        image: danh,
+        link: "https://www.linkedin.com/in/danh-tran-55b646212/",
+    },
+    {
+        name: "Payam Erfan",
+        major: "Computer Science",
+        title: "Project Manager",
+        image: payam,
+        link: "https://www.linkedin.com/in/payam-erfan/"
+    },
+    {
+        name: "Gabriel Gomes",
+        major: "EECS",
+        title: "Project Manager",
+        image: gabriel,
+        link: "https://www.linkedin.com/in/gabrielgomes03/"
+    },
+    {
+        name: "Isaac Lei",
+        major: "Data Science",
+        title: "Project Manager",
+        image: isaac_lei,
+        link: "https://www.linkedin.com/in/isaaclei018/",
+    },
+    {
+        name: "Ava Joshi",
+        major: "Cognitive Science",
+        title: "Project Manager",
+        image: ava,
+    },
+    {
+        name: "Mihir Mirchandani",
+        major: "Computer Science",
+        title: "Project Manager",
+        image: mihir,
+        link: "https://www.linkedin.com/in/mihir-mirchandani/",
+    },
+    {
+        name: "Rachel Cheung",
+        major: "Data Science",
+        title: "Project Manager",
+        image: rachelc,
+        link: "https://www.linkedin.com/in/cheungrachel8/"
+    },
+    {
+        name: "Smriti Govindan",
+        major: "Cognitive Science",
+        title: "Project Manager",
+        image: smriti,
+        link: "https://www.linkedin.com/in/smriti-govindan/"
+    },
+    {
+        name: "Sofia Valadez",
+        major: "Computer Science",
+        title: "Project Manager",
+        image: sofia,
+        link: "https://www.linkedin.com/in/sofiaevaladez/"
+    },
+    {
+        name: "Sibi Saravanan",
+        major: "Data Science and Statistics",
+        title: "Project Manager",
+        image: sibi,
+        link: "https://www.linkedin.com/in/sibi-saravanan/"
+    },
+    {
+        name: "Jesslyn Ashley Ruswan",
+        major: "Data Science",
+        title: "Project Manager",
+        image: jesslyn,
+        link: "https://www.linkedin.com/in/jesslyn-ruswan-650210264/",
+    },
+    {
+        name: "Arthur Wigo",
+        major: "Computer Science",
+        title: "Project Manager",
+        image: arthur,
+        link: "https://www.linkedin.com/in/arthur-wigo-2235062aa/",
+    },
+    {
+        name: "Anthony Kobzar",
+        major: "Mathematics & Computer Science",
+        title: "Project Manager",
+        image: anthony,
+        link: "https://www.linkedin.com/in/anthony-kobzar-182889252/",
+    },
+    {
+        name: "Ethan Zhang",
+        major: "Applied Mathematics & Computer Science",
+        title: "Project Manager",
+        image: ethan_zhang,
+        link: "https://www.linkedin.com/in/ethan-zhang-693100270",
+    },
+    {
+        name: "Dennis Vengerov",
+        major: "CS + DS",
+        title: "Project Manager",
+        image: dennis,
+        link: "https://www.linkedin.com/in/dennis-vengerov-a78376294/",
+    },
+    {
+        name: "Damond Fang",
+        major: "EECS",
+        title: "Project Manager",
+        image: damond,
+        link: "https://www.linkedin.com/in/damond-f/"
+    },
+    {
+        name: "Varun Vemulapalli",
+        major: "Computer Science, Data Science",
+        title: "Project Manager",
+        link: "https://www.linkedin.com/in/varunvemulapalli/"
+    },
+    {
+        name: "Chris Joseph",
+        major: "Statistics",
+        title: "Project Manager",
+        link: "https://www.linkedin.com/in/chrisjoseph-/"
+    },
+    {
+        name: "Joshua Schiller",
+        major: "Applied Mathematics, Business Administration, Computer Science",
+        title: "Project Manager",
+        link: "https://www.linkedin.com/in/joshschiller/"
+    },
+    {
+        name: "Mahdin Zahere",
+        major: "Data Science",
+        title: "Project Manager",
+        link: "https://www.linkedin.com/in/mahdinmzahere/"
+    },
+    {
+        name: "Amisha Gupta",
+        major: "Computer Science, Data Science",
+        title: "Project Manager",
+        link: "https://www.linkedin.com/in/guptaamishagupta/"
+    },
+    {
+        name: "Justin Choi",
+        major: "Data Science + Economics",
+        title: "Project Manager",
+        link: "https://www.linkedin.com/in/justin-choi-a530b929b/"
+    },
+    {
+        name: "Amy Yu",
+        major: "Data Science",
+        title: "Project Manager",
+        link: "https://www.linkedin.com/in/amy-yu-3a8243245/"
+    },
+    {
+        name: "Kai Shing",
+        major: "Data Science",
+        title: "Project Manager",
+        link: "https://www.linkedin.com/in/kai-shing/"
     },
 ].map(withDefaults);
 

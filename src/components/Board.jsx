@@ -13,7 +13,7 @@ import useCursorTip from './useCursorTip';
 import useCursorIcon from './useCursorIcon';
 import arriveAt from './arriveAt';
 import OpensElsewhere from './OpensElsewhere';
-import linkedinicon from "../images/about/linkedin_blue.png";
+import LinkedInIcon from "./LinkedInIcon";
 import websiteicon from "../images/about/web.png";
 import coffeechaticon from "../images/about/coffeechat.png";
 // projectLeads arrives grouped by project in the projects page's order - see
@@ -531,15 +531,15 @@ export default function Board() {
               rel="noopener noreferrer"
               {...quietOverLink}
             >
-            <img
-              src={
-                person.link.includes("linkedin")
-                  ? linkedinicon
-                  : websiteicon
-              }
-              className={`${styles.icon}`}
-              alt={`${person.name}'s profile link`}
-            />
+            {person.link.includes("linkedin") ? (
+              <LinkedInIcon label={`${person.name}'s LinkedIn`} />
+            ) : (
+              <img
+                src={websiteicon}
+                className={`${styles.icon}`}
+                alt={`${person.name}'s profile link`}
+              />
+            )}
             </a>
           )}
           {person.coffee_chat && (
