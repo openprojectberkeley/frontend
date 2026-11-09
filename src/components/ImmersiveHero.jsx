@@ -7,6 +7,7 @@ import LogoMark, { DISC_CENTRE_X, DISC_CENTRE_Y, DISC_WIDTH } from './LogoMark';
 import useScrollPlayhead from './useScrollPlayhead';
 import LogoArc, { arcMiddle, arcOutline, arcPath, STROKE_WIDTH } from './LogoArc';
 import { clearHeaderTone, setHeaderTone } from './headerTone';
+import screenHeight from './screenHeight';
 import ArcTicker from './ArcTicker';
 import LogoSpill from './LogoSpill';
 import MomentStrip from './MomentStrip';
@@ -567,6 +568,77 @@ const BUBBLES = [
   { size: 7, left: 36, stagger: 30, speed: 268, colour: 'magenta', layer: 0, opacity: 0.44 },
 ];
 
+/*
+ * Which elements read each of the variables render writes, by their class in
+ * the stylesheet. Each is written onto those and nothing else.
+ *
+ * They used to all go on the stage, and a custom property is inherited: every
+ * one that changed restyled every element in the stage - the stars, the
+ * bubbles, the band, the pile, the moments - to answer something only one
+ * corner of it reads. Written on the elements that use it, a change restyles
+ * that corner. Anything that does read one of these must sit inside an
+ * element listed for it; a variable that is not listed, or whose elements are
+ * missing, still goes on the stage.
+ */
+const VAR_TARGETS = {
+  '--zoom': ['lockup'],
+  '--zoom-origin-x': ['lockup'],
+  '--zoom-origin-y': ['lockup'],
+  '--zoom-dx': ['lockup'],
+  '--zoom-dy': ['lockup'],
+  '--disc-shadow-opacity': ['lockup'],
+  '--fly': ['lockup'],
+  '--part-opacity': ['lockup'],
+  '--word-opacity': ['lockup'],
+  '--bubble-gate': ['bubble'],
+  '--rise': ['bubble', 'discCopy', 'starField', 'swirl'],
+  '--disc-drift': ['discCopy'],
+  '--stars': ['starField'],
+  '--sheet': ['sheet', 'starField', 'gridSheet', 'arcHolder'],
+  '--arc': ['arcHolder'],
+  '--arc-grow': ['arcHolder'],
+  '--arc-rise': ['arcHolder'],
+  '--ink': ['arcHolder'],
+  '--band-fade': ['arcHolder'],
+  '--wipe-fade': ['arcHolder'],
+  '--flat': ['arcTitle'],
+  '--title-exit': ['arcTitle'],
+  '--grid-sub': ['gridSheet'],
+  '--grid-hair': ['gridSheet'],
+  '--grid-shift': ['gridSheet'],
+  '--community': ['community'],
+  '--pan': ['community', 'moments', 'spill', 'spillDebug'],
+  '--moments-lift': ['moments'],
+  '--about-wipe': ['aboutWipe'],
+  '--join-rise': ['joinRise'],
+};
+
+/* Every element of the stage each variable goes on, as VAR_TARGETS has it. */
+function resolveTargets(stage) {
+  const found = {};
+
+  Object.entries(VAR_TARGETS).forEach(([name, classes]) => {
+    const elements = classes.flatMap((key) =>
+      styles[key] ? Array.from(stage.querySelectorAll(`.${CSS.escape(styles[key])}`)) : [],
+    );
+
+    if (elements.length) {
+      found[name] = elements;
+    }
+  });
+
+  return found;
+}
+
+/*
+ * The spill's logos against the arc's box, so a phone's pile is in proportion
+ * to the band it falls from: full size once the box is SPILL_FULL_AT wide or
+ * more, which is a laptop's, and shrinking with it below that, but never
+ * past SPILL_SMALLEST - under that a wordmark stops being legible.
+ */
+const SPILL_FULL_AT = 600;
+const SPILL_SMALLEST = 0.6;
+
 /* The bubble carrying the projects copy, which the disc's copy is kept clear
    of on a phone - see .discCopy. */
 const PROJECTS_BUBBLE = BUBBLES.find((bubble) => bubble.content === 'projects');
@@ -891,7 +963,7 @@ function ProjectsCopy() {
      */
     const playheadRef = useRef(0);
     /* What render last wrote to the stage's variables - see setStageVar. */
-    const stageVarsRef = useRef({ stage: null, values: {} });
+    const stageVarsRef = useRef({ stage: null, values: {}, targets: {} });
     const centreRef = useRef({ value: 0, target: 0, frame: null, last: 0, first: true });
 
     /*
@@ -992,22 +1064,39 @@ function ProjectsCopy() {
       }
 
       /*
-       * Every variable below is inherited by the whole stage, so each write
-       * restyles everything in it. Most of them are clamped and sit still for
-       * all but their own scene, so only the ones whose value has moved are
-       * written.
+       * Each variable goes on the elements that read it - see VAR_TARGETS -
+       * and only when its value has moved: most of them are clamped and sit
+       * still for all but their own scene.
        */
       const written = stageVarsRef.current;
 
-      if (written.stage !== stage) {
+      /* Looked up once, and again only if the stage or one of the elements
+         has been replaced. */
+      if (
+        written.stage !== stage ||
+        Object.values(written.targets).some((elements) => !elements[0].isConnected)
+      ) {
         written.stage = stage;
         written.values = {};
+        written.targets = resolveTargets(stage);
       }
 
       const setStageVar = (name, value) => {
-        if (written.values[name] !== value) {
-          written.values[name] = value;
+        if (written.values[name] === value) {
+          return;
+        }
+
+        written.values[name] = value;
+
+        const elements = written.targets[name];
+
+        if (!elements) {
           stage.style.setProperty(name, value);
+          return;
+        }
+
+        for (let index = 0; index < elements.length; index += 1) {
+          elements[index].style.setProperty(name, value);
         }
       };
 
@@ -1028,10 +1117,11 @@ function ProjectsCopy() {
          Neither moves with anything written below, only with the scroll. */
       const aboutRect = aboutRef.current?.getBoundingClientRect();
       const stageTop = stage.getBoundingClientRect().top;
-      /* Here too: window.innerHeight is a layout read like the others, and
-         asked for further down, after the writes, it made the browser restyle
-         the whole stage a second time every frame. */
-      const vh = window.innerHeight / 100;
+      /* A vh in pixels, for matching the stylesheet's vh. From screenHeight
+         and not innerHeight, which on a phone moves with the toolbar - and
+         which, asked for after the writes below, also made the browser
+         restyle the whole stage a second time every frame. */
+      const vh = screenHeight() / 100;
 
       // The disc's centre, as a pivot inside the lockup and as a point on the
       // stage: it is both what the zoom turns about and what has to land on the
@@ -1776,7 +1866,7 @@ function ProjectsCopy() {
       }
 
       const from = window.scrollY;
-      const to = from + section.getBoundingClientRect().top + window.innerHeight;
+      const to = from + section.getBoundingClientRect().top + screenHeight();
 
       if (prefersReducedMotion) {
         window.scrollTo(0, to);
@@ -1832,6 +1922,28 @@ function ProjectsCopy() {
 
       observer.observe(disc);
       observer.observe(projects);
+
+      return () => observer.disconnect();
+    }, []);
+
+    /* The spill's size against the arc's - see SPILL_FULL_AT. Whole hundredths,
+       so a resize that moves the box a pixel does not rebuild the pile. */
+    const [spillScale, setSpillScale] = useState(1);
+
+    useEffect(() => {
+      const holder = arcHolderRef.current;
+
+      if (!holder) {
+        return undefined;
+      }
+
+      const observer = new ResizeObserver(() => {
+        const scale = Math.min(1, Math.max(SPILL_SMALLEST, holder.offsetWidth / SPILL_FULL_AT));
+
+        setSpillScale(Math.round(scale * 100) / 100);
+      });
+
+      observer.observe(holder);
 
       return () => observer.disconnect();
     }, []);
@@ -2036,6 +2148,7 @@ function ProjectsCopy() {
               debugClassName={styles.spillDebug}
               items={whereWeWork}
               scales={whereWeWorkScale}
+              sizeScale={spillScale}
               roundSet={whereWeWorkRound}
               obstacleRefs={communityBodies.current}
               running={revealed.spill}

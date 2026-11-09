@@ -30,6 +30,9 @@
     background: rgba(255, 255, 255, 0.04);
     cursor: grab;
     touch-action: pan-y;
+    /* A sideways scroll that reaches the frame's end stays here, rather than
+       carrying on into the browser's swipe back. */
+    overscroll-behavior-x: contain;
     user-select: none;
 }
 

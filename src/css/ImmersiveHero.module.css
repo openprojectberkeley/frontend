@@ -10,8 +10,19 @@
 .stage {
   position: sticky;
   top: 0;
+  /*
+   * The large viewport, which is what vh is on a phone: the height with the
+   * browser's toolbar tucked away, as it is for most of a scroll. It used to
+   * be svh, the height with the toolbar out, and on an iPhone the toolbar
+   * folding away left a band of the page's backdrop under the stage - a dark
+   * strip across the bottom of every light scene. Taller than the window
+   * while the toolbar is out, which only tucks the stage's foot under it.
+   * And it is one fixed number, so the toolbar coming and going never resizes
+   * the stage.
+   */
   height: 100vh;
-  height: 100svh;
+  /* --arc-size is the clients arc's box - see .arcHolder. */
+  --arc-size: min(max(54.5vw, calc(54.5vw + (760px - 100vw) * 0.17)), 86vh);
   display: grid;
   place-items: center;
   padding: 0 var(--margin-from-screen);
@@ -753,7 +764,7 @@
  * copy's height. The push is however far the first is past the second, with
  * a gap between, and nothing when they are apart.
  *
- * The stage is the small viewport's height, which is what svh is.
+ * Half the stage is 50vh, the stage being 100vh tall.
  */
 @media (max-width: 760px) {
   .discCopy {
@@ -762,16 +773,6 @@
       var(--disc-drift, 0px) + var(--disc-h, 0px) / 2 + var(--projects-h, 0px) / 2 + 1.5rem
         - 50vh - var(--projects-pad, 0px) + var(--rise, 0) * var(--projects-speed, 0px)
     );
-  }
-
-  @supports (height: 1svh) {
-    .discCopy {
-      --disc-push: max(
-        0px,
-        var(--disc-drift, 0px) + var(--disc-h, 0px) / 2 + var(--projects-h, 0px) / 2 + 1.5rem
-          - 50svh - var(--projects-pad, 0px) + var(--rise, 0) * var(--projects-speed, 0px)
-      );
-    }
   }
 }
 
@@ -820,7 +821,7 @@
   position: absolute;
   left: 50%;
   top: calc(
-    50% + min(54.5vw, 86vh) * (-0.057 - var(--flat, 0) * 0.081) - var(--flat, 0) * 1.5em
+    50% + var(--arc-size) * (-0.057 - var(--flat, 0) * 0.081) - var(--flat, 0) * 1.5em
   );
   z-index: 6;
   display: grid;
@@ -1572,7 +1573,7 @@
   /* And then scene five carries the whole thing sideways, in the stage's own
      pixels. */
   transform: translate(-50%, -50%)
-    translateY(calc((1 - var(--community, 0)) * (50svh + 50% + 2vh)))
+    translateY(calc((1 - var(--community, 0)) * (50vh + 50% + 2vh)))
     translateX(var(--pan, 0px));
   pointer-events: none;
   will-change: transform;
@@ -1582,6 +1583,18 @@
   flex: none;
   width: clamp(9rem, 21vw, 18rem);
   height: auto;
+}
+
+/*
+ * A phone has no room beside the words for it: the star took most of the
+ * width and squeezed the paragraph into a column a few words wide. Out of
+ * the layout, its box measures nothing, and the spill drops it from the
+ * things the logos are pushed by.
+ */
+@media (max-width: 760px) {
+  .communityStar {
+    display: none;
+  }
 }
 
 .communityText {
@@ -1969,7 +1982,14 @@
    * across; the vh term is a ceiling so that on a shallow window it cannot grow
    * taller than the stage.
    */
-  width: min(54.5vw, 86vh);
+  width: var(--arc-size);
+  /*
+   * On a phone the box grows past 54.5vw, by 0.17 of every pixel the window is
+   * narrower than 760: about 69vw of box on a 414 phone, 72vw on a 375 and 78vw on
+   * a 320. At 54.5vw the logos on the band came out barely a dozen pixels
+   * tall there; this takes them up by about a third. Set on .stage as
+   * --arc-size, as the heading and the correction below repeat it.
+   */
   /*
    * In from past the bottom right corner, which keeps it clear of the copy
    * still drifting up the middle of the screen as the scene opens. Far enough
@@ -2002,7 +2022,7 @@
      * the offset is in the element's own coordinates, and an arc drawn at a
      * quarter size is off centre by a quarter as much.
      */
-    translateX(calc(min(54.5vw, 86vh) * -0.0432));
+    translateX(calc(var(--arc-size) * -0.0432));
   /*
    * The paper shadow: a warm brown that sits under the arc's own gradient,
    * kept as it is while the sheet rises, since the arc keeps its colours too.

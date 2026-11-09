@@ -59,7 +59,16 @@ export default function FilterSelect({ name, summary, options, selected, multipl
       if (!rootRef.current?.contains(event.target)) setOpen(false);
     };
 
-    listRef.current?.focus();
+    const list = listRef.current;
+
+    // Under the button from its left edge, or from its right where that would
+    // run off the page.
+    if (list && list.getBoundingClientRect().right > document.documentElement.clientWidth) {
+      list.style.left = 'auto';
+      list.style.right = '0';
+    }
+
+    list?.focus();
     scrollToOption(active);
     document.addEventListener('pointerdown', closeIfOutside);
 

@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
+import screenHeight from './screenHeight';
 
 /*
  * Reports how far scrolling has travelled inside a pinned section, measured in
  * screens: 0 the moment the section's sticky stage pins to the top, 1 after a
- * viewport of scrolling, 2 after two, and so on. One scene is one whole number
+ * screen (100vh) of scrolling, 2 after two, and so on. One scene is one whole number
  * wide, which is what makes the number in the corner something you can point at
  * ("at playhead 1.4, bring the heading in").
  *
@@ -36,7 +37,9 @@ export default function useScrollPlayhead(sectionRef, onPlayhead, enabled = true
       // before anything this frame writes, so the two never interleave.
       const travelled = -section.getBoundingClientRect().top;
 
-      callbackRef.current(Math.max(0, travelled) / window.innerHeight);
+      // In screens of 100vh, which is what the section is built in - see
+      // screenHeight for why not innerHeight.
+      callbackRef.current(Math.max(0, travelled) / screenHeight());
     };
 
     const schedule = () => {

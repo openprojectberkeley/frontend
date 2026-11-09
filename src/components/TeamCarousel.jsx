@@ -30,6 +30,14 @@ const SWIPE_DISTANCE = 0.18;
 const SWIPE_VELOCITY = 0.5;
 const CAPTION_SCRAMBLE_MS = 450;
 
+// A trackpad's sideways scroll, or shift and the wheel: how far it has to
+// travel, as a share of the frame's width, to turn the page, and how long it
+// has to go quiet before the next one can. One turn per gesture - the
+// momentum a trackpad adds after the fingers lift is part of the same one,
+// and would otherwise run through every semester.
+const WHEEL_DISTANCE = 0.12;
+const WHEEL_IDLE_MS = 180;
+
 // How far the back layer moves, as a share of the front one's travel (set in
 // .carouselLayer); the layers between spread evenly. PARALLAX_EASE is how much
 // of the way to the cursor the layers close each frame.
@@ -189,6 +197,77 @@ export default function TeamCarousel() {
     setDragging(false);
     setDragOffset(0);
   };
+
+  /*
+   * Sideways scrolling over the frame turns it, as dragging does: the track
+   * follows until it has gone WHEEL_DISTANCE, then turns and ignores the rest
+   * of that gesture. Up and down is left to the page.
+   *
+   * A listener of its own rather than onWheel, which React attaches as
+   * passive: the sideways scroll has to be cancelled, or a Mac takes it as
+   * the browser's swipe back to the last page.
+   */
+  const indexRef = useRef(index);
+  indexRef.current = index;
+
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return undefined;
+
+    const gesture = { travelled: 0, turned: false, following: false, timer: null };
+
+    const settle = () => {
+      gesture.travelled = 0;
+      gesture.turned = false;
+      if (gesture.following) {
+        gesture.following = false;
+        setDragging(false);
+        setDragOffset(0);
+      }
+    };
+
+    const onWheel = (event) => {
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? frame.offsetWidth : 1;
+      const dx = event.deltaX * unit;
+      const dy = event.deltaY * unit;
+
+      if (Math.abs(dx) <= Math.abs(dy) || dragRef.current) return;
+
+      event.preventDefault();
+      window.clearTimeout(gesture.timer);
+      gesture.timer = window.setTimeout(settle, WHEEL_IDLE_MS);
+
+      if (gesture.turned) return;
+
+      gesture.travelled += dx;
+      const width = frame.offsetWidth || 1;
+      const current = indexRef.current;
+      const step = gesture.travelled > 0 ? 1 : -1;
+      const atEnd = current + step < 0 || current + step > count - 1;
+
+      if (!atEnd && Math.abs(gesture.travelled) >= width * WHEEL_DISTANCE) {
+        gesture.turned = true;
+        gesture.following = false;
+        setIndex(current + step);
+        setDragging(false);
+        setDragOffset(0);
+        return;
+      }
+
+      // Following the fingers, and giving way grudgingly past either end,
+      // as a drag does.
+      gesture.following = true;
+      setDragging(true);
+      setDragOffset(-gesture.travelled / (atEnd ? 3 : 1));
+    };
+
+    frame.addEventListener('wheel', onWheel, { passive: false });
+
+    return () => {
+      frame.removeEventListener('wheel', onWheel);
+      window.clearTimeout(gesture.timer);
+    };
+  }, [count]);
 
   return (
     <section

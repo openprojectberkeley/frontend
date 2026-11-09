@@ -777,7 +777,20 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
 
     /* A new size means new grids: every card that is partway through is
        redrawn on its new one. */
+    /*
+     * Only when the strip has really changed size. A phone's toolbar folding
+     * away fires resize all through a scroll, and starting every dissolve over
+     * for it threw the squares away and redrew them mid-scene.
+     */
+    let lastSize = null;
+
     const onResize = () => {
+      const root = rootRef.current;
+      const size = `${window.innerWidth}x${root ? root.offsetHeight : 0}`;
+
+      if (size === lastSize) return;
+      lastSize = size;
+
       measure();
       frames.clear();
       states.forEach((state) => {
@@ -808,6 +821,7 @@ const MomentStrip = forwardRef(function MomentStrip(_props, ref) {
 
     dissolveApplyRef.current = apply;
     cards.forEach((card) => observer.observe(card));
+    lastSize = `${window.innerWidth}x${rootRef.current ? rootRef.current.offsetHeight : 0}`;
     window.addEventListener('resize', onResize);
 
     return () => {

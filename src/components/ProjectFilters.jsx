@@ -7,9 +7,16 @@ import { allProjects, hasSections, projectsBySemester, sectionInfo, sectionOrder
 
 export const NO_FILTERS = { query: '', types: [], difficulties: [], topics: [] };
 
-const TYPES = sectionOrder.filter((category) => (
-  Object.values(projectsBySemester).some((semesterProjects) => semesterProjects[category]?.length > 0)
-));
+// OP Studio and OP Launch, each in its own colour, as far as any semester has
+// projects in it.
+const TYPE_OPTIONS = sectionOrder
+  .filter((category) => (
+    Object.values(projectsBySemester).some((semesterProjects) => semesterProjects[category]?.length > 0)
+  ))
+  .map((category) => ({
+    value: category,
+    label: <span style={{ color: sectionInfo[category].color }}>{sectionInfo[category].title}</span>,
+  }));
 
 /*
  * Every word searched for is somewhere in the project, and it is of one of the
@@ -53,22 +60,6 @@ const summaryOf = (name, picked) => {
   return picked.length === 1 ? picked[0] : `${name}: ${picked.length}`;
 };
 
-const toggled = (list, item) => (list.includes(item) ? list.filter((other) => other !== item) : [...list, item]);
-
-function FilterChip({ pressed, colour, onClick, children }) {
-  return (
-    <button
-      type="button"
-      className={styles.filterChip}
-      style={colour ? { '--chip': colour } : undefined}
-      aria-pressed={pressed}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-}
-
 /* Above the list. The semester is what is being filtered, so Clear leaves it be. */
 export default function ProjectFilters({ filters, onChange, semester, onSemesterChange, shown, total }) {
   const { query, types, difficulties, topics } = filters;
@@ -87,22 +78,18 @@ export default function ProjectFilters({ filters, onChange, semester, onSemester
       </label>
 
       <div className={styles.filterChips}>
-        {hasSections(semester) && (
-          <div className={styles.filterGroup} role="group" aria-label="Filter by type">
-            {TYPES.map((category) => (
-              <FilterChip
-                key={category}
-                colour={sectionInfo[category].color}
-                pressed={types.includes(category)}
-                onClick={() => onChange({ ...filters, types: toggled(types, category) })}
-              >
-                {sectionInfo[category].title}
-              </FilterChip>
-            ))}
-          </div>
-        )}
+        <div className={styles.filterGroup}>
+          {hasSections(semester) && (
+            <FilterSelect
+              name="Type"
+              summary={types.length === 0 ? 'All' : summaryOf('Type', types.map((category) => sectionInfo[category].title))}
+              options={TYPE_OPTIONS}
+              selected={types}
+              multiple
+              onChange={(next) => onChange({ ...filters, types: next })}
+            />
+          )}
 
-        <div className={`${styles.filterGroup} ${styles.filterDropdowns}`}>
           <FilterSelect
             name="Difficulty"
             summary={summaryOf('Difficulty', difficulties)}

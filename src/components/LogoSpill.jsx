@@ -424,6 +424,12 @@ export default function LogoSpill({
      Optional: anything missing is left alone. */
   scales,
   /*
+   * One multiplier over the whole set, after the bounds, for a small screen:
+   * the area rule is in pixels, so without it a phone got logos as big as a
+   * desktop's, two and three times the size of the clients they turn from.
+   */
+  sizeScale = 1,
+  /*
    * Things on the page the pile has to make room for, as refs to the elements
    * themselves. Each becomes a static body the size of its box, moved to
    * follow it every frame - so content that slides up from underneath shoves
@@ -511,7 +517,7 @@ export default function LogoSpill({
     ? ink.map((shape, index) => {
         const nudge = scales?.get(items[index]) ?? 1;
         const inkHeight =
-          clamp(Math.sqrt(LOGO_AREA / shape.aspect), MIN_HEIGHT, MAX_HEIGHT) * nudge;
+          clamp(Math.sqrt(LOGO_AREA / shape.aspect), MIN_HEIGHT, MAX_HEIGHT) * nudge * sizeScale;
         const inkWidth = inkHeight * shape.aspect;
 
         return {
@@ -584,9 +590,9 @@ export default function LogoSpill({
       });
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
-    // sized is rebuilt each render; ink and scales are what actually change.
+    // sized is rebuilt each render; ink and the scales are what actually change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ink, scales]);
+  }, [ink, scales, sizeScale]);
 
   useEffect(() => {
     const group = groupRef.current;
@@ -1372,9 +1378,9 @@ export default function LogoSpill({
     frame = window.requestAnimationFrame(tick);
 
     return retire;
-    // sized is rebuilt each render; ink and scales are what actually change.
+    // sized is rebuilt each render; ink and the scales are what actually change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runId, items, stageRef, delay, takeClients, restoreClients, logoClassName, ink, scales, obstacleRefs, outlines, roundSet]);
+  }, [runId, items, stageRef, delay, takeClients, restoreClients, logoClassName, ink, scales, sizeScale, obstacleRefs, outlines, roundSet]);
 
   if (!items.length) {
     return null;
