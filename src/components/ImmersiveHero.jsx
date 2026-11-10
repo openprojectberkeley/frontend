@@ -586,6 +586,13 @@ const BUBBLES = [
 ];
 
 /*
+ * The most the mark is drawn over size, against the zoom it has to survive -
+ * see .markScale. A phone's zoom is about 14x; the cap keeps a tall, narrow
+ * window from asking for a bitmap the size of a wall.
+ */
+const MARK_SUPERSAMPLE_MAX = 20;
+
+/*
  * Which elements read each of the variables render writes, by their class in
  * the stylesheet. Each is written onto those and nothing else.
  *
@@ -1143,6 +1150,19 @@ function ProjectsCopy() {
       // Geometric growth, not linear: a dolly reads as a steady approach when the
       // scale multiplies at a constant rate rather than adding at one.
       const zoom = Math.pow(Math.max(restRadius / startRadius, 1), eased);
+
+      /*
+       * How many times over the mark is drawn, so that it already has the
+       * pixels the end of the zoom needs: the zoom's full extent, rounded up.
+       * Only moves when the window does - see .markScale.
+       */
+      const supersample = String(
+        Math.min(MARK_SUPERSAMPLE_MAX, Math.max(1, Math.ceil(restRadius / startRadius))),
+      );
+
+      if (markBox.style.getPropertyValue('--mark-ss') !== supersample) {
+        markBox.style.setProperty('--mark-ss', supersample);
+      }
 
       setStageVar('--zoom', zoom.toFixed(4));
       /*
@@ -2269,13 +2289,17 @@ function ProjectsCopy() {
           <div className={styles.titleGroup}>
             <h1 ref={lockupRef} className={styles.lockup}>
               <span ref={markBoxRef} className={styles.markBox}>
-                <LogoMark
-                  className={`${styles.mark} ${revealed.markFloat ? styles.markFloating : ''}`}
-                  discClassName={styles.markDisc}
-                  shadowClassName={styles.markShadow}
-                  barClassName={styles.markBar}
-                  arcClassName={styles.markArc}
-                />
+                {/* Drawn --mark-ss times its size and shrunk back down - see
+                    .markScale. */}
+                <span className={styles.markScale}>
+                  <LogoMark
+                    className={`${styles.mark} ${revealed.markFloat ? styles.markFloating : ''}`}
+                    discClassName={styles.markDisc}
+                    shadowClassName={styles.markShadow}
+                    barClassName={styles.markBar}
+                    arcClassName={styles.markArc}
+                  />
+                </span>
               </span>
 
               {/* The club's name, read once. The phrases cycling beside it are

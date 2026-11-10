@@ -36,6 +36,7 @@ async function generateThumbnails() {
 
       try {
         await sharp(inputPath)
+          .rotate() // apply EXIF orientation so phone photos aren't sideways
           .resize(THUMBNAIL_WIDTH, THUMBNAIL_WIDTH * 1.2, { fit: 'cover' })
           .jpeg({ quality: 80, progressive: true })
           .toFile(outputPath);

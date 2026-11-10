@@ -494,13 +494,13 @@ export default function Board() {
         key={person.name}
         style={{ '--hl': HIGHLIGHTS[index % HIGHLIGHTS.length] }}
         onPointerEnter={hover ? (event) => {
-          hoverCard(event, true);
+          if (person.hoverImage) hoverCard(event, true);
           showCaption(event);
         } : undefined}
         onAnimationEnd={hover ? (event) => settleCard(event.currentTarget) : undefined}
         onPointerMove={hover ? cursorTip.move : undefined}
         onPointerLeave={hover ? (event) => {
-          hoverCard(event, false);
+          if (person.hoverImage) hoverCard(event, false);
           cursorTip.hide();
         } : undefined}
       >
@@ -514,10 +514,11 @@ export default function Board() {
             alt={person.name}
           />
           {/* What the hover wipe uncovers: the person's hoverImage in
-              boardMembers.js, or the first photo again if they have none. */}
-          {hover && (
+              boardMembers.js. Without one there is no wipe and the card
+              keeps its photo. */}
+          {hover && person.hoverImage && (
             <>
-              <img className={styles.altImage} src={person.hoverImage || person.image} alt="" aria-hidden="true" />
+              <img className={styles.altImage} src={person.hoverImage} alt="" aria-hidden="true" />
               <span className={styles.wipe} aria-hidden="true" />
             </>
           )}

@@ -38,12 +38,8 @@ const pmSeparator = (pms, index) => {
 
 export function ProjectDifficulty({ difficulty, play, delay, instant }) {
   return (
+    // The pips last, on the right edge it is held to.
     <p className={styles.projectDifficulty}>
-      <span className={styles.difficultyPips} aria-hidden="true">
-        {[1, 2, 3].map((pip) => (
-          <span key={pip} className={pip <= DIFFICULTY_LEVELS[difficulty] ? styles.pipOn : undefined} />
-        ))}
-      </span>
       <ScrambleRuns
         runs={[{ text: difficulty }]}
         play={play}
@@ -51,6 +47,11 @@ export function ProjectDifficulty({ difficulty, play, delay, instant }) {
         duration={FIELD_SCRAMBLE_MS}
         instant={instant}
       />
+      <span className={styles.difficultyPips} aria-hidden="true">
+        {[1, 2, 3].map((pip) => (
+          <span key={pip} className={pip <= DIFFICULTY_LEVELS[difficulty] ? styles.pipOn : undefined} />
+        ))}
+      </span>
     </p>
   );
 }
@@ -275,12 +276,12 @@ export default function ProjectDetail({ project, projects, semester, sectionRef 
             </div>
             {/* Always here, so that the title does not move for it. */}
             <p className={`${styles.projectDifficulty} ${project.difficulty ? '' : styles.metaAbsent}`}>
+              <span><ScrambleSwap text={project.difficulty || ''} instant={instant} /></span>
               <span className={styles.difficultyPips} aria-hidden="true">
                 {[1, 2, 3].map((pip) => (
                   <span key={pip} className={pip <= level ? styles.pipOn : undefined} />
                 ))}
               </span>
-              <span><ScrambleSwap text={project.difficulty || ''} instant={instant} /></span>
             </p>
           </div>
 

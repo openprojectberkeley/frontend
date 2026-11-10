@@ -4,6 +4,7 @@ import placeholder from "../images/about/person-placeholder.svg";
 import mia from "../images/about/fall2026/mia.thumb.jpg";
 import jenny from "../images/about/fall2026/jenny.thumb.jpg";
 import anupriya from "../images/about/spring2025/anupriya.thumb.jpg";
+import anupriya_hover from "../images/about/fall2026/anupriya_hover.thumb.jpg";
 import chad from "../images/about/fall2026/chad.thumb.jpg";
 import christopher from "../images/about/fall2026/christopher.thumb.jpg";
 import ganesh from "../images/about/fall2026/ganesh.thumb.jpg";
@@ -42,6 +43,7 @@ import nishaad from "../images/about/fall2026/nishaad.thumb.jpg";
 // import emily from "../images/about/fall2026/emily.thumb.jpg"; // (placeholder for now)
 import ayah from "../images/about/fall2026/ayah.thumb.jpg";
 import sneha from "../images/about/fall2026/sneha.thumb.jpg";
+import sneha_hover from "../images/about/fall2026/sneha_hover.thumb.jpg";
 import janice from "../images/about/fall2026/janice.thumb.jpg";
 import miles from "../images/about/fall2026/miles.thumb.jpg";
 import matthew from "../images/about/fall2026/matthew.thumb.jpg";
@@ -132,13 +134,14 @@ import { CURRENT_SEMESTER } from "./site";
  *   name         exactly as it is written in each project's `pms` in ./projects
  *   title        optional: their role on the board
  *   image        the photo on the card (placeholder until there is one)
- *   hoverImage   the photo the hover wipe uncovers (placeholder until there is one)
+ *   hoverImage   optional: the photo the hover wipe uncovers; without one the
+ *                card keeps its photo on hover
  *   major        shown with year in the label that follows the cursor
  *   year         e.g. "Class of 2027"
  *   link         optional: a LinkedIn or personal site, shown as an icon
  *   coffee_chat  optional: a Calendly or other booking link, shown as an icon
  */
-const withDefaults = (member) => ({ image: placeholder, hoverImage: placeholder, ...member });
+const withDefaults = (member) => ({ image: placeholder, ...member });
 
 // The executive team, in the order the cards are dealt.
 export const board = [
@@ -164,6 +167,7 @@ export const board = [
         image: anupriya,
         major: "Stats",
         year: "Senior",
+        hoverImage: anupriya_hover,
         link: "https://www.linkedin.com/in/anupriya-islam/"
     },
     {
@@ -411,6 +415,7 @@ const managers = [
         image: sneha,
         major: "Data Science",
         year: "Junior",
+        hoverImage: sneha_hover,
         link: "https://www.linkedin.com/in/sneha-atmakur/"
     },
     {
